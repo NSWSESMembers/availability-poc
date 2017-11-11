@@ -2,7 +2,6 @@ import { Organisation, Group, User, Device, Event, Schedule, TimeSegment } from 
 
 // reusable function to check for a user with context
 function getAuthenticatedUser(ctx) {
-  return User.findById(1);
   return ctx.user.then((user) => {
     if (!user) {
       return Promise.reject('Unauthorized');
@@ -13,6 +12,7 @@ function getAuthenticatedUser(ctx) {
 
 export const userHandler = {
   query(_, args, ctx){
+      return getAuthenticatedUser(ctx);
       return User.findById(1);
   },
   createUserX(_, args, ctx){
@@ -23,6 +23,9 @@ export const userHandler = {
   },
   events(user, args, ctx){
       return user.getEvents();
+  },
+  auth_token(user) {
+    return Promise.resolve(user.auth_token);
   },
   schedules(user, args, ctx){
    return [];
@@ -57,7 +60,8 @@ export const scheduleHandler = {
   createSchedule(_, args, ctx){
     return Schedule.create({ name: args.schedule.name }).then((schedule) => {
       return Group.findById(args.schedule.group_id).then((group) => {
-        return schedule.setGroup(group);
+        schedule.setGroup(group);
+        return schedule;
       });
     });
   }

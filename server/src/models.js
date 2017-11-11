@@ -24,6 +24,7 @@ const UserModel = db.define('user', {
   username: { type: Sequelize.STRING },
   password: { type: Sequelize.STRING },
   version: { type: Sequelize.INTEGER }, // version the password
+  auth_token: {type: Sequelize.STRING},
 });
 
 const DeviceModel = db.define('device', {
@@ -83,7 +84,7 @@ const TimeSegment = db.models.timesegment;
 
 db.sync({force: true}).then(() => {
     User.create({
-        name: "chris",
+        username: "chris",
         email: "test@miceli.net.au"
     }).then((user) => {
       Group.create({

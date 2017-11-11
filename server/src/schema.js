@@ -54,7 +54,7 @@ export const Schema = [`
     schedules: [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
-    jwt: String # json web token for access
+    auth_token: String # json web token for access
   }
 
   type Device {
@@ -108,6 +108,7 @@ export const Schema = [`
     createSchedule(schedule: CreateScheduleInput!): Schedule
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
+    login(email: String!, password: String!): User
   }
 
   schema {
