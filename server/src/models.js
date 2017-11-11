@@ -81,6 +81,23 @@ const Event = db.models.event;
 const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
-db.sync();
+db.sync({force: true}).then(() => {
+    User.create({
+        name: "chris",
+        email: "test@miceli.net.au"
+    }).then((user) => {
+      Group.create({
+        name: "Bankstown"
+      }).then((group) => {
+        group.addUsers(user);
+      }).then((group) => {
+          Schedule.create({
+            name: "Bankstown Roster"
+          }).then((schedule) => {
+            schedule.setGroup(group);
+          });
+      });
+    });
+});
 
 export { Organisation, Group, User, Device, Event, Schedule, TimeSegment };
