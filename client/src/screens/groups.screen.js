@@ -114,7 +114,7 @@ class Group extends Component {
           <Icon name="group" size={24} color={'orange'} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName}>{name}</Text>
+              <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
             <Text style={styles.groupUsername}>
