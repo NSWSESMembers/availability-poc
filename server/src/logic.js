@@ -2,7 +2,7 @@ import { Organisation, Group, User, Device, Event, Schedule, TimeSegment } from 
 
 // reusable function to check for a user with context
 function getAuthenticatedUser(ctx) {
-  return User.findOne({ where: { email: "chris@miceli.net.au" } });
+  return User.findById(1);
   return ctx.user.then((user) => {
     if (!user) {
       return Promise.reject('Unauthorized');
@@ -74,9 +74,12 @@ export const groupHandler = {
     return Group.findById(id);
   },
   createGroup(_, args, ctx) {
-    return getAuthenticatedUser(ctx).then(() => {
-      return Group.create(args.group);
-    })
+    return getAuthenticatedUser(ctx).then((user) => {
+      return Group.create(args.group).then((group) => {
+        group.addUsers(user);
+        return group;
+      });
+    });
   },
   addUserToGroup(_, args, ctx) {
     console.log(args.groupUpdate);
