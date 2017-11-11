@@ -15,7 +15,7 @@ Edit env.sh to set a secret.
 ## Run server
 
 ```sh
-yarn run
+yarn run start
 ```
 
 ## Play with GraphiQL
