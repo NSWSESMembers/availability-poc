@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 
 import {
   setCurrentUser,
-} from '../actions/auth.actions';
+} from '../state/auth.actions';
 
 const styles = StyleSheet.create({
   container: {

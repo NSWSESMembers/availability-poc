@@ -14,7 +14,7 @@ import _ from 'lodash';
 
 import AppWithNavigationState, { navigationReducer } from './navigation';
 import auth from './state/auth.reducer';
-import { logout } from './actions/auth.actions';
+import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
 
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);

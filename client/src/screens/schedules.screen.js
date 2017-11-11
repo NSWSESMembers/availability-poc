@@ -89,7 +89,7 @@ const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
 
 const Header = ({ onPress }) => (
   <View style={styles.header}>
-    <Button title={'New Event'} onPress={onPress} />
+    <Button title={'New Schedule'} onPress={onPress} />
   </View>
 );
 Header.propTypes = {
@@ -189,7 +189,7 @@ class Schedules extends Component {
     if (user && !user.schedules.length) {
       return (
         <View style={styles.container}>
-          <Header onPress={this.goToNewschedule} />
+          <Header onPress={this.goToNewSchedule} />
           <Text style={styles.warning}>{'You do not have any schedules.'}</Text>
         </View>
       );

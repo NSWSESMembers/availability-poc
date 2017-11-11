@@ -14,7 +14,7 @@ import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import USER_QUERY from '../graphql/user.query';
-import { logout } from '../actions/auth.actions';
+import { logout } from '../state/auth.actions';
 
 const styles = StyleSheet.create({
   container: {
