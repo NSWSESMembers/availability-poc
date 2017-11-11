@@ -7,7 +7,7 @@ import { groupHandler, userHandler } from './logic';
 export const Resolvers = {
   Query: {
     group(_, args, ctx) {
-      return groupLogic.query(_, args, ctx);
+      return groupHandler.query(_, args, ctx);
     },
     user(_, args, ctx) {
       return userHandler.query(_, args, ctx);
@@ -17,15 +17,15 @@ export const Resolvers = {
     createGroup(_, args, ctx){
         return groupHandler.createGroup(_, args, ctx);
     },
+    addUserToGroup(_, args, ctx){
+        return groupHandler.addUserToGroup(_, args, ctx);
+    },
     createUser(_, args, ctx){
         console.log(args);
         return userHandler.createUserX(_, args, ctx);
     }
   },
   Group: {
-    name(group, args, ctx){
-      return groupHandler.name(group, args, ctx);
-    },
   },
   User: {
   },

@@ -29,14 +29,30 @@ export const organisationHandler = {
 }
 
 export const groupHandler = {
-  createGroup(_, group, ctx) {
+  query(_, { id }, ctx){
+    return Group.findById(id);
+  },
+  createGroup(_, args, ctx) {
     return getAuthenticatedUser(ctx).then(() => {
-      return Group.create({ group });
+      return Group.create(args.group);
     })
   },
-  name(group, _, ctx){
-    return group.getName();
-  }
+  addUserToGroup(_, args, ctx) {
+    console.log(args.groupUpdate);
+    return getAuthenticatedUser(ctx).then(() => {
+      return Group.findById(args.groupUpdate.group_id).then((group) => {
+        if (!group){
+            return Promise.reject("No group!");
+        }
+        User.findById(args.groupUpdate.user_id).then((user) => {
+            if (!user){
+                return Promise.reject("No user!");
+            }
+            group.addUser(user).then(() => {return group;});
+        })
+      })
+    })
+  },
 }
 
 /*export const 

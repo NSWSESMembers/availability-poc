@@ -14,6 +14,11 @@ export const Schema = [`
     organisation: Int!
   }
 
+  input AddUserToGroupInput {
+    group_id: Int!
+    user_id: Int!
+  }
+
   input CreateUserInput {
     username: String!
     email: String!
@@ -95,6 +100,7 @@ export const Schema = [`
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
     createUser(user: CreateUserInput!): User
+    addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
   }
 
