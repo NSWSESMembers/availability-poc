@@ -1,8 +1,24 @@
 import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
+import { Resolvers } from './resolvers';
 
 import { Mocks } from './mocks';
 
 export const Schema = [`
+
+  input CreateOrganisationInput {
+    name: String!
+  }
+
+  input CreateGroupInput {
+    name: String!
+    organisation: Int!
+  }
+
+  input CreateUserInput {
+    username: String!
+    email: String!
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -76,21 +92,29 @@ export const Schema = [`
     group(id: Int!): Group
   }
 
+  type Mutation {
+    createGroup(group: CreateGroupInput!): Group
+    createUser(user: CreateUserInput!): User
+    createOrganisation(organisation: CreateOrganisationInput!): Organisation
+  }
 
   schema {
-    query: Query
+    query: Query,
+    mutation: Mutation
   }
 `];
 
 export const executableSchema = makeExecutableSchema({
   typeDefs: Schema,
-  resolvers: {},
+  resolvers: Resolvers,
 });
 
+/*
 addMockFunctionsToSchema({
   schema: executableSchema,
   mocks: Mocks,
   preserveResolvers: true,
 });
+*/
 
 export default executableSchema;
