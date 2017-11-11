@@ -12,19 +12,60 @@ function getAuthenticatedUser(ctx) {
 }
 
 export const userHandler = {
+  query(_, args, ctx){
+      return User.findById(1);
+  },
   createUserX(_, args, ctx){
       return User.create(args.user);
   },
-  addDevice(_, args, ctx) {
-      return getAuthenticatedUser(ctx).then((user) => Device.create(args.device));
+  groups(user, args, ctx){
+      return user.getGroups();
+  },
+  events(user, args, ctx){
+      return user.getEvents();
+  },
+  schedules(user, args, ctx){
+   return [];
+   return Group.findAll({
+    include: [{
+      model: User,
+      where: { id: user.id }
+    }]
+   }).then((groups) => {
+     return Promise.all(groups.map(async (group) => {
+       console.log(group);
+       return Schedule.findAll({
+         include: [{
+           model: Group,
+           where: { id: group.id }
+         }]
+       }).then((schedule) => {
+         console.log(schedule);
+       })
+     }));
+   });
+  },
+  devices(user, args, ctx){
+      return user.getDevices();
+  },
+}
+
+export const scheduleHandler = {
+  timeSegments(schedule, args, ctx){
+    return user.getTimeSegments();
+  },
+  createSchedule(_, args, ctx){
+    return Schedule.create({ name: args.schedule.name }).then((schedule) => {
+      return Group.findById(args.schedule.group_id).then((group) => {
+        return schedule.setGroup(group);
+      });
+    });
   }
 }
 
 export const organisationHandler = {
-  createOrganisation(_, organisation, ctx) {
-    return getAuthenticatedUser(ctx).then(() => {
-      return Organisation.create({ organisation });
-    })
+  createOrganisation(_, args, ctx) {
+    return Organisation.create(args.organisation);
   },
 }
 
