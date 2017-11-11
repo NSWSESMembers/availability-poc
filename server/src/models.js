@@ -81,6 +81,6 @@ const Event = db.models.event;
 const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
-db.sync({ force: true});
+db.sync();
 
 export { Organisation, Group, User, Device, Event, Schedule, TimeSegment };
