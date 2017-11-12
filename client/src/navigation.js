@@ -5,13 +5,14 @@ import { connect } from 'react-redux';
 import update from 'immutability-helper';
 import { REHYDRATE } from 'redux-persist/constants';
 
-import Home from './screens/home.screen';
-import Groups from './screens/groups.screen';
 import Events from './screens/events.screen';
-import Schedules from './screens/schedules.screen';
-import Signin from './screens/signin.screen';
-import Settings from './screens/settings.screen';
+import Groups from './screens/groups.screen';
+import Home from './screens/home.screen';
 import NewGroup from './screens/new-group.screen';
+import Schedules from './screens/schedules.screen';
+import Settings from './screens/settings.screen';
+import Signin from './screens/signin.screen';
+import WeekAvailability from './screens/week-availability.screen';
 
 const tabBarConfiguration = {
   tabBarOptions: {
@@ -25,6 +26,7 @@ const MainScreenNavigator = TabNavigator({
   Home: { screen: Home },
   Groups: { screen: Groups },
   Schedules: { screen: Schedules },
+  WeekAvailability: { screen: WeekAvailability },
   Events: { screen: Events },
   Settings: { screen: Settings },
 }, tabBarConfiguration);
