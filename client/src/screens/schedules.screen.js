@@ -15,7 +15,7 @@ import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-import { USER_QUERY } from '../graphql/user.query';
+import CURRENT_USER_QUERY from '../graphql/current-user.query';
 
 const styles = StyleSheet.create({
   container: {
@@ -157,7 +157,6 @@ class Schedules extends Component {
 
   onRefresh() {
     this.props.refetch();
-    // faking unauthorized status
   }
 
   keyExtractor = item => item.id;
@@ -219,7 +218,7 @@ Schedules.propTypes = {
   refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    email: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
     schedules: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
@@ -229,9 +228,8 @@ Schedules.propTypes = {
   }),
 };
 
-const userQuery = graphql(USER_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.jwt,
-  options: ownProps => ({ variables: { id: ownProps.auth.id } }),
+const userQuery = graphql(CURRENT_USER_QUERY, {
+  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading, networkStatus, refetch, user,
   }),

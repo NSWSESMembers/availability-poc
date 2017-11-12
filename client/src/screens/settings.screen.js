@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import USER_QUERY from '../graphql/user.query';
+import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import { logout } from '../state/auth.actions';
 
 const styles = StyleSheet.create({
@@ -144,7 +144,8 @@ class Settings extends Component {
 Settings.propTypes = {
   auth: PropTypes.shape({
     loading: PropTypes.bool,
-    jwt: PropTypes.string,
+    token: PropTypes.string,
+    deviceId: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
@@ -156,8 +157,8 @@ Settings.propTypes = {
   }),
 };
 
-const userQuery = graphql(USER_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.jwt,
+const userQuery = graphql(CURRENT_USER_QUERY, {
+  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ({ auth }) => ({ variables: { id: auth.id }, fetchPolicy: 'cache-only' }),
   props: ({ data: { loading, user } }) => ({
     loading, user,

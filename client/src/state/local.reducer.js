@@ -1,3 +1,6 @@
+// This is meant for config that is local to this device and is kept regardless
+// of which user is logged in/logged out.
+
 import { REHYDRATE } from 'redux-persist/constants';
 import Immutable from 'seamless-immutable';
 
@@ -8,20 +11,21 @@ const initialState = Immutable({
   loading: true,
 });
 
-const auth = (state = initialState, action) => {
+const local = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
       // convert persisted data to Immutable and confirm rehydration
       const currentState = action.payload.auth || state;
+      if(!currentState.deviceId) {
+        const uuid = uuidv4();
+        console.log(`Generated new device UUID ${uuid}`);
+        currentState.deviceId = uuid;
+      }
       currentState.loading = false;
       return Immutable(currentState);
-    case SET_CURRENT_USER:
-      return state.merge(action.user);
-    case LOGOUT:
-      return Immutable({ loading: false });
     default:
       return state;
   }
 };
 
-export default auth;
+export default local;

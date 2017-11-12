@@ -16,7 +16,7 @@ import { NavigationActions } from 'react-navigation';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
 
-import { USER_QUERY } from '../graphql/user.query';
+import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import CREATE_GROUP_MUTATION from '../graphql/create-group.mutation';
 
 const goToNewGroup = group => NavigationActions.back();
@@ -199,14 +199,14 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
         variables: { group: { name, organisation: 1 }},
         update: (store, { data: { createGroup } }) => {
           // Read the data from our cache for this query.
-          const data = store.readQuery({ query: USER_QUERY, variables: { id: ownProps.auth.id } });
+          const data = store.readQuery({ query: CURRENT_USER_QUERY, variables: { id: ownProps.auth.id } });
 
           // Add our message from the mutation to the end.
           data.user.groups.push(createGroup);
 
           // Write our data back to the cache.
           store.writeQuery({
-            query: USER_QUERY,
+            query: CURRENT_USER_QUERY,
             variables: { id: ownProps.auth.id },
             data,
           });

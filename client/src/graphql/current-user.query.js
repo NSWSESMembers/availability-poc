@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 
 // get the user and all user's groups
-export const USER_QUERY = gql`
-  query user($id: Int) {
-    user(id: $id) {
+export default gql`
+  query {
+    user {
       id
       email
       username
@@ -22,5 +22,3 @@ export const USER_QUERY = gql`
     }
   }
 `;
-
-export default USER_QUERY;

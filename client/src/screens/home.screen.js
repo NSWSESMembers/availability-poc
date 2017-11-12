@@ -15,7 +15,7 @@ import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-import { USER_QUERY } from '../graphql/user.query';
+import CURRENT_USER_QUERY from '../graphql/current-user.query';
 
 const styles = StyleSheet.create({
   container: {

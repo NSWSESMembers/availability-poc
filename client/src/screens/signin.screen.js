@@ -17,6 +17,9 @@ import { connect } from 'react-redux';
 import {
   setCurrentUser,
 } from '../state/auth.actions';
+import LOGIN_MUTATION from '../graphql/login.mutation';
+import SIGNUP_MUTATION from '../graphql/signup.mutation';
+import { capitalizeFirstLetter } from '../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +37,15 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     padding: 6,
     backgroundColor: 'rgba(0,0,0,0.2)',
+  },
+  headingContainer: {
+    marginBottom: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  heading: {
+    fontSize: 42,
+    fontWeight: '100',
   },
   loadingContainer: {
     left: 0,
@@ -59,10 +71,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function capitalizeFirstLetter(string) {
-  return string[0].toUpperCase() + string.slice(1);
-}
-
 class Signin extends Component {
   static navigationOptions = {
     title: 'Availability',
@@ -80,40 +88,72 @@ class Signin extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.auth.jwt) {
+    if (nextProps.auth.token) {
       nextProps.navigation.goBack();
     }
   }
 
   login() {
-    const { email, password } = this.state;
-    const user = {
-      email: email,
-      jwt: 'lol',
-    };
+    const { username, password } = this.state;
 
     this.setState({
       loading: true,
     });
-    this.props.dispatch(setCurrentUser(user));
-    this.setState({
-      loading: false,
-    });
+
+    const deviceId = this.props.local.deviceId;
+    console.log(`Logging in with device ID: ${deviceId}`);
+
+    this.props.login({ username, password, deviceId })
+      .then(({ data: { login: user } }) => {
+        const ourUser = {
+          username: user.username,
+          token: user.authToken,
+        }
+        this.props.dispatch(setCurrentUser(ourUser));
+        this.setState({
+          loading: false,
+        });
+      }).catch((error) => {
+        this.setState({
+          loading: false,
+        });
+        Alert.alert(
+          `${capitalizeFirstLetter(this.state.view)} error`,
+          error.message,
+          [
+            { text: 'OK', onPress: () => console.log('OK pressed') }, // eslint-disable-line no-console
+            { text: 'Forgot password', onPress: () => console.log('Forgot Pressed'), style: 'cancel' }, // eslint-disable-line no-console
+          ],
+        );
+      });
   }
 
   signup() {
     this.setState({
       loading: true,
     });
-    const { email, password } = this.state;
-    const user = {
-      email: email,
-      jwt: '',
-    };
-    this.props.dispatch(setCurrentUser(user));
-    this.setState({
-      loading: false,
-    });
+    const deviceId = this.props.local.deviceId;
+    const { username, password } = this.state;
+    this.props.signup({ username, email: username, password, deviceId })
+      .then(({ data: { signup: user } }) => {
+        const ourUser = {
+          username: user.username,
+          token: user.authToken,
+        }
+        this.props.dispatch(setCurrentUser(ourUser));
+        this.setState({
+          loading: false,
+        });
+      }).catch((error) => {
+        this.setState({
+          loading: false,
+        });
+        Alert.alert(
+          `${capitalizeFirstLetter(this.state.view)} error`,
+          error.message,
+          [{ text: 'OK', onPress: () => console.log('OK pressed') }],  // eslint-disable-line no-console
+        );
+      });
   }
 
   switchView() {
@@ -134,12 +174,27 @@ class Signin extends Component {
           <View style={styles.loadingContainer}>
             <ActivityIndicator />
           </View> : undefined}
+        <View style={styles.headingContainer}>
+          <Text style={styles.heading}>
+            {view === 'signup' ? 'Sign up' : 'Login'}
+          </Text>
+        </View>
         <View style={styles.inputContainer}>
           <TextInput
-            onChangeText={email => this.setState({ email })}
-            placeholder={'Email'}
+            onChangeText={username => this.setState({ username})}
+            placeholder={'Username'}
+            autoCapitalize={'none'}
+            autoCorrect={false}
             style={styles.input}
           />
+          {view === 'signup' ?
+            <TextInput
+              onChangeText={email => this.setState({ email })}
+              placeholder={'Email'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              style={styles.input}
+            /> : undefined}
           <TextInput
             onChangeText={password => this.setState({ password })}
             placeholder={'Password'}
@@ -151,7 +206,7 @@ class Signin extends Component {
           onPress={this[view]}
           style={styles.submit}
           title={view === 'signup' ? 'Sign up' : 'Login'}
-          disabled={this.state.loading || !!this.props.auth.jwt}
+          disabled={this.state.loading || !!this.props.auth.token}
         />
         <View style={styles.switchContainer}>
           <Text>
@@ -176,13 +231,35 @@ Signin.propTypes = {
   }),
   auth: PropTypes.shape({
     loading: PropTypes.bool,
-    jwt: PropTypes.string,
+    token: PropTypes.string,
   }),
   dispatch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({ auth }) => ({
-  auth,
+const login = graphql(LOGIN_MUTATION, {
+  props: ({ mutate }) => ({
+    login: ({ username, password, deviceId }) =>
+      mutate({
+        variables: { user: { username, password, deviceId } },
+      }),
+  }),
 });
 
-export default connect(mapStateToProps)(Signin);
+const signup = graphql(SIGNUP_MUTATION, {
+  props: ({ mutate }) => ({
+    signup: ({ username, email, password, deviceId }) =>
+      mutate({
+        variables: { user: { username, email, password, deviceId } },
+      }),
+  }),
+});
+
+const mapStateToProps = ({ auth, local }) => ({
+  auth, local
+});
+
+export default compose(
+  login,
+  signup,
+  connect(mapStateToProps),
+)(Signin);

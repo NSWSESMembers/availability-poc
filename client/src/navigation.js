@@ -50,7 +50,7 @@ export const navigationReducer = (state = initialNavState, action) => {
   switch (action.type) {
     case REHYDRATE:
       // convert persisted data to Immutable and confirm rehydration
-      if (!action.payload.auth || !action.payload.auth.jwt) {
+      if (!action.payload.auth || !action.payload.auth.token) {
         const { routes, index } = state;
         if (routes[index].routeName !== 'Signin') {
           nextState = AppNavigator.router.getStateForAction(
@@ -88,6 +88,16 @@ class AppWithNavigationState extends Component {
 AppWithNavigationState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    email: PropTypes.string.isRequired,
+    groups: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+  }),
 };
 
 const mapStateToProps = ({ auth, nav }) => ({
