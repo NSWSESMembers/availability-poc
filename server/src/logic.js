@@ -15,7 +15,7 @@ function getAuthenticatedUser(ctx) {
 function getAuthenticatedDevice(ctx) {
   return ctx.device.then((device) => {
     if (!device) {
-      return Device.findOne({where: {userId: 69, deviceId: '1234abc'}})
+      return Device.findOne({where: {userId: 69, uuid: '1234abc'}})
       // return Promise.reject('Unauthorized');
     }
     return device;
@@ -38,7 +38,7 @@ export const deviceHandler = {
   query(_, args, ctx) {
     return getAuthenticatedDevice(ctx);
   },
-  addDevice(user, deviceId){
+  addDevice(user, deviceId) {
     return User.findOne({where : {id: user.id}, include: {model: Device, where: {id: deviceId}}}).then((existing) => {
       if (existing) {
         return existing;
@@ -73,12 +73,12 @@ export const userHandler = {
     return Promise.resolve(user.authToken);
   },
   schedules(user, args, ctx) {
-   return [];
-   return Group.findAll({
-    include: [{
-      model: User,
-      where: { id: user.id }
-    }]
+    return [];
+    return Group.findAll({
+      include: [{
+        model: User,
+        where: { id: user.id }
+      }]
    }).then((groups) => {
      return Promise.all(groups.map(async (group) => {
        console.log(group);

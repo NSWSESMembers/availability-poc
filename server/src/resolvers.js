@@ -18,17 +18,17 @@ export const Resolvers = {
   },
   Mutation: {
     createGroup(_, args, ctx){
-        return groupHandler.createGroup(_, args, ctx);
+      return groupHandler.createGroup(_, args, ctx);
     },
     addUserToGroup(_, args, ctx){
-        return groupHandler.addUserToGroup(_, args, ctx);
+      return groupHandler.addUserToGroup(_, args, ctx);
     },
     createUser(_, args, ctx){
-        console.log(args);
-        return userHandler.createUserX(_, args, ctx);
+      console.log(args);
+      return userHandler.createUserX(_, args, ctx);
     },
     updateLocation(_, args, ctx){
-        return locationHandler.updateLocation(_, args, ctx);
+      return locationHandler.updateLocation(_, args, ctx);
     },
     signup(_, signinUserInput, ctx){
       const { deviceId, email, username, password } = signinUserInput.user;
@@ -55,23 +55,23 @@ export const Resolvers = {
       });
     },
     login(_, authInput, ctx){
-        const { username, password, deviceId } = authInput.user;
-        return User.findOne({ where: { username } }).then((user) => {
-          if (!user){
-            return Promise.reject("No Auth for you");
-          }
-          deviceHandler.addDevice(user, deviceId);
-          const token = jwt.sign({
-            id: user.id,
-            device: deviceId,
-            email: user.email,
-            version: user.version
-          }, JWT_SECRET);
-          console.log(token);
-          user.authToken = token;
-          ctx.user = Promise.resolve(user);
-          return user;
-        });
+      const { username, password, deviceId } = authInput.user;
+      return User.findOne({ where: { username } }).then((user) => {
+        if (!user){
+          return Promise.reject("No Auth for you");
+        }
+        deviceHandler.addDevice(user, deviceId);
+        const token = jwt.sign({
+          id: user.id,
+          device: deviceId,
+          email: user.email,
+          version: user.version
+        }, JWT_SECRET);
+        console.log(token);
+        user.authToken = token;
+        ctx.user = Promise.resolve(user);
+        return user;
+      });
     },
     createSchedule(_, args, ctx){
       console.log(args);
@@ -91,16 +91,16 @@ export const Resolvers = {
   },
   User: {
     groups(user, args, ctx){
-        return userHandler.groups(user, args, ctx);
+      return userHandler.groups(user, args, ctx);
     },
     events(user, args, ctx){
-        return userHandler.events(user, args, ctx);
+      return userHandler.events(user, args, ctx);
     },
     schedules(user, args, ctx){
-        return userHandler.schedules(user, args, ctx);
+      return userHandler.schedules(user, args, ctx);
     },
     devices(user, args, ctx){
-        return userHandler.devices(user, args, ctx);
+      return userHandler.devices(user, args, ctx);
     },
     authToken(user, args, ctx){
       return userHandler.authToken(user);
@@ -111,7 +111,7 @@ export const Resolvers = {
   },
   Schedule: {
     timeSegments(schedule, args, ctx){
-        return scheduleHandler.timeSegments(schedule, args, ctx);
+      return scheduleHandler.timeSegments(schedule, args, ctx);
     }
   }
 };

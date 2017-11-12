@@ -64,6 +64,7 @@ UserModel.belongsTo(OrganisationModel);
 // devices belong to a single user
 DeviceModel.belongsTo(UserModel);
 
+
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
 
