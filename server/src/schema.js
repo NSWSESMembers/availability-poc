@@ -113,11 +113,11 @@ export const Schema = [`
 
   # query for types
   type Query {
-    # Return a user by their email or id
-    user(email: String, id: Int): User
+    # Return the entity representing the current user
+    user: User
 
-    # Return a group by its id
-    group(id: Int!): Group
+    # Get the entity representing the current device
+    device: Device
   }
 
   type Mutation {

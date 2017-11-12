@@ -25,7 +25,7 @@ app.use('/graphql', bodyParser.json(), jwt({
     schema: executableSchema,
     context: {
       user: req.user ? User.findById(req.user.id) : Promise.resolve(null),
-      device: req.user ? Device.findOne({ where: { uuid: req.user.deviceId } }) : Promise.resolve(null)
+      device: req.user ? Device.findOne({ where: { uuid: req.user.device, userId: req.user.id } }) : Promise.resolve(null)
     },
   }))
 );

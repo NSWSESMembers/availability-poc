@@ -58,11 +58,11 @@ GroupModel.belongsToMany(UserModel, { through: 'group_user' });
 UserModel.belongsToMany(EventModel, { through: 'event_user' });
 EventModel.belongsToMany(UserModel, { through: 'event_user' });
 
-// users can belong to more than one unit
-UserModel.belongsToMany(OrganisationModel, { through: 'user_organisation'});
+// users can only belong to one organisation for now
+UserModel.belongsTo(OrganisationModel);
 
-// devices are linked to a single user
-UserModel.belongsToMany(DeviceModel, { through: 'user_devices'});
+// devices belong to a single user
+DeviceModel.belongsTo(UserModel);
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
@@ -83,26 +83,55 @@ const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
 db.sync({force: true}).then(() => {
+  return Organisation.create({
+    name: "NSW SES",
+  }).then((org) => {
     return bcrypt.hash("testing", 10).then((hash) => {
-      User.create({
-          username: "chris",
-          password: "test",
-          email: "test@miceli.net.au",
-          deviceId: "1234-5678-1234-5678"
+      return User.create({
+        id: 69,
+        username: "chris",
+        password: "test",
+        email: "test@miceli.net.au",
+        deviceId: "1234-5678-1234-5678"
       }).then((user) => {
-        Group.create({
-          name: "Bankstown"
-        }).then((group) => {
-          group.addUsers(user);
-        }).then((group) => {
-            Schedule.create({
-              name: "Bankstown Roster"
-            }).then((schedule) => {
-              schedule.setGroup(group);
-            });
-        });
+        return Promise.all([
+          // create a starter group
+          Group.create({
+            name: "Bankstown"
+          }).then((group) => {
+            return Promise.all([
+              // add user to group
+              group.addUsers(user),
+
+              // create a schedule
+              Schedule.create({
+                name: "Bankstown Roster"
+              }).then((schedule) => {
+
+                // attach the schedule to a group
+                schedule.setGroup(group);
+              })
+            ]);
+          }),
+
+          // create a device
+          Device.create({
+            uuid: '1234abc',
+          }).then((device) => {
+            device.setUser(user);
+          }),
+
+          // add the user to the organisation
+          user.setOrganisation(org),
+        ]);
       });
     });
+  }).then(() => {
+    console.log('Finished creating test data');
+  }).catch((e) => {
+    console.log('Epic fail while trying to load test data');
+    console.log(e);
+  });
 });
 
 export { Organisation, Group, User, Device, Event, Schedule, TimeSegment };

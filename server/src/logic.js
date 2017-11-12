@@ -5,11 +5,21 @@ function getAuthenticatedUser(ctx) {
   return ctx.user.then((user) => {
     if (!user) {
       //XXX: remove this
-      return User.getById(1);
-      return Promise.reject('Unauthorized');
+      return User.findById(69);
+      // return Promise.reject('Unauthorized');
     }
     return user;
   });
+}
+
+function getAuthenticatedDevice(ctx) {
+  return ctx.device.then((device) => {
+    if (!device) {
+      return Device.findOne({where: {userId: 69, deviceId: '1234abc'}})
+      // return Promise.reject('Unauthorized');
+    }
+    return device;
+  })
 }
 
 export const locationHandler = {
@@ -25,6 +35,9 @@ export const locationHandler = {
 }
 
 export const deviceHandler = {
+  query(_, args, ctx) {
+    return getAuthenticatedDevice(ctx);
+  },
   addDevice(user, deviceId){
     return User.findOne({where : {id: user.id}, include: {model: Device, where: {id: deviceId}}}).then((existing) => {
       if (existing) {
@@ -42,21 +55,24 @@ export const deviceHandler = {
 
 export const userHandler = {
   query(_, args, ctx){
-      return getAuthenticatedUser(ctx);
+    return getAuthenticatedUser(ctx);
   },
-  createUserX(_, args, ctx){
-      return User.create(args.user);
+  createUserX(_, args, ctx) {
+    return User.create(args.user);
   },
-  groups(user, args, ctx){
-      return user.getGroups();
+  groups(user, args, ctx) {
+    return user.getGroups();
   },
-  events(user, args, ctx){
-      return user.getEvents();
+  events(user, args, ctx) {
+    return user.getEvents();
+  },
+  organisation(user, args, ctx) {
+    return user.getOrganisation();
   },
   authToken(user) {
     return Promise.resolve(user.authToken);
   },
-  schedules(user, args, ctx){
+  schedules(user, args, ctx) {
    return [];
    return Group.findAll({
     include: [{
@@ -78,7 +94,9 @@ export const userHandler = {
    });
   },
   devices(user, args, ctx){
-      return user.getDevices();
+    return Device.findAll({
+      where: { userId: user.id, }
+    })
   },
 }
 
@@ -103,8 +121,14 @@ export const organisationHandler = {
 }
 
 export const groupHandler = {
-  query(_, { id }, ctx){
-    return Group.findById(id);
+  users(group, args, ctx) {
+    return group.getUsers();
+  },
+  schedules(group, args, ctx) {
+    return Schedule.findAll({ groupId: group.id });
+  },
+  events(group, args, ctx) {
+    return Event.findAll({ groupId: group.id });
   },
   createGroup(_, args, ctx) {
     return getAuthenticatedUser(ctx).then((user) => {
@@ -132,7 +156,7 @@ export const groupHandler = {
   },
 }
 
-/*export const 
+/*export const
 
 export const messageLogic = {
   from(message) {

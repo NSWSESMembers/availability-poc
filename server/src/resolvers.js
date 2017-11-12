@@ -9,12 +9,12 @@ import { deviceHandler, scheduleHandler, groupHandler, userHandler } from './log
 
 export const Resolvers = {
   Query: {
-    group(_, args, ctx) {
-      return groupHandler.query(_, args, ctx);
-    },
     user(_, args, ctx) {
       return userHandler.query(_, args, ctx);
     },
+    device(_, args, ctx) {
+      return deviceHandler.query(_, args, ctx);
+    }
   },
   Mutation: {
     createGroup(_, args, ctx){
@@ -79,6 +79,15 @@ export const Resolvers = {
     }
   },
   Group: {
+    users(group, args, ctx) {
+      return groupHandler.users(group, args, ctx);
+    },
+    events(group, args, ctx) {
+      return groupHandler.events(group, args, ctx);
+    },
+    schedules(group, args, ctx) {
+      return groupHandler.schedules(group, args, ctx);
+    }
   },
   User: {
     groups(user, args, ctx){
@@ -95,6 +104,9 @@ export const Resolvers = {
     },
     authToken(user, args, ctx){
       return userHandler.authToken(user);
+    },
+    organisation(user, args, ctx) {
+      return userHandler.organisation(user, args, ctx);
     },
   },
   Schedule: {
