@@ -24,7 +24,6 @@ const UserModel = db.define('user', {
   username: { type: Sequelize.STRING },
   password: { type: Sequelize.STRING },
   version: { type: Sequelize.INTEGER }, // version the password
-  auth_token: {type: Sequelize.STRING},
 });
 
 const DeviceModel = db.define('device', {

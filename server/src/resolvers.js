@@ -39,7 +39,7 @@ export const Resolvers = {
             version: user.version
           }, JWT_SECRET);
           console.log(token);
-          user.updateAttributes({'auth_token': token});
+          user.auth_token = token;
           ctx.user = Promise.resolve(user);
           return user;
         });
