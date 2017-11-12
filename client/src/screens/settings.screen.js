@@ -51,9 +51,10 @@ const styles = StyleSheet.create({
   },
   input: {
     color: 'black',
-    height: 32,
+    flexDirection: 'row',
   },
   inputBorder: {
+    flexDirection: 'row',
     borderColor: '#dbdbdb',
     borderBottomWidth: 1,
     borderTopWidth: 1,
