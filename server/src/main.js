@@ -6,7 +6,7 @@ import { execute, subscribe } from 'graphql';
 import jwt from 'express-jwt';
 import jsonwebtoken from 'jsonwebtoken';
 import JWT_SECRET from './config';
-import { User } from './models';
+import { User, Device } from './models';
 
 import { executableSchema } from './schema';
 
