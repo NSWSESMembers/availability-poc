@@ -67,7 +67,7 @@ export const Resolvers = {
             version: user.version
           }, JWT_SECRET);
           console.log(token);
-          user.auth_token = token;
+          user.authToken = token;
           ctx.user = Promise.resolve(user);
           return user;
         });
@@ -92,8 +92,8 @@ export const Resolvers = {
     devices(user, args, ctx){
         return userHandler.devices(user, args, ctx);
     },
-    auth_token(user, args, ctx){
-      return userHandler.auth_token(user);
+    authToken(user, args, ctx){
+      return userHandler.authToken(user);
     },
   },
   Schedule: {

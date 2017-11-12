@@ -52,8 +52,8 @@ export const userHandler = {
   events(user, args, ctx){
       return user.getEvents();
   },
-  auth_token(user) {
-    return Promise.resolve(user.auth_token);
+  authToken(user) {
+    return Promise.resolve(user.authToken);
   },
   schedules(user, args, ctx){
    return [];
