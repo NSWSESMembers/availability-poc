@@ -62,7 +62,7 @@ EventModel.belongsToMany(UserModel, { through: 'event_user' });
 UserModel.belongsToMany(OrganisationModel, { through: 'user_organisation'});
 
 // devices are linked to a single user
-DeviceModel.belongsTo(UserModel);
+UserModel.belongsToMany(DeviceModel, { through: 'user_devices'});
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
