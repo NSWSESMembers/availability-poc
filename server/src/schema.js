@@ -14,6 +14,19 @@ export const Schema = [`
     organisation: Int!
   }
 
+  input LoginInput {
+    username: String!
+    password: String!
+    deviceId: String!
+  }
+
+  input SignupInput {
+    username: String!
+    password: String!
+    email: String!
+    deviceId: String!
+  }
+
   input CreateScheduleInput {
     name: String!
     group_id: Int!
@@ -108,7 +121,8 @@ export const Schema = [`
     createSchedule(schedule: CreateScheduleInput!): Schedule
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
-    login(email: String!, password: String!): User
+    login(user: LoginInput!): User
+    signup(user: SignupInput!): User
   }
 
   schema {

@@ -10,6 +10,22 @@ function getAuthenticatedUser(ctx) {
   });
 }
 
+export const deviceHandler = {
+  addDevice(user, deviceId){
+    return Device.findById(deviceId).then((existing) => {
+      if (existing) {
+        return existing;
+      }
+      return Device.create({
+        uuid: device_id
+      }).then((device) => {
+        user.addDevice(device);
+        return device;
+      });
+    });
+  }
+}
+
 export const userHandler = {
   query(_, args, ctx){
       return getAuthenticatedUser(ctx);

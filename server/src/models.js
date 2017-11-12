@@ -28,7 +28,6 @@ const UserModel = db.define('user', {
 
 const DeviceModel = db.define('device', {
   uuid: { type: Sequelize.STRING },
-  authToken: { type: Sequelize.STRING },
   pushToken: { type: Sequelize.STRING },
   location: { type: Sequelize.STRING },
   locationTimestamp: { type: Sequelize.INTEGER },
