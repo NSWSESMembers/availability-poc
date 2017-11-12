@@ -14,9 +14,18 @@ import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 
 const tabBarConfiguration = {
+  tabBarPosition: 'bottom',
   tabBarOptions: {
-    activeTintColor: 'orange',
-    inactiveTintColor: 'grey',
+    labelStyle: {
+        fontSize: 8,
+    },
+    style: {
+        backgroundColor: 'white'
+    },
+    activeTintColor: 'teal',
+    inactiveTintColor: 'black',
+    showIcon: true,
+    showLabel: true
   }
 }
 
