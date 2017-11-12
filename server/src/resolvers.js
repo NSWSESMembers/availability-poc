@@ -26,6 +26,9 @@ export const Resolvers = {
         console.log(args);
         return userHandler.createUserX(_, args, ctx);
     },
+    updateLocation(_, args, ctx){
+        return locationHandler.updateLocation(_, args, ctx);
+    },
     signup(_, signinUserInput, ctx){
       const { deviceId, email, username, password } = signinUserInput.user;
       // find user by email

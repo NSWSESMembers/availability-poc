@@ -9,6 +9,11 @@ export const Schema = [`
     name: String!
   }
 
+  input LocationUpdateInput {
+    locationLat: String!
+    locationLon: String!
+  }
+
   input CreateGroupInput {
     name: String!
     organisation: Int!
@@ -123,6 +128,7 @@ export const Schema = [`
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
+    updateLocation(location: LocationUpdateInput!): Boolean
   }
 
   schema {

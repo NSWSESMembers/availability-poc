@@ -10,6 +10,18 @@ function getAuthenticatedUser(ctx) {
   });
 }
 
+export const locationHandler = {
+  updateLocation(_, args, ctx){
+    ctx.device.then((device) => {
+      const { lat, lon } = args.location;
+      device.update({
+        locationLat,
+        locationLon
+      });
+    });
+  }
+}
+
 export const deviceHandler = {
   addDevice(user, deviceId){
     return Device.findById(deviceId).then((existing) => {
