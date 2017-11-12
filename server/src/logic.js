@@ -26,7 +26,7 @@ export const locationHandler = {
 
 export const deviceHandler = {
   addDevice(user, deviceId){
-    return Device.findById(deviceId).then((existing) => {
+    return User.findOne({where : {id: user.id}, include: {model: Device, where: {id: deviceId}}}).then((existing) => {
       if (existing) {
         return existing;
       }
