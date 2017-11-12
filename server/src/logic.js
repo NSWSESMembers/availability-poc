@@ -46,7 +46,7 @@ export const deviceHandler = {
       return Device.create({
         uuid: deviceId
       }).then((device) => {
-        user.addDevices(device);
+        device.setUser(user);
         return device;
       });
     });
