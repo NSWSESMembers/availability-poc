@@ -1,4 +1,7 @@
 {
   "name": "availpoc",
-  "displayName": "Avail"
+  "displayName": "Avail",
+  "expo": {
+    "sdkVersion": "22.0.0"
+  }
 }
