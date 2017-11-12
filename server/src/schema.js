@@ -72,6 +72,7 @@ export const Schema = [`
     schedules: [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
+    authToken: String!
   }
 
   type Device {
