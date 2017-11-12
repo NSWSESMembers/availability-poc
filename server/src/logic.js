@@ -4,6 +4,8 @@ import { Organisation, Group, User, Device, Event, Schedule, TimeSegment } from 
 function getAuthenticatedUser(ctx) {
   return ctx.user.then((user) => {
     if (!user) {
+      //XXX: remove this
+      return User.getById(1);
       return Promise.reject('Unauthorized');
     }
     return user;
@@ -29,9 +31,9 @@ export const deviceHandler = {
         return existing;
       }
       return Device.create({
-        uuid: device_id
+        uuid: deviceId
       }).then((device) => {
-        user.addDevice(device);
+        //user.addDevices([device]);
         return device;
       });
     });
@@ -41,7 +43,6 @@ export const deviceHandler = {
 export const userHandler = {
   query(_, args, ctx){
       return getAuthenticatedUser(ctx);
-      return User.findById(1);
   },
   createUserX(_, args, ctx){
       return User.create(args.user);

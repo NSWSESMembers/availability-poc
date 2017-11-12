@@ -1,6 +1,7 @@
 import { _ } from 'lodash';
 import faker from 'faker';
 import Sequelize from 'sequelize';
+import bcrypt from 'bcrypt';
 
 // initialize our database
 const db = new Sequelize('avail', null, null, {
@@ -82,20 +83,24 @@ const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
 db.sync({force: true}).then(() => {
-    User.create({
-        username: "chris",
-        email: "test@miceli.net.au"
-    }).then((user) => {
-      Group.create({
-        name: "Bankstown"
-      }).then((group) => {
-        group.addUsers(user);
-      }).then((group) => {
-          Schedule.create({
-            name: "Bankstown Roster"
-          }).then((schedule) => {
-            schedule.setGroup(group);
-          });
+    return bcrypt.hash("testing", 10).then((hash) => {
+      User.create({
+          username: "chris",
+          password: "test",
+          email: "test@miceli.net.au",
+          deviceId: "1234-5678-1234-5678"
+      }).then((user) => {
+        Group.create({
+          name: "Bankstown"
+        }).then((group) => {
+          group.addUsers(user);
+        }).then((group) => {
+            Schedule.create({
+              name: "Bankstown Roster"
+            }).then((schedule) => {
+              schedule.setGroup(group);
+            });
+        });
       });
     });
 });

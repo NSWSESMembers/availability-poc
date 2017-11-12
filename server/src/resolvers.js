@@ -1,6 +1,7 @@
 import GraphQLDate from 'graphql-date';
 import { map } from 'lodash';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import JWT_SECRET from './config';
 
 import { Group, Message, User } from './models';
@@ -41,10 +42,10 @@ export const Resolvers = {
             username: username,
             version: 1,
           })).then((user) => {
-            deviceHandler.addDevice(user, device_id);
+            deviceHandler.addDevice(user, deviceId);
             const { id } = user;
             const token = jwt.sign({ id, device: deviceId, email, version: 1 }, JWT_SECRET);
-            user.jwt = token;
+            user.authToken = token;
             ctx.user = Promise.resolve(user);
             return user;
           });
