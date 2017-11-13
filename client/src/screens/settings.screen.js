@@ -14,7 +14,17 @@ import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import UPDATE_LOCATION_MUTATION from '../graphql/updateLocation.mutation';
 import { logout } from '../state/auth.actions';
+
+const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
+  props: ({ mutate }) => ({
+    updateLocation: ({ locationLat, locationLon }) =>
+      mutate({
+        variables: { loc: { locationLat, locationLon } },
+      }),
+  }),
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -89,6 +99,17 @@ class Settings extends Component {
     this.state = {};
 
     this.logout = this.logout.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
+  }
+
+  updateLocation() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.props.updateLocation({locationLat: position.coords.latitude, locationLon: position.coords.longitude});
+      },
+      (error) => {},
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+    );
   }
 
   logout() {
@@ -137,6 +158,8 @@ class Settings extends Component {
         <Text style={styles.emailHeader}>{'EMAIL'}</Text>
         <Text style={styles.email}>{user.email}</Text>
         <Button title={'Logout'} onPress={this.logout} />
+        <Text style={styles.emailHeader}>{"Temporary location force update"}</Text>
+        <Button title={'Update Location'} onPress={this.updateLocation}/>
       </View>
     );
   }
@@ -153,6 +176,7 @@ Settings.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
+  updateLocation: PropTypes.func,
   user: PropTypes.shape({
     username: PropTypes.string,
   }),
@@ -173,4 +197,5 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   userQuery,
+  updateLocationMutation,
 )(Settings);
