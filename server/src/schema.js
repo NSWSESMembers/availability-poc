@@ -78,9 +78,9 @@ export const Schema = [`
   type Device {
     id: Int!
     uuid: String!
-    authToken: String
     pushToken: String
-    location: String
+    locationLat: String
+    locationLon: String
     locationTimestamp: Int
   }
 
