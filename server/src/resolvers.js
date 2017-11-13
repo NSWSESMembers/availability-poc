@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import JWT_SECRET from './config';
 
 import { Group, Message, User } from './models';
-import { deviceHandler, scheduleHandler, groupHandler, userHandler } from './logic';
+import { locationHandler, deviceHandler, scheduleHandler, groupHandler, userHandler } from './logic';
 
 export const Resolvers = {
   Query: {
