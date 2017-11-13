@@ -47,6 +47,13 @@ export const getHandlers = ({ models, creators: Creators }) => {
           });
         });
       },
+      updateToken(_, args, ctx) {
+        return getAuthenticatedDevice(ctx).then((device) => {
+          return device.update({
+              pushToken: args.token.token,
+          });
+        });
+      },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {
           const { locationLat, locationLon } = args.location;

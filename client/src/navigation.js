@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
+import { AppState, Alert } from 'react-native';
+import { graphql, compose } from 'react-apollo';
+
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 
@@ -7,6 +10,9 @@ import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 
 import { Container } from './components/Container';
+import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation.js';
+
+import { firebaseClient } from './app';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
@@ -129,15 +135,91 @@ const AppWithNavigationState = (props) => {
   return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
 };
 
+class AppNavState extends Component {
+
+    state = {
+      appState: AppState.currentState,
+      token: "",
+    }
+
+    componentWillMount() {
+      AppState.addEventListener('change', this.handleAppStateChange);
+    }
+
+    componentWillReceiveProps(nextProps) {
+      console.log(nextProps);
+
+      firebaseClient.init().then((registrationId) => {
+        if (this.props.auth && this.props.registrationId !== this.state.token) {
+          this.setState({token : registrationId});
+          return Promise.resolve(this.props.updateToken({ token: registrationId }));
+        }
+      });
+
+      if (!nextProps.auth) {
+        if (firebaseClient.token) {
+          firebaseClient.clear();
+        }
+      }
+
+    }
+
+    handleAppStateChange = (nextAppState) => {
+      console.log('App has changed state!', nextAppState);
+      if (this.state.token && FCM.getBadgeNumber()) {
+        // clear notifications from center/tray
+        FCM.removeAllDeliveredNotifications();
+
+        FCM.setBadgeNumber(0);
+      }
+      this.setState({ appState: nextAppState });
+    }
+
+    componentWillUnmount() {
+      AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+
+    render() {
+      const { dispatch, nav } = this.props;
+
+      if (this.props.auth.loading) {
+        return <Container />;
+      }
+
+      if (!this.props.auth.username) {
+        return <StackAuth />;
+      }
+
+      return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+    }
+}
+
 AppWithNavigationState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.shape().isRequired,
   auth: PropTypes.shape().isRequired,
+  updateToken: PropTypes.func
 };
+
+AppNavState.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  nav: PropTypes.shape().isRequired,
+  updateToken: PropTypes.func,
+  token: PropTypes.string,
+};
+
+const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
+  props: ({ mutate }) => ({
+    updateToken: token =>
+      mutate({
+        variables: { token },
+      }),
+  }),
+});
 
 const mapStateToProps = ({ auth, nav }) => ({
   auth,
   nav,
 });
 
-export default connect(mapStateToProps)(AppWithNavigationState);
+export default compose(connect(mapStateToProps), updateTokenMutation)(AppNavState);

@@ -7,6 +7,7 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
+import {FCM, WillPresentNotificationResult} from "react-native-fcm";
 
 import AppWithNavigationState, { navigationReducer } from './navigation';
 import auth from './state/auth.reducer';
@@ -14,10 +15,17 @@ import availability from './state/availability.reducer';
 import local from './state/local.reducer';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
+import { FirebaseClient } from './firebase-client';
 
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
+
+export const firebaseClient = new FirebaseClient({
+  onWillPresentNotification(notification) {
+    return notification.finish(WillPresentNotificationResult.All);
+  },
+});
 
 // middleware for requests
 networkInterface.use([

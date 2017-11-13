@@ -118,6 +118,9 @@ export const getResolvers = (handlers) => {
       deleteUser(_, args, ctx) {
         return userHandler.deleteUser(args, ctx);
       },
+      updateToken(_, args, ctx) {
+        return deviceHandler.updateToken(_, args, ctx);
+      },
       updateLocation(_, args, ctx) {
         return deviceHandler.updateLocation(_, args, ctx);
       },
