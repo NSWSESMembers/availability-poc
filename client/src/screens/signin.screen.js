@@ -133,8 +133,8 @@ class Signin extends Component {
       loading: true,
     });
     const deviceId = this.props.local.deviceId;
-    const { username, password } = this.state;
-    this.props.signup({ username, email: username, password, deviceId })
+    const { username, password, email } = this.state;
+    this.props.signup({ username, email, password, deviceId })
       .then(({ data: { signup: user } }) => {
         const ourUser = {
           username: user.username,
@@ -181,7 +181,7 @@ class Signin extends Component {
         </View>
         <View style={styles.inputContainer}>
           <TextInput
-            onChangeText={username => this.setState({ username})}
+            onChangeText={username => this.setState({ username })}
             placeholder={'Username'}
             autoCapitalize={'none'}
             autoCorrect={false}

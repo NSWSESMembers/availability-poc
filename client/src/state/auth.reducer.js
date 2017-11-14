@@ -13,8 +13,7 @@ const auth = (state = initialState, action) => {
     case REHYDRATE:
       // convert persisted data to Immutable and confirm rehydration
       const currentState = action.payload.auth || state;
-      currentState.loading = false;
-      return Immutable(currentState);
+      return Immutable(currentState).merge({ loading: false });
     case SET_CURRENT_USER:
       return state.merge(action.user);
     case LOGOUT:
