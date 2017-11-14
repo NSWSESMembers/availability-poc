@@ -4,7 +4,7 @@ cache:
   directories:
     - node_modules
 before_install: cd server
-build_script:
+before_script:
   - yarn
   - yarn run build
   - yard run serve &
