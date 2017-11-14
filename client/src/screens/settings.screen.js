@@ -13,13 +13,11 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import { logout } from '../state/auth.actions';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+const styles = extendAppStyleSheet({
   email: {
     borderColor: '#777',
     borderBottomWidth: 1,
@@ -36,10 +34,6 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     fontSize: 12,
   },
-  loading: {
-    justifyContent: 'center',
-    flex: 1,
-  },
   userImage: {
     width: 54,
     height: 54,
@@ -48,10 +42,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     paddingRight: 20,
     alignItems: 'center',
-  },
-  input: {
-    color: 'black',
-    flexDirection: 'row',
   },
   inputBorder: {
     flexDirection: 'row',
