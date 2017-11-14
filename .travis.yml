@@ -3,4 +3,4 @@ node_js: 6
 cache:
   directories:
     - node_modules
-script: cd server && yarn && yarn run start
+script: cd server && yarn && yarn run build
