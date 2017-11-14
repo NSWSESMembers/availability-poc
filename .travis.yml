@@ -6,5 +6,6 @@ cache:
 before_install: cd server
 build_script:
   - yarn
-  - yarn run build &
+  - yarn run build
+  - yard run serve &
 script: yarn test
