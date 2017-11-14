@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../graphql/updateLocation.mutation';
 import { logout } from '../state/auth.actions';
@@ -27,7 +28,7 @@ const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
   }),
 });
 
-const styles = StyleSheet.create({
+const styles = extendAppStyleSheet({
   container: {
     flex: 1,
   },
@@ -47,10 +48,6 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     fontSize: 12,
   },
-  loading: {
-    justifyContent: 'center',
-    flex: 1,
-  },
   userImage: {
     width: 54,
     height: 54,
@@ -59,10 +56,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     paddingRight: 20,
     alignItems: 'center',
-  },
-  input: {
-    color: 'black',
-    flexDirection: 'row',
   },
   inputBorder: {
     flexDirection: 'row',

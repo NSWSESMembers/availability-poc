@@ -15,17 +15,10 @@ import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
+import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
-  loading: {
-    justifyContent: 'center',
-    flex: 1,
-  },
+const styles = extendAppStyleSheet({
   scheduleContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -64,17 +57,7 @@ const styles = StyleSheet.create({
   },
   scheduleUsername: {
     paddingVertical: 4,
-  },
-  header: {
-    alignItems: 'flex-start',
-    padding: 6,
-    borderColor: '#eee',
-    borderBottomWidth: 1,
-  },
-  warning: {
-    textAlign: 'center',
-    padding: 12,
-  },
+  }
 });
 
 // format createdAt with moment

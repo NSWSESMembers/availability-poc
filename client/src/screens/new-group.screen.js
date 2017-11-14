@@ -16,6 +16,7 @@ import { NavigationActions } from 'react-navigation';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
 
+import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import CREATE_GROUP_MUTATION from '../graphql/create-group.mutation';
 
@@ -27,11 +28,7 @@ const goToNewGroup = group => NavigationActions.back();
 //   ],
 // });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
+const styles = extendAppStyleSheet({
   detailsContainer: {
     padding: 20,
     flexDirection: 'row',
@@ -43,10 +40,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'column',
     flex: 1,
-  },
-  input: {
-    color: 'black',
-    height: 32,
   },
   inputBorder: {
     borderColor: '#dbdbdb',
@@ -66,10 +59,6 @@ const styles = StyleSheet.create({
   },
   selected: {
     flexDirection: 'row',
-  },
-  loading: {
-    justifyContent: 'center',
-    flex: 1,
   },
   navIcon: {
     color: 'blue',
