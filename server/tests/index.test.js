@@ -1,36 +1,97 @@
 const tester = require('graphql-tester').tester;
 
 
-describe('A user', function() {
-   const self = this;
-  beforeAll(() => {
-    self.test = tester({
+describe('GraphQL Queries', function() {
+ const self = this;
+ beforeAll(() => {
+  self.test = tester({
       url: `http://127.0.0.1:8080/graphql`,
       contentType: 'application/json'
     });
+});
+ it('should return test user', done => {
+  self
+  .test(
+    JSON.stringify({
+      query: "{user {username}}"
+    }),
+    )
+  .then(res => {
+    expect(res.status).toBe(200);
+    expect(res.success).toBe(true);
+    done();
+  })
+  .catch(err => {
+    expect(err).toBe(null);
+    done();
   });
-  it('should register with new user', () => {
-    expect(true).toBe(true);
+});
+  it('should return test devic uuid', done => {
+  self
+  .test(
+    JSON.stringify({
+      query: "{user {devices {uuid} }}"
+    }),
+    )
+  .then(res => {
+    expect(res.status).toBe(200);
+    expect(res.success).toBe(true);
+    done();
+  })
+  .catch(err => {
+    expect(err).toBe(null);
+    done();
   });
-  it('should not register with existing user data', () => {
-    expect(true).toBe(true);
+});
+ it('should return test user organisation', done => {
+  self
+  .test(
+    JSON.stringify({
+      query: "{user {organisation {name} }}"
+    }),
+    )
+  .then(res => {
+    expect(res.status).toBe(200);
+    expect(res.success).toBe(true);
+    done();
+  })
+  .catch(err => {
+    expect(err).toBe(null);
+    done();
   });
-  it('should not login with wrong credentials', () => {
-    expect(true).toBe(true);
+});
+ it('should return test users groups', done => {
+  self
+  .test(
+    JSON.stringify({
+      query: "{user {groups {name} }}"
+    }),
+    )
+  .then(res => {
+    expect(res.status).toBe(200);
+    expect(res.success).toBe(true);
+    done();
+  })
+  .catch(err => {
+    expect(err).toBe(null);
+    done();
   });
-  it('should login with correct credentials', () => {
-    expect(true).toBe(true);
+});
+ it('should return test users groups', done => {
+  self
+  .test(
+    JSON.stringify({
+      query: "{user {groups {name} }}"
+    }),
+    )
+  .then(res => {
+    expect(res.status).toBe(200);
+    expect(res.success).toBe(true);
+    done();
+  })
+  .catch(err => {
+    expect(err).toBe(null);
+    done();
   });
-  it('should not login twice', () => {
-    expect(true).toBe(true);
-  });
-  it('should logout after logging in', () => {
-    expect(true).toBe(true);
-  });
-  it('should not logout if not logged in', () => {
-    expect(true).toBe(true);
-  });
-  it('should removed by ID', () => {
-    expect(true).toBe(true);
-  });
+});
 });
