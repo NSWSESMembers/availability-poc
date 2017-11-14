@@ -7,5 +7,5 @@ before_install: cd server
 before_script:
   - yarn
   - yarn run build
-  - yard run serve &
+  - yarn run serve &
 script: yarn test
