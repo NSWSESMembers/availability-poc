@@ -8,6 +8,9 @@ export const appStyles = {
     backgroundColor: 'white',
     flex: 1
   },
+  row: {
+    flexDirection: 'row'
+  },
   loading: {
     flex: 1,
     justifyContent: 'center'
@@ -25,6 +28,18 @@ export const appStyles = {
   input: {
     color: 'black',
     height: 32
+  },
+  h2: {
+    color: '#000',
+    fontSize: 22,
+  },
+  h3: {
+    color: '#000',
+    fontSize: 18
+  },
+  h4: {
+    color: '#000',
+    fontSize: 16
   }
 };
 
