@@ -118,6 +118,10 @@ export const organisationHandler = {
   createOrganisation(_, args, ctx) {
     return Organisation.create(args.organisation);
   },
+  groups(organisation, args, ctx) {
+    console.log(args)
+    return Group.findAll({ groupId: organisation.id });
+  },
 }
 
 export const groupHandler = {
