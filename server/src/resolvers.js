@@ -94,6 +94,9 @@ export const Resolvers = {
     },
     schedules(group, args, ctx) {
       return groupHandler.schedules(group, args, ctx);
+    },
+    tags(group, args, ctx) {
+      return groupHandler.tags(group, args, ctx);
     }
   },
   User: {
@@ -114,6 +117,12 @@ export const Resolvers = {
     },
     organisation(user, args, ctx) {
       return userHandler.organisation(user, args, ctx);
+    },
+    tags(user, args, ctx) {
+      return userHandler.tags(user, args, ctx);
+    },
+    capabilities(user, args, ctx) {
+      return userHandler.capabilities(user, args, ctx);
     },
   },
   Schedule: {

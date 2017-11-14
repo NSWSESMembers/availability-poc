@@ -27,6 +27,14 @@ const UserModel = db.define('user', {
   version: { type: Sequelize.INTEGER }, // version the password
 });
 
+const CapabilityModel = db.define('capability', {
+  name: { type: Sequelize.STRING },
+});
+
+const TagModel = db.define('tag', {
+  name: { type: Sequelize.STRING },
+});
+
 const DeviceModel = db.define('device', {
   uuid: { type: Sequelize.STRING },
   pushToken: { type: Sequelize.STRING },
@@ -36,11 +44,15 @@ const DeviceModel = db.define('device', {
 });
 
 const EventModel = db.define('event', {
+  name: { type: Sequelize.STRING },
   details: { type: Sequelize.STRING },
+  deeplink: { type: Sequelize.STRING },
 });
 
 const ScheduleModel = db.define('schedule', {
   name: { type: Sequelize.STRING },
+  details: { type: Sequelize.STRING },
+  deeplink: { type: Sequelize.STRING },
 });
 
 const TimeSegmentModel = db.define('timesegment', {
@@ -64,6 +76,14 @@ UserModel.belongsTo(OrganisationModel);
 // devices belong to a single user
 DeviceModel.belongsTo(UserModel);
 
+//users -> tags
+UserModel.belongsToMany(TagModel, { through: 'tag_user' });
+
+//groups -> tags
+GroupModel.belongsToMany(TagModel, { through: 'tag_group' });
+
+//users belong to capability tags
+UserModel.belongsToMany(CapabilityModel, { through: 'capability_user' });
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
@@ -75,9 +95,18 @@ ScheduleModel.belongsTo(GroupModel);
 TimeSegmentModel.belongsTo(ScheduleModel);
 TimeSegmentModel.belongsTo(UserModel);
 
+// tags belong to one organisation for now
+TagModel.belongsTo(OrganisationModel);
+
+// tags belong to one organisation for now
+CapabilityModel.belongsTo(OrganisationModel);
+
+
 const Organisation = db.models.organisation;
 const Group = db.models.group;
 const User = db.models.user;
+const Capability = db.models.capability;
+const Tag = db.models.tag;
 const Device = db.models.device;
 const Event = db.models.event;
 const Schedule = db.models.schedule;
@@ -103,25 +132,54 @@ db.sync({force: true}).then(() => {
             return Promise.all([
               // add user to group
               group.addUsers(user),
-
               // create a schedule
               Schedule.create({
-                name: "Bankstown Roster"
+                name: "Bankstown Roster",
+                details: "Weekly storm roster",
+                deeplink: "https://foobar.com/"
               }).then((schedule) => {
-
                 // attach the schedule to a group
                 schedule.setGroup(group);
-              })
+              }),
+              Schedule.create({
+                name: "Bankstown Primary School Fete",
+                details: "5 people needed for school fete on sunday",
+                deeplink: "https://bankstownSES.com/forums/341231"
+              }).then((schedule) => {
+                // attach the schedule to a group
+                schedule.setGroup(group);
+              }),
+              // create a tag
+               Tag.create({
+                 name: 'Geographical Area 1',
+                }).then((tag) => {
+                tag.setOrganisation(org),
+                 user.addTag(tag);
+                 group.addTag(tag);
+               }),
+              // create a tag
+               Event.create({
+                 name : 'Real Time Event #123',
+                 details: 'thing with the stuff',
+                 deeplink: 'https://foobar/event/123'
+                }).then((event) => {
+                 event.setGroup(group);
+               }), 
             ]);
           }),
-
           // create a device
           Device.create({
             uuid: '1234abc',
           }).then((device) => {
             device.setUser(user);
           }),
-
+          // create a capability
+          Capability.create({
+            name: 'Capability 1',
+          }).then((capability) => {
+            capability.setOrganisation(org),
+            user.addCapability(capability);
+          }),
           // add the user to the organisation
           user.setOrganisation(org),
         ]);

@@ -60,19 +60,32 @@ export const Schema = [`
     users: [User]! # users in the group
     schedules: [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
+    tags: [Tag]! # tags associdated with this group
   }
 
   # a user -- keep type really simple for now
   type User {
     id: Int! # unique id for the user
     email: String! # we will also require a unique email per user
-    username: String # this is the name we'll show other users
+    username: String # this is the name well show other users
     organisation: Organisation! # the organisation this user belongs to
     groups: [Group]! # groups the user belongs to
     schedules: [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
+    tags: [Tag]! # tags associdated with this user
+    capabilities: [Capability]! # capabilities associdated with this user
     authToken: String!
+  }
+
+  type Tag {
+    id: Int!
+    name: String!
+  }
+
+  type Capability {
+    id: Int!
+    name: String!
   }
 
   type Device {
@@ -86,7 +99,9 @@ export const Schema = [`
 
   type Event {
     id: Int!
+    name: String!
     details: String!
+    deeplink: String!
     responses: [EventResponse]!
   }
 
@@ -100,6 +115,8 @@ export const Schema = [`
   type Schedule {
     id: Int!
     name: String!
+    details: String!
+    deeplink: String!
     timeSegments: [TimeSegment]!
   }
 
