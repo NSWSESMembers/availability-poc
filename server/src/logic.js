@@ -1,4 +1,4 @@
-import { Organisation, Group, User, Device, Event, Schedule, TimeSegment } from './models' ;
+import { Organisation, Group, User, Device, Event, Schedule, TimeSegment, Tag, Capability } from './models' ;
 
 // reusable function to check for a user with context
 function getAuthenticatedUser(ctx) {
@@ -98,6 +98,12 @@ export const userHandler = {
       where: { userId: user.id, }
     })
   },
+  tags(user, args, ctx){
+     return user.getTags();
+  },
+  capabilities(user, args, ctx){
+     return user.getCapabilities();
+  },
 }
 
 export const scheduleHandler = {
@@ -161,6 +167,9 @@ export const groupHandler = {
         })
       })
     })
+  },
+  tags(group, args, ctx){
+     return group.getTags();
   },
 }
 
