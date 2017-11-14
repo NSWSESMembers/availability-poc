@@ -5,7 +5,14 @@ import bcrypt from 'bcrypt';
 import JWT_SECRET from './config';
 
 import { Group, Message, User } from './models';
-import { locationHandler, deviceHandler, scheduleHandler, groupHandler, userHandler } from './logic';
+import {
+  locationHandler,
+  deviceHandler,
+  scheduleHandler,
+  groupHandler,
+  userHandler,
+  organisationHandler,
+} from './logic';
 
 export const Resolvers = {
   Query: {
@@ -112,6 +119,11 @@ export const Resolvers = {
   Schedule: {
     timeSegments(schedule, args, ctx){
       return scheduleHandler.timeSegments(schedule, args, ctx);
+    }
+  },
+  Organisation: {
+     groups(organisation, args, ctx){
+      return organisationHandler.groups(organisation, args, ctx);
     }
   }
 };
