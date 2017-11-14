@@ -11,7 +11,8 @@
     "start": "nodemon --watch src src/main.js --exec babel-node",
     "build": "babel src -d dist",
     "serve": "node dist/main.js",
-    "deploy-heroku": "cd .. && git push heroku $(git subtree split --prefix server master):master --force"
+    "deploy-heroku": "cd .. && git push heroku $(git subtree split --prefix server master):master --force",
+    "test" : "jest"
   },
   "devDependencies": {
     "eslint": "^4.4.1",
@@ -19,6 +20,8 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.2.0",
+    "graphql-tester": "^0.0.5",
+    "jest": "^21.2.1",
     "nodemon": "^1.11.0"
   },
   "dependencies": {
