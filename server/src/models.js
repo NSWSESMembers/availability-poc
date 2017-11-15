@@ -10,7 +10,7 @@ const db = new Sequelize('avail', null, null, {
   logging: console.log, // mark this true if you want to see logs
 });
 
-// We can have multiple orgaisations so we can support multi-tenancy but the
+// We can have multiple organisations so we can support multi-tenancy but the
 // the reality is we'll probably only have one
 const OrganisationModel = db.define('organisation', {
   name: { type: Sequelize.STRING },
