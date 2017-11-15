@@ -49,6 +49,7 @@ export const Resolvers = {
             username: username,
             version: 1,
           })).then((user) => {
+            user.setOrganisation(1); //default org for now
             deviceHandler.addDevice(user, deviceId);
             const { id } = user;
             const token = jwt.sign({ id, device: deviceId, email, version: 1 }, JWT_SECRET);
