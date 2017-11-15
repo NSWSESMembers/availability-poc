@@ -122,9 +122,12 @@ export const Resolvers = {
     }
   },
   Organisation: {
-     groups(organisation, args, ctx) {
-      return organisationHandler.groups(organisation, args, ctx);
-    }
+    groups(org, args, ctx) {
+      return organisationHandler.groups(org, args, ctx);
+    },
+    users(org, args, ctx) {
+      return organisationHandler.users(org, args, ctx);
+    },
   }
 };
 
