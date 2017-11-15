@@ -65,7 +65,7 @@ const styles = extendAppStyleSheet({
 class Home extends Component {
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({ tint }) => <Icon size={34} name='home' color={tint} />
+    tabBarIcon: ({ tintColor }) => <Icon size={34} name='home' color={tintColor} />
   };
 
   render() {
