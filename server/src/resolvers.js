@@ -44,7 +44,6 @@ export const Resolvers = {
         if (!existing) {
           // hash password and create user
           return bcrypt.hash(password, 10).then(hash => User.create({
-
             email,
             password: hash,
             username: username,
