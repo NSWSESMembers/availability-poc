@@ -24,20 +24,20 @@ export const Resolvers = {
     }
   },
   Mutation: {
-    createGroup(_, args, ctx){
+    createGroup(_, args, ctx) {
       return groupHandler.createGroup(_, args, ctx);
     },
-    addUserToGroup(_, args, ctx){
+    addUserToGroup(_, args, ctx) {
       return groupHandler.addUserToGroup(_, args, ctx);
     },
-    createUser(_, args, ctx){
+    createUser(_, args, ctx) {
       console.log(args);
       return userHandler.createUserX(_, args, ctx);
     },
-    updateLocation(_, args, ctx){
+    updateLocation(_, args, ctx) {
       return locationHandler.updateLocation(_, args, ctx);
     },
-    signup(_, signinUserInput, ctx){
+    signup(_, signinUserInput, ctx) {
       const { deviceId, email, username, password } = signinUserInput.user;
       // find user by email
       return User.findOne({ where: { email } }).then((existing) => {
@@ -61,7 +61,7 @@ export const Resolvers = {
         return Promise.reject('email already exists'); // email already exists
       });
     },
-    login(_, authInput, ctx){
+    login(_, authInput, ctx) {
       const { username, password, deviceId } = authInput.user;
       return User.findOne({ where: { username } }).then((user) => {
         if (!user){
@@ -80,7 +80,7 @@ export const Resolvers = {
         return user;
       });
     },
-    createSchedule(_, args, ctx){
+    createSchedule(_, args, ctx) {
       console.log(args);
       return scheduleHandler.createSchedule(_, args, ctx);
     }
@@ -97,19 +97,19 @@ export const Resolvers = {
     }
   },
   User: {
-    groups(user, args, ctx){
+    groups(user, args, ctx) {
       return userHandler.groups(user, args, ctx);
     },
-    events(user, args, ctx){
+    events(user, args, ctx) {
       return userHandler.events(user, args, ctx);
     },
-    schedules(user, args, ctx){
+    schedules(user, args, ctx) {
       return userHandler.schedules(user, args, ctx);
     },
-    devices(user, args, ctx){
+    devices(user, args, ctx) {
       return userHandler.devices(user, args, ctx);
     },
-    authToken(user, args, ctx){
+    authToken(user, args, ctx) {
       return userHandler.authToken(user);
     },
     organisation(user, args, ctx) {
@@ -117,12 +117,12 @@ export const Resolvers = {
     },
   },
   Schedule: {
-    timeSegments(schedule, args, ctx){
+    timeSegments(schedule, args, ctx) {
       return scheduleHandler.timeSegments(schedule, args, ctx);
     }
   },
   Organisation: {
-     groups(organisation, args, ctx){
+     groups(organisation, args, ctx) {
       return organisationHandler.groups(organisation, args, ctx);
     }
   }
