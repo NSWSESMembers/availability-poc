@@ -39,7 +39,7 @@ export const deviceHandler = {
     return getAuthenticatedDevice(ctx);
   },
   addDevice(user, deviceId) {
-    return User.findOne({where : {id: user.id}, include: {model: Device, where: {id: deviceId}}}).then((existing) => {
+    return Device.findOne({where : {id: deviceId}, include: {model: User, where: {id: user.id}}}).then((existing) => {
       if (existing) {
         return existing;
       }
@@ -59,6 +59,9 @@ export const userHandler = {
   },
   createUserX(_, args, ctx) {
     return User.create(args.user);
+  },
+  deleteUserByPointer(user) {
+    return user.destroy();
   },
   groups(user, args, ctx) {
     return user.getGroups();
