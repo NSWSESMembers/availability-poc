@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Image,
   StyleSheet,
@@ -103,11 +104,27 @@ class Settings extends Component {
   }
 
   updateLocation() {
+    const reportError = (error) => {
+      Alert.alert(
+        'Error updating location',
+        error.message,
+      );
+    };
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.props.updateLocation({locationLat: position.coords.latitude, locationLon: position.coords.longitude});
+        this.props.updateLocation({locationLat: position.coords.latitude, locationLon: position.coords.longitude})
+        .then((result) => {
+          console.log('Updated location:');
+          console.log(result);
+        })
+        .catch((err) => {
+          reportError(err);
+        })
       },
-      (error) => {},
+      (error) => {
+        reportError(err);
+      },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
     );
   }

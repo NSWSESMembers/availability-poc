@@ -24,7 +24,7 @@ function getAuthenticatedDevice(ctx) {
 
 export const locationHandler = {
   updateLocation(_, args, ctx){
-    getAuthenticatedDevice(ctx).then((device) => {
+    return getAuthenticatedDevice(ctx).then((device) => {
       const { locationLat, locationLon } = args.location;
       return device.update({
         locationLat,
