@@ -62,6 +62,7 @@ EventModel.belongsToMany(UserModel, { through: 'event_user' });
 UserModel.belongsTo(OrganisationModel);
 
 // devices belong to a single user
+UserModel.hasMany(DeviceModel);
 DeviceModel.belongsTo(UserModel);
 
 
