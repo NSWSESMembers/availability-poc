@@ -7,8 +7,7 @@ import { REHYDRATE } from 'redux-persist/constants';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
-import Events from './screens/events.screen';
-import Schedules from './screens/schedules.screen';
+import EventsAndSchedules from './screens/eventsandschedules.screen';
 import Signin from './screens/signin.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
@@ -32,9 +31,8 @@ const tabBarConfiguration = {
 // tabs in main screen
 const MainScreenNavigator = TabNavigator({
   Home: { screen: Home },
+  EventsAndSchedules: { screen: EventsAndSchedules },
   Groups: { screen: Groups },
-  Schedules: { screen: Schedules },
-  Events: { screen: Events },
   Settings: { screen: Settings },
 }, tabBarConfiguration);
 

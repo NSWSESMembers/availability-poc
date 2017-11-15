@@ -96,7 +96,7 @@ Header.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-class Event extends Component {
+class EventsAndSchedule extends Component {
   constructor(props) {
     super(props);
 
@@ -133,7 +133,7 @@ class Event extends Component {
   }
 }
 
-Event.propTypes = {
+EventsAndSchedule.propTypes = {
   goToEvent: PropTypes.func.isRequired,
   event: PropTypes.shape({
     id: PropTypes.number,
@@ -141,9 +141,9 @@ Event.propTypes = {
   }),
 };
 
-class Events extends Component {
+class EventsAndSchedules extends Component {
   static navigationOptions = {
-    title: 'Events',
+    title: 'Events & Schedules',
     tabBarIcon: ({ tintColor}) => <Icon size={26} name={'bullhorn'} color={tintColor} />
   };
 
@@ -208,7 +208,7 @@ class Events extends Component {
     );
   }
 }
-Events.propTypes = {
+EventsAndSchedules.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -241,4 +241,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   userQuery,
-)(Events);
+)(EventsAndSchedules);
