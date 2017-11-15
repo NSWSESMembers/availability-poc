@@ -11,7 +11,6 @@ import { User, Device } from './models';
 import { executableSchema } from './schema';
 
 const GRAPHQL_PORT = 8080;
-const GRAPHQL_ADDRESS = '0.0.0.0'
 const GRAPHQL_PATH = '/graphql';
 
 const port = process.env.PORT ? process.env.PORT : GRAPHQL_PORT;
@@ -37,6 +36,6 @@ app.use('/graphiql', graphiqlExpress({
 
 const graphQLServer = createServer(app);
 
-graphQLServer.listen(port,GRAPHQL_ADDRESS, () => {
+graphQLServer.listen(port, () => {
   console.log(`GraphQL Server is now running on http://localhost:${port}${GRAPHQL_PATH}`);
 });
