@@ -36,26 +36,31 @@ const styles = extendAppStyleSheet({
     borderColor: '#777',
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 12,
+    paddingHorizontal: 8,
+    paddingBottom: 2,
+    paddingTop: 5,
+    fontSize: 14,
   },
   emailHeader: {
     backgroundColor: '#dbdbdb',
-    color: '#777',
-    paddingHorizontal: 16,
-    paddingBottom: 6,
-    paddingTop: 32,
-    fontSize: 12,
-  },
+    color: '#000000',
+    paddingHorizontal: 8,
+    paddingBottom: 2,
+    paddingTop: 5,
+    fontSize: 16,
+      },
   userImage: {
     width: 54,
     height: 54,
-    borderRadius: 27,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   imageContainer: {
     paddingRight: 20,
     alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   inputBorder: {
     flexDirection: 'row',
@@ -72,13 +77,20 @@ const styles = extendAppStyleSheet({
   },
   userContainer: {
     paddingLeft: 16,
+    backgroundColor: '#c6c0c0',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   userInner: {
     flexDirection: 'row',
+    backgroundColor: '#dbdbdb',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingRight: 16,
+    paddingVertical:8,
+    paddingRight: 0,
   },
+    inputBorder: {
+     backgroundColor: '#ed3434',
+    },
 });
 
 class Settings extends Component {
@@ -148,28 +160,22 @@ class Settings extends Component {
             <TouchableOpacity style={styles.imageContainer}>
               <Image
                 style={styles.userImage}
-                source={{ uri: 'https://facebook.github.io/react/img/logo_og.png' }}
+                source={{ uri: 'https://www.lehigh.edu/google/google_contacts.png' }}
               />
-              <Text>edit</Text>
-            </TouchableOpacity>
+             </TouchableOpacity>
             <Text style={styles.inputInstructions}>
-              Enter your name and add an optional profile picture
+             Enter your name and add an optional profile picture
             </Text>
           </View>
-          <View style={styles.inputBorder}>
-            <TextInput
-              onChangeText={username => this.setState({ username })}
-              placeholder={user.username}
-              style={styles.input}
-              defaultValue={user.username}
-            />
-          </View>
         </View>
-        <Text style={styles.emailHeader}>{'EMAIL'}</Text>
+        <Text style={styles.emailHeader}>{'Email Account'}</Text>
         <Text style={styles.email}>{user.email}</Text>
+        <Text></Text>
+        <Text></Text>
+        <Button title={'Force Update Location'} onPress={this.updateLocation}/>
+        <Text></Text>
+        <Text></Text>
         <Button title={'Logout'} onPress={this.logout} />
-        <Text style={styles.emailHeader}>{"Temporary location force update"}</Text>
-        <Button title={'Update Location'} onPress={this.updateLocation}/>
       </View>
     );
   }
