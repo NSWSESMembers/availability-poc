@@ -30,10 +30,10 @@ Install the react-native CLI tool:
 npm install -g react-native-cli
 ```
 
-Now clone the repo and cd to it:
+Now clone the repo and cd to `client`:
 ```sh
 git clone ...
-cd availability-poc
+cd availability-poc/client
 ```
 
 Install dependencies:
@@ -78,8 +78,8 @@ react-native run-android
 ## Modifying native code
 
 You can modify the files directly in the [`android/`](./android) or [`ios/`](./ios)
-as needed to make changes to the apps you cannot make through React Native directly. Where
-possible you should try to avoid this, though.
+as needed to make changes to the apps you cannot make through React Native
+directly. Where possible you should try to avoid this, though.
 
 We can re-create the files in those directories using:
 ```sh
