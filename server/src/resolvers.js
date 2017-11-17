@@ -34,6 +34,19 @@ export const Resolvers = {
       console.log(args);
       return userHandler.createUserX(_, args, ctx);
     },
+    deleteUser(_, DeleteUserInput, ctx) {
+      const { email, username } = DeleteUserInput.user;
+      console.log(DeleteUserInput);
+      return User.findOne({ where: { username, email } }).then((existing) => {
+        if (existing) {
+          return userHandler.deleteUserByPointer(existing)
+        }
+        return Promise.reject('user not found');
+      }).catch(function(err) {
+          console.log(err)
+          return Promise.reject('user delete error :' + err);
+      });
+    },
     updateLocation(_, args, ctx) {
       return locationHandler.updateLocation(_, args, ctx);
     },
@@ -49,12 +62,18 @@ export const Resolvers = {
             username: username,
             version: 1,
           })).then((user) => {
-            deviceHandler.addDevice(user, deviceId);
-            const { id } = user;
-            const token = jwt.sign({ id, device: deviceId, email, version: 1 }, JWT_SECRET);
-            user.authToken = token;
-            ctx.user = Promise.resolve(user);
-            return user;
+            return user.setOrganisation(1).then(() => {
+              return deviceHandler.addDevice(user, deviceId).then(() => {
+                const { id } = user;
+                const token = jwt.sign({ id, device: deviceId, email, version: 1 }, JWT_SECRET);
+                user.authToken = token;
+                ctx.user = Promise.resolve(user);
+                return user;
+              });
+            }).catch(function(err) {
+              console.log(err)
+              return Promise.reject('user signup error');
+            });
           });
         }
 
