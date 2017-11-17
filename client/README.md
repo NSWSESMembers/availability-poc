@@ -55,7 +55,7 @@ react-native run-android```
 If all goes to plan, it will error out saying "No AVD" available.
 
 **Run in emulator**
-- Android Dev Tools > AVD > Start > Wait for it to book
+- Android Dev Tools > AVD > Start > Wait for it to boot
 - Run compile as per steps above
 
 To "reload" the app after you make changes, you need to push R twice while you have the emulator selected.
