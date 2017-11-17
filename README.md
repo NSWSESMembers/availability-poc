@@ -6,8 +6,8 @@ progress.
 ## Components
 
 There's currently 2 components that make up this project:
-* (GraphQL API Server)[server/]
-* (React Native Mobile App)[client/] for iOS and Android
+* [GraphQL API Server](server/)
+* [React Native Mobile App](client/) for iOS and Android
 
 ## License
 
