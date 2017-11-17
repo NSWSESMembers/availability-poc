@@ -49,12 +49,6 @@ const styles = extendAppStyleSheet({
     paddingBottom: 2,
     paddingTop: 5,
     fontSize: 16,
-      },
-  userImage: {
-    width: 54,
-    height: 54,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
   },
   imageContainer: {
     paddingRight: 20,
@@ -69,10 +63,12 @@ const styles = extendAppStyleSheet({
     borderTopWidth: 1,
     paddingVertical: 8,
   },
+  userImage: {
+    paddingHorizontal: 20,
+  },
   inputInstructions: {
-    paddingTop: 6,
     color: '#777',
-    fontSize: 12,
+    fontSize: 26,
     flex: 1,
   },
   userContainer: {
@@ -88,9 +84,9 @@ const styles = extendAppStyleSheet({
     paddingVertical:8,
     paddingRight: 0,
   },
-    inputBorder: {
-     backgroundColor: '#ed3434',
-    },
+  inputBorder: {
+    backgroundColor: '#ed3434',
+  },
 });
 
 class Settings extends Component {
@@ -157,14 +153,13 @@ class Settings extends Component {
       <View style={styles.container}>
         <View style={styles.userContainer}>
           <View style={styles.userInner}>
-            <TouchableOpacity style={styles.imageContainer}>
-              <Image
-                style={styles.userImage}
-                source={{ uri: 'https://www.lehigh.edu/google/google_contacts.png' }}
-              />
-             </TouchableOpacity>
+            <Icon
+              name={'user'}
+              size={50}
+              style={styles.userImage}
+            />
             <Text style={styles.inputInstructions}>
-             Enter your name and add an optional profile picture
+              {user.username}
             </Text>
           </View>
         </View>
