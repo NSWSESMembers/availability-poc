@@ -22,24 +22,24 @@ export const Schema = [`
   input LoginInput {
     username: String!
     password: String!
-    deviceId: String!
+    deviceUuid: String!
   }
 
   input SignupInput {
     username: String!
     password: String!
     email: String!
-    deviceId: String!
+    deviceUuid: String!
   }
 
   input CreateScheduleInput {
     name: String!
-    group_id: Int!
+    groupId: Int!
   }
 
   input AddUserToGroupInput {
-    group_id: Int!
-    user_id: Int!
+    groupId: Int!
+    userId: Int!
   }
 
   input CreateUserInput {

@@ -18,7 +18,7 @@ export const Mocks = {
   Int: () => parseInt(Math.random() * 100, 10),
   // String: () => 'It works!!!',
   Query: () => ({
-    user: (root, args) => ({
+    user: () => ({
       email: 'you@ses.nsw.gov.au',
       username: 'thisisme',
     }),
@@ -62,9 +62,8 @@ export const Mocks = {
     status: chooseStatus(),
     startTime: Math.round(((new Date()).getTime() / 1000) + (60 * 60 * 24)),
     endTime: Math.round(((new Date()).getTime() / 1000) + (60 * 60 * 24 * 2)),
-  })
+  }),
 };
-
 
 
 export default Mocks;

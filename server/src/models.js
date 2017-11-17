@@ -1,7 +1,6 @@
-import { _ } from 'lodash';
-import faker from 'faker';
 import Sequelize from 'sequelize';
-import bcrypt from 'bcrypt';
+
+import { loadTestData } from './test-data';
 
 // initialize our database
 const db = new Sequelize('avail', null, null, {
@@ -70,9 +69,15 @@ EventModel.belongsToMany(UserModel, { through: 'event_user' });
 
 // users can only belong to one organisation for now
 UserModel.belongsTo(OrganisationModel);
+OrganisationModel.hasMany(UserModel);
+
+// groups belong to an orgnanisation
+GroupModel.belongsTo(OrganisationModel);
+OrganisationModel.hasMany(GroupModel);
 
 // devices belong to a single user
 DeviceModel.belongsTo(UserModel);
+UserModel.hasMany(DeviceModel);
 
 // users -> tags
 UserModel.belongsToMany(TagModel, { through: 'user_tag' });
@@ -84,16 +89,21 @@ TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
 // users belong to capability tags
 UserModel.belongsToMany(CapabilityModel, { through: 'user_capability' });
+CapabilityModel.belongsToMany(UserModel, { through: 'user_capability' });
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
+GroupModel.hasMany(EventModel);
 
 // schedules are created for a single group
 ScheduleModel.belongsTo(GroupModel);
+GroupModel.hasMany(ScheduleModel);
 
 // time segments belong to a combination of user/schedule
 TimeSegmentModel.belongsTo(ScheduleModel);
+ScheduleModel.hasMany(TimeSegmentModel);
 TimeSegmentModel.belongsTo(UserModel);
+UserModel.hasMany(TimeSegmentModel);
 
 // tags belong to one organisation for now
 TagModel.belongsTo(OrganisationModel);
@@ -114,81 +124,11 @@ const Event = db.models.event;
 const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
-db.sync({force: true}).then(() => {
-  return Organisation.create({
-    name: "NSW SES",
-  }).then((org) => {
-    return bcrypt.hash("testing", 10).then((hash) => {
-      return User.create({
-        id: 69,
-        username: "chris",
-        password: "test",
-        email: "test@miceli.net.au",
-        deviceId: "1234-5678-1234-5678"
-      }).then((user) => {
-        return Promise.all([
-          // create a starter group
-          Group.create({
-            name: "Bankstown"
-          }).then((group) => {
-            return Promise.all([
-              // add user to group
-              group.addUsers(user),
-              // create a schedule
-              Schedule.create({
-                name: "Bankstown Roster",
-                details: "Weekly storm roster",
-              }).then((schedule) => {
-                // attach the schedule to a group
-                schedule.setGroup(group);
-              }),
-              Schedule.create({
-                name: "Bankstown Primary School Fete",
-                details: "5 people needed for school fete on sunday",
-              }).then((schedule) => {
-                // attach the schedule to a group
-                schedule.setGroup(group);
-              }),
-              // create a tag
-              Tag.create({
-                name: 'Geographical Area 1',
-              }).then((tag) => {
-                tag.setOrganisation(org),
-                user.addTag(tag);
-                group.addTag(tag);
-              }),
-              Event.create({
-                name: 'Real Time Event #123',
-                details: 'thing with the stuff',
-              }).then((event) => {
-                event.setGroup(group);
-              }),
-            ]);
-          }),
-          // create a device
-          Device.create({
-            uuid: '1234abc',
-          }).then((device) => {
-            device.setUser(user);
-          }),
-          // create a capability
-          Capability.create({
-            name: 'Capability 1',
-          }).then((capability) => {
-            capability.setOrganisation(org);
-            user.addCapability(capability);
-          }),
-          // add the user to the organisation
-          user.setOrganisation(org),
-        ]);
-      });
-    });
-  }).then(() => {
-    console.log('Finished creating test data');
-  }).catch((e) => {
-    console.log('Epic fail while trying to load test data');
-    console.log(e);
-  });
+db.sync({ force: true }).then(() => loadTestData()).then(() => {
+  console.log('Finished creating test data');
+}).catch((e) => {
+  console.log('Epic fail while trying to load test data');
+  console.log(e);
 });
 
-export { Organisation, Group, User, Device, Event, Schedule, TimeSegment };
+export { Organisation, Capability, Tag, Group, User, Device, Event, Schedule, TimeSegment };
