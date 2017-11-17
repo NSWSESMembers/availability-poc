@@ -47,6 +47,11 @@ export const Schema = [`
     email: String!
   }
 
+  input DeleteUserInput {
+    username: String!
+    email: String!
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -140,6 +145,7 @@ export const Schema = [`
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
     createUser(user: CreateUserInput!): User
+    deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
