@@ -2,25 +2,25 @@
 
 This is a React Native app that consumes the GraphQL API provided by the code in
 `server/` built to support iOS and Android. To get started you should probably
-read the (React Native website)[https://facebook.github.io/react-native/].
+read the [React Native website](https://facebook.github.io/react-native/).
 
 The app was originally built using the wonderful
-(Chatty)[https://github.com/srtucker22/chatty]
-(tutorial)[https://medium.com/react-native-training/building-chatty-a-whatsapp-clone-with-react-native-and-apollo-part-1-setup-68a02f7e11].
+[Chatty](https://github.com/srtucker22/chatty)
+[tutorial](https://medium.com/react-native-training/building-chatty-a-whatsapp-clone-with-react-native-and-apollo-part-1-setup-68a02f7e11).
 
 It uses:
-* The (GraphQL)[http://graphql.org] protocol to talk to the server
-* (Apollo Client)[https://github.com/apollographql/apollo-client] to manage
+* The [GraphQL](http://graphql.org) protocol to talk to the server
+* [Apollo Client](https://github.com/apollographql/apollo-client) to manage
   interactions with GraphQL
-* (Redux)[https://redux.js.org] to store state on the client
-* (Geolocation)[https://facebook.github.io/react-native/docs/geolocation.html]
+* [Redux](https://redux.js.org) to store state on the client
+* [Geolocation](https://facebook.github.io/react-native/docs/geolocation.html)
   as built into React Native
 
 
 ## Install
 
-To get started you'll need to install nodejs with your favourite package
-manager. Then install yarn:
+To get started you'll need to install [NodeJS](https://nodejs.org/en/) with
+your favourite package manager. Then install yarn:
 ```sh
 npm install -g yarn
 ```
@@ -57,7 +57,7 @@ For Android download Android Studio, install and then use SDK Manager to
 install an Android SDK and emulator.
 
 From here you should probably follow the platform-specific instructions
-(here)[https://facebook.github.io/react-native/docs/running-on-device.html].
+[here](https://facebook.github.io/react-native/docs/running-on-device.html).
 Even if you're just planning on running in the simulator/emulator you'll need
 to follow these steps because our app requires custom native code.
 
@@ -77,8 +77,8 @@ react-native run-android
 
 ## Modifying native code
 
-You can modify the files directly in the `android/` or `ios/` as needed to make
-changes to the apps you cannot make through React Native directly. Where
+You can modify the files directly in the [`android/`](./android) or [`ios/`](./ios)
+as needed to make changes to the apps you cannot make through React Native directly. Where
 possible you should try to avoid this, though.
 
 We can re-create the files in those directories using:
@@ -102,12 +102,13 @@ yarn run push-ios
 
 To actually build and deploy the APK (Android) or IPA (iOS) you'll want to
 follow the same
-(instructions)[https://facebook.github.io/react-native/docs/running-on-device.html]
+[instructions](https://facebook.github.io/react-native/docs/running-on-device.html)
 from above but look for 'Building for production'.
 
 ## Configuration
 
-You can change the GraphQL endpoint the app uses in `src/config.js`.
+You can change the GraphQL endpoint the app uses in
+[`src/config.js`](./src/config.js).
 
 
 ## Contributing
