@@ -46,13 +46,11 @@ const DeviceModel = db.define('device', {
 const EventModel = db.define('event', {
   name: { type: Sequelize.STRING },
   details: { type: Sequelize.STRING },
-  deeplink: { type: Sequelize.STRING },
 });
 
 const ScheduleModel = db.define('schedule', {
   name: { type: Sequelize.STRING },
   details: { type: Sequelize.STRING },
-  deeplink: { type: Sequelize.STRING },
 });
 
 const TimeSegmentModel = db.define('timesegment', {
@@ -76,14 +74,16 @@ UserModel.belongsTo(OrganisationModel);
 // devices belong to a single user
 DeviceModel.belongsTo(UserModel);
 
-//users -> tags
-UserModel.belongsToMany(TagModel, { through: 'tag_user' });
+// users -> tags
+UserModel.belongsToMany(TagModel, { through: 'user_tag' });
+TagModel.belongsToMany(UserModel, { through: 'user_tag' });
 
-//groups -> tags
-GroupModel.belongsToMany(TagModel, { through: 'tag_group' });
+// groups -> tags
+GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
+TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
-//users belong to capability tags
-UserModel.belongsToMany(CapabilityModel, { through: 'capability_user' });
+// users belong to capability tags
+UserModel.belongsToMany(CapabilityModel, { through: 'user_capability' });
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
@@ -97,9 +97,11 @@ TimeSegmentModel.belongsTo(UserModel);
 
 // tags belong to one organisation for now
 TagModel.belongsTo(OrganisationModel);
+OrganisationModel.hasMany(TagModel);
 
 // tags belong to one organisation for now
 CapabilityModel.belongsTo(OrganisationModel);
+OrganisationModel.hasMany(CapabilityModel);
 
 
 const Organisation = db.models.organisation;
@@ -136,7 +138,6 @@ db.sync({force: true}).then(() => {
               Schedule.create({
                 name: "Bankstown Roster",
                 details: "Weekly storm roster",
-                deeplink: "https://foobar.com/"
               }).then((schedule) => {
                 // attach the schedule to a group
                 schedule.setGroup(group);
@@ -144,27 +145,24 @@ db.sync({force: true}).then(() => {
               Schedule.create({
                 name: "Bankstown Primary School Fete",
                 details: "5 people needed for school fete on sunday",
-                deeplink: "https://bankstownSES.com/forums/341231"
               }).then((schedule) => {
                 // attach the schedule to a group
                 schedule.setGroup(group);
               }),
               // create a tag
-               Tag.create({
-                 name: 'Geographical Area 1',
-                }).then((tag) => {
+              Tag.create({
+                name: 'Geographical Area 1',
+              }).then((tag) => {
                 tag.setOrganisation(org),
-                 user.addTag(tag);
-                 group.addTag(tag);
-               }),
-              // create a tag
-               Event.create({
-                 name : 'Real Time Event #123',
-                 details: 'thing with the stuff',
-                 deeplink: 'https://foobar/event/123'
-                }).then((event) => {
-                 event.setGroup(group);
-               }), 
+                user.addTag(tag);
+                group.addTag(tag);
+              }),
+              Event.create({
+                name: 'Real Time Event #123',
+                details: 'thing with the stuff',
+              }).then((event) => {
+                event.setGroup(group);
+              }),
             ]);
           }),
           // create a device
@@ -177,7 +175,7 @@ db.sync({force: true}).then(() => {
           Capability.create({
             name: 'Capability 1',
           }).then((capability) => {
-            capability.setOrganisation(org),
+            capability.setOrganisation(org);
             user.addCapability(capability);
           }),
           // add the user to the organisation

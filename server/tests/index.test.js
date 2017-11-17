@@ -47,7 +47,7 @@ describe('GraphQL Queries', function() {
   self
   .test(
     JSON.stringify({
-      query: "{user {organisation {name} }}"
+      query: "{user {organisation {id name tags {id name} capabilities {id name}} }}"
     }),
     )
   .then(res => {
@@ -64,7 +64,7 @@ describe('GraphQL Queries', function() {
   self
   .test(
     JSON.stringify({
-      query: "{user {groups {name} }}"
+      query: "{user {groups {name} tags { name } capabilities { name } }}"
     }),
     )
   .then(res => {

@@ -137,6 +137,12 @@ export const Resolvers = {
     users(org, args, ctx) {
       return organisationHandler.users(org, args, ctx);
     },
+    tags(org, args, ctx) {
+      return organisationHandler.tags(org, args, ctx);
+    },
+    capabilities(org, args, ctx) {
+      return organisationHandler.capabilities(org, args, ctx);
+    }
   }
 };
 

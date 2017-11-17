@@ -52,6 +52,8 @@ export const Schema = [`
     name: String!
     users: [User]!
     groups: [Group]!
+    tags: [Tag]!
+    capabilities: [Capability]!
   }
 
   type Group {
@@ -67,13 +69,13 @@ export const Schema = [`
   type User {
     id: Int! # unique id for the user
     email: String! # we will also require a unique email per user
-    username: String # this is the name well show other users
+    username: String # this is the name we'll show other users
     organisation: Organisation! # the organisation this user belongs to
     groups: [Group]! # groups the user belongs to
     schedules: [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
-    tags: [Tag]! # tags associdated with this user
+    tags: [Tag]! # tags associated with this user
     capabilities: [Capability]! # capabilities associdated with this user
     authToken: String!
   }
@@ -101,7 +103,6 @@ export const Schema = [`
     id: Int!
     name: String!
     details: String!
-    deeplink: String!
     responses: [EventResponse]!
   }
 
@@ -116,7 +117,6 @@ export const Schema = [`
     id: Int!
     name: String!
     details: String!
-    deeplink: String!
     timeSegments: [TimeSegment]!
   }
 
