@@ -42,8 +42,8 @@ yarn
 ```
 
 If this doesn't work or something is missing you may want to check the React
-Native guide for **Building Projects with Native Code** here:
-https://facebook.github.io/react-native/docs/getting-started.html
+Native guide for **Building Projects with Native Code**
+[here](https://facebook.github.io/react-native/docs/getting-started.html).
 
 At this point you have all the build tools you need to package the app but to
 actually compile it for Android or iOS you'll need to install the associated
@@ -92,7 +92,8 @@ you're prepared to rebase the changes on top of the fresh ejected project files.
 ## Deploy
 
 Both the Android and iOS apps are currently configured to fetch updated React
-Native JS bundles using CodePush, configured to use @sdunster's account.
+Native JS bundles using [CodePush](http://microsoft.github.io/code-push/),
+configured to use [@sdunster](https://github.com/sdunster)'s account.
 
 New bundles can be built and deployed using code-push:
 ```sh
