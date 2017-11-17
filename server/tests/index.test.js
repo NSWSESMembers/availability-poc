@@ -26,7 +26,7 @@ describe('GraphQL Queries', function() {
     done();
   });
 });
-  it('should return test devic uuid', done => {
+  it('should return test device uuid', done => {
   self
   .test(
     JSON.stringify({
@@ -94,4 +94,36 @@ describe('GraphQL Queries', function() {
     done();
   });
 });
+  it('should create a new user', done => {
+    self
+      .test(
+        JSON.stringify({
+          query: `mutation signup($user: SignupInput!) {
+                    signup(user: $user) {
+                      id
+                      email
+                      username
+                      authToken
+                    }
+                  }`,
+          variables: {
+            user: {
+              username: 'test-user',
+              email: 'test@domain.tld',
+              password: 'moo-moo',
+              deviceId: "1234-1234-1234-1234"
+            }
+          }
+        }),
+      )
+      .then(res => {
+        expect(res.status).toBe(200);
+        expect(res.success).toBe(true);
+        done();
+      })
+      .catch(err => {
+        expect(err).toBe(null);
+        done();
+      });
+  });
 });
