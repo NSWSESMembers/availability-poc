@@ -23,7 +23,7 @@ function getAuthenticatedDevice(ctx) {
 }
 
 export const locationHandler = {
-  updateLocation(_, args, ctx){
+  updateLocation(_, args, ctx) {
     return getAuthenticatedDevice(ctx).then((device) => {
       const { locationLat, locationLon } = args.location;
       return device.update({
@@ -54,7 +54,7 @@ export const deviceHandler = {
 }
 
 export const userHandler = {
-  query(_, args, ctx){
+  query(_, args, ctx) {
     return getAuthenticatedUser(ctx);
   },
   createUserX(_, args, ctx) {
@@ -93,24 +93,24 @@ export const userHandler = {
      }));
    });
   },
-  devices(user, args, ctx){
+  devices(user, args, ctx) {
     return Device.findAll({
       where: { userId: user.id, }
     })
   },
-  tags(user, args, ctx){
+  tags(user, args, ctx) {
      return user.getTags();
   },
-  capabilities(user, args, ctx){
+  capabilities(user, args, ctx) {
      return user.getCapabilities();
   },
 }
 
 export const scheduleHandler = {
-  timeSegments(schedule, args, ctx){
+  timeSegments(schedule, args, ctx) {
     return user.getTimeSegments();
   },
-  createSchedule(_, args, ctx){
+  createSchedule(_, args, ctx) {
     return Schedule.create({ name: args.schedule.name }).then((schedule) => {
       return Group.findById(args.schedule.group_id).then((group) => {
         schedule.setGroup(group);
@@ -131,6 +131,12 @@ export const organisationHandler = {
   users(org, args, ctx) {
     // TODO: think about who we show the complete organisation user list to
     return User.findAll({ organisationId: org.id })
+  },
+  tags(org, args, ctx) {
+    return org.getTags();
+  },
+  capabilities(org, args, ctx) {
+    return org.getCapabilities();
   }
 }
 
@@ -156,11 +162,11 @@ export const groupHandler = {
     console.log(args.groupUpdate);
     return getAuthenticatedUser(ctx).then(() => {
       return Group.findById(args.groupUpdate.group_id).then((group) => {
-        if (!group){
+        if (!group) {
             return Promise.reject("No group!");
         }
         User.findById(args.groupUpdate.user_id).then((user) => {
-            if (!user){
+            if (!user) {
                 return Promise.reject("No user!");
             }
             group.addUser(user).then(() => {return group;});
@@ -168,7 +174,7 @@ export const groupHandler = {
       })
     })
   },
-  tags(group, args, ctx){
+  tags(group, args, ctx) {
      return group.getTags();
   },
 }
