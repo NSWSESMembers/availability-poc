@@ -85,14 +85,13 @@ class Group extends Component {
   }
 
   render() {
-    console.log(this.myGroups)
     const { id, name } = this.props.group;
     //color the already subscribed groups green
-    let iHaveDisAlreadyColor = 'red'
+    let iHaveDisAlready = false
     this.myGroups.some(function(a) {
       if (a.id == id)
       {
-        iHaveDisAlreadyColor = 'green';
+        iHaveDisAlready = true;
         return true;
       }
     });
@@ -103,13 +102,13 @@ class Group extends Component {
         onPress={this.joinGroup}
       >
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color={iHaveDisAlreadyColor} />
+          <Icon name="group" size={24} color={iHaveDisAlready ? 'red' : 'green'} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupUsername}>
+            <Text style={styles.groupUsername}>{iHaveDisAlready ? 'Already a member' : 'Not a member'}
             </Text>
             <Text style={styles.groupText} numberOfLines={1}>
             </Text>
@@ -162,7 +161,6 @@ class AllGroups extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
-    console.log(this.props)
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
