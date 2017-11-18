@@ -79,20 +79,31 @@ const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
 class Group extends Component {
   constructor(props) {
     super(props);
-    console.log(props)
-    this.joinGroupQuery = this.props.joinGroupQuery.bind(this, this.props.group);
+    this.myGroups = this.props.myGroups;
+    this.joinGroupQuery = this.props.joinGroupQuery.bind(this);
     this.joinGroup = this.props.joinGroup.bind(this, this.props.group);
   }
 
   render() {
+    console.log(this.myGroups)
     const { id, name } = this.props.group;
+    //color the already subscribed groups green
+    let iHaveDisAlreadyColor = 'red'
+    this.myGroups.some(function(a) {
+      if (a.id == id)
+      {
+        iHaveDisAlreadyColor = 'green';
+        return true;
+      }
+    });
+
     return (
       <TouchableHighlight
         key={id}
         onPress={this.joinGroup}
       >
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color={'red'} />
+          <Icon name="group" size={24} color={iHaveDisAlreadyColor} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
@@ -112,6 +123,12 @@ class Group extends Component {
 Group.propTypes = {
   joinGroup: PropTypes.func.isRequired,
   joinGroupQuery: PropTypes.func.isRequired,
+  myGroups: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ),
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
@@ -135,7 +152,7 @@ class AllGroups extends Component {
 
   keyExtractor = item => item.id;
 
-  renderItem = ({ item }) => <Group group={item} joinGroup={this.joinGroup} joinGroupQuery={this.props.groupUpdate}/>;
+  renderItem = ({ item }) => <Group group={item} myGroups={this.props.user.groups} joinGroup={this.joinGroup} joinGroupQuery={this.props.groupUpdate}/>;
 
   joinGroup(group) {
     alert("User will be added to group, page wont refresh, TODO..fix this. YOLO")
@@ -194,6 +211,12 @@ AllGroups.propTypes = {
         }),
       ),
     }),
+    groups: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 

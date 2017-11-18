@@ -14,6 +14,11 @@ user
       id
     }
   }
+  groups
+  {
+    id
+    name
+  }
 }
 }
 `;
