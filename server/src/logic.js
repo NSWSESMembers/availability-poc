@@ -2,7 +2,7 @@ import { Organisation, Group, User, Device, Event, Schedule, TimeSegment, Tag, C
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import JWT_SECRET from './config';
-import Sequelize from 'Sequelize';
+import Sequelize from 'sequelize';
 
 // reusable function to check for a user with context
 const getAuthenticatedUser = ctx => {
