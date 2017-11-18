@@ -240,17 +240,23 @@ export const groupHandler = {
     );
   },
   addUserToGroup(_, args, ctx) {
-    return getAuthenticatedUser(ctx).then(() =>
-      Group.findById(args.groupUpdate.groupId).then((group) => {
+    const { userId, groupId } = args.groupUpdate;
+    return getAuthenticatedUser(ctx).then((user) =>
+      Group.findById(groupId).then((group) => {
         if (!group) {
           return Promise.reject('Invalid group!');
         }
-        return User.findById(args.groupUpdate.userId).then((user) => {
-          if (!user) {
-            return Promise.reject('Invalid user!');
-          }
-          return group.addUser(user).then(() => group);
-        });
+        if (typeof userId != 'undefined') { //use userId if passed
+          return User.findById(userId).then((user) => {
+            if (!user) {
+              return Promise.reject('Invalid user!');
+            }
+          })
+        } else { //otherwise use ctx user
+          return User.findById(user.id).then((user) => {
+            return group.addUser(user).then(() => group);
+          });
+        }
       }),
     );
   },

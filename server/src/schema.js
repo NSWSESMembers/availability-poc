@@ -16,7 +16,6 @@ export const Schema = [`
 
   input CreateGroupInput {
     name: String!
-    organisation: Int!
   }
 
   input LoginInput {
