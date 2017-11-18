@@ -138,7 +138,7 @@ class AllGroups extends Component {
   renderItem = ({ item }) => <Group group={item} joinGroup={this.joinGroup} joinGroupQuery={this.props.groupUpdate}/>;
 
   joinGroup(group) {
-    console.log("User will be added to group, page wont refresh, TODO..fix this. YOLO")
+    alert("User will be added to group, page wont refresh, TODO..fix this. YOLO")
     this.props.joinGroupQuery({group_id:group.id})
 
   }
