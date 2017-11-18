@@ -39,7 +39,6 @@ export const Schema = [`
 
   input AddUserToGroupInput {
     group_id: Int!
-    user_id: Int!
   }
 
   input CreateUserInput {

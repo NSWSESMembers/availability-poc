@@ -12,6 +12,8 @@ import Schedules from './screens/schedules.screen';
 import Signin from './screens/signin.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
+import SearchGroup from './screens/search-groups.screen';
+
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -41,7 +43,9 @@ const MainScreenNavigator = TabNavigator({
 const AppNavigator = StackNavigator({
   Main: { screen: MainScreenNavigator },
   Signin: { screen: Signin },
+  Signin: { screen: Signin },
   NewGroup: { screen: NewGroup },
+  SearchGroup: { screen: SearchGroup},
 }, {
   mode: 'modal',
 });

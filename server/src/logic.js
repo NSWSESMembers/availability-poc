@@ -251,17 +251,15 @@ export const groupHandler = {
   },
   addUserToGroup(_, args, ctx) {
     console.log(args.groupUpdate);
-    return getAuthenticatedUser(ctx).then(() => {
+    return getAuthenticatedUser(ctx).then((user) => {
       return Group.findById(args.groupUpdate.group_id).then((group) => {
         if (!group) {
             return Promise.reject("No group!");
         }
-        User.findById(args.groupUpdate.user_id).then((user) => {
-            if (!user) {
-                return Promise.reject("No user!");
-            }
-            group.addUser(user).then(() => {return group;});
-        })
+        if (!user) {
+          return Promise.reject("No user!");
+        }
+        group.addUser(user).then(() => {return group;});
       })
     })
   },
