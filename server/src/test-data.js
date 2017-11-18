@@ -37,6 +37,16 @@ export const loadTestData = () =>
           user,
         }),
         Creators.group({
+          name: 'Kiama',
+          user,
+          organisation,
+        }),
+        Creators.group({
+          name: 'Parramatta',
+          user,
+          organisation,
+        }),
+        Creators.group({
           name: 'Wollongong',
           organisation,
           user,

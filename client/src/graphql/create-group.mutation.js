@@ -6,6 +6,11 @@ export default gql`
     createGroup(group: $group) {
       id
       name
+      tags
+      {
+        name
+        id
+      }
     }
   }
 `;

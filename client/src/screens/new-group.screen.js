@@ -185,7 +185,7 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
   props: ({ ownProps, mutate }) => ({
     createGroup: ({ name }) =>
       mutate({
-        variables: { group: { name, organisation: 1 }},
+        variables: { group: { name }},
         update: (store, { data: { createGroup } }) => {
           // Read the data from our cache for this query.
           const data = store.readQuery({ query: CURRENT_USER_QUERY, variables: { id: ownProps.auth.id } });
