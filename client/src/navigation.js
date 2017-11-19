@@ -7,6 +7,7 @@ import { REHYDRATE } from 'redux-persist/constants';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
+import Group from './screens/group.screen';
 import Events from './screens/events.screen';
 import Schedules from './screens/schedules.screen';
 import Signin from './screens/signin.screen';
@@ -46,6 +47,7 @@ const AppNavigator = StackNavigator({
   Signin: { screen: Signin },
   NewGroup: { screen: NewGroup },
   SearchGroup: { screen: SearchGroup},
+  Group: { screen: Group},
 }, {
   mode: 'modal',
 });
