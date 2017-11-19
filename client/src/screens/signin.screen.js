@@ -240,7 +240,7 @@ const login = graphql(LOGIN_MUTATION, {
   props: ({ mutate }) => ({
     login: ({ username, password, deviceId }) =>
       mutate({
-        variables: { user: { username, password, deviceId } },
+        variables: { user: { username, password, deviceUuid:deviceId } },
       }),
   }),
 });
@@ -249,7 +249,7 @@ const signup = graphql(SIGNUP_MUTATION, {
   props: ({ mutate }) => ({
     signup: ({ username, email, password, deviceId }) =>
       mutate({
-        variables: { user: { username, email, password, deviceId } },
+        variables: { user: { username, email, password, deviceUuid:deviceId } },
       }),
   }),
 });
