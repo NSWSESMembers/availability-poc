@@ -151,7 +151,7 @@ class Group extends Component {
     return (
       <View style={styles.container}>
       <Text style={styles.warning}>{this.props.navigation.state.params.title}</Text>
-      <Text style={styles.warning}>{"Member List"}</Text>
+      <Text style={styles.warning}>{this.props.navigation.state.params.tags}</Text>
 
       <FlatList
         //TODO: Make a query that pulls just the one group back, not all of them

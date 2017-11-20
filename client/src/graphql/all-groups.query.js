@@ -12,6 +12,11 @@ user
     {
       name
       id
+      tags
+       {
+         name
+         id
+       }
     }
   }
   groups

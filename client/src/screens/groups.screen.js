@@ -91,6 +91,8 @@ class Group extends Component {
 
   render() {
     const { id, name } = this.props.group;
+    const tags = (this.props.group.tags.map((elem) => {return '#'+elem.name})).join(',')
+
     return (
       <TouchableHighlight
         key={id}
@@ -103,9 +105,7 @@ class Group extends Component {
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupUsername}>
-            </Text>
-            <Text style={styles.groupText} numberOfLines={1}>
+            <Text style={styles.groupText} numberOfLines={1}>{tags}
             </Text>
           </View>
           <Icon
@@ -124,6 +124,12 @@ Group.propTypes = {
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 
@@ -149,7 +155,9 @@ class Groups extends Component {
 
   goToGroup(group) {
     const { navigate } = this.props.navigation;
-    navigate('Group', { groupId: group.id, title: group.name });
+    const tags = (group.tags.map((elem) => {return '#'+elem.name})).join(',')
+
+    navigate('Group', { groupId: group.id, title: group.name, tags: tags });
   }
 
   goToNewGroup() {
@@ -166,7 +174,6 @@ class Groups extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
-console.log(this.props.navigation.state.params)
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -214,6 +221,12 @@ Groups.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        tags: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired,
+          }),
+        ),
       }),
     ),
   }),

@@ -17,6 +17,11 @@ user
         username
         id
       }
+      tags
+       {
+         name
+         id
+       }
     }
   }
 }
