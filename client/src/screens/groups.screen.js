@@ -175,6 +175,7 @@ class Groups extends Component {
   render() {
     const { loading, user, networkStatus } = this.props;
     // render loading placeholder while we fetch messages
+
     if (loading || !user) {
       return (
         <View style={[styles.loading, styles.container]}>
@@ -187,7 +188,7 @@ class Groups extends Component {
       return (
         <View style={styles.container}>
           <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup}/>
-          <Text style={styles.warning}>{'You are not a member of any groups.'}</Text>
+          <Text onPress={this.onRefresh} style={styles.warning}>{'You are not a member of any groups. click to reload'}</Text>
         </View>
       );
     }
