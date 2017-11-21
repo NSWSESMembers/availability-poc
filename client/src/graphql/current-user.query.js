@@ -10,6 +10,11 @@ export default gql`
       groups {
         id
         name
+        tags
+         {
+           name
+           id
+         }
       }
       events {
         id

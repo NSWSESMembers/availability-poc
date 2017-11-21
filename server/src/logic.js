@@ -1,8 +1,12 @@
 import { Organisation, Group, User, Device, Event, Schedule, TimeSegment, Tag, Capability } from './models' ;
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import JWT_SECRET from './config';
+import Sequelize from 'sequelize';
 
 // reusable function to check for a user with context
-function getAuthenticatedUser(ctx) {
-  return ctx.user.then((user) => {
+const getAuthenticatedUser = ctx => {
+  return ctx.user.then(user => {
     if (!user) {
       //XXX: remove this
       return User.findById(69);
@@ -12,10 +16,10 @@ function getAuthenticatedUser(ctx) {
   });
 }
 
-function getAuthenticatedDevice(ctx) {
-  return ctx.device.then((device) => {
+const getAuthenticatedDevice = ctx => {
+  return ctx.device.then(device => {
     if (!device) {
-      return Device.findOne({where: {userId: 69, uuid: '1234abc'}})
+      return Device.findOne({ where: { userId: 69, uuid: '1234abc' }});
       // return Promise.reject('Unauthorized');
     }
     return device;
@@ -24,7 +28,7 @@ function getAuthenticatedDevice(ctx) {
 
 export const locationHandler = {
   updateLocation(_, args, ctx) {
-    return getAuthenticatedDevice(ctx).then((device) => {
+    return getAuthenticatedDevice(ctx).then(device => {
       const { locationLat, locationLon } = args.location;
       return device.update({
         locationLat,
@@ -38,16 +42,15 @@ export const deviceHandler = {
   query(_, args, ctx) {
     return getAuthenticatedDevice(ctx);
   },
-  addDevice(user, deviceId) {
-    return User.findOne({where : {id: user.id}, include: {model: Device, where: {id: deviceId}}}).then((existing) => {
+  addDevice(user, deviceUuid) {
+    return user.getDevices({ where: { uuid: deviceUuid } }).then(existing => {
       if (existing) {
         return existing;
       }
       return Device.create({
-        uuid: deviceId
-      }).then((device) => {
-        device.setUser(user);
-        return device;
+        uuid: deviceUuid
+      }).then(device => {
+        return device.setUser(user);
       });
     });
   }
@@ -59,6 +62,9 @@ export const userHandler = {
   },
   createUserX(_, args, ctx) {
     return User.create(args.user);
+  },
+  deleteUserByPointer(user) {
+    return user.destroy();
   },
   groups(user, args, ctx) {
     return user.getGroups();
@@ -103,6 +109,91 @@ export const userHandler = {
   },
   capabilities(user, args, ctx) {
      return user.getCapabilities();
+  },
+  signup(args, ctx) {
+    const { deviceUuid, email, username, password } = args.user;
+
+    const where = {
+      $or: [{ email }, { username }],
+    };
+
+    return User.findOne({ where })
+    .then(existing => {
+      // make sure the username/email don't already exist
+      if (existing) {
+        return Promise.reject('Username/email already exists');
+      }
+    })
+    .then(
+      // hash the user's password
+      () => bcrypt.hash(password, 10)
+    )
+    .then(
+      // create user object
+      hash => User.create({
+        email,
+        password: hash,
+        username: username,
+        version: 1,
+      })
+    )
+    .then(
+      // now we have the user object we have some stuff to do in parallel
+      user => Promise.all([
+        // add all users to organisation #1 for now
+        user.setOrganisation(1),
+        // create a new device with the given UUID
+        deviceHandler.addDevice(user, deviceUuid),
+      ])
+      .then((_, device) => {
+        // now sign a new JWT to return to the user
+        const { id } = user;
+        const token = jwt.sign(
+          { id, device: deviceUuid, email, version: 1 },
+          JWT_SECRET,
+        );
+        user.authToken = token;
+
+        // we stuff a Promise that will provide the user into the context
+        // so the User resolver knows that it can provide confidential
+        // info back to the newly-authenticated client
+        ctx.user = Promise.resolve(user);
+
+        // make sure we return the user to the caller of signup()
+        return user;
+      })
+    );
+  },
+  login(args, ctx) {
+    const { username, password, deviceUuid } = args.user;
+    return User.findOne({ where: { username } })
+    .then((user) => {
+      // TODO: actually verify the password
+      if (!user) {
+        // TODO: change this error message to something more generic
+        return Promise.reject("Username doesn't exist");
+      }
+
+      deviceHandler.addDevice(user, deviceUuid);
+      return user;
+    })
+    .then(user => {
+      const token = jwt.sign({
+        id: user.id,
+        device: deviceUuid,
+        email: user.email,
+        version: user.version
+      }, JWT_SECRET);
+      user.authToken = token;
+
+      // we stuff a Promise that will provide the user into the context
+      // so the User resolver knows that it can provide confidential
+      // info back to the newly-authenticated client
+      ctx.user = Promise.resolve(user);
+
+      // make sure we return the user to the caller of login()
+      return user;
+    });
   },
 }
 
@@ -160,17 +251,15 @@ export const groupHandler = {
   },
   addUserToGroup(_, args, ctx) {
     console.log(args.groupUpdate);
-    return getAuthenticatedUser(ctx).then(() => {
+    return getAuthenticatedUser(ctx).then((user) => {
       return Group.findById(args.groupUpdate.group_id).then((group) => {
         if (!group) {
             return Promise.reject("No group!");
         }
-        User.findById(args.groupUpdate.user_id).then((user) => {
-            if (!user) {
-                return Promise.reject("No user!");
-            }
-            group.addUser(user).then(() => {return group;});
-        })
+        if (!user) {
+          return Promise.reject("No user!");
+        }
+        group.addUser(user).then(() => {return group;});
       })
     })
   },

@@ -132,9 +132,9 @@ class Signin extends Component {
     this.setState({
       loading: true,
     });
-    const deviceId = this.props.local.deviceId;
+    const deviceUuid = this.props.local.deviceId;
     const { username, password, email } = this.state;
-    this.props.signup({ username, email, password, deviceId })
+    this.props.signup({ username, email, password, deviceUuid })
       .then(({ data: { signup: user } }) => {
         const ourUser = {
           username: user.username,
@@ -240,16 +240,16 @@ const login = graphql(LOGIN_MUTATION, {
   props: ({ mutate }) => ({
     login: ({ username, password, deviceId }) =>
       mutate({
-        variables: { user: { username, password, deviceId } },
+        variables: { user: { username, password, deviceUuid:deviceId } },
       }),
   }),
 });
 
 const signup = graphql(SIGNUP_MUTATION, {
   props: ({ mutate }) => ({
-    signup: ({ username, email, password, deviceId }) =>
+    signup: ({ username, email, password, deviceUuid }) =>
       mutate({
-        variables: { user: { username, email, password, deviceId } },
+        variables: { user: { username, email, password, deviceUuid } },
       }),
   }),
 });

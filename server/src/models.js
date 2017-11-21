@@ -70,9 +70,11 @@ EventModel.belongsToMany(UserModel, { through: 'event_user' });
 
 // users can only belong to one organisation for now
 UserModel.belongsTo(OrganisationModel);
+OrganisationModel.hasMany(UserModel);
 
 // devices belong to a single user
 DeviceModel.belongsTo(UserModel);
+UserModel.hasMany(DeviceModel);
 
 // users -> tags
 UserModel.belongsToMany(TagModel, { through: 'user_tag' });
@@ -84,16 +86,21 @@ TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
 // users belong to capability tags
 UserModel.belongsToMany(CapabilityModel, { through: 'user_capability' });
+CapabilityModel.belongsToMany(UserModel, { through: 'user_capability' });
 
 // events are created for a single group
 EventModel.belongsTo(GroupModel);
+GroupModel.hasMany(EventModel);
 
 // schedules are created for a single group
 ScheduleModel.belongsTo(GroupModel);
+GroupModel.hasMany(ScheduleModel);
 
 // time segments belong to a combination of user/schedule
 TimeSegmentModel.belongsTo(ScheduleModel);
+ScheduleModel.hasMany(TimeSegmentModel);
 TimeSegmentModel.belongsTo(UserModel);
+UserModel.hasMany(TimeSegmentModel);
 
 // tags belong to one organisation for now
 TagModel.belongsTo(OrganisationModel);

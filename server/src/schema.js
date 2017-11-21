@@ -22,14 +22,14 @@ export const Schema = [`
   input LoginInput {
     username: String!
     password: String!
-    deviceId: String!
+    deviceUuid: String!
   }
 
   input SignupInput {
     username: String!
     password: String!
     email: String!
-    deviceId: String!
+    deviceUuid: String!
   }
 
   input CreateScheduleInput {
@@ -39,10 +39,14 @@ export const Schema = [`
 
   input AddUserToGroupInput {
     group_id: Int!
-    user_id: Int!
   }
 
   input CreateUserInput {
+    username: String!
+    email: String!
+  }
+
+  input DeleteUserInput {
     username: String!
     email: String!
   }
@@ -140,6 +144,7 @@ export const Schema = [`
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
     createUser(user: CreateUserInput!): User
+    deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
