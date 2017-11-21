@@ -82,6 +82,7 @@ class Group extends Component {
     this.myGroups = this.props.myGroups;
     this.joinGroupQuery = this.props.joinGroupQuery.bind(this);
     this.joinGroup = this.props.joinGroup.bind(this, this.props.group);
+
   }
 
   render() {
@@ -159,8 +160,9 @@ class AllGroups extends Component {
   renderItem = ({ item }) => <Group group={item} myGroups={this.props.user.groups} joinGroup={this.joinGroup} joinGroupQuery={this.props.groupUpdate}/>;
 
   joinGroup(group) {
-    alert("User will be added to group, page wont refresh, TODO..fix this. YOLO")
-    this.props.joinGroupQuery({group_id:group.id})
+    this.props.joinGroupQuery({group_id:group.id}).then((result) => {
+      alert('joined - '+group.name)
+    })
 
   }
 
