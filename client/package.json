@@ -6,7 +6,8 @@
 		"start": "react-native-scripts start",
 		"test": "jest",
 		"push-ios": "code-push release-react availability-poc ios --plistFile ios/availpoc/Info.plist",
-		"push-android": "code-push release-react availability-poc-android android"
+		"push-android": "code-push release-react availability-poc-android android",
+    "lint": "eslint src"
 	},
 	"dependencies": {
 		"apollo-client": "^1.9.0",

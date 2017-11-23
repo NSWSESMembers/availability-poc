@@ -13,7 +13,11 @@ module.exports = {
       "skipShapeProps": true
     }],
     "react/no-multi-comp": [0],
-    "no-bitwise": [0],
+    "function-paren-newline": ["error", "consistent"],
+    "object-curly-newline": ["error", {
+      "multiline": true,
+      "consistent": true,
+    }],
   },
   "env": {
     "jest": true
