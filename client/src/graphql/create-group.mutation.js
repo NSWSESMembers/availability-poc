@@ -1,16 +1,20 @@
 import gql from 'graphql-tag';
 
-// get the user and all user's groups
+// the results of this query must match the fields we expect to use in
+// groups.screen - check prop types
 export default gql`
   mutation createGroup($group: CreateGroupInput!) {
     createGroup(group: $group) {
       id
       name
-      tags
-      {
-        name
-        id
-      }
+      tags {
+         name
+         id
+       }
+       users {
+         username
+         id
+       }
     }
   }
 `;

@@ -246,17 +246,7 @@ export const groupHandler = {
         if (!group) {
           return Promise.reject('Invalid group!');
         }
-        if (typeof userId != 'undefined') { //use userId if passed
-          return User.findById(userId).then((user) => {
-            if (!user) {
-              return Promise.reject('Invalid user!');
-            }
-          })
-        } else { //otherwise use ctx user
-          return User.findById(user.id).then((user) => {
-            return group.addUser(user).then(() => group);
-          });
-        }
+        return group.addUser(user).then(() => group);
       }),
     );
   },

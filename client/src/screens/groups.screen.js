@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
@@ -62,20 +61,10 @@ const styles = extendAppStyleSheet({
   },
 });
 
-// format createdAt with moment
-const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: 'dddd',
-  sameElse: 'DD/MM/YYYY',
-});
-
 const Header = ({ onPress, onPressFind }) => (
   <View style={styles.header}>
-    <Button title={'Create New Group'} onPress={onPress} />
-    <Button title={'Find & Join Groups'} onPress={onPressFind} />
+    <Button title="Create New Group" onPress={onPress} />
+    <Button title="Find & Join Groups" onPress={onPressFind} />
   </View>
 );
 Header.propTypes = {
@@ -91,15 +80,12 @@ class Group extends Component {
 
   render() {
     const { id, name } = this.props.group;
-    const tags = (this.props.group.tags.map((elem) => {return '#'+elem.name})).join(',')
+    const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
 
     return (
-      <TouchableHighlight
-        key={id}
-        onPress={this.goToGroup}
-      >
+      <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color={'orange'} />
+          <Icon name="group" size={24} color="orange" />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
@@ -108,11 +94,7 @@ class Group extends Component {
             <Text style={styles.groupText} numberOfLines={1}>{tags}
             </Text>
           </View>
-          <Icon
-            name="angle-right"
-            size={24}
-            color={'#8c8c8c'}
-          />
+          <Icon name="angle-right" size={24} color="#8c8c8c" />
         </View>
       </TouchableHighlight>
     );
@@ -142,7 +124,9 @@ Group.propTypes = {
 class Groups extends Component {
   static navigationOptions = {
     title: 'Groups',
-    tabBarIcon: ({ tintColor}) => <Icon size={24} name={'group'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => (
+      <Icon size={24} name="group" color={tintColor} />
+    ),
   };
 
   constructor(props) {
@@ -190,11 +174,17 @@ class Groups extends Component {
     if (user && !user.groups.length) {
       return (
         <View style={styles.container}>
-          <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup}/>
-          <Text onPress={this.onRefresh} style={styles.warning}>{'You are not a member of any groups. click to reload'}</Text>
+          <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup} />
+          <Text onPress={this.onRefresh} style={styles.warning}>
+            You are not a member of any groups. click to reload
+          </Text>
         </View>
       );
     }
+
+    const makeHeader = () => (
+      <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup} />
+    );
 
     // render list of groups for user
     return (
@@ -203,7 +193,7 @@ class Groups extends Component {
           data={user.groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
-          ListHeaderComponent={() => <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup} />}
+          ListHeaderComponent={makeHeader}
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
