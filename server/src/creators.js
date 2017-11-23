@@ -13,18 +13,22 @@ const creators = {
     if (!group) {
       return Promise.reject(Error('Must pass group'));
     }
-    return Schedule.create({ name, details }).then(schedule =>
-      schedule.setGroup(group),
-    );
+    return Schedule.create({
+      name,
+      details,
+      groupId: group.id,
+    });
   },
 
   event: ({ name, details, group }) => {
     if (!group) {
       return Promise.reject(Error('Must pass group'));
     }
-    return Event.create({ name, details, group }).then(event =>
-      event.setGroup(group),
-    );
+    return Event.create({
+      name,
+      details,
+      groupId: group.id,
+    });
   },
 
   tag: ({ name, organisation, user, group }) => {
@@ -39,7 +43,7 @@ const creators = {
     }
     return Tag.create({
       name,
-      organisation,
+      organisationId: organisation.id,
     }).then(tag => Promise.all([
       tag.addUser(user),
       tag.addGroup(group),
@@ -55,7 +59,7 @@ const creators = {
     }
     return Capability.create({
       name,
-      organisation,
+      organisationId: organisation.id,
     }).then(capability =>
       capability.addUser(user)
         .then(() => user),
@@ -68,16 +72,20 @@ const creators = {
     }
     return Device.create({
       uuid,
-      user,
+      userId: user.id,
     });
   },
 
-  group: ({ name, user }) => {
+  group: ({ organisation, name, user }) => {
+    if (!organisation) {
+      return Promise.reject(Error('Must pass organisation'));
+    }
     if (!user) {
       return Promise.reject(Error('Must pass user'));
     }
     return Group.create({
       name,
+      organisationId: organisation.id,
     }).then(group =>
       group.addUser(user)
         .then(() => group),
@@ -85,13 +93,19 @@ const creators = {
   },
 
   user: ({ id, username, password, email, version, organisation }) => {
+    // it's fine for id to be left null/undefined
     if (!organisation) {
       return Promise.reject(Error('Must pass organisation'));
     }
     return bcrypt.hash(password, 10).then(hash =>
       User.create({
-        id, username, password: hash, email, version,
-      }).then(user => user.setOrganisation(organisation)),
+        id,
+        username,
+        password: hash,
+        email,
+        version,
+        organisationId: organisation.id,
+      }),
     );
   },
 
@@ -105,10 +119,9 @@ const creators = {
     return TimeSegment.create({
       startTime,
       endTime,
-    }).then(ts => Promise.all([
-      ts.setUser(user),
-      ts.setSchedule(schedule),
-    ]));
+      userId: user.id,
+      scheduleId: schedule.id,
+    });
   },
 };
 
