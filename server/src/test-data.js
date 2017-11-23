@@ -38,6 +38,7 @@ export const loadTestData = () =>
         }),
         Creators.group({
           name: 'Wollongong',
+          organisation,
           user,
         }).then(group => Promise.all([
           Creators.schedule({

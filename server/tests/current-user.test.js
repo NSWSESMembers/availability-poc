@@ -25,6 +25,8 @@ describe('GraphQL query - Current user', () => {
       {
         user {
           organisation {
+            id
+            name
             users {
               id
             }
@@ -43,6 +45,26 @@ describe('GraphQL query - Current user', () => {
     `);
 
     itReturnsSuccess(response);
+    it('Returns entity', () => response.then((res) => {
+      expect(res.data.user.organisation).toHaveProperty('id');
+      expect(res.data.user.organisation).toHaveProperty('name');
+    }));
+    it('Returns users', () => response.then((res) => {
+      expect(res.data.user.organisation.users.length).toBeGreaterThan(0);
+      expect(res.data.user.organisation.users[0]).toHaveProperty('id');
+    }));
+    it('Returns groups', () => response.then((res) => {
+      expect(res.data.user.organisation.groups.length).toBeGreaterThan(0);
+      expect(res.data.user.organisation.groups[0]).toHaveProperty('id');
+    }));
+    it('Returns tags', () => response.then((res) => {
+      expect(res.data.user.organisation.tags.length).toBeGreaterThan(0);
+      expect(res.data.user.organisation.tags[0]).toHaveProperty('id');
+    }));
+    it('Returns capabilities', () => response.then((res) => {
+      expect(res.data.user.organisation.capabilities.length).toBeGreaterThan(0);
+      expect(res.data.user.organisation.capabilities[0]).toHaveProperty('id');
+    }));
   });
 
   describe('Get groups', () => {
