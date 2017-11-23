@@ -10,7 +10,7 @@ const creators = {
     Organisation.create({ name }),
 
   schedule: ({ name, details, group }) => {
-    if (!group) {
+    if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
     return Schedule.create({
@@ -21,7 +21,7 @@ const creators = {
   },
 
   event: ({ name, details, group }) => {
-    if (!group) {
+    if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
     return Event.create({
@@ -32,13 +32,13 @@ const creators = {
   },
 
   tag: ({ name, organisation, user, group }) => {
-    if (!user) {
+    if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
-    if (!group) {
+    if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
-    if (!organisation) {
+    if (!organisation || !organisation.id) {
       return Promise.reject(Error('Must pass organisation'));
     }
     return Tag.create({
@@ -51,10 +51,10 @@ const creators = {
   },
 
   capability: ({ name, organisation, user }) => {
-    if (!organisation) {
+    if (!organisation || !organisation.id) {
       return Promise.reject(Error('Must pass organisation'));
     }
-    if (!user) {
+    if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
     return Capability.create({
@@ -67,7 +67,7 @@ const creators = {
   },
 
   device: ({ uuid, user }) => {
-    if (!user) {
+    if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
     return Device.create({
@@ -77,10 +77,10 @@ const creators = {
   },
 
   group: ({ organisation, name, user }) => {
-    if (!organisation) {
+    if (!organisation || !organisation.id) {
       return Promise.reject(Error('Must pass organisation'));
     }
-    if (!user) {
+    if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
     return Group.create({
@@ -94,7 +94,7 @@ const creators = {
 
   user: ({ id, username, password, email, version, organisation }) => {
     // it's fine for id to be left null/undefined
-    if (!organisation) {
+    if (!organisation || !organisation.id) {
       return Promise.reject(Error('Must pass organisation'));
     }
     return bcrypt.hash(password, 10).then(hash =>
@@ -110,10 +110,10 @@ const creators = {
   },
 
   timeSegment: ({ startTime, endTime, schedule, user }) => {
-    if (!user) {
+    if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
-    if (!user) {
+    if (!schedule || !schedule.id) {
       return Promise.reject(Error('Must pass schedule'));
     }
     return TimeSegment.create({

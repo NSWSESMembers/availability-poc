@@ -100,7 +100,7 @@ export const userHandler = {
           email,
           password,
           version: 1,
-          organisation: 1,
+          organisation: { id: 1 },
         }),
       )
       .then(
@@ -187,9 +187,16 @@ export const scheduleHandler = {
   createSchedule(_, args) {
     const { name, groupId } = args.schedule;
 
-    return Creators.schedule({
-      name,
-      group: groupId,
+    return Group.findById(groupId)
+    .then((group) => {
+      if (!group) {
+        return Promise.reject('Invalid group');
+      }
+      // TODO: check whether the user is a member of the group
+      return Creators.schedule({
+        name,
+        group,
+      });
     });
   },
 };
@@ -227,8 +234,9 @@ export const groupHandler = {
   },
   createGroup(_, args, ctx) {
     const { name } = args.group;
-    return getAuthenticatedUser(ctx).then(user =>
-      Creators.group({ name, user }),
+    return getAuthenticatedUser(ctx)
+    .then(user => Organisation.findById(user.id)
+      .then(organisation => Creators.group({ name, user, organisation }))
     );
   },
   addUserToGroup(_, args, ctx) {
