@@ -1,5 +1,6 @@
 # API Server for Availability
-
+ 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/NSWSESMembers/availability-poc.svg?branch=master)](https://travis-ci.org/NSWSESMembers/availability-poc)
 
 This is an API server for Availability. It generates some standard data at boot

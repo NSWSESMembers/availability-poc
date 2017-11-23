@@ -1,5 +1,7 @@
 # Rect Native client for Availability
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This is a React Native app that consumes the GraphQL API provided by the code in
 `server/` built to support iOS and Android. To get started you should probably
 read the [React Native website](https://facebook.github.io/react-native/).
