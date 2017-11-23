@@ -1,5 +1,7 @@
 # Availability POC
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Availability app built for NSW SES proof-of-concept. Very much work in
 progress.
 
@@ -11,6 +13,6 @@ There's currently 2 components that make up this project:
 
 ## License
 
-Final license decision pending - [MIT](LICENSE.md) in the meantime.
+All components licensed under the [MIT License](LICENSE.md).
 
-Copyright (c) 2017 NSW SES, volunteers of NSW SES and other contributors.
+Copyright 2017 NSW SES, volunteers of NSW SES and contributors.
