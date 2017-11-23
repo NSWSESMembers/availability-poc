@@ -5,8 +5,8 @@
 	"scripts": {
 		"start": "react-native-scripts start",
 		"test": "jest",
-    "push-ios": "code-push release-react availability-poc ios --plistFile ios/availpoc/Info.plist",
-    "push-android": "code-push release-react availability-poc-android android"
+		"push-ios": "code-push release-react availability-poc ios --plistFile ios/availpoc/Info.plist",
+		"push-android": "code-push release-react availability-poc-android android"
 	},
 	"dependencies": {
 		"apollo-client": "^1.9.0",
@@ -34,8 +34,14 @@
 		"subscriptions-transport-ws": "^0.8.2"
 	},
 	"devDependencies": {
+		"babel-eslint": "^8.0.2",
 		"babel-jest": "20.0.3",
 		"babel-preset-react-native": "2.1.0",
+		"eslint": "^4.11.0",
+		"eslint-config-airbnb": "^16.1.0",
+		"eslint-plugin-import": "^2.8.0",
+		"eslint-plugin-jsx-a11y": "^6.0.2",
+		"eslint-plugin-react": "^7.5.1",
 		"jest": "20.0.4",
 		"react-test-renderer": "16.0.0-alpha.12"
 	},
