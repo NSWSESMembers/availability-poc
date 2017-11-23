@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import JWT_SECRET from './config';
-import { Group, User, Device } from './models';
+import { Group, User, Device, Organisation } from './models';
 import Creators from './creators';
 
 // reusable function to check for a user with context
