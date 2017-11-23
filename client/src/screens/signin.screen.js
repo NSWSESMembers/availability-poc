@@ -81,6 +81,9 @@ class Signin extends Component {
     super(props);
     this.state = {
       view: 'login',
+      username: '',
+      email: '',
+      password: '',
     };
     this.login = this.login.bind(this);
     this.signup = this.signup.bind(this);
