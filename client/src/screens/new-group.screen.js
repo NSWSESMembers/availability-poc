@@ -1,11 +1,9 @@
-import { _ } from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Alert,
   Button,
   Image,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -13,20 +11,13 @@ import {
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import { NavigationActions } from 'react-navigation';
-import update from 'immutability-helper';
 import { connect } from 'react-redux';
 
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import CREATE_GROUP_MUTATION from '../graphql/create-group.mutation';
 
-const goToNewGroup = group => NavigationActions.back();
-// const goToNewGroup = group => NavigationActions.reset({
-//   index: 0,
-//   actions: [
-//     NavigationActions.navigate({ routeName: 'Main' }),
-//   ],
-// });
+const goToNewGroup = () => NavigationActions.back();
 
 const styles = extendAppStyleSheet({
   detailsContainer: {
@@ -185,10 +176,13 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
   props: ({ ownProps, mutate }) => ({
     createGroup: ({ name }) =>
       mutate({
-        variables: { group: { name }},
+        variables: { group: { name } },
         update: (store, { data: { createGroup } }) => {
           // Read the data from our cache for this query.
-          const data = store.readQuery({ query: CURRENT_USER_QUERY, variables: { id: ownProps.auth.id } });
+          const data = store.readQuery({
+            query: CURRENT_USER_QUERY,
+            variables: { id: ownProps.auth.id },
+          });
 
           // Add our message from the mutation to the end.
           data.user.groups.push(createGroup);

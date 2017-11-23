@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 // get the user and all user's groups
-export default gql `
+export default gql`
   query {
     user {
       id
@@ -14,11 +14,11 @@ export default gql `
               id
            }
          }
-    }
-    groups {
-      id
-      name
+      }
+      groups {
+        id
+        name
+      }
     }
   }
-}
 `;

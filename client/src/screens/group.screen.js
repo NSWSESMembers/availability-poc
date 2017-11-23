@@ -2,14 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   FlatList,
-  ActivityIndicator,
-  Button,
   Text,
   TouchableHighlight,
   View,
 } from 'react-native';
-import { compose } from 'react-apollo';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
@@ -61,45 +57,24 @@ const styles = extendAppStyleSheet({
   },
 });
 
-// format createdAt with moment
-const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: 'dddd',
-  sameElse: 'DD/MM/YYYY',
-});
-
-const Header = ({ onPress, onPressFind }) => (
-  <View style={styles.header}>
-  </View>
+const Header = () => (
+  <View style={styles.header} />
 );
-Header.propTypes = {
-};
 
 class Member extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { id, username } = this.props.member;
     return (
-      <TouchableHighlight
-        key={id}
-      >
+      <TouchableHighlight key={id}>
         <View style={styles.groupContainer}>
-          <Icon name="user" size={24} color={'blue'} />
+          <Icon name="user" size={24} color="blue" />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{username}</Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupUsername}>
-            </Text>
-            <Text style={styles.groupText} numberOfLines={1}>
-            </Text>
+            <Text style={styles.groupUsername} />
+            <Text style={styles.groupText} numberOfLines={1} />
           </View>
         </View>
       </TouchableHighlight>
@@ -117,51 +92,51 @@ Member.propTypes = {
 class Group extends Component {
   static navigationOptions = {
     title: 'Group',
-    tabBarIcon: ({ tintColor}) => <Icon size={24} name={'group'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => (
+      <Icon size={24} name="group" color={tintColor} />
+    ),
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   keyExtractor = item => item.id;
 
-  renderItem = ({ item }) => <Member member={item}/>;
+  renderItem = ({ item }) => <Member member={item} />
 
   render() {
     const { group } = this.props.navigation.state.params;
-   const tags = (group.tags.map((elem) => {return '#'+elem.name})).join(' ')
+    const tags = group.tags.map(elem => `#${elem.name}`).join(' ');
 
     // somehow we got here with no group
     if (!group) {
-      return (
-        <Text>"Error displaying group"</Text>
-      );
+      return <Text>Error displaying group</Text>;
     }
 
     // render group stuff
     return (
       <View style={styles.container}>
-      <Text style={styles.warning}>{group.name}</Text>
-      <Text style={styles.warning}>{tags}</Text>
-
-      <FlatList
-        data={group.users}
-        keyExtractor={this.keyExtractor}
-        renderItem={this.renderItem}
-        ListHeaderComponent={() => <Header />}
-      />
+        <Text style={styles.warning}>{group.name}</Text>
+        <Text style={styles.warning}>{tags}</Text>
+        <FlatList
+          data={group.users}
+          keyExtractor={this.keyExtractor}
+          renderItem={this.renderItem}
+          ListHeaderComponent={() => <Header />}
+        />
       </View>
     );
   }
-
 }
+Group.propTypes = {
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        group: PropTypes.string.isRequired,
+      }),
+    }),
+  }),
+};
 
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-//we might not need compose any more here. TODO://find out
-export default compose(
-  connect(mapStateToProps),
-)(Group);
+export default connect(mapStateToProps)(Group);

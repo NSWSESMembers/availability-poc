@@ -4,17 +4,14 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
-  Button,
-  Image,
-  StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { extendAppStyleSheet } from './style-sheet';
 import ALL_GROUPS_QUERY from '../graphql/all-groups.query';
@@ -67,45 +64,25 @@ const styles = extendAppStyleSheet({
   },
 });
 
-// format createdAt with moment
-const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: 'dddd',
-  sameElse: 'DD/MM/YYYY',
-});
-
 class Group extends Component {
   constructor(props) {
     super(props);
     this.myGroups = this.props.myGroups;
     this.joinGroupQuery = this.props.joinGroupQuery.bind(this);
     this.joinGroup = this.props.joinGroup.bind(this, this.props.group);
-
   }
 
   render() {
     const { id, name } = this.props.group;
-    const tags = (this.props.group.tags.map((elem) => {return '#'+elem.name})).join(',')
-    //color the already subscribed groups green
-    let iHaveDisAlready = false
-    this.myGroups.some(function(a) {
-      if (a.id == id)
-      {
-        iHaveDisAlready = true;
-        return true;
-      }
-    });
+    const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
+
+    // color the already subscribed groups green
+    const memberAlready = _.some(this.myGroups, g => g.id === id);
 
     return (
-      <TouchableHighlight
-        key={id}
-        onPress={this.joinGroup}
-      >
+      <TouchableHighlight key={id} onPress={this.joinGroup}>
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color={iHaveDisAlready ? 'red' : 'green'} />
+          <Icon name="group" size={24} color={memberAlready ? 'red' : 'green'} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
@@ -115,7 +92,7 @@ class Group extends Component {
             </Text>
           </View>
         </View>
-        </TouchableHighlight>
+      </TouchableHighlight>
     );
   }
 }
@@ -144,7 +121,9 @@ Group.propTypes = {
 class AllGroups extends Component {
   static navigationOptions = {
     title: 'All Groups',
-    tabBarIcon: ({ tintColor}) => <Icon size={24} name={'group'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => (
+      <Icon size={24} name="group" color={tintColor} />
+    ),
   };
 
   constructor(props) {
@@ -158,18 +137,20 @@ class AllGroups extends Component {
 
   keyExtractor = item => item.id;
 
-  renderItem = ({ item }) =>
-    <Group group={item}
-    myGroups={this.props.user.groups}
-    joinGroup={this.joinGroup}
-    joinGroupQuery={this.props.groupUpdate}/>;
-
   joinGroup(group) {
-    this.props.joinGroupQuery({groupId:group.id}).then((result) => {
-      Alert.alert('Group joined',group.name)
-    })
-
+    this.props.joinGroupQuery({ groupId: group.id }).then(() => {
+      Alert.alert('Group joined', group.name);
+    });
   }
+
+  renderItem = ({ item }) => (
+    <Group
+      group={item}
+      myGroups={this.props.user.groups}
+      joinGroup={this.joinGroup}
+      joinGroupQuery={this.props.groupUpdate}
+    />
+  );
 
   render() {
     const { loading, user, networkStatus } = this.props;
@@ -185,7 +166,9 @@ class AllGroups extends Component {
     if (user && !user.organisation.groups.length) {
       return (
         <View style={styles.container}>
-          <Text style={styles.warning}>{'There are no groups in this organisation'}</Text>
+          <Text style={styles.warning}>
+            There are no groups in this organisation
+          </Text>
         </View>
       );
     }
@@ -205,13 +188,11 @@ class AllGroups extends Component {
   }
 }
 AllGroups.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
   groupUpdate: PropTypes.func,
+  joinGroupQuery: PropTypes.func,
   user: PropTypes.shape({
     organisation: PropTypes.shape({
       groups: PropTypes.arrayOf(
@@ -251,9 +232,9 @@ const groupsQuery = graphql(ALL_GROUPS_QUERY, {
 
 const joinGroupQuery = graphql(JOIN_GROUP_QUERY, {
   props: ({ mutate }) => ({
-    groupUpdate: ({ groupId}) =>
+    groupUpdate: ({ groupId }) =>
       mutate({
-        variables: { groupUpdate: {groupId} },
+        variables: { groupUpdate: { groupId } },
       }),
   }),
 });
