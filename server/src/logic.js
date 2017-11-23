@@ -156,7 +156,8 @@ export const userHandler = {
 
     return User.findOne({ where: { username } }).then((user) => {
       if (!user) {
-        // TODO: change this error message to something more generic
+        // TODO: for security reasons change this message to something less
+        // specific
         return Promise.reject("Username doesn't exist");
       }
 
@@ -168,7 +169,9 @@ export const userHandler = {
 
       return bcrypt.compare(password, user.password).then((res) => {
         if (!res) {
-          return Promise.reject('Invalid result from bcrypt');
+          // TODO: for security reasons change this message to something less
+          // specific
+          return Promise.reject('Invalid password');
         }
 
         return userLoggedIn(user);
