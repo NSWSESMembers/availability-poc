@@ -17,10 +17,10 @@ const local = (state = initialState, action) => {
       // convert persisted data to Immutable and confirm rehydration
       const currentState = action.payload.auth || state;
       const newState = {};
-      if(!currentState.deviceId) {
-        const deviceId = uuidv4();
-        console.log(`Generated new device UUID ${deviceId}`);
-        newState.deviceId = deviceId;
+      if(!currentState.deviceUuid) {
+        const deviceUuid = uuidv4();
+        console.log(`Generated new device UUID ${deviceUuid}`);
+        newState.deviceUuid = deviceUuid;
       }
       newState.loading = false;
       return Immutable(currentState).merge(newState);
