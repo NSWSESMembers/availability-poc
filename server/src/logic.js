@@ -235,7 +235,7 @@ export const groupHandler = {
   createGroup(_, args, ctx) {
     const { name } = args.group;
     return getAuthenticatedUser(ctx)
-    .then(user => Organisation.findById(user.id)
+    .then(user => Organisation.findById(user.organisationId)
       .then(organisation => Creators.group({ name, user, organisation }))
     );
   },
