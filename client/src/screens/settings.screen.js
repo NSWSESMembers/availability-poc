@@ -180,7 +180,6 @@ Settings.propTypes = {
   auth: PropTypes.shape({
     loading: PropTypes.bool,
     token: PropTypes.string,
-    deviceId: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,

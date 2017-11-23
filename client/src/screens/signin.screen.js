@@ -100,10 +100,10 @@ class Signin extends Component {
       loading: true,
     });
 
-    const deviceId = this.props.local.deviceId;
-    console.log(`Logging in with device ID: ${deviceId}`);
+    const deviceUuid = this.props.local.deviceUuid;
+    console.log(`Logging in with device UUID: ${deviceUuid}`);
 
-    this.props.login({ username, password, deviceId })
+    this.props.login({ username, password, deviceUuid })
       .then(({ data: { login: user } }) => {
         const ourUser = {
           username: user.username,
@@ -132,9 +132,9 @@ class Signin extends Component {
     this.setState({
       loading: true,
     });
-    const deviceId = this.props.local.deviceId;
+    const deviceUuid = this.props.local.deviceUuid;
     const { username, password, email } = this.state;
-    this.props.signup({ username, email, password, deviceId })
+    this.props.signup({ username, email, password, deviceUuid })
       .then(({ data: { signup: user } }) => {
         const ourUser = {
           username: user.username,
@@ -238,18 +238,18 @@ Signin.propTypes = {
 
 const login = graphql(LOGIN_MUTATION, {
   props: ({ mutate }) => ({
-    login: ({ username, password, deviceId }) =>
+    login: ({ username, password, deviceUuid }) =>
       mutate({
-        variables: { user: { username, password, deviceId } },
+        variables: { user: { username, password, deviceUuid } },
       }),
   }),
 });
 
 const signup = graphql(SIGNUP_MUTATION, {
   props: ({ mutate }) => ({
-    signup: ({ username, email, password, deviceId }) =>
+    signup: ({ username, email, password, deviceUuid }) =>
       mutate({
-        variables: { user: { username, email, password, deviceId } },
+        variables: { user: { username, email, password, deviceUuid } },
       }),
   }),
 });
