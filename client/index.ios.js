@@ -4,13 +4,14 @@ import {
 import codePush from 'react-native-code-push';
 import App from './src/app';
 
-if (!__DEV__) {
-  const codePushOptions = {
-    checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-    updateDialog: true,
-    installMode: codePush.InstallMode.ON_NEXT_RESUME,
-  };
-}
+const codePushOptions = {
+  checkFrequency: (
+    (!__DEV__) ? codePush.CheckFrequency.ON_APP_RESUME
+      : codePush.CheckFrequency.MANUAL),
+  updateDialog: true,
+  installMode: codePush.InstallMode.ON_NEXT_RESUME,
+};
+
 
 AppRegistry.registerComponent(
   'availpoc',
