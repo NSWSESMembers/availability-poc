@@ -181,7 +181,7 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
           // Read the data from our cache for this query.
           const data = store.readQuery({
             query: CURRENT_USER_QUERY,
-            variables: { id: ownProps.auth.id },
+            variables: { id: ownProps.auth.token },
           });
 
           // Add our message from the mutation to the end.
@@ -190,7 +190,7 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
           // Write our data back to the cache.
           store.writeQuery({
             query: CURRENT_USER_QUERY,
-            variables: { id: ownProps.auth.id },
+            variables: { id: ownProps.auth.token },
             data,
           });
         },
