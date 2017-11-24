@@ -1,5 +1,6 @@
 # Availability POC
 
+[![Build Status](https://travis-ci.org/NSWSESMembers/availability-poc.svg?branch=master)](https://travis-ci.org/NSWSESMembers/availability-poc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Availability app built for NSW SES proof-of-concept. Very much work in
