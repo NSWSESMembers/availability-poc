@@ -12,7 +12,6 @@ const codePushOptions = {
   installMode: codePush.InstallMode.ON_NEXT_RESUME,
 };
 
-
 AppRegistry.registerComponent(
   'availpoc',
   () => codePush(codePushOptions)(App)
