@@ -68,9 +68,28 @@ class Group extends Component {
   constructor(props) {
     super(props);
     this.myGroups = this.props.myGroups;
-    this.joinGroupQuery = this.props.joinGroupQuery.bind(this);
-    this.joinGroup = this.props.joinGroup.bind(this, this.props.group);
+    this.joinGroup = this.joinGroup.bind(this);
+    this.groupUpdate = this.props.groupUpdate.bind(this)
+
   }
+
+  joinGroup() {
+    const { groupUpdate, group } = this.props;
+
+
+    groupUpdate({ groupId: group.id }).then((res) => {
+      Alert.alert('Group joined', group.name);
+    }).catch((error) => {
+      Alert.alert(
+        'Error Creating New Group',
+        error.message,
+        [
+          { text: 'OK', onPress: () => {} },
+        ],
+      );
+    });
+  }
+
 
   render() {
     const { id, name } = this.props.group;
@@ -98,8 +117,7 @@ class Group extends Component {
 }
 
 Group.propTypes = {
-  joinGroup: PropTypes.func.isRequired,
-  joinGroupQuery: PropTypes.func.isRequired,
+  groupUpdate: PropTypes.func.isRequired,
   myGroups: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -137,18 +155,11 @@ class AllGroups extends Component {
 
   keyExtractor = item => item.id;
 
-  joinGroup(group) {
-    this.props.joinGroupQuery({ groupId: group.id }).then(() => {
-      Alert.alert('Group joined', group.name);
-    });
-  }
-
   renderItem = ({ item }) => (
     <Group
       group={item}
       myGroups={this.props.user.groups}
-      joinGroup={this.joinGroup}
-      joinGroupQuery={this.props.groupUpdate}
+      groupUpdate={this.props.groupUpdate}
     />
   );
 
@@ -191,9 +202,9 @@ AllGroups.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
-  groupUpdate: PropTypes.func,
-  joinGroupQuery: PropTypes.func,
+  groupUpdate: PropTypes.func.isRequired,
   user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     organisation: PropTypes.shape({
       groups: PropTypes.arrayOf(
         PropTypes.shape({
@@ -212,12 +223,6 @@ AllGroups.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        tags: PropTypes.arrayOf(
-          PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-          }),
-        ),
       }),
     ),
   }),
@@ -231,10 +236,24 @@ const groupsQuery = graphql(ALL_GROUPS_QUERY, {
 });
 
 const joinGroupQuery = graphql(JOIN_GROUP_QUERY, {
-  props: ({ mutate }) => ({
+  props: ({ ownProps, mutate }) => ({
     groupUpdate: ({ groupId }) =>
       mutate({
         variables: { groupUpdate: { groupId } },
+        update: (store, { data: { groupUpdate123 } }) => {
+          const data = store.readQuery({
+            query: ALL_GROUPS_QUERY,
+            variables: { id: ownProps.auth.token },
+          });
+          console.log(groupUpdate123)
+          data.user.groups.push(groupUpdate);
+
+          store.writeQuery({
+            query: ALL_GROUPS_QUERY,
+            variables: { id: ownProps.auth.token },
+            data,
+          });
+        },
       }),
   }),
 });
