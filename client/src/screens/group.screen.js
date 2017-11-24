@@ -129,7 +129,7 @@ Group.propTypes = {
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        group: PropTypes.string.isRequired,
+        group: PropTypes.object,
       }),
     }),
   }),
