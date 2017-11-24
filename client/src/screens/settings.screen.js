@@ -1,13 +1,10 @@
+/* global navigator */
 import React, { Component, PropTypes } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Button,
-  Image,
-  StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -36,7 +33,6 @@ const styles = extendAppStyleSheet({
     borderColor: '#777',
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    fontSize: 12,
     paddingHorizontal: 8,
     paddingBottom: 2,
     paddingTop: 5,
@@ -62,6 +58,7 @@ const styles = extendAppStyleSheet({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     paddingVertical: 8,
+    backgroundColor: '#ed3434',
   },
   userImage: {
     paddingHorizontal: 20,
@@ -81,18 +78,15 @@ const styles = extendAppStyleSheet({
     flexDirection: 'row',
     backgroundColor: '#dbdbdb',
     alignItems: 'center',
-    paddingVertical:8,
+    paddingVertical: 8,
     paddingRight: 0,
-  },
-  inputBorder: {
-    backgroundColor: '#ed3434',
   },
 });
 
 class Settings extends Component {
   static navigationOptions = {
     title: 'Settings',
-    tabBarIcon: ({ tintColor}) => <Icon size={28} name={'cog'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => <Icon size={28} name="cog" color={tintColor} />,
   };
 
   constructor(props) {
@@ -112,18 +106,21 @@ class Settings extends Component {
       );
     };
 
+    // `navigator` is a browser polyfill and does not need to be imported
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.props.updateLocation({locationLat: position.coords.latitude, locationLon: position.coords.longitude})
-        .then((result) => {
-          console.log('Updated location:');
-          console.log(result);
-        })
-        .catch((err) => {
-          reportError(err);
-        })
+        const { latitude, longitude } = position.coords;
+        this.props.updateLocation({ locationLat: latitude, locationLon: longitude })
+          .then((result) => {
+            const success = result.data.updateLocation;
+            console.log(`Updated location: ${latitude},${longitude} (${success})`);
+          })
+          .catch((err) => {
+            console.log(`Failed to update location: ${latitude},${longitude} (${err})`);
+            reportError(err);
+          });
       },
-      (error) => {
+      (err) => {
         reportError(err);
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
@@ -132,9 +129,6 @@ class Settings extends Component {
 
   logout() {
     this.props.dispatch(logout());
-  }
-
-  updateUsername(username) {
   }
 
   render() {
@@ -154,7 +148,7 @@ class Settings extends Component {
         <View style={styles.userContainer}>
           <View style={styles.userInner}>
             <Icon
-              name={'user'}
+              name="user"
               size={50}
               style={styles.userImage}
             />
@@ -163,29 +157,22 @@ class Settings extends Component {
             </Text>
           </View>
         </View>
-        <Text style={styles.emailHeader}>{'Email Account'}</Text>
+        <Text style={styles.emailHeader}>Email Account</Text>
         <Text style={styles.email}>{user.email}</Text>
-        <Text></Text>
-        <Text></Text>
-        <Button title={'Force Update Location'} onPress={this.updateLocation}/>
-        <Text></Text>
-        <Text></Text>
-        <Button title={'Logout'} onPress={this.logout} />
+        <Text />
+        <Text />
+        <Button title="Force Update Location" onPress={this.updateLocation} />
+        <Text />
+        <Text />
+        <Button title="Logout" onPress={this.logout} />
       </View>
     );
   }
 }
 
 Settings.propTypes = {
-  auth: PropTypes.shape({
-    loading: PropTypes.bool,
-    token: PropTypes.string,
-  }).isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
   updateLocation: PropTypes.func,
   user: PropTypes.shape({
     username: PropTypes.string,

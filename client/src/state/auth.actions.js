@@ -1,4 +1,4 @@
-import { client, wsClient } from '../app';
+import { client } from '../app';
 import { SET_CURRENT_USER, LOGOUT } from '../state/constants';
 
 export const setCurrentUser = user => ({

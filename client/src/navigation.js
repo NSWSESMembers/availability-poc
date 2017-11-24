@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import update from 'immutability-helper';
 import { REHYDRATE } from 'redux-persist/constants';
 
 import Home from './screens/home.screen';
@@ -20,17 +19,17 @@ const tabBarConfiguration = {
   tabBarPosition: 'bottom',
   tabBarOptions: {
     labelStyle: {
-        fontSize: 8,
+      fontSize: 8,
     },
     style: {
-        backgroundColor: 'white'
+      backgroundColor: 'white',
     },
     activeTintColor: 'teal',
     inactiveTintColor: 'black',
     showIcon: true,
-    showLabel: true
-  }
-}
+    showLabel: true,
+  },
+};
 
 // tabs in main screen
 const MainScreenNavigator = TabNavigator({
@@ -44,10 +43,9 @@ const MainScreenNavigator = TabNavigator({
 const AppNavigator = StackNavigator({
   Main: { screen: MainScreenNavigator },
   Signin: { screen: Signin },
-  Signin: { screen: Signin },
   NewGroup: { screen: NewGroup },
   SearchGroup: { screen: SearchGroup },
-  Group: { screen: Group},
+  Group: { screen: Group },
 }, {
   mode: 'modal',
 });
@@ -75,7 +73,7 @@ export const navigationReducer = (state = initialNavState, action) => {
         }
       }
       break;
-    case 'LOGOUT':
+    case 'LOGOUT': {
       const { routes, index } = state;
       if (routes[index].routeName !== 'Signin') {
         nextState = AppNavigator.router.getStateForAction(
@@ -84,6 +82,7 @@ export const navigationReducer = (state = initialNavState, action) => {
         );
       }
       break;
+    }
     default:
       nextState = AppNavigator.router.getStateForAction(action, state);
       break;
@@ -93,26 +92,14 @@ export const navigationReducer = (state = initialNavState, action) => {
   return nextState || state;
 };
 
-class AppWithNavigationState extends Component {
-  render() {
-    const { dispatch, nav } = this.props;
-    return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
-  }
-}
+const AppWithNavigationState = (props) => {
+  const { dispatch, nav } = props;
+  return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+};
 
 AppWithNavigationState.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    email: PropTypes.string.isRequired,
-    groups: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-      }),
-    ),
-  }),
+  nav: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = ({ auth, nav }) => ({

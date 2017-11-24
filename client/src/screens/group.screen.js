@@ -61,27 +61,24 @@ const Header = () => (
   <View style={styles.header} />
 );
 
-class Member extends Component {
-  render() {
-    const { id, username } = this.props.member;
-    return (
-      <TouchableHighlight key={id}>
-        <View style={styles.groupContainer}>
-          <Icon name="user" size={24} color="blue" />
-          <View style={styles.groupTextContainer}>
-            <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>{username}</Text>
-              <Text style={styles.groupLastUpdated}>{id}</Text>
-            </View>
-            <Text style={styles.groupUsername} />
-            <Text style={styles.groupText} numberOfLines={1} />
+const Member = (props) => {
+  const { id, username } = props.member;
+  return (
+    <TouchableHighlight key={id}>
+      <View style={styles.groupContainer}>
+        <Icon name="user" size={24} color="blue" />
+        <View style={styles.groupTextContainer}>
+          <View style={styles.groupTitleContainer}>
+            <Text style={styles.groupName} numberOfLines={1}>{username}</Text>
+            <Text style={styles.groupLastUpdated}>{id}</Text>
           </View>
+          <Text style={styles.groupUsername} />
+          <Text style={styles.groupText} numberOfLines={1} />
         </View>
-      </TouchableHighlight>
-    );
-  }
-}
-
+      </View>
+    </TouchableHighlight>
+  );
+};
 Member.propTypes = {
   member: PropTypes.shape({
     id: PropTypes.number.isRequired,
