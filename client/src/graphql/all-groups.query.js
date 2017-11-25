@@ -5,7 +5,10 @@ export default gql`
   query {
     user {
       id
+      username
       organisation {
+        id
+        name
          groups {
             name
             id
