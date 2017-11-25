@@ -1,12 +1,8 @@
 language: node_js
 node_js: 6
-cache:
-  yarn : true
-  directories:
-    - node_modules
-before_install: cd server
-before_script:
-  - yarn
-  - yarn run build
-  - yarn run serve &
-script: yarn test
+cache: yarn
+env:
+  - COMPONENT=client MODE=lint
+  - COMPONENT=server MODE=lint
+  - COMPONENT=server MODE=test
+script: bash travis.sh
