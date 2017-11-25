@@ -89,7 +89,7 @@ export const userHandler = {
       .then((existing) => {
         // make sure the username/email don't already exist
         if (existing) {
-          return Promise.reject('Username/email already exists');
+          return Promise.reject(Error('Username/email already exists'));
         }
         return null;
       })
@@ -158,7 +158,7 @@ export const userHandler = {
       if (!user) {
         // TODO: for security reasons change this message to something less
         // specific
-        return Promise.reject("Username doesn't exist");
+        return Promise.reject(Error("Username doesn't exist"));
       }
 
       // TODO: remove this and always verify the password
@@ -171,7 +171,7 @@ export const userHandler = {
         if (!res) {
           // TODO: for security reasons change this message to something less
           // specific
-          return Promise.reject('Invalid password');
+          return Promise.reject(Error('Invalid password'));
         }
 
         return userLoggedIn(user);
@@ -188,16 +188,16 @@ export const scheduleHandler = {
     const { name, groupId } = args.schedule;
 
     return Group.findById(groupId)
-    .then((group) => {
-      if (!group) {
-        return Promise.reject('Invalid group');
-      }
-      // TODO: check whether the user is a member of the group
-      return Creators.schedule({
-        name,
-        group,
+      .then((group) => {
+        if (!group) {
+          return Promise.reject(Error('Invalid group'));
+        }
+        // TODO: check whether the user is a member of the group
+        return Creators.schedule({
+          name,
+          group,
+        });
       });
-    });
   },
 };
 
@@ -235,16 +235,16 @@ export const groupHandler = {
   createGroup(_, args, ctx) {
     const { name } = args.group;
     return getAuthenticatedUser(ctx)
-    .then(user => Organisation.findById(user.organisationId)
-      .then(organisation => Creators.group({ name, user, organisation }))
-    );
+      .then(user => Organisation.findById(user.organisationId)
+        .then(organisation => Creators.group({ name, user, organisation })),
+      );
   },
   addUserToGroup(_, args, ctx) {
-    const { userId, groupId } = args.groupUpdate;
-    return getAuthenticatedUser(ctx).then((user) =>
+    const { groupId } = args.groupUpdate;
+    return getAuthenticatedUser(ctx).then(user =>
       Group.findById(groupId).then((group) => {
         if (!group) {
-          return Promise.reject('Invalid group!');
+          return Promise.reject(Error('Invalid group!'));
         }
         return group.addUser(user).then(() => group);
       }),

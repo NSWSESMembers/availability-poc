@@ -4,14 +4,11 @@ import {
   FlatList,
   ActivityIndicator,
   Button,
-  Image,
-  StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
@@ -57,22 +54,12 @@ const styles = extendAppStyleSheet({
   },
   scheduleUsername: {
     paddingVertical: 4,
-  }
-});
-
-// format createdAt with moment
-const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: 'dddd',
-  sameElse: 'DD/MM/YYYY',
+  },
 });
 
 const Header = ({ onPress }) => (
   <View style={styles.header}>
-    <Button title={'New Schedule'} onPress={onPress} />
+    <Button title="New Schedule" onPress={onPress} />
   </View>
 );
 Header.propTypes = {
@@ -94,22 +81,19 @@ class Schedule extends Component {
         onPress={this.goToSchedule}
       >
         <View style={styles.scheduleContainer}>
-          <Icon name="calendar-check-o" size={24} color={'orange'} />
+          <Icon name="calendar-check-o" size={24} color="orange" />
           <View style={styles.scheduleTextContainer}>
             <View style={styles.scheduleTitleContainer}>
               <Text style={styles.scheduleName}>{`${name}`}</Text>
-              <Text style={styles.scheduleLastUpdated}>
-              </Text>
+              <Text style={styles.scheduleLastUpdated} />
             </View>
-            <Text style={styles.scheduleUsername}>
-            </Text>
-            <Text style={styles.scheduleText} numberOfLines={1}>
-            </Text>
+            <Text style={styles.scheduleUsername} />
+            <Text style={styles.scheduleText} numberOfLines={1} />
           </View>
           <Icon
             name="angle-right"
             size={24}
-            color={'#8c8c8c'}
+            color="#8c8c8c"
           />
         </View>
       </TouchableHighlight>
@@ -128,7 +112,7 @@ Schedule.propTypes = {
 class Schedules extends Component {
   static navigationOptions = {
     title: 'Schedules',
-    tabBarIcon: ({ tintColor}) => <Icon size={24} name={'calendar-check-o'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar-check-o" color={tintColor} />,
   };
 
   constructor(props) {
@@ -172,7 +156,7 @@ class Schedules extends Component {
       return (
         <View style={styles.container}>
           <Header onPress={this.goToNewSchedule} />
-          <Text style={styles.warning}>{'You do not have any schedules.'}</Text>
+          <Text style={styles.warning}>You do not have any schedules.</Text>
         </View>
       );
     }

@@ -103,7 +103,7 @@ class Signin extends Component {
       loading: true,
     });
 
-    const deviceUuid = this.props.local.deviceUuid;
+    const { deviceUuid } = this.props.local;
     console.log(`Logging in with device UUID: ${deviceUuid}`);
 
     this.props.login({ username, password, deviceUuid })
@@ -111,7 +111,7 @@ class Signin extends Component {
         const ourUser = {
           username: user.username,
           token: user.authToken,
-        }
+        };
         this.props.dispatch(setCurrentUser(ourUser));
         this.setState({
           loading: false,
@@ -135,14 +135,14 @@ class Signin extends Component {
     this.setState({
       loading: true,
     });
-    const deviceUuid = this.props.local.deviceUuid;
+    const { deviceUuid } = this.props.local;
     const { username, password, email } = this.state;
     this.props.signup({ username, email, password, deviceUuid })
       .then(({ data: { signup: user } }) => {
         const ourUser = {
           username: user.username,
           token: user.authToken,
-        }
+        };
         this.props.dispatch(setCurrentUser(ourUser));
         this.setState({
           loading: false,
@@ -154,7 +154,7 @@ class Signin extends Component {
         Alert.alert(
           `${capitalizeFirstLetter(this.state.view)} error`,
           error.message,
-          [{ text: 'OK', onPress: () => console.log('OK pressed') }],  // eslint-disable-line no-console
+          [{ text: 'OK', onPress: () => console.log('OK pressed') }], // eslint-disable-line no-console
         );
       });
   }
@@ -170,7 +170,7 @@ class Signin extends Component {
 
     return (
       <KeyboardAvoidingView
-        behavior={'padding'}
+        behavior="padding"
         style={styles.container}
       >
         {this.state.loading ?
@@ -185,22 +185,22 @@ class Signin extends Component {
         <View style={styles.inputContainer}>
           <TextInput
             onChangeText={username => this.setState({ username })}
-            placeholder={'Username'}
-            autoCapitalize={'none'}
+            placeholder="Username"
+            autoCapitalize="none"
             autoCorrect={false}
             style={styles.input}
           />
           {view === 'signup' ?
             <TextInput
               onChangeText={email => this.setState({ email })}
-              placeholder={'Email'}
-              autoCapitalize={'none'}
+              placeholder="Email"
+              autoCapitalize="none"
               autoCorrect={false}
               style={styles.input}
             /> : undefined}
           <TextInput
             onChangeText={password => this.setState({ password })}
-            placeholder={'Password'}
+            placeholder="Password"
             secureTextEntry
             style={styles.input}
           />
@@ -232,11 +232,16 @@ Signin.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
   }),
+  local: PropTypes.shape({
+    deviceUuid: PropTypes.string,
+  }),
   auth: PropTypes.shape({
     loading: PropTypes.bool,
     token: PropTypes.string,
   }),
   dispatch: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
+  signup: PropTypes.func.isRequired,
 };
 
 const login = graphql(LOGIN_MUTATION, {
@@ -258,7 +263,7 @@ const signup = graphql(SIGNUP_MUTATION, {
 });
 
 const mapStateToProps = ({ auth, local }) => ({
-  auth, local
+  auth, local,
 });
 
 export default compose(

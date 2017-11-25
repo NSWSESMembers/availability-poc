@@ -6,28 +6,28 @@ import { StyleSheet } from 'react-native';
 export const appStyles = {
   container: {
     backgroundColor: 'white',
-    flex: 1
+    flex: 1,
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   loading: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'flex-start',
     borderBottomWidth: 1,
     borderColor: '#eee',
-    padding: 6
+    padding: 6,
   },
   warning: {
     padding: 12,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   input: {
     color: 'black',
-    height: 32
+    height: 32,
   },
   h2: {
     color: '#000',
@@ -35,12 +35,12 @@ export const appStyles = {
   },
   h3: {
     color: '#000',
-    fontSize: 18
+    fontSize: 18,
   },
   h4: {
     color: '#000',
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 };
 
 /**

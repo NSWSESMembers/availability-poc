@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   AsyncStorage,
 } from 'react-native';
@@ -7,7 +7,6 @@ import { ApolloProvider } from 'react-apollo';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
@@ -20,6 +19,7 @@ import { GRAPHQL_ENDPOINT } from './config';
 
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
+let store;
 
 // middleware for requests
 networkInterface.use([{
@@ -28,7 +28,7 @@ networkInterface.use([{
       req.options.headers = {};
     }
     // get the authentication token from local storage if it exists
-    const token = store.getState().auth.token;
+    const { token } = store.getState().auth;
     if (token) {
       req.options.headers.authorization = `Bearer ${token}`;
     }
@@ -64,10 +64,10 @@ networkInterface.useAfter([{
 }]);
 
 export const client = new ApolloClient({
-  networkInterface: networkInterface,
+  networkInterface,
 });
 
-const store = createStore(
+store = createStore(
   combineReducers({
     apollo: client.reducer(),
     nav: navigationReducer,
@@ -87,12 +87,10 @@ persistStore(store, {
   blacklist: ['apollo', 'nav'], // don't persist apollo or nav for now
 });
 
-export default class App extends Component {
-  render() {
-    return (
-      <ApolloProvider store={store} client={client}>
-        <AppWithNavigationState />
-      </ApolloProvider>
-    );
-  }
-}
+const App = () => (
+  <ApolloProvider store={store} client={client}>
+    <AppWithNavigationState />
+  </ApolloProvider>
+);
+
+export default App;

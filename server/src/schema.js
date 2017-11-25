@@ -1,7 +1,5 @@
-import { addMockFunctionsToSchema, makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from 'graphql-tools';
 import { Resolvers } from './resolvers';
-
-import { Mocks } from './mocks';
 
 export const Schema = [`
 
@@ -164,6 +162,10 @@ export const executableSchema = makeExecutableSchema({
 });
 
 /*
+Add this to make the server produce mocked data for any undefined resolvers.
+
+import { addMockFunctionsToSchema } from 'graphql-tools';
+
 addMockFunctionsToSchema({
   schema: executableSchema,
   mocks: Mocks,

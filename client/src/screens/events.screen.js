@@ -4,14 +4,11 @@ import {
   FlatList,
   ActivityIndicator,
   Button,
-  Image,
-  StyleSheet,
   Text,
   TouchableHighlight,
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
@@ -70,19 +67,9 @@ const styles = extendAppStyleSheet({
   },
 });
 
-// format createdAt with moment
-const formatCreatedAt = createdAt => moment(createdAt).calendar(null, {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: 'dddd',
-  sameElse: 'DD/MM/YYYY',
-});
-
 const Header = ({ onPress }) => (
   <View style={styles.header}>
-    <Button title={'New Event'} onPress={onPress} />
+    <Button title="New Event" onPress={onPress} />
   </View>
 );
 Header.propTypes = {
@@ -104,21 +91,19 @@ class Event extends Component {
         onPress={this.goToMessages}
       >
         <View style={styles.eventContainer}>
-          <Icon name="bullhorn" size={24} color={'orange'} />
+          <Icon name="bullhorn" size={24} color="orange" />
           <View style={styles.eventTextContainer}>
             <View style={styles.eventTitleContainer}>
               <Text style={styles.eventName}>{details}</Text>
               <Text style={styles.eventLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.eventUsername}>
-            </Text>
-            <Text style={styles.eventText} numberOfLines={1}>
-            </Text>
+            <Text style={styles.eventUsername} />
+            <Text style={styles.eventText} numberOfLines={1} />
           </View>
           <Icon
             name="angle-right"
             size={24}
-            color={'#8c8c8c'}
+            color="#8c8c8c"
           />
         </View>
       </TouchableHighlight>
@@ -131,13 +116,14 @@ Event.propTypes = {
   event: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    details: PropTypes.string,
   }),
 };
 
 class Events extends Component {
   static navigationOptions = {
     title: 'Events',
-    tabBarIcon: ({ tintColor}) => <Icon size={26} name={'bullhorn'} color={tintColor} />
+    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
   constructor(props) {
@@ -181,7 +167,7 @@ class Events extends Component {
       return (
         <View style={styles.container}>
           <Header onPress={this.goToNewEvent} />
-          <Text style={styles.warning}>{'You do not have any events.'}</Text>
+          <Text style={styles.warning}>You do not have any events.</Text>
         </View>
       );
     }

@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
@@ -14,14 +13,14 @@ const styles = extendAppStyleSheet({
     borderColor: '#CCC',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10
+    padding: 10,
   },
   availabilityRow: {
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#CCC',
     flexDirection: 'row',
-    padding: 6
+    padding: 6,
   },
   indicator: {
     backgroundColor: 'yellow',
@@ -31,15 +30,15 @@ const styles = extendAppStyleSheet({
     height: 20,
     marginLeft: 6,
     marginRight: 12,
-    width: 20
+    width: 20,
   },
   available: {
     backgroundColor: '#77D353',
-    borderColor: '#44A020'
+    borderColor: '#44A020',
   },
   unavailable: {
     backgroundColor: '#F95F62',
-    borderColor: '#930000'
+    borderColor: '#930000',
   },
   eventCard: {
     backgroundColor: '#EEE',
@@ -47,122 +46,113 @@ const styles = extendAppStyleSheet({
     borderWidth: 1,
     margin: 10,
     marginBottom: 0,
-    padding: 10
+    padding: 10,
   },
   eventHeading: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   eventAgo: {
     color: '#333',
-    fontSize: 10
+    fontSize: 10,
   },
   eventUrgent: {
-    borderColor: 'red'
-  }
+    borderColor: 'red',
+  },
 });
 
 class Home extends Component {
   static navigationOptions = {
     title: 'Home',
-    tabBarIcon: ({ tintColor }) => <Icon size={34} name='home' color={tintColor} />
+    tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
   };
 
+  static onOverrideAvailabilityPressed() {
+  }
+
   render() {
+    const renderAvailabilityItem = ({ item }) => {
+      const colour = item.available ? styles.available : styles.unavailable;
+
+      return (
+        <View style={styles.availabilityRow}>
+          <View style={[styles.indicator, colour]} />
+          <View>
+            <Text style={styles.h3}>{item.name}</Text>
+            <Text>{item.summary}</Text>
+          </View>
+        </View>
+      );
+    };
+
+    const renderEventItem = ({ item }) => {
+      const urgency = item.isUrgent ? styles.eventUrgent : null;
+
+      return (
+        <View style={[styles.eventCard, urgency]}>
+          <View style={styles.eventHeading}>
+            <Text style={styles.h4}>{item.title}</Text>
+            <Text style={styles.eventAgo}>{item.when}</Text>
+          </View>
+          <Text>{item.description}</Text>
+        </View>
+      );
+    };
+
     const availability = [
       {
         key: 0,
-        name: "Fantastic Rescue",
+        name: 'Fantastic Rescue',
         available: true,
-        summary: "available until 12:00"
+        summary: 'available until 12:00',
       },
       {
         key: 1,
-        name: "Super-duper Storm Damage",
+        name: 'Super-duper Storm Damage',
         available: false,
-        summary: "available tomorrow"
-      }
+        summary: 'available tomorrow',
+      },
     ];
 
     const events = [
       {
         key: 0,
-        title: "Super-important Rescue Thing",
+        title: 'Super-important Rescue Thing',
         isUrgent: true,
-        when: "5m ago",
-        description: "Some people probably need some help"
+        when: '5m ago',
+        description: 'Some people probably need some help',
       },
       {
         key: 1,
-        title: "Just a Regular Old Thing",
+        title: 'Just a Regular Old Thing',
         isUrgent: false,
-        when: "1d ago",
-        description: "You too can sign up to to this exciting training course!"
-      }
-    ]
+        when: '1d ago',
+        description: 'You too can sign up to to this exciting training course!',
+      },
+    ];
 
     return (
       <View style={styles.container}>
         <View style={styles.sectionHeading}>
           <Text style={styles.h2}>My Current Availability</Text>
-          <Icon size={24} name='power-off' />
+          <Icon size={24} name="power-off" />
         </View>
         <View>
           <FlatList
             data={availability}
-            renderItem={this.renderAvailabilityItem.bind(this)}
+            renderItem={renderAvailabilityItem}
           />
         </View>
         <View>
           <FlatList
             data={events}
-            renderItem={this.renderEventItem.bind(this)}
+            renderItem={renderEventItem}
           />
         </View>
       </View>
     );
   }
-
-  renderAvailabilityItem({ item }) {
-    const colour = item.available ? styles.available : styles.unavailable;
-
-    return (
-      <View style={styles.availabilityRow}>
-        <View style={[styles.indicator, colour]} />
-        <View>
-          <Text style={styles.h3}>{item.name}</Text>
-          <Text>{item.summary}</Text>
-        </View>
-      </View>
-    );
-  }
-
-  renderEventItem({ item }) {
-    const urgency = item.isUrgent ? styles.eventUrgent : null;
-
-    return (
-      <View style={[styles.eventCard, urgency]}>
-        <View style={styles.eventHeading}>
-          <Text style={styles.h4}>{item.title}</Text>
-          <Text style={styles.eventAgo}>{item.when}</Text>
-        </View>
-        <Text>{item.description}</Text>
-      </View>
-    )
-  }
-
-  onOverrideAvailabilityPressed() {
-  }
 }
-
-Home.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
-  loading: PropTypes.bool,
-  networkStatus: PropTypes.number,
-  refetch: PropTypes.func,
-};
 
 const mapStateToProps = ({ auth }) => ({
   auth,
