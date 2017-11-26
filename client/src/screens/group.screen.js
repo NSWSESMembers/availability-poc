@@ -126,7 +126,22 @@ Group.propTypes = {
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        group: PropTypes.string.isRequired,
+        group: PropTypes.shape({
+          id: PropTypes.number,
+          name: PropTypes.string,
+          tags: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+            }),
+          ),
+          users: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              username: PropTypes.string.isRequired,
+            }),
+          ),
+        }),
       }),
     }),
   }),
