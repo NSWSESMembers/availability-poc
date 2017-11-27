@@ -12,13 +12,18 @@ export const loadTestData = () =>
         email: 'test@test.com',
         organisation,
       }).then(user =>
-        Promise.all([
-          Creators.group({
-            name: 'Flood Rescue Techs',
-            user,
-            organisation,
+        Creators.group({
+          name: 'SWR Flood Rescue Techs',
+          user,
+          organisation,
+        }).then(group => Promise.all([
+          Creators.schedule({
+            group,
+            name: 'SWR FR Roster',
+            details: 'SWR FR availability',
           }),
         ]),
+        ),
       ),
       Creators.user({
         id: 69,
