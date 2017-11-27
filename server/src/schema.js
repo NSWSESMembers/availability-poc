@@ -115,6 +115,7 @@ export const Schema = [`
   }
 
   type Schedule {
+    group: Group!
     id: Int!
     name: String!
     details: String!
