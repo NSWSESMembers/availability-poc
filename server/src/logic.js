@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
 import JWT_SECRET from './config';
-import { Group, User, Device, Organisation } from './models';
+import { Group, User, Device, Organisation, Schedule } from './models';
 import Creators from './creators';
 
 // reusable function to check for a user with context
@@ -60,8 +61,11 @@ export const userHandler = {
     return user.getEvents();
   },
   schedules() {
-    // TODO: implement this
-    return [];
+    return Schedule.findAll({
+      include: [
+        { model: Group, required: true },
+      ],
+    });
   },
   organisation(user) {
     return user.getOrganisation();

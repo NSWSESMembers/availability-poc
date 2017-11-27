@@ -98,13 +98,10 @@ describe('GraphQL query - Current user', () => {
           id
           schedules {
             id
-            timeSegments {
-              schedule {
-                id
-              }
-              user {
-                id
-              }
+            name
+            group {
+              id
+              name
             }
           }
         }
@@ -112,6 +109,14 @@ describe('GraphQL query - Current user', () => {
     `);
 
     itReturnsSuccess(response);
+    it('Returns entity', () => response.then((res) => {
+      expect(res.data.user.schedules[0]).toHaveProperty('id');
+      expect(res.data.user.schedules[0]).toHaveProperty('name');
+    }));
+    it('Returns group', () => response.then((res) => {
+      expect(res.data.user.schedules[0].group).toHaveProperty('id');
+      expect(res.data.user.schedules[0].group).toHaveProperty('name');
+    }));
   });
 
   describe('Get events', () => {

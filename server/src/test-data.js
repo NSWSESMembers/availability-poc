@@ -11,7 +11,15 @@ export const loadTestData = () =>
         password: '123',
         email: 'test@test.com',
         organisation,
-      }),
+      }).then(user =>
+        Promise.all([
+          Creators.group({
+            name: 'Flood Rescue Techs',
+            user,
+            organisation,
+          }),
+        ]),
+      ),
       Creators.user({
         id: 69,
         username: 'chris',
@@ -53,11 +61,6 @@ export const loadTestData = () =>
           }),
           Creators.group({
             name: 'Kiama',
-            user,
-            organisation,
-          }),
-          Creators.group({
-            name: 'Parramatta',
             user,
             organisation,
           }),
