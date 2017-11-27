@@ -4,10 +4,9 @@ import {
 } from 'react-native';
 
 import { ApolloProvider } from 'react-apollo';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware, compose } from 'redux';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { persistStore, autoRehydrate } from 'redux-persist';
+import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
 
@@ -67,25 +66,30 @@ export const client = new ApolloClient({
   networkInterface,
 });
 
+const reduxConfig = {
+  key: 'primary',
+  debug: __DEV__,
+  storage: AsyncStorage,
+  blacklist: ['apollo', 'nav'], // don't persist apollo or nav for now
+};
+
+const reducers = {
+  apollo: client.reducer(),
+  nav: navigationReducer,
+  auth,
+  local,
+};
+
 store = createStore(
-  combineReducers({
-    apollo: client.reducer(),
-    nav: navigationReducer,
-    auth,
-    local,
-  }),
+  persistCombineReducers(reduxConfig, reducers),
   {}, // initial state
-  composeWithDevTools(
+  compose(
     applyMiddleware(client.middleware(), thunk),
-    autoRehydrate(),
   ),
 );
 
 // persistent storage
-persistStore(store, {
-  storage: AsyncStorage,
-  blacklist: ['apollo', 'nav'], // don't persist apollo or nav for now
-});
+persistStore(store);
 
 const App = () => (
   <ApolloProvider store={store} client={client}>
