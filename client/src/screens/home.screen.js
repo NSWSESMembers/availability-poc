@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import { FlatList, Text, View } from 'react-native';
+import { ListItem, Separator } from '../components/List';
+
+import availability from '../fixtures/availability';
+import events from '../fixtures/events';
 
 import { extendAppStyleSheet } from './style-sheet';
 
@@ -15,50 +19,6 @@ const styles = extendAppStyleSheet({
     justifyContent: 'space-between',
     padding: 10,
   },
-  availabilityRow: {
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#CCC',
-    flexDirection: 'row',
-    padding: 6,
-  },
-  indicator: {
-    backgroundColor: 'yellow',
-    borderColor: 'black',
-    borderRadius: 10,
-    borderWidth: 1,
-    height: 20,
-    marginLeft: 6,
-    marginRight: 12,
-    width: 20,
-  },
-  available: {
-    backgroundColor: '#77D353',
-    borderColor: '#44A020',
-  },
-  unavailable: {
-    backgroundColor: '#F95F62',
-    borderColor: '#930000',
-  },
-  eventCard: {
-    backgroundColor: '#EEE',
-    borderColor: '#CCC',
-    borderWidth: 1,
-    margin: 10,
-    marginBottom: 0,
-    padding: 10,
-  },
-  eventHeading: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  eventAgo: {
-    color: '#333',
-    fontSize: 10,
-  },
-  eventUrgent: {
-    borderColor: 'red',
-  },
 });
 
 class Home extends Component {
@@ -67,70 +27,15 @@ class Home extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
   };
 
-  static onOverrideAvailabilityPressed() {
-  }
+  handleAvailabilityPress = () => {
+    console.log('handle availability press');
+  };
+
+  handleEventPress = () => {
+    console.log('handle event press');
+  };
 
   render() {
-    const renderAvailabilityItem = ({ item }) => {
-      const colour = item.available ? styles.available : styles.unavailable;
-
-      return (
-        <View style={styles.availabilityRow}>
-          <View style={[styles.indicator, colour]} />
-          <View>
-            <Text style={styles.h3}>{item.name}</Text>
-            <Text>{item.summary}</Text>
-          </View>
-        </View>
-      );
-    };
-
-    const renderEventItem = ({ item }) => {
-      const urgency = item.isUrgent ? styles.eventUrgent : null;
-
-      return (
-        <View style={[styles.eventCard, urgency]}>
-          <View style={styles.eventHeading}>
-            <Text style={styles.h4}>{item.title}</Text>
-            <Text style={styles.eventAgo}>{item.when}</Text>
-          </View>
-          <Text>{item.description}</Text>
-        </View>
-      );
-    };
-
-    const availability = [
-      {
-        key: 0,
-        name: 'Fantastic Rescue',
-        available: true,
-        summary: 'available until 12:00',
-      },
-      {
-        key: 1,
-        name: 'Super-duper Storm Damage',
-        available: false,
-        summary: 'available tomorrow',
-      },
-    ];
-
-    const events = [
-      {
-        key: 0,
-        title: 'Super-important Rescue Thing',
-        isUrgent: true,
-        when: '5m ago',
-        description: 'Some people probably need some help',
-      },
-      {
-        key: 1,
-        title: 'Just a Regular Old Thing',
-        isUrgent: false,
-        when: '1d ago',
-        description: 'You too can sign up to to this exciting training course!',
-      },
-    ];
-
     return (
       <View style={styles.container}>
         <View style={styles.sectionHeading}>
@@ -140,13 +45,31 @@ class Home extends Component {
         <View>
           <FlatList
             data={availability}
-            renderItem={renderAvailabilityItem}
+            renderItem={({ item }) => (
+              <ListItem
+                text={item.name}
+                summary={item.summary}
+                selected={item.available}
+                onPress={() => this.handleAvailabilityPress(item)}
+              />
+            )}
+            keyExtractor={item => item.key}
+            ItemSeparatorComponent={Separator}
           />
         </View>
         <View>
           <FlatList
             data={events}
-            renderItem={renderEventItem}
+            renderItem={({ item }) => (
+              <ListItem
+                type="box"
+                text={item.title}
+                summary={item.description}
+                selected={item.isUrgent}
+                onPress={() => this.handleEventPress(item)}
+              />
+            )}
+            keyExtractor={item => item.key}
           />
         </View>
       </View>
