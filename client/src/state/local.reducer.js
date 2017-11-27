@@ -1,7 +1,7 @@
 // This is meant for config that is local to this device and is kept regardless
 // of which user is logged in/logged out.
 
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist';
 import Immutable from 'seamless-immutable';
 
 import { uuidv4 } from '../utils';
@@ -14,7 +14,7 @@ const local = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
       // convert persisted data to Immutable and confirm rehydration
-      const currentState = action.payload.auth || state;
+      const currentState = action.payload && action.payload.auth ? action.payload.auth : state;
       const newState = {};
       if (!currentState.deviceUuid) {
         const deviceUuid = uuidv4();

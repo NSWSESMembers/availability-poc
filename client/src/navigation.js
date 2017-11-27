@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import { REHYDRATE } from 'redux-persist/constants';
+import { REHYDRATE } from 'redux-persist';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
@@ -63,7 +63,7 @@ export const navigationReducer = (state = initialNavState, action) => {
   switch (action.type) {
     case REHYDRATE:
       // convert persisted data to Immutable and confirm rehydration
-      if (!action.payload.auth || !action.payload.auth.token) {
+      if (!action.payload || !action.payload.auth || !action.payload.auth.token) {
         const { routes, index } = state;
         if (routes[index].routeName !== 'Signin') {
           nextState = AppNavigator.router.getStateForAction(

@@ -173,7 +173,7 @@ FinalizeGroup.propTypes = {
 };
 
 const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
-  props: ({ ownProps, mutate }) => ({
+  props: ({ mutate }) => ({
     createGroup: ({ name }) =>
       mutate({
         variables: { group: { name } },
@@ -181,16 +181,14 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
           // Read the data from our cache for this query.
           const data = store.readQuery({
             query: CURRENT_USER_QUERY,
-            variables: { id: ownProps.auth.id },
           });
 
-          // Add our message from the mutation to the end.
+          // Add our group from the mutation to the end.
           data.user.groups.push(createGroup);
 
           // Write our data back to the cache.
           store.writeQuery({
             query: CURRENT_USER_QUERY,
-            variables: { id: ownProps.auth.id },
             data,
           });
         },
