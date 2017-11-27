@@ -6,6 +6,9 @@ module.exports = {
     "jsx-a11y",
     "import"
   ],
+  "globals": {
+    "__DEV__": false, // enforce immutability
+  },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/require-default-props": [0],
