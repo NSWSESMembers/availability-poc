@@ -60,11 +60,10 @@ export const userHandler = {
   events(user) {
     return user.getEvents();
   },
-  schedules() {
+  schedules(user) {
+    const groups = user.getGroups();
     return Schedule.findAll({
-      include: [
-        { model: Group, required: true },
-      ],
+      where: { groupId: { $in: groups.map(g => g.id) } },
     });
   },
   organisation(user) {
