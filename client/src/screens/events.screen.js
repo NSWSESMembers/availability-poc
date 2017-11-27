@@ -29,6 +29,7 @@ const styles = extendAppStyleSheet({
   eventName: {
     fontWeight: 'bold',
     flex: 0.7,
+    fontSize: 16,
   },
   eventTextContainer: {
     flex: 1,
@@ -37,6 +38,7 @@ const styles = extendAppStyleSheet({
   },
   eventText: {
     color: '#8c8c8c',
+    fontSize: 14,
   },
   eventImage: {
     width: 54,
@@ -49,7 +51,7 @@ const styles = extendAppStyleSheet({
   eventLastUpdated: {
     flex: 0.3,
     color: '#8c8c8c',
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'right',
   },
   eventUsername: {
@@ -84,21 +86,20 @@ class Event extends Component {
   }
 
   render() {
-    const { id, details } = this.props.event;
+    const { id, name, time, details } = this.props.event;
     return (
       <TouchableHighlight
         key={id}
-        onPress={this.goToMessages}
+        onPress={this.goToEvent}
       >
         <View style={styles.eventContainer}>
           <Icon name="bullhorn" size={24} color="orange" />
           <View style={styles.eventTextContainer}>
             <View style={styles.eventTitleContainer}>
-              <Text style={styles.eventName}>{details}</Text>
-              <Text style={styles.eventLastUpdated}>{id}</Text>
+              <Text style={styles.eventName}>{name}</Text>
+              <Text style={styles.eventLastUpdated}>{time}</Text>
             </View>
-            <Text style={styles.eventUsername} />
-            <Text style={styles.eventText} numberOfLines={1} />
+            <Text style={styles.eventText} numberOfLines={2}>{details}</Text>
           </View>
           <Icon
             name="angle-right"
@@ -116,6 +117,7 @@ Event.propTypes = {
   event: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    time: PropTypes.string,
     details: PropTypes.string,
   }),
 };
@@ -141,7 +143,7 @@ class Events extends Component {
 
   goToEvent(event) {
     const { navigate } = this.props.navigation;
-    navigate('Event', { eventId: event.id, title: event.name });
+    navigate('Event', { event, title: event.name });
   }
 
   goToNewEvent() {
@@ -154,6 +156,82 @@ class Events extends Component {
   render() {
     const { loading, user, networkStatus } = this.props;
 
+    const events = [
+      {
+        id: 1,
+        name: 'KMA Rescue - RCR',
+        time: '3 mins ago',
+        details: 'RCR at Princes Highway car vs truck. Lots of other really important details ' +
+                 'about this job are right here and easily accessible.',
+        responses: [
+          {
+            id: 6,
+            user: {
+              name: 'Alice Alpha',
+            },
+            status: 'Responding',
+            detail: '10 mins from HQ',
+          },
+          {
+            id: 7,
+            user: {
+              name: 'Bob Bravo',
+            },
+            status: 'Responding',
+            detail: '25 mins from HQ',
+          },
+          {
+            id: 9,
+            user: {
+              name: 'Charlie Charlie',
+            },
+            status: 'Unavailable',
+            detail: 'At work',
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: 'KMA Rescue - VR',
+        time: '10 mins ago',
+        details: 'Vertial rescue. 2 climbers stuck at bottom of Carrington falls',
+        responses: [
+          {
+            id: 9,
+            user: {
+              name: 'Daniel Delta',
+            },
+            status: 'Responding',
+            detail: '5 mins from HQ',
+          },
+          {
+            id: 10,
+            user: {
+              name: 'Erin Echo',
+            },
+            status: 'Unavailable',
+            detail: 'Busy',
+          },
+          {
+            id: 11,
+            user: {
+              name: 'Felicity Foxtrot',
+            },
+            status: 'Tentative',
+            detail: '45 mins until available',
+          },
+          {
+            id: 12,
+            user: {
+              name: 'Gary Golf',
+            },
+            status: 'Responding',
+            detail: 'At HQ',
+          },
+        ],
+      },
+    ];
+
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -163,7 +241,7 @@ class Events extends Component {
       );
     }
 
-    if (user && !user.events.length) {
+    if (!events.length) {
       return (
         <View style={styles.container}>
           <Header onPress={this.goToNewEvent} />
@@ -176,7 +254,7 @@ class Events extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={user.events}
+          data={events}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
           ListHeaderComponent={() => <Header onPress={this.goToNewEvent} />}
