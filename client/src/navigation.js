@@ -13,6 +13,7 @@ import Signin from './screens/signin.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
+import EventDetail from './screens/event-detail.screen';
 
 
 const tabBarConfiguration = {
@@ -46,6 +47,7 @@ const AppNavigator = StackNavigator({
   NewGroup: { screen: NewGroup },
   SearchGroup: { screen: SearchGroup },
   Group: { screen: Group },
+  Event: { screen: EventDetail },
 }, {
   mode: 'modal',
 });
