@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 
 import JWT_SECRET from './config';
-import { Group, User, Device, Organisation, Schedule } from './models';
+import { Group, User, Device, Organisation, Schedule, TimeSegment } from './models';
 import Creators from './creators';
 
 // reusable function to check for a user with context
@@ -61,10 +61,10 @@ export const userHandler = {
     return user.getEvents();
   },
   schedules(user) {
-    const groups = user.getGroups();
-    return Schedule.findAll({
-      where: { groupId: { $in: groups.map(g => g.id) } },
-    });
+    return user.getGroups()
+      .then(groups => Schedule.findAll({
+        where: { groupId: groups.map(g => g.id) },
+      }));
   },
   organisation(user) {
     return user.getOrganisation();
@@ -184,8 +184,14 @@ export const userHandler = {
 };
 
 export const scheduleHandler = {
-  timeSegments(schedule) {
-    return schedule.getTimeSegments();
+  timeSegments(schedule, args, ctx) {
+    return getAuthenticatedUser(ctx)
+      .then(user => TimeSegment.findAll({
+        where: { $and: [{ userId: user.id }, { scheduleId: schedule.id }] },
+      }));
+  },
+  group(schedule) {
+    return schedule.getGroup();
   },
   createSchedule(_, args) {
     const { name, groupId } = args.schedule;

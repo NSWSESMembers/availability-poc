@@ -103,6 +103,11 @@ describe('GraphQL query - Current user', () => {
               id
               name
             }
+            timeSegments {
+              endTime
+              startTime
+              status
+            }
           }
         }
       }
@@ -116,6 +121,9 @@ describe('GraphQL query - Current user', () => {
     it('Returns group', () => response.then((res) => {
       expect(res.data.user.schedules[0].group).toHaveProperty('id');
       expect(res.data.user.schedules[0].group).toHaveProperty('name');
+    }));
+    it('Returns time segment block', () => response.then((res) => {
+      expect(res.data.user.schedules[0]).toHaveProperty('timeSegments');
     }));
   });
 

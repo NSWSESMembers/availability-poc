@@ -51,6 +51,9 @@ export const Resolvers = {
     timeSegments(schedule, args, ctx) {
       return scheduleHandler.timeSegments(schedule, args, ctx);
     },
+    group(schedule, args, ctx) {
+      return scheduleHandler.group(schedule, args, ctx);
+    },
   },
   Organisation: {
     groups(org, args, ctx) {
