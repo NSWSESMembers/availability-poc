@@ -60,7 +60,7 @@ const TimeSegmentModel = db.define('timesegment', {
 });
 
 const EventResponseModel = db.define('eventresponse', {
-  status: { type: Sequelize.INTEGER },
+  status: { type: Sequelize.STRING },
   detail: { type: Sequelize.STRING },
   destination: { type: Sequelize.STRING },
   eta: { type: Sequelize.INTEGER },

@@ -101,10 +101,10 @@ export const Schema = [`
   }
 
   type Event {
-    group: Group!
     id: Int!
     name: String!
     details: String!
+    group: Group!
     responses: [EventResponse]!
   }
 
