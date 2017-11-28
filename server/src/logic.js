@@ -7,7 +7,6 @@ import {
   Device,
   Organisation,
   Schedule,
-  TimeSegment,
   Event,
   EventResponse,
 } from './models';
@@ -214,6 +213,12 @@ export const scheduleHandler = {
           group,
         });
       });
+  },
+};
+
+export const timeSegmentHandler = {
+  user(timesegment) {
+    return timesegment.getUser();
   },
 };
 

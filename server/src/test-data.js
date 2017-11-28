@@ -80,6 +80,7 @@ export const loadTestData = () =>
               details: 'Weekly storm availability',
             }).then(schedule =>
               Creators.timeSegment({
+                status: 'Available',
                 startTime: 1511853428,
                 endTime: 1511854428,
                 schedule,

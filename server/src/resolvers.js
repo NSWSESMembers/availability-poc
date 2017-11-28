@@ -1,6 +1,7 @@
 import {
   deviceHandler,
   scheduleHandler,
+  timeSegmentHandler,
   groupHandler,
   userHandler,
   organisationHandler,
@@ -55,6 +56,11 @@ export const Resolvers = {
     },
     group(schedule, args, ctx) {
       return scheduleHandler.group(schedule, args, ctx);
+    },
+  },
+  TimeSegment: {
+    user(timesegment, args, ctx) {
+      return timeSegmentHandler.user(timesegment, args, ctx);
     },
   },
   Event: {
