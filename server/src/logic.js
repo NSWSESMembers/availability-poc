@@ -225,9 +225,7 @@ export const eventHandler = {
     return event.getGroup();
   },
   responses(event) {
-    return EventResponse.findAll({
-      where: { EventId: event.id },
-    });
+    return event.getEventresponses();
   },
 };
 
