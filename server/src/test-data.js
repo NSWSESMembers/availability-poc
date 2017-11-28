@@ -78,7 +78,13 @@ export const loadTestData = () =>
               group,
               name: 'Wollongong S&W',
               details: 'Weekly storm availability',
-            }),
+            }).then(schedule =>
+              Creators.timeSegment({
+                startTime: 1511853428,
+                endTime: 1511854428,
+                schedule,
+                user,
+              })),
             Creators.schedule({
               group,
               name: 'Wollongong VR',

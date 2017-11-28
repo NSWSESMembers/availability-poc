@@ -195,9 +195,7 @@ export const userHandler = {
 
 export const scheduleHandler = {
   timeSegments(schedule) {
-    return TimeSegment.findAll({
-      where: { scheduleId: schedule.id },
-    });
+    return schedule.getTimesegments();
   },
   group(schedule) {
     return schedule.getGroup();
