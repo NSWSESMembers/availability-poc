@@ -22,7 +22,7 @@ const ListItem = ({
   }
 
   return (
-    <TouchableHighlight onPress={onPress} underlayColor='#FFFFFF'>
+    <TouchableHighlight onPress={onPress} underlayColor="#FFFFFF">
       <View style={rowStyle}>
         { type === 'list' ? (
           <View style={[styles.indicator, colour]} />
@@ -37,7 +37,7 @@ const ListItem = ({
 };
 
 ListItem.propTypes = {
-  type: PropTypes.string, 
+  type: PropTypes.string,
   text: PropTypes.string,
   summary: PropTypes.string,
   onPress: PropTypes.func,

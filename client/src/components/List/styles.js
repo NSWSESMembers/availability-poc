@@ -6,7 +6,7 @@ const styles = extendAppStyleSheet({
   row: {
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 6
+    padding: 6,
   },
   indicator: {
     backgroundColor: 'yellow',
@@ -16,15 +16,15 @@ const styles = extendAppStyleSheet({
     height: 20,
     marginLeft: 6,
     marginRight: 12,
-    width: 20
+    width: 20,
   },
   available: {
     backgroundColor: '#77D353',
-    borderColor: '#44A020'
+    borderColor: '#44A020',
   },
   unavailable: {
     backgroundColor: '#F95F62',
-    borderColor: '#930000'
+    borderColor: '#930000',
   },
   separator: {
     backgroundColor: '#E2E2E2',
