@@ -194,11 +194,10 @@ export const userHandler = {
 };
 
 export const scheduleHandler = {
-  timeSegments(schedule, args, ctx) {
-    return getAuthenticatedUser(ctx)
-      .then(user => TimeSegment.findAll({
-        where: { $and: [{ userId: user.id }, { scheduleId: schedule.id }] },
-      }));
+  timeSegments(schedule) {
+    return TimeSegment.findAll({
+      where: { scheduleId: schedule.id },
+    });
   },
   group(schedule) {
     return schedule.getGroup();
