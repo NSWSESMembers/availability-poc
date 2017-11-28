@@ -9,7 +9,6 @@ import {
   Schedule,
   TimeSegment,
   Event,
-  EventResponse,
 } from './models';
 import Creators from './creators';
 
