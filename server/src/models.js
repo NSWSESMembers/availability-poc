@@ -59,6 +59,13 @@ const TimeSegmentModel = db.define('timesegment', {
   lastUpdate: { type: Sequelize.INTEGER },
 });
 
+const EventResponseModel = db.define('eventresponse', {
+  status: { type: Sequelize.STRING },
+  detail: { type: Sequelize.STRING },
+  destination: { type: Sequelize.STRING },
+  eta: { type: Sequelize.INTEGER },
+});
+
 // users <-> groups (many-to-many)
 UserModel.belongsToMany(GroupModel, { through: 'group_user' });
 GroupModel.belongsToMany(UserModel, { through: 'group_user' });
@@ -105,6 +112,12 @@ ScheduleModel.hasMany(TimeSegmentModel);
 TimeSegmentModel.belongsTo(UserModel);
 UserModel.hasMany(TimeSegmentModel);
 
+// event responses belong to a combination of user/event
+EventResponseModel.belongsTo(EventModel);
+EventModel.hasMany(EventResponseModel);
+EventResponseModel.belongsTo(UserModel);
+UserModel.hasMany(EventResponseModel);
+
 // tags belong to one organisation for now
 TagModel.belongsTo(OrganisationModel);
 OrganisationModel.hasMany(TagModel);
@@ -121,6 +134,7 @@ const Capability = db.models.capability;
 const Tag = db.models.tag;
 const Device = db.models.device;
 const Event = db.models.event;
+const EventResponse = db.models.eventresponse;
 const Schedule = db.models.schedule;
 const TimeSegment = db.models.timesegment;
 
@@ -131,4 +145,15 @@ db.sync({ force: true }).then(() => loadTestData()).then(() => {
   console.log(e);
 });
 
-export { Organisation, Capability, Tag, Group, User, Device, Event, Schedule, TimeSegment };
+export {
+  Organisation,
+  Capability,
+  Tag,
+  Group,
+  User,
+  Device,
+  Event,
+  Schedule,
+  TimeSegment,
+  EventResponse,
+};

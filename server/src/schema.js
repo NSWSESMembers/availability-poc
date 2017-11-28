@@ -104,6 +104,7 @@ export const Schema = [`
     id: Int!
     name: String!
     details: String!
+    group: Group!
     responses: [EventResponse]!
   }
 
@@ -112,6 +113,8 @@ export const Schema = [`
     user: User!
     status: String!
     detail: String!
+    destination: String!
+    eta: Int!
   }
 
   type Schedule {

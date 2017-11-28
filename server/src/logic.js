@@ -1,9 +1,16 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
-
 import JWT_SECRET from './config';
-import { Group, User, Device, Organisation, Schedule, TimeSegment } from './models';
+import {
+  Group,
+  User,
+  Device,
+  Organisation,
+  Schedule,
+  TimeSegment,
+  Event,
+  EventResponse,
+} from './models';
 import Creators from './creators';
 
 // reusable function to check for a user with context
@@ -58,7 +65,10 @@ export const userHandler = {
     return user.getGroups();
   },
   events(user) {
-    return user.getEvents();
+    return user.getGroups()
+      .then(groups => Event.findAll({
+        where: { groupId: groups.map(g => g.id) },
+      }));
   },
   schedules(user) {
     return user.getGroups()
@@ -207,6 +217,23 @@ export const scheduleHandler = {
           group,
         });
       });
+  },
+};
+
+export const eventHandler = {
+  group(event) {
+    return event.getGroup();
+  },
+  responses(event) {
+    return EventResponse.findAll({
+      where: { EventId: event.id },
+    });
+  },
+};
+
+export const eventResponseHandler = {
+  user(response) {
+    return response.getUser();
   },
 };
 

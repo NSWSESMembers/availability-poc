@@ -134,13 +134,15 @@ describe('GraphQL query - Current user', () => {
           id
           events {
             id
+            name
             responses {
               status
-              event {
-                id
-              }
+              detail
+              destination
+              eta
               user {
                 id
+                username
               }
             }
           }
@@ -149,6 +151,18 @@ describe('GraphQL query - Current user', () => {
     `);
 
     itReturnsSuccess(response);
+    it('Returns entity', () => response.then((res) => {
+      expect(res.data.user.events[0]).toHaveProperty('id');
+      expect(res.data.user.events[0]).toHaveProperty('name');
+    }));
+    it('Returns responses', () => response.then((res) => {
+      expect(res.data.user.events[0].responses[0]).toHaveProperty('status');
+      expect(res.data.user.events[0].responses[0]).toHaveProperty('detail');
+      expect(res.data.user.events[0].responses[0]).toHaveProperty('destination');
+      expect(res.data.user.events[0].responses[0]).toHaveProperty('eta');
+      expect(res.data.user.events[0].responses[0].user).toHaveProperty('id');
+      expect(res.data.user.events[0].responses[0].user).toHaveProperty('username');
+    }));
   });
 
   describe('Get devices', () => {
