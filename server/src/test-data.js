@@ -110,7 +110,7 @@ export const loadTestData = () =>
                 status: 'On Route',
                 detail: 'Attending',
                 destination: 'Scene',
-                eta: 600,
+                eta: 1517443200,
                 event,
                 user,
               }),

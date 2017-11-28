@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import JWT_SECRET from './config';
-import { Group,
+import {
+  Group,
   User,
   Device,
   Organisation,
@@ -220,8 +221,8 @@ export const scheduleHandler = {
 };
 
 export const eventHandler = {
-  group(eventt) {
-    return eventt.getGroup();
+  group(event) {
+    return event.getGroup();
   },
   responses(event) {
     return EventResponse.findAll({
