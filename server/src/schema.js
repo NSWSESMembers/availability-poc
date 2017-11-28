@@ -101,6 +101,7 @@ export const Schema = [`
   }
 
   type Event {
+    group: Group!
     id: Int!
     name: String!
     details: String!
@@ -112,6 +113,8 @@ export const Schema = [`
     user: User!
     status: String!
     detail: String!
+    destination: String!
+    eta: Int!
   }
 
   type Schedule {

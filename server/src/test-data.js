@@ -105,7 +105,16 @@ export const loadTestData = () =>
               name: 'VR Wollongong Escarpment',
               details: 'VR operators required to assist with rescue',
               group,
-            }),
+            }).then(event =>
+              Creators.eventResponse({
+                status: 'On Route',
+                detail: 'Attending',
+                destination: 'Scene',
+                eta: 600,
+                event,
+                user,
+              }),
+            ),
             Creators.event({
               name: 'Assist ASNSW',
               details: 'Needed to carry patient over rough terrain',

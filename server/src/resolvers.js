@@ -4,6 +4,8 @@ import {
   groupHandler,
   userHandler,
   organisationHandler,
+  eventHandler,
+  eventResponseHandler,
 } from './logic';
 
 export const Resolvers = {
@@ -53,6 +55,19 @@ export const Resolvers = {
     },
     group(schedule, args, ctx) {
       return scheduleHandler.group(schedule, args, ctx);
+    },
+  },
+  Event: {
+    group(event, args, ctx) {
+      return eventHandler.group(event, args, ctx);
+    },
+    responses(eventt, args, ctx) {
+      return eventHandler.responses(eventt, args, ctx);
+    },
+  },
+  EventResponse: {
+    user(response, args, ctx) {
+      return eventResponseHandler.user(response, args, ctx);
     },
   },
   Organisation: {

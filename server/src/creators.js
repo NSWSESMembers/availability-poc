@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import {
   Organisation, Group, User, Capability, Tag, Device, Event,
-  Schedule, TimeSegment,
+  Schedule, TimeSegment, EventResponse,
 } from './models';
 
 const creators = {
@@ -121,6 +121,23 @@ const creators = {
       endTime,
       userId: user.id,
       scheduleId: schedule.id,
+    });
+  },
+
+  eventResponse: ({ status, detail, destination, eta, event, user }) => {
+    if (!user || !user.id) {
+      return Promise.reject(Error('Must pass user'));
+    }
+    if (!event || !event.id) {
+      return Promise.reject(Error('Must pass event'));
+    }
+    return EventResponse.create({
+      status,
+      detail,
+      destination,
+      eta,
+      userId: user.id,
+      eventId: event.id,
     });
   },
 };
