@@ -119,7 +119,7 @@ describe('GraphQL query - Current user', () => {
       {
         user {
           id
-          groups(id: 1) {
+          groups(id: 2) {
             id
             schedules {
               id
@@ -139,7 +139,8 @@ describe('GraphQL query - Current user', () => {
     it('Returns correct single entity', () => response.then((res) => {
       expect(res.data.user.groups.length).toBe(1);
       expect(res.data.user.groups[0]).toHaveProperty('id');
-      expect(res.data.user.groups[0].id).toBe(1);
+      expect(res.data.user.groups[0].id).toBe(2);
+      expect(res.data.user.groups[0].id).not.toBe(1);
     }));
   });
 
