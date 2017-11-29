@@ -109,7 +109,7 @@ const creators = {
     );
   },
 
-  timeSegment: ({ startTime, endTime, schedule, user }) => {
+  timeSegment: ({ status, startTime, endTime, schedule, user }) => {
     if (!user || !user.id) {
       return Promise.reject(Error('Must pass user'));
     }
@@ -117,10 +117,11 @@ const creators = {
       return Promise.reject(Error('Must pass schedule'));
     }
     return TimeSegment.create({
+      status,
       startTime,
       endTime,
-      userId: user.id,
       scheduleId: schedule.id,
+      userId: user.id,
     });
   },
 

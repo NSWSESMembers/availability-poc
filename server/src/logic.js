@@ -7,7 +7,6 @@ import {
   Device,
   Organisation,
   Schedule,
-  TimeSegment,
   Event,
   EventResponse,
 } from './models';
@@ -194,11 +193,8 @@ export const userHandler = {
 };
 
 export const scheduleHandler = {
-  timeSegments(schedule, args, ctx) {
-    return getAuthenticatedUser(ctx)
-      .then(user => TimeSegment.findAll({
-        where: { $and: [{ userId: user.id }, { scheduleId: schedule.id }] },
-      }));
+  timeSegments(schedule) {
+    return schedule.getTimesegments();
   },
   group(schedule) {
     return schedule.getGroup();
@@ -217,6 +213,12 @@ export const scheduleHandler = {
           group,
         });
       });
+  },
+};
+
+export const timeSegmentHandler = {
+  user(timesegment) {
+    return timesegment.getUser();
   },
 };
 

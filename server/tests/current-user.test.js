@@ -107,6 +107,9 @@ describe('GraphQL query - Current user', () => {
               endTime
               startTime
               status
+              user {
+                id
+              }
             }
           }
         }
