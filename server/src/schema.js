@@ -52,7 +52,7 @@ export const Schema = [`
     id: Int! # unique id for the organisation
     name: String!
     users: [User]!
-    groups: [Group]!
+    groups(id: Int): [Group]!
     tags: [Tag]!
     capabilities: [Capability]!
   }
@@ -72,7 +72,7 @@ export const Schema = [`
     email: String! # we will also require a unique email per user
     username: String # this is the name we'll show other users
     organisation: Organisation! # the organisation this user belongs to
-    groups: [Group]! # groups the user belongs to
+    groups(id: Int): [Group]! # groups the user belongs to
     schedules: [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
