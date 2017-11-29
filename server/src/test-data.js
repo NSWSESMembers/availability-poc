@@ -85,7 +85,8 @@ export const loadTestData = () =>
                 endTime: 1511854428,
                 schedule,
                 user,
-              })),
+              }),
+            ),
             Creators.schedule({
               group,
               name: 'Wollongong VR',
