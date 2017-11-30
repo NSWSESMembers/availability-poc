@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import MapView from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -63,7 +64,6 @@ const styles = extendAppStyleSheet({
     flex: 1,
     flexDirection: 'row',
     height: 300,
-    alignItems: 'center',
   },
   placeholder: {
     flex: 1,
@@ -85,9 +85,15 @@ const EventHeader = (props) => {
           <Text style={styles.headerDetail} numberOfLines={3}>{details}</Text>
         </View>
       </View>
-      <View style={styles.map}>
-        <Text style={styles.placeholder}>MAP</Text>
-      </View>
+      <MapView
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        style={styles.map}
+      />
     </View>
   );
 };

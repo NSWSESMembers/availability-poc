@@ -3,6 +3,7 @@ package com.availpoc;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new MapsPackage(),
             new CodePush("ihP3wosJcBg8HofvREZAnBuaTzllae9e3d88-2347-4e09-a02a-76e4d3554374", getApplicationContext(), BuildConfig.DEBUG),
             new VectorIconsPackage()
       );
