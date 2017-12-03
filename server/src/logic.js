@@ -10,6 +10,7 @@ import {
   Event,
 } from './models';
 import Creators from './creators';
+import { schedulePerms, eventPerms } from './perms';
 
 // reusable function to check for a user with context
 const getAuthenticatedUser = ctx => ctx.user.then((user) => {
@@ -195,6 +196,18 @@ export const userHandler = {
 };
 
 export const scheduleHandler = {
+  query(_, args, ctx) {
+    // fetch a schedule by ID but ensure the user is allowed to read it
+    if (!args.id) {
+      return Promise.reject(Error('Must pass ID'));
+    }
+
+    // this Promise returns the schedule if the user is allowed to read it
+    return schedulePerms.userWantsToRead({
+      user: getAuthenticatedUser(ctx),
+      schedule: Schedule.findById(args.id),
+    });
+  },
   timeSegments(schedule) {
     return schedule.getTimesegments();
   },
@@ -225,6 +238,18 @@ export const timeSegmentHandler = {
 };
 
 export const eventHandler = {
+  query(_, args, ctx) {
+    // fetch an event by ID but ensure the user is allowed to read it
+    if (!args.id) {
+      return Promise.reject(Error('Must pass ID'));
+    }
+
+    // this Promise returns the event if the user is allowed to read it
+    return eventPerms.userWantsToRead({
+      user: getAuthenticatedUser(ctx),
+      event: Event.findById(args.id),
+    });
+  },
   group(event) {
     return event.getGroup();
   },

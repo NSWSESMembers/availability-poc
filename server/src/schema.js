@@ -140,6 +140,12 @@ export const Schema = [`
 
     # Get the entity representing the current device
     device: Device
+
+    # return an event by ID
+    event(id: Int!): Event
+
+    # return a schedule by ID
+    schedule(id: Int!): Schedule
   }
 
   type Mutation {

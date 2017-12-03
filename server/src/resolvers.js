@@ -97,6 +97,12 @@ export const Resolvers = {
     device(_, args, ctx) {
       return deviceHandler.query(_, args, ctx);
     },
+    event(_, args, ctx) {
+      return eventHandler.query(_, args, ctx);
+    },
+    schedule(_, args, ctx) {
+      return scheduleHandler.query(_, args, ctx);
+    },
   },
   Mutation: {
     createGroup(_, args, ctx) {
