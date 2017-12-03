@@ -1,4 +1,4 @@
 <resources>
-    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey"></string>
-    <string name="app_name">Avail</string>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">ihP3wosJcBg8HofvREZAnBuaTzllae9e3d88-2347-4e09-a02a-76e4d3554374</string>
+    <string name="app_name">Callout</string>
 </resources>
