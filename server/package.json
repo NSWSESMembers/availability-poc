@@ -20,7 +20,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.7.0",
     "graphql-tester": "^0.0.5",
-    "jest": "^21.2.1",
+    "jest": "^21.3.0-beta.11",
     "nodemon": "^1.11.0"
   },
   "dependencies": {
