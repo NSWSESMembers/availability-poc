@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   FlatList,
   ActivityIndicator,
-  Alert,
   Text,
   TouchableHighlight,
   View,
@@ -15,7 +14,6 @@ import _ from 'lodash';
 
 import { extendAppStyleSheet } from './style-sheet';
 import ALL_GROUPS_QUERY from '../graphql/all-groups.query';
-import JOIN_GROUP_MUTATION from '../graphql/join-group.mutation';
 
 const styles = extendAppStyleSheet({
   groupContainer: {
@@ -67,23 +65,13 @@ class Group extends Component {
   constructor(props) {
     super(props);
     this.myGroups = this.props.myGroups;
-    this.joinGroup = this.joinGroup.bind(this);
-    this.groupUpdate = this.props.groupUpdate.bind(this);
+    this.navigation = this.props.navigation;
+    this.goToGroup = this.goToGroup.bind(this);
   }
 
-  joinGroup() {
-    const { groupUpdate, group } = this.props;
-    groupUpdate({ groupId: group.id }).then(() => {
-      // dont need to do anything, but we might in the future
-    }).catch((error) => {
-      Alert.alert(
-        'Error Joining Group',
-        error.message,
-        [
-          { text: 'OK', onPress: () => {} },
-        ],
-      );
-    });
+  goToGroup() {
+    const { navigate } = this.navigation;
+    navigate('Group', { groupId: this.props.group.id });
   }
 
 
@@ -94,7 +82,7 @@ class Group extends Component {
       memberAlready: _.some(this.props.myGroups, g => g.id === this.props.group.id),
     };
     return (
-      <TouchableHighlight key={id} onPress={this.joinGroup}>
+      <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
           <Icon name="group" size={24} color={this.state.memberAlready ? 'red' : 'green'} />
           <View style={styles.groupTextContainer}>
@@ -112,7 +100,9 @@ class Group extends Component {
 }
 
 Group.propTypes = {
-  groupUpdate: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
   myGroups: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -124,8 +114,8 @@ Group.propTypes = {
     name: PropTypes.string,
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
+        id: PropTypes.number,
+        name: PropTypes.string,
       }),
     ),
   }),
@@ -154,7 +144,7 @@ class AllGroups extends Component {
     <Group
       group={item}
       myGroups={this.props.user.groups}
-      groupUpdate={this.props.groupUpdate}
+      navigation={this.props.navigation}
     />
   );
 
@@ -195,10 +185,12 @@ class AllGroups extends Component {
   }
 }
 AllGroups.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
-  groupUpdate: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     organisation: PropTypes.shape({
@@ -231,28 +223,6 @@ const groupsQuery = graphql(ALL_GROUPS_QUERY, {
   }),
 });
 
-const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
-  props: ({ mutate }) => ({
-    groupUpdate: ({ groupId }) =>
-      mutate({
-        variables: { groupUpdate: { groupId } },
-        update: (store, { data: { addUserToGroup } }) => {
-          // fetch data from the cache
-          const data = store.readQuery({
-            query: ALL_GROUPS_QUERY,
-          });
-          // add new data to the cache
-          data.user.groups.push(addUserToGroup);
-          // write out cache
-          store.writeQuery({
-            query: ALL_GROUPS_QUERY,
-            data,
-          });
-        },
-      }),
-  }),
-});
-
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
@@ -260,5 +230,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   groupsQuery,
-  joinGroupMutation,
 )(AllGroups);

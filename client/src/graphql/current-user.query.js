@@ -11,13 +11,8 @@ export default gql`
         id
         name
         tags {
-           name
-           id
-         }
-         users {
-           username
-           id
-         }
+          name
+        }
       }
       events {
         id
