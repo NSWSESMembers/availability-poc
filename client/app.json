@@ -1,6 +1,6 @@
 {
-  "name": "availpoc",
-  "displayName": "Avail",
+  "name": "Callout",
+  "displayName": "Callout",
   "expo": {
     "sdkVersion": "22.0.0"
   }

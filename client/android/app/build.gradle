@@ -72,6 +72,10 @@ import com.android.build.OutputFile
  * ]
  */
 
+project.ext.react = [
+    entryFile: "index.js"
+]
+
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
@@ -95,7 +99,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.availpoc"
+        applicationId "com.callout"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -104,14 +108,13 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
-
     signingConfigs {
         release {
-            if (project.hasProperty('AVAILABILITY_RELEASE_STORE_FILE')) {
-                storeFile file(AVAILABILITY_RELEASE_STORE_FILE)
-                storePassword AVAILABILITY_RELEASE_STORE_PASSWORD
-                keyAlias AVAILABILITY_RELEASE_KEY_ALIAS
-                keyPassword AVAILABILITY_RELEASE_KEY_PASSWORD
+            if (project.hasProperty('CALLOUT_RELEASE_STORE_FILE')) {
+                storeFile file(CALLOUT_RELEASE_STORE_FILE)
+                storePassword CALLOUT_RELEASE_STORE_PASSWORD
+                keyAlias CALLOUT_RELEASE_KEY_ALIAS
+                keyPassword CALLOUT_RELEASE_KEY_PASSWORD
             }
         }
     }

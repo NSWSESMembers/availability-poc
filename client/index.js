@@ -13,6 +13,6 @@ const codePushOptions = {
 };
 
 AppRegistry.registerComponent(
-  'availpoc',
+  'Callout',
   () => codePush(codePushOptions)(App)
 );

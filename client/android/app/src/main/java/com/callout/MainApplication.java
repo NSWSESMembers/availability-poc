@@ -1,4 +1,4 @@
-package com.availpoc;
+package com.callout;
 
 import android.app.Application;
 
@@ -33,9 +33,14 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new MapsPackage(),
-            new CodePush("ihP3wosJcBg8HofvREZAnBuaTzllae9e3d88-2347-4e09-a02a-76e4d3554374", getApplicationContext(), BuildConfig.DEBUG),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new VectorIconsPackage()
       );
+    }
+
+    @Override
+    protected String getJSMainModuleName() {
+      return "index";
     }
   };
 
