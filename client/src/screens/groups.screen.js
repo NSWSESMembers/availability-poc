@@ -108,8 +108,8 @@ Group.propTypes = {
     name: PropTypes.string,
     tags: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
+        id: PropTypes.number,
+        name: PropTypes.string,
       }),
     ),
     users: PropTypes.arrayOf(
@@ -145,7 +145,7 @@ class Groups extends Component {
 
   goToGroup(group) {
     const { navigate } = this.props.navigation;
-    navigate('Group', { group });
+    navigate('Group', { groupId: group.id });
   }
 
   goToNewGroup() {
@@ -217,8 +217,8 @@ Groups.propTypes = {
         name: PropTypes.string.isRequired,
         tags: PropTypes.arrayOf(
           PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
+            id: PropTypes.number,
+            name: PropTypes.string,
           }),
         ),
         users: PropTypes.arrayOf(
