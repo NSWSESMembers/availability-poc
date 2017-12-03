@@ -40,7 +40,7 @@ describe('Manipulate user group membership - leave', () => {
       `,
       variables: {
         groupUpdate: {
-          groupId: 1,
+          groupId: 2,
         },
       },
     },
@@ -73,7 +73,7 @@ describe('Manipulate user group membership - join', () => {
       `,
       variables: {
         groupUpdate: {
-          groupId: 1,
+          groupId: 2,
         },
       },
     },
