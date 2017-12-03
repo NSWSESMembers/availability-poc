@@ -59,7 +59,10 @@ export const userHandler = {
   query(_, __, ctx) {
     return getAuthenticatedUser(ctx);
   },
-  groups(user) {
+  groups(user, args) {
+    if (args.id) {
+      return user.getGroups({ where: { Id: args.id } });
+    }
     return user.getGroups();
   },
   events(user) {
@@ -241,8 +244,11 @@ export const organisationHandler = {
     const { name } = args.organisation;
     return Creators.organisation({ name });
   },
-  groups(org) {
+  groups(org, args) {
     // TODO: think about who we show the complete organisation group list to
+    if (args.id) {
+      return org.getGroups({ where: { Id: args.id } });
+    }
     return org.getGroups();
   },
   users(org) {

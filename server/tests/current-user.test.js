@@ -67,6 +67,29 @@ describe('GraphQL query - Current user', () => {
     }));
   });
 
+  describe('Get organisations groups passing filter', () => {
+    const response = query(`
+      {
+        user {
+          organisation {
+            id
+            name
+            groups(id: 1) {
+              id
+            }
+          }
+        }
+      }
+    `);
+
+    itReturnsSuccess(response);
+    it('Returns correct single group entity', () => response.then((res) => {
+      expect(res.data.user.organisation.groups.length).toBe(1);
+      expect(res.data.user.organisation.groups[0]).toHaveProperty('id');
+      expect(res.data.user.organisation.groups[0].id).toBe(1);
+    }));
+  });
+
   describe('Get groups', () => {
     const response = query(`
       {
@@ -89,6 +112,36 @@ describe('GraphQL query - Current user', () => {
     `);
 
     itReturnsSuccess(response);
+  });
+
+  describe('Get users group by passing filter', () => {
+    const response = query(`
+      {
+        user {
+          id
+          groups(id: 2) {
+            id
+            schedules {
+              id
+            }
+            events {
+              id
+            }
+            tags {
+              id
+            }
+          }
+        }
+      }
+    `);
+
+    itReturnsSuccess(response);
+    it('Returns correct single entity', () => response.then((res) => {
+      expect(res.data.user.groups.length).toBe(1);
+      expect(res.data.user.groups[0]).toHaveProperty('id');
+      expect(res.data.user.groups[0].id).toBe(2);
+      expect(res.data.user.groups[0].id).not.toBe(1);
+    }));
   });
 
   describe('Get schedules', () => {
