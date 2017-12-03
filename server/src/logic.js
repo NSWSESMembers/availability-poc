@@ -61,7 +61,7 @@ export const userHandler = {
   },
   groups(user, args) {
     if (args.id) {
-      return user.getGroups({ where: { Id: args.id } });
+      return user.getGroups({ where: { id: args.id } });
     }
     return user.getGroups();
   },
