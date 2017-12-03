@@ -38,6 +38,10 @@ export const Schema = [`
     groupId: Int!
   }
 
+  input RemoveUserFromGroupInput {
+    groupId: Int!
+  }
+
   input CreateUserInput {
     username: String!
     email: String!
@@ -148,6 +152,7 @@ export const Schema = [`
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
+    removeUserFromGroup(groupUpdate: RemoveUserFromGroupInput!): Boolean
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
     login(user: LoginInput!): User
     signup(user: SignupInput!): User

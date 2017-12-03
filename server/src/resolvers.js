@@ -105,6 +105,9 @@ export const Resolvers = {
     addUserToGroup(_, args, ctx) {
       return groupHandler.addUserToGroup(_, args, ctx);
     },
+    removeUserFromGroup(_, args, ctx) {
+      return groupHandler.removeUserFromGroup(_, args, ctx);
+    },
     deleteUser(_, args, ctx) {
       return userHandler.deleteUser(args, ctx);
     },
