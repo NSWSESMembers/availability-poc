@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
-import UPDATE_LOCATION_MUTATION from '../graphql/updateLocation.mutation';
+import UPDATE_LOCATION_MUTATION from '../graphql/update-location.mutation';
 import { logout } from '../state/auth.actions';
 
 const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
