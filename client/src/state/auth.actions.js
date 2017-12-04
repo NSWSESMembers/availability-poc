@@ -7,6 +7,8 @@ export const setCurrentUser = user => ({
 });
 
 export const logout = () => {
-  client.resetStore();
+  // we run this on the next frame so that the reducer has time to complete before
+  // we fully wipe the store. Otherwise some stuff gets left over.
+  setTimeout(client.resetStore);
   return { type: LOGOUT };
 };
