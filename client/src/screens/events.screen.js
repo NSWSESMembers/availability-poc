@@ -86,7 +86,8 @@ class Event extends Component {
   }
 
   render() {
-    const { id, name, time, details } = this.props.event;
+    const { id, name, details } = this.props.event;
+    const time = '5 mins ago';
     return (
       <TouchableHighlight
         key={id}
@@ -143,7 +144,7 @@ class Events extends Component {
 
   goToEvent(event) {
     const { navigate } = this.props.navigation;
-    navigate('Event', { event, title: event.name });
+    navigate('Event', { id: event.id, title: event.name });
   }
 
   goToNewEvent() {
@@ -156,82 +157,6 @@ class Events extends Component {
   render() {
     const { loading, user, networkStatus } = this.props;
 
-    const events = [
-      {
-        id: 1,
-        name: 'KMA Rescue - RCR',
-        time: '3 mins ago',
-        details: 'RCR at Princes Highway car vs truck. Lots of other really important details ' +
-                 'about this job are right here and easily accessible.',
-        responses: [
-          {
-            id: 6,
-            user: {
-              name: 'Alice Alpha',
-            },
-            status: 'Responding',
-            detail: '10 mins from HQ',
-          },
-          {
-            id: 7,
-            user: {
-              name: 'Bob Bravo',
-            },
-            status: 'Responding',
-            detail: '25 mins from HQ',
-          },
-          {
-            id: 9,
-            user: {
-              name: 'Charlie Charlie',
-            },
-            status: 'Unavailable',
-            detail: 'At work',
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: 'KMA Rescue - VR',
-        time: '10 mins ago',
-        details: 'Vertial rescue. 2 climbers stuck at bottom of Carrington falls',
-        responses: [
-          {
-            id: 9,
-            user: {
-              name: 'Daniel Delta',
-            },
-            status: 'Responding',
-            detail: '5 mins from HQ',
-          },
-          {
-            id: 10,
-            user: {
-              name: 'Erin Echo',
-            },
-            status: 'Unavailable',
-            detail: 'Busy',
-          },
-          {
-            id: 11,
-            user: {
-              name: 'Felicity Foxtrot',
-            },
-            status: 'Tentative',
-            detail: '45 mins until available',
-          },
-          {
-            id: 12,
-            user: {
-              name: 'Gary Golf',
-            },
-            status: 'Responding',
-            detail: 'At HQ',
-          },
-        ],
-      },
-    ];
-
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -240,6 +165,8 @@ class Events extends Component {
         </View>
       );
     }
+
+    const { events } = user;
 
     if (!events.length) {
       return (
@@ -278,6 +205,7 @@ Events.propTypes = {
     events: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
         details: PropTypes.string.isRequired,
       }),
     ),

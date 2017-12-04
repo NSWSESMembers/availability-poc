@@ -99,14 +99,32 @@ export const loadTestData = () =>
               details: 'VR operators required to assist with rescue',
               group,
             }).then(event =>
-              Creators.eventResponse({
-                status: 'On Route',
-                detail: 'Attending',
-                destination: 'Scene',
-                eta: 1517443200,
-                event,
-                user,
-              }),
+              Promise.all([
+                Creators.eventResponse({
+                  status: 'Responding',
+                  detail: 'ETA 10 min',
+                  destination: 'Scene',
+                  eta: 1517443200,
+                  event,
+                  user,
+                }),
+                Creators.eventResponse({
+                  status: 'Responding',
+                  detail: 'WOL39',
+                  destination: 'Scene',
+                  eta: 1517443200,
+                  event,
+                  user,
+                }),
+                Creators.eventResponse({
+                  status: 'Unavailable',
+                  detail: 'At work',
+                  destination: '',
+                  eta: 1517443200,
+                  event,
+                  user,
+                }),
+              ]),
             ),
             Creators.event({
               name: 'Assist ASNSW',
