@@ -6,40 +6,13 @@ export const loadTestData = () =>
   }).then(organisation =>
     Promise.all([
       Creators.user({
-        id: 68,
-        username: 'tim',
-        password: '123',
-        email: 'test@test.com',
-        organisation,
-      }).then(user =>
-        Creators.group({
-          name: 'SWR Flood Rescue Techs',
-          user,
-          organisation,
-        }).then(group => Promise.all([
-          Creators.schedule({
-            group,
-            name: 'SWR FR Roster',
-            details: 'SWR FR availability',
-          }),
-        ]),
-        ),
-      ),
-      Creators.user({
         id: 69,
-        username: 'chris',
-        password: 'testing',
-        email: 'test@miceli.net.au',
+        username: 'test',
+        password: 'test',
+        email: 'test@example.com',
         organisation,
       }).then(user =>
         Promise.all([
-          Creators.user({
-            id: 70,
-            username: 'tim',
-            password: '123',
-            email: 'tim@tim.com',
-            organisation,
-          }),
           Creators.device({
             uuid: '1234abc',
             user,
@@ -130,6 +103,26 @@ export const loadTestData = () =>
             }),
           ])),
         ]),
+      ),
+      Creators.user({
+        id: 68,
+        username: 'tim',
+        password: '123',
+        email: 'test@test.com',
+        organisation,
+      }).then(user =>
+        Creators.group({
+          name: 'SWR Flood Rescue Techs',
+          user,
+          organisation,
+        }).then(group => Promise.all([
+          Creators.schedule({
+            group,
+            name: 'SWR FR Roster',
+            details: 'SWR FR availability',
+          }),
+        ]),
+        ),
       ),
     ]),
   );
