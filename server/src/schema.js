@@ -67,7 +67,7 @@ export const Schema = [`
     users: [User]! # users in the group
     schedules: [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
-    tags: [Tag]! # tags associdated with this group
+    tags: [Tag]! # tags associated with this group
   }
 
   # a user -- keep type really simple for now
@@ -81,7 +81,7 @@ export const Schema = [`
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
     tags: [Tag]! # tags associated with this user
-    capabilities: [Capability]! # capabilities associdated with this user
+    capabilities: [Capability]! # capabilities associated with this user
     authToken: String!
   }
 
