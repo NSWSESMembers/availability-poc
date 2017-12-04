@@ -1,4 +1,4 @@
-import { itReturnsSuccess, run, query } from './common';
+import { itReturnsSuccess, itReturnsFailure, run, query } from './common';
 
 describe('Get users group by passing filter', () => {
   const response = query(`
@@ -29,9 +29,8 @@ describe('Get users group by passing filter', () => {
     expect(res.data.user.groups[0].id).not.toBe(1);
   }));
 });
-
-describe('Manipulate user group membership - leave', () => {
-  const response = run(
+describe('Manipulate user group membership - leave, join, join again', () => {
+  const leaveresponse = run(
     {
       query: `
       mutation removeUserFromGroup($groupUpdate: RemoveUserFromGroupInput!) {
@@ -46,14 +45,11 @@ describe('Manipulate user group membership - leave', () => {
     },
   );
 
-  itReturnsSuccess(response);
-  it('should return true', () => response.then((res) => {
+  itReturnsSuccess(leaveresponse);
+  it('leaving should return true', () => leaveresponse.then((res) => {
     expect(res.data.removeUserFromGroup).toEqual(true);
   }));
-});
-
-describe('Manipulate user group membership - join', () => {
-  const response = run(
+  const joinresponse = run(
     {
       query: `
       mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
@@ -79,8 +75,8 @@ describe('Manipulate user group membership - join', () => {
     },
   );
 
-  itReturnsSuccess(response);
-  it('should contain joined group', () => response.then((res) => {
+  itReturnsSuccess(joinresponse);
+  it('joining again should fail', () => joinresponse.then((res) => {
     expect(res.data.addUserToGroup).toHaveProperty('name');
     expect(res.data.addUserToGroup.users).toEqual(
       expect.arrayContaining([
@@ -90,4 +86,31 @@ describe('Manipulate user group membership - join', () => {
       ]),
     );
   }));
+  const joinagainresponse = run(
+    {
+      query: `
+      mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
+        addUserToGroup(groupUpdate: $groupUpdate) {
+          id
+          name
+          tags {
+             name
+             id
+           }
+           users {
+             username
+             id
+           }
+        }
+      }
+      `,
+      variables: {
+        groupUpdate: {
+          groupId: 2,
+        },
+      },
+    },
+  );
+
+  itReturnsFailure(joinagainresponse);
 });

@@ -23,4 +23,11 @@ export const itReturnsSuccess = (response) => {
   }));
 };
 
+export const itReturnsFailure = (response) => {
+  it('returns failure', () => response.then((res) => {
+    expect(res.success).not.toBe(true);
+    expect(res.status).toBe(200);
+  }));
+};
+
 export default run;
