@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AsyncStorage,
+  Alert,
 } from 'react-native';
 
 import { ApolloProvider } from 'react-apollo';
@@ -35,6 +36,16 @@ networkInterface.use([{
   },
 }]);
 
+// avoid spamming the user by suppressing alerts for 1s after the first one
+const warnLogout = _.debounce(() => {
+  Alert.alert(
+    'Auth invalid',
+    'Your authentication session is invalid so you have been logged out. ' +
+    'If this occurred during testing it is probably because the server got ' +
+    'restarted or otherwise lost your user/device record.',
+  );
+}, 1000);
+
 // afterware for responses
 networkInterface.useAfter([{
   applyAfterware({ response }, next) {
@@ -48,12 +59,13 @@ networkInterface.useAfter([{
       response.clone().json().then(({ errors }) => {
         if (errors) {
           console.log('GraphQL Errors:', errors);
-          if (_.some(errors, { message: 'Unauthorized' })) {
+          if (_.some(errors, e => e.message.startsWith('Unauthorized'))) {
             isUnauthorized = true;
           }
         }
       }).then(() => {
         if (isUnauthorized) {
+          warnLogout();
           store.dispatch(logout());
         }
         next();

@@ -4,7 +4,6 @@ import JWT_SECRET from './config';
 import {
   Group,
   User,
-  Device,
   Organisation,
   Schedule,
   Event,
@@ -14,18 +13,18 @@ import { schedulePerms, eventPerms } from './perms';
 
 // reusable function to check for a user with context
 const getAuthenticatedUser = ctx => ctx.user.then((user) => {
+  // null means we couldn't find the user record
   if (!user) {
-    // XXX: remove this
-    return User.findById(69);
-    // return Promise.reject('Unauthorized');
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Unauthorized: Invalid user ID');
   }
   return user;
 });
 
 const getAuthenticatedDevice = ctx => ctx.device.then((device) => {
   if (!device) {
-    return Device.findOne({ where: { userId: 69, uuid: '1234abc' } });
-    // return Promise.reject('Unauthorized');
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Unauthorized: Device not found');
   }
   return device;
 });

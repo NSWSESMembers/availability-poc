@@ -23,18 +23,38 @@ app.use(
     secret: JWT_SECRET,
     credentialsRequired: false,
   }),
-  graphqlExpress(req => ({
-    schema: executableSchema,
-    context: {
-      user: req.user ? User.findById(req.user.id) : Promise.resolve(null),
-      device: req.user ? Device.findOne({
+  graphqlExpress((req) => {
+    let user;
+    let device;
+
+    // if the user is not logged in we assume they are the test user
+    // to ease testing and enable the use of GraphiQL
+    if (typeof req.user === 'undefined') {
+      user = User.findById(69);
+      device = Device.findOne({
         where: {
-          uuid: req.user.device,
-          userId: req.user.id,
+          userId: 69,
+          uuid: '1234abc',
         },
-      }) : Promise.resolve(null),
-    },
-  })),
+      });
+    } else {
+      user = User.findById(req.user.id);
+      device = Device.findOne({
+        where: {
+          userId: req.user.id,
+          uuid: req.user.device,
+        },
+      });
+    }
+
+    return {
+      schema: executableSchema,
+      context: {
+        user,
+        device,
+      },
+    };
+  }),
 );
 
 app.use('/graphiql', graphiqlExpress({
