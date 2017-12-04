@@ -316,6 +316,20 @@ export const groupHandler = {
       }),
     );
   },
+  removeUserFromGroup(_, args, ctx) {
+    const { groupId } = args.groupUpdate;
+    return getAuthenticatedUser(ctx).then(user =>
+      Group.findById(groupId).then((group) => {
+        if (!group) {
+          return Promise.reject(Error('Invalid group!'));
+        }
+        return group.removeUser(user).then((rows) => {
+          if (rows) { return true; }
+          return false;
+        });
+      }),
+    );
+  },
   tags(group) {
     return group.getTags();
   },
