@@ -64,5 +64,6 @@ app.use('/graphiql', graphiqlExpress({
 const graphQLServer = createServer(app);
 
 graphQLServer.listen(port, () => {
+  /* eslint-disable no-console */
   console.log(`GraphQL Server is now running on http://localhost:${port}${GRAPHQL_PATH}`);
 });

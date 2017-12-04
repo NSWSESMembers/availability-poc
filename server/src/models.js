@@ -6,6 +6,7 @@ import { loadTestData } from './test-data';
 const db = new Sequelize('avail', null, null, {
   dialect: 'sqlite',
   storage: './avail.sqlite',
+  /* eslint-disable no-console */
   logging: console.log, // mark this true if you want to see logs
 });
 
