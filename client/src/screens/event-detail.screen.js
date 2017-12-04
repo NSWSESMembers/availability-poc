@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import EVENT_QUERY from '../graphql/event.query';
 
 const styles = extendAppStyleSheet({
   respondContainer: {
@@ -109,12 +109,13 @@ const EventResponse = (props) => {
   const color = {
     responding: 'green',
     unavailable: 'red',
+    enroute: 'green',
   }[status.toLowerCase()];
   return (
     <View style={styles.respondContainer}>
       <Icon name="user" size={24} color={color} />
       <View style={styles.respondTextContainer}>
-        <Text style={styles.respondName} numberOfLines={1}>{user.name}</Text>
+        <Text style={styles.respondName} numberOfLines={1}>{user.username}</Text>
         <Text style={styles.respondStatus} numberOfLines={1}>{status} - {detail}</Text>
       </View>
     </View>
@@ -142,10 +143,14 @@ class EventDetail extends Component {
   }
 
   keyExtractor = (item) => {
-    if (item.length === 1) {
-      return item[0];
+    const result = {
+      info: i => i.id,
+      response: i => i.user.id,
+    }[item[0]];
+    if (typeof result === 'undefined') {
+      throw Error(`Invalid item: ${item}`);
     }
-    return [item[0], item[1].id];
+    return result(item[1]);
   }
 
   renderItem = ({ item }) => {
@@ -161,11 +166,10 @@ class EventDetail extends Component {
   };
 
   render() {
-    const { event } = this.props.navigation.state.params;
+    const { event, loading, networkStatus } = this.props;
 
-    const { loading, user, networkStatus } = this.props;
     // render loading placeholder while we fetch messages
-    if (loading || !user) {
+    if (loading) {
       return (
         <View style={[styles.loading, styles.container]}>
           <ActivityIndicator />
@@ -203,50 +207,30 @@ class EventDetail extends Component {
   }
 }
 EventDetail.propTypes = {
-  navigation: PropTypes.shape({
-    state: PropTypes.shape({
-      params: PropTypes.shape({
-        event: PropTypes.shape({
-          id: PropTypes.number,
-          name: PropTypes.string,
-          details: PropTypes.string,
-        }),
-      }),
-    }),
-  }),
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
-  user: PropTypes.shape({
+  event: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    organisation: PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          name: PropTypes.string.isRequired,
-          tags: PropTypes.arrayOf(
-            PropTypes.shape({
-              id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
-            }),
-          ),
-        }),
-      ),
-    }),
-    groups: PropTypes.arrayOf(
+    name: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
+    responses: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
+        user: PropTypes.shape({
+          username: PropTypes.string.isRequired,
+        }),
+        status: PropTypes.string.isRequired,
+        detail: PropTypes.string.isRequired,
       }),
     ),
   }),
 };
 
-const userQuery = graphql(CURRENT_USER_QUERY, {
+const userQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  options: ({ auth }) => ({ variables: { id: auth.id } }),
-  props: ({ data: { loading, user } }) => ({
-    loading, user,
+  options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.id } }),
+  props: ({ data: { loading, event, refetch } }) => ({
+    loading, event, refetch,
   }),
 });
 
