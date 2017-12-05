@@ -312,7 +312,6 @@ export const groupHandler = {
           return Promise.reject(Error('Invalid group!'));
         }
         return user.getGroups({ where: { id: groupId } }).then((existing) => {
-          console.log(existing);
           if (existing.length) {
             return Promise.reject(Error('Already a member!'));
           }
