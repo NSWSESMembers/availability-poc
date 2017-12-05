@@ -1,11 +1,11 @@
 {
-	"name": "avail",
+	"name": "Callout",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
 		"start": "react-native-scripts start",
 		"test": "jest",
-		"push-ios": "code-push release-react availability-poc ios --plistFile ios/availpoc/Info.plist",
+		"push-ios": "code-push release-react availability-poc ios",
 		"push-android": "code-push release-react availability-poc-android android",
 		"lint": "eslint src"
 	},
