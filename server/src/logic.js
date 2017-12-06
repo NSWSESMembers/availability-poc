@@ -311,7 +311,12 @@ export const groupHandler = {
         if (!group) {
           return Promise.reject(Error('Invalid group!'));
         }
-        return group.addUser(user).then(() => group);
+        return user.getGroups({ where: { id: groupId } }).then((existing) => {
+          if (existing.length) {
+            return Promise.reject(Error('Already a member!'));
+          }
+          return group.addUser(user).then(() => group);
+        });
       }),
     );
   },
