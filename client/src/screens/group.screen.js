@@ -428,6 +428,7 @@ const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
             query: CURRENT_USER_QUERY,
           });
           // add new data to the cache
+          console.log(data.user.groups);
           data.user.groups.push(addUserToGroup);
           console.log(data.user.groups);
 
