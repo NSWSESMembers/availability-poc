@@ -6,9 +6,9 @@ const nowInUTC = () => {
   return Math.round(d.getTime() / 1000);
 };
 
-const nowInGMT = () => {
+const nowInUTC = () => {
   const d = new Date();
-  return Math.round((d.getTime() - 39600) / 1000);
+  return Math.round(d.getTime() / 1000);
 };
 
 export const loadTestData = () =>
