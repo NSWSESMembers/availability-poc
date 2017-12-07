@@ -13,6 +13,17 @@ export default gql`
          username
          id
        }
+       events {
+         id
+         details
+       }
+       schedules {
+         id
+         name
+         details
+         startTime
+         endTime
+       }
     }
   }
 `;

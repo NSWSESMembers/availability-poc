@@ -21,6 +21,9 @@ export default gql`
       schedules {
         id
         name
+        details
+        startTime
+        endTime
       }
     }
   }

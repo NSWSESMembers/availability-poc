@@ -11,7 +11,7 @@ import {
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-
+import moment from 'moment';
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 
@@ -74,7 +74,15 @@ class Schedule extends Component {
   }
 
   render() {
-    const { id, name } = this.props.schedule;
+    const { id, name, details, startTime, endTime } = this.props.schedule;
+    let timeText = '';
+    if (startTime === 0 && endTime === 0) {
+      timeText = 'Perpetual Schedule';
+    } else {
+      const startText = moment.unix(startTime).format('DD/MM/YY, HH:mm:ss');
+      const endText = moment.unix(endTime).format('DD/MM/YY, HH:mm:ss');
+      timeText = `${startText} - ${endText}`;
+    }
     return (
       <TouchableHighlight
         key={id}
@@ -84,11 +92,10 @@ class Schedule extends Component {
           <Icon name="calendar-check-o" size={24} color="orange" />
           <View style={styles.scheduleTextContainer}>
             <View style={styles.scheduleTitleContainer}>
-              <Text style={styles.scheduleName}>{`${name}`}</Text>
+              <Text style={styles.scheduleName}>{`${name} - ${timeText}`}</Text>
               <Text style={styles.scheduleLastUpdated} />
             </View>
-            <Text style={styles.scheduleUsername} />
-            <Text style={styles.scheduleText} numberOfLines={1} />
+            <Text style={styles.scheduleText} numberOfLines={1}>{details}</Text>
           </View>
           <Icon
             name="angle-right"
@@ -106,6 +113,9 @@ Schedule.propTypes = {
   schedule: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    details: PropTypes.string,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
   }),
 };
 
@@ -190,6 +200,8 @@ Schedules.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        startTime: PropTypes.number.isRequired,
+        endTime: PropTypes.number.isRequired,
       }),
     ),
   }),
