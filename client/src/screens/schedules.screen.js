@@ -200,6 +200,7 @@ Schedules.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        details: PropTypes.string.isRequired,
         startTime: PropTypes.number.isRequired,
         endTime: PropTypes.number.isRequired,
       }),
