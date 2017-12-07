@@ -9,13 +9,15 @@ const creators = {
   organisation: ({ name }) =>
     Organisation.create({ name }),
 
-  schedule: ({ name, details, group }) => {
+  schedule: ({ name, details, startTime, endTime, group }) => {
     if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
     return Schedule.create({
       name,
       details,
+      startTime,
+      endTime,
       groupId: group.id,
     });
   },
