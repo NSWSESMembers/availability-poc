@@ -135,8 +135,8 @@ export const Resolvers = {
     removeTimeSegment(_, args, ctx) {
       return timeSegmentHandler.removeTimeSegment(_, args, ctx);
     },
-    editTimeSegment(_, args, ctx) {
-      return timeSegmentHandler.editTimeSegment(_, args, ctx);
+    updateTimeSegment(_, args, ctx) {
+      return timeSegmentHandler.updateTimeSegment(_, args, ctx);
     },
   },
 };

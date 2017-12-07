@@ -268,7 +268,7 @@ export const timeSegmentHandler = {
         }),
       );
   },
-  editTimeSegment(_, args, ctx) {
+  updateTimeSegment(_, args, ctx) {
     const { segmentId, status, startTime, endTime } = args.timeSegment;
     return getAuthenticatedUser(ctx)
       .then(() =>

@@ -13,6 +13,9 @@ const creators = {
     if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
+    if (!startTime || !endTime) {
+      return Promise.reject(Error('Must pass start and end times'));
+    }
     return Schedule.create({
       name,
       details,
@@ -117,6 +120,9 @@ const creators = {
     }
     if (!schedule || !schedule.id) {
       return Promise.reject(Error('Must pass schedule'));
+    }
+    if (!startTime || !endTime) {
+      return Promise.reject(Error('Must pass start and end times'));
     }
     return TimeSegment.create({
       status,

@@ -1,8 +1,8 @@
 import Creators from './creators';
 
-const nowInGMT = () => {
+const nowInUTC = () => {
   const d = new Date();
-  return Math.round((d.getTime() - 39600) / 1000);
+  return Math.round(d.getTime() / 1000);
 };
 
 export const loadTestData = () =>
@@ -61,8 +61,8 @@ export const loadTestData = () =>
             }).then(schedule =>
               Creators.timeSegment({
                 status: 'Available',
-                startTime: nowInGMT() + 3600, // +1 hr
-                endTime: nowInGMT() + (3600 * 2), // +2 hr
+                startTime: nowInUTC() + 3600, // +1 hr
+                endTime: nowInUTC() + (3600 * 2), // +2 hr
                 schedule,
                 user,
               }),
