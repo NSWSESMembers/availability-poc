@@ -6,6 +6,11 @@ const nowInUTC = () => {
   return Math.round(d.getTime() / 1000);
 };
 
+const nowInGMT = () => {
+  const d = new Date();
+  return Math.round((d.getTime() - 39600) / 1000);
+};
+
 export const loadTestData = () =>
   Creators.organisation({
     name: 'NSW SES',
