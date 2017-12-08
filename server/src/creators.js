@@ -13,7 +13,7 @@ const creators = {
     if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
     }
-    if (!startTime || !endTime) {
+    if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
       return Promise.reject(Error('Must pass start and end times'));
     }
     return Schedule.create({
@@ -121,7 +121,7 @@ const creators = {
     if (!schedule || !schedule.id) {
       return Promise.reject(Error('Must pass schedule'));
     }
-    if (!startTime || !endTime) {
+    if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
       return Promise.reject(Error('Must pass start and end times'));
     }
     return TimeSegment.create({
