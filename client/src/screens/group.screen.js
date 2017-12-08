@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
+import distantFuture from '../constants';
 import { extendAppStyleSheet } from './style-sheet';
 import SEARCH_GROUP_QUERY from '../graphql/search-group.query';
 import JOIN_GROUP_MUTATION from '../graphql/join-group.mutation';
@@ -199,7 +200,7 @@ EventsDisplay.propTypes = {
 const ScheduleDisplay = (props) => {
   const { id, name, details, startTime, endTime } = props.schedule;
   let timeText = '';
-  if (startTime === 0 && endTime === 0) {
+  if (startTime === 0 && endTime === distantFuture) {
     timeText = 'Perpetual Schedule';
   } else {
     timeText =
@@ -428,9 +429,7 @@ const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
             query: CURRENT_USER_QUERY,
           });
           // add new data to the cache
-          console.log(data.user.groups);
           data.user.groups.push(addUserToGroup);
-          console.log(data.user.groups);
 
           // write out cache
           store.writeQuery({
