@@ -1,4 +1,5 @@
 import Creators from './creators';
+import distantFuture from './constants';
 
 const nowInUTC = () => {
   const d = new Date();
@@ -57,7 +58,7 @@ export const loadTestData = () =>
               name: 'Wollongong S&W',
               details: 'Weekly storm availability',
               startTime: 0, // ongoing
-              endTime: 0, // ongoing
+              endTime: distantFuture, // ongoing
             }).then(schedule =>
               Creators.timeSegment({
                 status: 'Available',
@@ -72,7 +73,7 @@ export const loadTestData = () =>
               name: 'Wollongong VR',
               details: 'Weekly VR availability',
               startTime: 0, // ongoing
-              endTime: 0, // ongoing
+              endTime: distantFuture, // ongoing
             }),
             Creators.schedule({
               group,
@@ -132,7 +133,7 @@ export const loadTestData = () =>
             name: 'SWR FR Roster',
             details: 'SWR FR availability',
             startTime: 0, // ongoing
-            endTime: 0, // ongoing
+            endTime: distantFuture, // ongoing
           }),
         ]),
         ),
