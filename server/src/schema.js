@@ -41,7 +41,7 @@ export const Schema = [`
     endTime: Int!
   }
 
-  input editTimeSegmentInput {
+  input updateTimeSegmentInput {
     segmentId: Int!
     status: String!
     startTime: Int!
@@ -179,7 +179,7 @@ export const Schema = [`
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
-    editTimeSegment(timeSegment: editTimeSegmentInput!): TimeSegment
+    updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
     removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     removeUserFromGroup(groupUpdate: RemoveUserFromGroupInput!): Boolean
