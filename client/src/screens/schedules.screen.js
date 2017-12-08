@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import distantFuture from '../constants';
 
 const styles = extendAppStyleSheet({
   scheduleContainer: {
@@ -76,7 +77,7 @@ class Schedule extends Component {
   render() {
     const { id, name, details, startTime, endTime } = this.props.schedule;
     let timeText = '';
-    if (startTime === 0 && endTime === 0) {
+    if (startTime === 0 && endTime === distantFuture) {
       timeText = 'Perpetual Schedule';
     } else {
       const startText = moment.unix(startTime).format('DD/MM/YY, HH:mm:ss');
