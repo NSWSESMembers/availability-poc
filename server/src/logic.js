@@ -7,6 +7,7 @@ import {
   Organisation,
   Schedule,
   Event,
+  TimeSegment,
 } from './models';
 import Creators from './creators';
 import { schedulePerms, eventPerms } from './perms';
@@ -233,6 +234,55 @@ export const scheduleHandler = {
 export const timeSegmentHandler = {
   user(timesegment) {
     return timesegment.getUser();
+  },
+  createTimeSegment(_, args, ctx) {
+    const { scheduleId, status, startTime, endTime } = args.timeSegment;
+    return getAuthenticatedUser(ctx)
+      .then(user =>
+        Schedule.findById(scheduleId).then((schedule) => {
+          if (!schedule) {
+            return Promise.reject(Error('Invalid schedule!'));
+          }
+          return Creators.timeSegment({
+            schedule,
+            status,
+            startTime,
+            endTime,
+            user,
+          });
+        }),
+      );
+  },
+  removeTimeSegment(_, args, ctx) {
+    const { segmentId } = args.timeSegment;
+    return getAuthenticatedUser(ctx)
+      .then(() =>
+        TimeSegment.findById(segmentId).then((segment) => {
+          if (!segment) {
+            return Promise.reject(Error('Invalid segment!'));
+          }
+          return segment.destroy().then((rows) => {
+            if (rows) { return true; }
+            return false;
+          });
+        }),
+      );
+  },
+  updateTimeSegment(_, args, ctx) {
+    const { segmentId, status, startTime, endTime } = args.timeSegment;
+    return getAuthenticatedUser(ctx)
+      .then(() =>
+        TimeSegment.findById(segmentId).then((segment) => {
+          if (!segment) {
+            return Promise.reject(Error('Invalid segment!'));
+          }
+          return segment.update({
+            status,
+            startTime,
+            endTime,
+          });
+        }),
+      );
   },
 };
 

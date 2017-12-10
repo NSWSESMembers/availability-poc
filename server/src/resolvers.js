@@ -129,6 +129,15 @@ export const Resolvers = {
     createSchedule(_, args, ctx) {
       return scheduleHandler.createSchedule(_, args, ctx);
     },
+    createTimeSegment(_, args, ctx) {
+      return timeSegmentHandler.createTimeSegment(_, args, ctx);
+    },
+    removeTimeSegment(_, args, ctx) {
+      return timeSegmentHandler.removeTimeSegment(_, args, ctx);
+    },
+    updateTimeSegment(_, args, ctx) {
+      return timeSegmentHandler.updateTimeSegment(_, args, ctx);
+    },
   },
 };
 

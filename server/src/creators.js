@@ -9,13 +9,18 @@ const creators = {
   organisation: ({ name }) =>
     Organisation.create({ name }),
 
-  schedule: ({ name, details, group }) => {
+  schedule: ({ name, details, startTime, endTime, group }) => {
     if (!group || !group.id) {
       return Promise.reject(Error('Must pass group'));
+    }
+    if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
+      return Promise.reject(Error('Must pass start and end times'));
     }
     return Schedule.create({
       name,
       details,
+      startTime,
+      endTime,
       groupId: group.id,
     });
   },
@@ -115,6 +120,9 @@ const creators = {
     }
     if (!schedule || !schedule.id) {
       return Promise.reject(Error('Must pass schedule'));
+    }
+    if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
+      return Promise.reject(Error('Must pass start and end times'));
     }
     return TimeSegment.create({
       status,

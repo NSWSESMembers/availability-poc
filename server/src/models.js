@@ -50,6 +50,8 @@ const EventModel = db.define('event', {
 const ScheduleModel = db.define('schedule', {
   name: { type: Sequelize.STRING },
   details: { type: Sequelize.STRING },
+  startTime: { type: Sequelize.INTEGER },
+  endTime: { type: Sequelize.INTEGER },
 });
 
 const TimeSegmentModel = db.define('timesegment', {

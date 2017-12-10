@@ -34,6 +34,24 @@ export const Schema = [`
     groupId: Int!
   }
 
+  input createTimeSegmentInput {
+    scheduleId: Int!
+    status: String!
+    startTime: Int!
+    endTime: Int!
+  }
+
+  input updateTimeSegmentInput {
+    segmentId: Int!
+    status: String!
+    startTime: Int!
+    endTime: Int!
+  }
+
+  input removeTimeSegmentInput {
+    segmentId: Int!
+  }
+
   input AddUserToGroupInput {
     groupId: Int!
   }
@@ -126,10 +144,13 @@ export const Schema = [`
     id: Int!
     name: String!
     details: String!
+    startTime: Int!
+    endTime: Int!
     timeSegments: [TimeSegment]!
   }
 
   type TimeSegment {
+    id: Int!
     schedule: Schedule!
     user: User!
     status: String
@@ -157,6 +178,9 @@ export const Schema = [`
     createUser(user: CreateUserInput!): User
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
+    createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
+    updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
+    removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
     removeUserFromGroup(groupUpdate: RemoveUserFromGroupInput!): Boolean
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
