@@ -311,7 +311,6 @@ class Group extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
-
     if (loading || !user) {
       return (
         <View style={[styles.loading, styles.container]}>
@@ -423,23 +422,21 @@ const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
     joinGroupQry: ({ groupId }) =>
       mutate({
         variables: { groupUpdate: { groupId } },
-        refetchQueries: [{
-          query: CURRENT_USER_QUERY,
-        }],
-        // update: (store, { data: { addUserToGroup } }) => {
-        //   // fetch data from the cache
-        //   const data = store.readQuery({
-        //     query: CURRENT_USER_QUERY,
-        //   });
-        //   // add new data to the cache
-        //   data.user.groups.push(addUserToGroup);
-        //   console.log(data, addUserToGroup);
-        //   // write out cache
-        //   store.writeQuery({
-        //     query: CURRENT_USER_QUERY,
-        //     data,
-        //   });
-        // },
+        update: (store, { data: { addUserToGroup } }) => {
+          // fetch data from the cache
+          const data = store.readQuery({
+            query: CURRENT_USER_QUERY,
+          });
+          // add new data to the cache
+          data.user.groups.push(addUserToGroup);
+          data.user.schedules = _.merge(data.user.schedules, addUserToGroup.schedules);
+          data.user.events = _.merge(data.user.events, addUserToGroup.events);
+          // write out cache
+          store.writeQuery({
+            query: CURRENT_USER_QUERY,
+            data,
+          });
+        },
       }),
   }),
 });
@@ -452,21 +449,6 @@ const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
         refetchQueries: [{
           query: CURRENT_USER_QUERY,
         }],
-        // update: (store, { data: { removeUserFromGroup } }) => {
-        //   if (removeUserFromGroup) {
-        //   // fetch data from the cache
-        //     const data = store.readQuery({
-        //       query: CURRENT_USER_QUERY,
-        //     });
-        //     // add new data to the cache
-        //     data.user.groups = _.filter(data.user.groups, (n => n.id !== groupId));
-        //     // write out cache
-        //     store.writeQuery({
-        //       query: CURRENT_USER_QUERY,
-        //       data,
-        //     });
-        //   }
-        // },
       }),
   }),
 });
