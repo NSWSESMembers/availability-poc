@@ -56,7 +56,19 @@ const styles = extendAppStyleSheet({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  groupContainer: {
+  groupName: {
+    fontWeight: 'bold',
+    flex: 0.7,
+  },
+  groupTitleContainer: {
+    flexDirection: 'row',
+  },
+  groupTextContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingLeft: 6,
+  },
+  eventContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -66,14 +78,14 @@ const styles = extendAppStyleSheet({
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  groupName: {
+  eventName: {
     fontWeight: 'bold',
     flex: 0.7,
   },
-  groupTitleContainer: {
+  eventTitleContainer: {
     flexDirection: 'row',
   },
-  groupTextContainer: {
+  eventTextContainer: {
     flex: 1,
     flexDirection: 'column',
     paddingLeft: 6,
