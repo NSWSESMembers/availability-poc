@@ -56,7 +56,7 @@ const styles = extendAppStyleSheet({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  eventContainer: {
+  groupContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -66,14 +66,14 @@ const styles = extendAppStyleSheet({
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  eventName: {
+  groupName: {
     fontWeight: 'bold',
     flex: 0.7,
   },
-  eventTitleContainer: {
+  groupTitleContainer: {
     flexDirection: 'row',
   },
-  eventTextContainer: {
+  groupTextContainer: {
     flex: 1,
     flexDirection: 'column',
     paddingLeft: 6,
@@ -203,8 +203,9 @@ const ScheduleDisplay = (props) => {
   if (startTime === 0 && endTime === distantFuture) {
     timeText = 'Perpetual Schedule';
   } else {
-    timeText =
-    `${moment.unix(startTime).format('DD/MM/YY, HH:mm:ss')} - ${moment.unix(endTime).format('DD/MM/YY, HH:mm:ss')}`;
+    const startText = moment.unix(startTime).format('DD/MM/YY, HH:mm:ss');
+    const endText = moment.unix(endTime).format('DD/MM/YY, HH:mm:ss');
+    timeText = `${startText} - ${endText}`;
   }
   return (
     <TouchableHighlight key={id}>
