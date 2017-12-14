@@ -255,6 +255,7 @@ class Group extends Component {
     super(props);
     this.joinGroup = this.joinGroup.bind(this);
     this.leaveGroup = this.leaveGroup.bind(this);
+    this.onRefresh = this.onRefresh.bind(this);
   }
 
   onRefresh() {
@@ -279,8 +280,6 @@ class Group extends Component {
 
   leaveGroup() {
     this.props.leaveGroupQry({ groupId: this.getGroup().id }).then(() => {
-      // pull group details down again to populate the group details
-      this.onRefresh();
     }).catch((error) => {
       Alert.alert(
         'Error Leaving Group',
