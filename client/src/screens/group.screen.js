@@ -13,7 +13,9 @@ import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import moment from 'moment';
 
+import distantFuture from '../constants';
 import { extendAppStyleSheet } from './style-sheet';
 import SEARCH_GROUP_QUERY from '../graphql/search-group.query';
 import JOIN_GROUP_MUTATION from '../graphql/join-group.mutation';
@@ -53,6 +55,68 @@ const styles = extendAppStyleSheet({
   headerName: {
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  groupName: {
+    fontWeight: 'bold',
+    flex: 0.7,
+  },
+  groupTitleContainer: {
+    flexDirection: 'row',
+  },
+  groupTextContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingLeft: 6,
+  },
+  eventContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  eventName: {
+    fontWeight: 'bold',
+    flex: 0.7,
+  },
+  eventTitleContainer: {
+    flexDirection: 'row',
+  },
+  eventTextContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingLeft: 6,
+  },
+  eventText: {
+    color: '#8c8c8c',
+  },
+  scheduleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  scheduleName: {
+    fontWeight: 'bold',
+    flex: 0.7,
+  },
+  scheduleTitleContainer: {
+    flexDirection: 'row',
+  },
+  scheduleTextContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingLeft: 6,
+  },
+  scheduleText: {
+    color: '#8c8c8c',
   },
 });
 
@@ -126,14 +190,13 @@ const EventsDisplay = (props) => {
   const { id, name, details } = props.event;
   return (
     <TouchableHighlight key={id}>
-      <View style={styles.groupContainer}>
+      <View style={styles.eventContainer}>
         <Icon name="bullhorn" size={24} color="blue" />
-        <View style={styles.groupTextContainer}>
-          <View style={styles.groupTitleContainer}>
-            <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
+        <View style={styles.eventTextContainer}>
+          <View style={styles.eventTitleContainer}>
+            <Text style={styles.eventName} numberOfLines={1}>{name}</Text>
           </View>
-          <Text style={styles.groupUsername} />
-          <Text style={styles.groupText} numberOfLines={1}>{details}</Text>
+          <Text style={styles.eventText} numberOfLines={1}>{details}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -147,17 +210,24 @@ EventsDisplay.propTypes = {
 };
 
 const ScheduleDisplay = (props) => {
-  const { id, name, details } = props.schedule;
+  const { id, name, details, startTime, endTime } = props.schedule;
+  let timeText = '';
+  if (startTime === 0 && endTime === distantFuture) {
+    timeText = 'Perpetual Schedule';
+  } else {
+    const startText = moment.unix(startTime).format('DD/MM/YY, HH:mm:ss');
+    const endText = moment.unix(endTime).format('DD/MM/YY, HH:mm:ss');
+    timeText = `${startText} - ${endText}`;
+  }
   return (
     <TouchableHighlight key={id}>
-      <View style={styles.groupContainer}>
+      <View style={styles.scheduleContainer}>
         <Icon name="calendar" size={24} color="blue" />
-        <View style={styles.groupTextContainer}>
+        <View style={styles.scheduleTextContainer}>
           <View style={styles.groupTitleContainer}>
-            <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
+            <Text style={styles.scheduleName} numberOfLines={1}>{name} - {timeText}</Text>
           </View>
-          <Text style={styles.groupUsername} />
-          <Text style={styles.groupText} numberOfLines={1}>{details}</Text>
+          <Text style={styles.scheduleText} numberOfLines={1}>{details}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -167,6 +237,9 @@ ScheduleDisplay.propTypes = {
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
+    details: PropTypes.string,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
   }),
 };
 
@@ -251,7 +324,6 @@ class Group extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
-
     if (loading || !user) {
       return (
         <View style={[styles.loading, styles.container]}>
@@ -330,6 +402,8 @@ Group.propTypes = {
               id: PropTypes.number.isRequired,
               name: PropTypes.string.isRequired,
               details: PropTypes.string.isRequired,
+              startTime: PropTypes.number.isRequired,
+              endTime: PropTypes.number.isRequired,
             }),
           ),
           events: PropTypes.arrayOf(
@@ -368,6 +442,8 @@ const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
           });
           // add new data to the cache
           data.user.groups.push(addUserToGroup);
+          data.user.schedules = _.merge(data.user.schedules, addUserToGroup.schedules);
+          data.user.events = _.merge(data.user.events, addUserToGroup.events);
           // write out cache
           store.writeQuery({
             query: CURRENT_USER_QUERY,
@@ -383,21 +459,9 @@ const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
     leaveGroupQry: ({ groupId }) =>
       mutate({
         variables: { groupUpdate: { groupId } },
-        update: (store, { data: { removeUserFromGroup } }) => {
-          if (removeUserFromGroup) {
-          // fetch data from the cache
-            const data = store.readQuery({
-              query: CURRENT_USER_QUERY,
-            });
-            // add new data to the cache
-            data.user.groups = _.filter(data.user.groups, (n => n.id !== groupId));
-            // write out cache
-            store.writeQuery({
-              query: CURRENT_USER_QUERY,
-              data,
-            });
-          }
-        },
+        refetchQueries: [{
+          query: CURRENT_USER_QUERY,
+        }],
       }),
   }),
 });
