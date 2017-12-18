@@ -1,8 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { addNavigationHelpers, StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
+import {
+  addNavigationHelpers,
+  StackNavigator,
+  TabNavigator,
+  NavigationActions,
+} from 'react-navigation';
 import { connect } from 'react-redux';
 import { REHYDRATE } from 'redux-persist';
+
+import StackAuth from './screens/auth/StackAuth';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
@@ -14,7 +21,6 @@ import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
 import EventDetail from './screens/event-detail.screen';
-
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -33,31 +39,35 @@ const tabBarConfiguration = {
 };
 
 // tabs in main screen
-const MainScreenNavigator = TabNavigator({
-  Home: { screen: Home },
-  Groups: { screen: Groups },
-  Schedules: { screen: Schedules },
-  Events: { screen: Events },
-  Settings: { screen: Settings },
-}, tabBarConfiguration);
+const MainScreenNavigator = TabNavigator(
+  {
+    Home: { screen: Home },
+    Groups: { screen: Groups },
+    Schedules: { screen: Schedules },
+    Events: { screen: Events },
+    Settings: { screen: Settings },
+  },
+  tabBarConfiguration,
+);
 
-const AppNavigator = StackNavigator({
-  Main: { screen: MainScreenNavigator },
-  Signin: { screen: Signin },
-  NewGroup: { screen: NewGroup },
-  SearchGroup: { screen: SearchGroup },
-  Group: { screen: Group },
-  Event: { screen: EventDetail },
-}, {
-  mode: 'modal',
-});
+const AppNavigator = StackNavigator(
+  {
+    Main: { screen: MainScreenNavigator },
+    Signin: { screen: Signin },
+    NewGroup: { screen: NewGroup },
+    SearchGroup: { screen: SearchGroup },
+    Group: { screen: Group },
+    Event: { screen: EventDetail },
+  },
+  {
+    mode: 'modal',
+  },
+);
 
 // reducer initialization code
 const firstAction = AppNavigator.router.getActionForPathAndParams('Main');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
-const initialNavState = AppNavigator.router.getStateForAction(
-  tempNavState,
-);
+const initialNavState = AppNavigator.router.getStateForAction(tempNavState);
 
 // reducer code
 export const navigationReducer = (state = initialNavState, action) => {
@@ -96,12 +106,20 @@ export const navigationReducer = (state = initialNavState, action) => {
 
 const AppWithNavigationState = (props) => {
   const { dispatch, nav } = props;
+
+  console.log(nav);
+
+  if (!props.auth.username) {
+    return <StackAuth />;
+  }
+
   return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
 };
 
 AppWithNavigationState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.shape().isRequired,
+  auth: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = ({ auth, nav }) => ({
