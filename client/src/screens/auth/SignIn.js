@@ -1,51 +1,17 @@
 import React, { Component } from 'react';
-import {
-  KeyboardAvoidingView,
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-} from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 
 import PropTypes from 'prop-types';
 
-import { Container } from '../../components/Container';
+import { NextButton } from '../../components/Button';
+import { Container, Holder } from '../../components/Container';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/TextInput';
+import { NavBar } from '../../components/NavBar';
+import { Alert } from '../../components/Alert';
 
 import LOGIN_MUTATION from '../../graphql/login.mutation';
-
-const styles = StyleSheet.create({
-  inputContainer: {
-    marginBottom: 20,
-    paddingHorizontal: 50,
-  },
-  loadingContainer: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 12,
-  },
-  switchAction: {
-    paddingHorizontal: 4,
-    color: 'blue',
-  },
-  submit: {
-    marginVertical: 6,
-  },
-});
 
 class SignIn extends Component {
   constructor(props) {
@@ -53,75 +19,92 @@ class SignIn extends Component {
     this.state = {
       username: '',
       password: '',
-      loading: false,
+      usernameValid: false,
+      passwordValid: false,
     };
+    this.popupRef = null;
     this.onPressLogin = this.onPressLogin.bind(this);
-    this.onPressSignUp = this.onPressSignUp.bind(this);
   }
 
   onPressLogin() {
     const { username, password } = this.state;
-
-    this.setState({
-      loading: true,
-    });
-
     const { deviceUuid } = this.props.local;
+
+    this.setState({ loading: true });
 
     this.props
       .login({ username, password, deviceUuid })
       .then(({ data: { login: user } }) => {
+        /*
         const ourUser = {
           username: user.username,
           token: user.authToken,
         };
-        // this.props.dispatch(setCurrentUser(ourUser));
-        this.setState({
-          loading: false,
-        });
+        this.props.dispatch(setCurrentUser(ourUser));
+        */
+
+        this.setState({ loading: false });
       })
       .catch((error) => {
         this.setState({
           loading: false,
+          status: 'Login Error',
+          errorMessage: error.message,
         });
-        /*
-        Alert.alert(`${capitalizeFirstLetter(this.state.view)} error`, error.message, [
-          { text: 'OK', onPress: () => console.log('OK pressed') }, // eslint-disable-line no-console
-          {
-            text: 'Forgot password',
-            onPress: () => console.log('Forgot Pressed'),
-            style: 'cancel',
-          }, // eslint-disable-line no-console
-        ]);
-        */
+        this.popRef.show();
       });
   }
 
-  onPressSignUp() {
-    this.props.navigation.navigate('SignUp');
-  }
+  onChangePassword = (value) => {
+    let passwordValid = false;
+    if (value.length > 5) passwordValid = true;
+
+    this.setState({
+      password: value,
+      passwordValid,
+    });
+  };
+
+  onChangeUsername = (value) => {
+    let usernameValid = false;
+    if (value.length > 5) usernameValid = true;
+
+    this.setState({
+      username: value,
+      usernameValid,
+    });
+  };
 
   render() {
     return (
       <Container>
-        <KeyboardAvoidingView behavior="padding">
-          <Header title="Login" type="password" />
-          <View style={styles.inputContainer}>
-            <Input placeholder="Username" onChangeText={username => this.setState({ username })} />
-            <Input
-              placeholder="Password"
-              onChangeText={password => this.setState({ password })}
-              type="password"
-            />
-          </View>
-          <Button style={styles.submit} title="Login" onPress={this.onPressLogin} />
-          <View style={styles.switchContainer}>
-            <Text>New to Availability?</Text>
-            <TouchableOpacity onPress={this.onPressSignUp}>
-              <Text style={styles.switchAction}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
+        <NavBar
+          rightLinkText="Sign Up"
+          onPressRightLink={() => this.props.navigation.navigate('SignUp')}
+        />
+        <Holder>
+          <Header title="Login" />
+          <Input
+            title="Username"
+            onChangeText={this.onChangeUsername}
+            valid={this.state.usernameValid}
+            type="username"
+          />
+          <Input
+            title="Password"
+            onChangeText={this.onChangePassword}
+            valid={this.state.passwordValid}
+            type="password"
+          />
+        </Holder>
+        <NextButton onPress={this.onPressLogin} disabled={this.state.loading} />
+        <Alert
+          ref={(el) => {
+            this.popRef = el;
+          }}
+          status={this.state.status}
+          message={this.state.errorMessage}
+        />
       </Container>
     );
   }
@@ -134,7 +117,6 @@ SignIn.propTypes = {
   local: PropTypes.shape({
     deviceUuid: PropTypes.string,
   }),
-  dispatch: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
 };
 
