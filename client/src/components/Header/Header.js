@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
+import { Text } from '../Text';
 
 const Container = ({ title }) => (
   <View style={styles.headerContainer}>
-    <Text style={styles.header}>{title}</Text>
+    <Text type="h1White">{title}</Text>
   </View>
 );
 

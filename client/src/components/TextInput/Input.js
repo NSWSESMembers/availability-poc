@@ -1,13 +1,23 @@
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
+
+import Icon from 'react-native-vector-icons/Octicons';
+
 import styles from './styles';
 
 const Input = (props) => {
-  const { title, value, placeholder, type, onChangeText } = props;
+  const { title, value, valid, placeholder, type, onChangeText } = props;
 
   let typeProps = {};
   switch (type) {
+    case 'username':
+      typeProps = {
+        autoCapitalize: 'none',
+        autoCorrect: false,
+        returnKeyType: 'next',
+      };
+      break;
     case 'email':
       typeProps = {
         autoCapitalize: 'none',
@@ -25,8 +35,8 @@ const Input = (props) => {
       break;
   }
   return (
-    <View>
-      {title && <Text>{title}</Text>}
+    <View style={styles.defaultHolder}>
+      {title && <Text style={styles.defaultText}>{title.toUpperCase()}</Text>}
       <View style={styles.inputHolder}>
         <TextInput
           onChangeText={onChangeText}
@@ -36,6 +46,7 @@ const Input = (props) => {
           underlineColorAndroid="rgba(0,0,0,0)"
           style={styles.default}
         />
+        {valid && <Icon name="check" size={20} style={styles.validIcon} />}
       </View>
     </View>
   );
@@ -45,6 +56,7 @@ Input.propTypes = {
   type: PropTypes.string,
   title: PropTypes.string,
   value: PropTypes.string,
+  valid: PropTypes.bool,
   placeholder: PropTypes.string,
   onChangeText: PropTypes.func,
 };
