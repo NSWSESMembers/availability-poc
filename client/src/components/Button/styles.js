@@ -1,15 +1,26 @@
 import { StyleSheet } from 'react-native';
 import Colors from '../../themes/Colors';
 
+const defaultStyle = {
+  height: 50,
+  borderRadius: 25,
+  borderWidth: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+  width: 50,
+};
+
 const styles = StyleSheet.create({
-  default: {
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 1,
+  normal: {
+    ...defaultStyle,
     borderColor: Colors.bdWhite,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+    backgroundColor: Colors.bgWhite,
+  },
+  disabled: {
+    ...defaultStyle,
+    borderColor: Colors.bdDisabled,
+    backgroundColor: Colors.bgDisabled,
   },
   defaultText: {
     color: Colors.txtWhite,

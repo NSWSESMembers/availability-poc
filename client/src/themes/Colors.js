@@ -4,7 +4,7 @@ const Colors = {
   txtDescription: '#757575',
   txtDark: '#484848',
   txtWhite: '#ffffff',
-  txtError: '#fb642d',
+  txtError: '#FF5A5F',
   txtSuccess: '#25ce66',
   txtLink: '#007AFF',
 
@@ -12,11 +12,13 @@ const Colors = {
   bgMainDark: '#4F6D7A', // For screens > auth
   bgMainRed: '#FF5A5F',
   bgWhite: '#ffffff',
-  bgError: '#fb642d',
+  bgDisabled: '#D3D3D3',
+  bgError: '#FF5A5F',
   bgChat: '#f1f1f1',
 
   bdMain: '#00a699',
   bdWhite: '#ffffff',
+  bdDisabled: '#D3D3D3',
   bdLine: '#dddddd',
   bdInput: '#cbcbcb',
 };

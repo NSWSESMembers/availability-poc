@@ -1,13 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  Button,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { FlatList, ActivityIndicator, Button, Text, TouchableHighlight, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -88,10 +81,13 @@ class Group extends Component {
           <Icon name="group" size={24} color="orange" />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
+              <Text style={styles.groupName} numberOfLines={1}>
+                {name}
+              </Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupText} numberOfLines={1}>{tags}
+            <Text style={styles.groupText} numberOfLines={1}>
+              {tags}
             </Text>
           </View>
           <Icon name="angle-right" size={24} color="#8c8c8c" />
@@ -124,9 +120,7 @@ Group.propTypes = {
 class Groups extends Component {
   static navigationOptions = {
     title: 'Groups',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon size={24} name="group" color={tintColor} />
-    ),
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
   };
 
   constructor(props) {
@@ -162,6 +156,7 @@ class Groups extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
+
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -235,7 +230,10 @@ Groups.propTypes = {
 const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
-    loading, networkStatus, refetch, user,
+    loading,
+    networkStatus,
+    refetch,
+    user,
   }),
 });
 
@@ -243,7 +241,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(
-  connect(mapStateToProps),
-  userQuery,
-)(Groups);
+export default compose(connect(mapStateToProps), userQuery)(Groups);

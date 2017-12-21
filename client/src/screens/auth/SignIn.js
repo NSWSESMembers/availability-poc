@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 
 import PropTypes from 'prop-types';
+
+import { setCurrentUser } from '../../state/auth.actions';
 
 import { NextButton } from '../../components/Button';
 import { Container, Holder } from '../../components/Container';
@@ -30,27 +33,21 @@ class SignIn extends Component {
     const { username, password } = this.state;
     const { deviceUuid } = this.props.local;
 
-    this.setState({ loading: true });
-
     this.props
       .login({ username, password, deviceUuid })
       .then(({ data: { login: user } }) => {
-        /*
         const ourUser = {
           username: user.username,
           token: user.authToken,
         };
         this.props.dispatch(setCurrentUser(ourUser));
-        */
-
-        this.setState({ loading: false });
       })
       .catch((error) => {
         this.setState({
-          loading: false,
           status: 'Login Error',
           errorMessage: error.message,
         });
+        Keyboard.dismiss();
         this.popRef.show();
       });
   }
@@ -97,7 +94,10 @@ class SignIn extends Component {
             type="password"
           />
         </Holder>
-        <NextButton onPress={this.onPressLogin} disabled={this.state.loading} />
+        <NextButton
+          onPress={this.onPressLogin}
+          disabled={!(this.state.usernameValid && this.state.passwordValid)}
+        />
         <Alert
           ref={(el) => {
             this.popRef = el;
@@ -118,6 +118,7 @@ SignIn.propTypes = {
     deviceUuid: PropTypes.string,
   }),
   login: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 const login = graphql(LOGIN_MUTATION, {
