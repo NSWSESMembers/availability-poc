@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
+import { Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import { compose } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import PropTypes from 'prop-types';
+
+import { setCurrentUser } from '../../state/auth.actions';
 
 import { Container, Holder } from '../../components/Container';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/TextInput';
 import { NavBar } from '../../components/NavBar';
 import { NextButton } from '../../components/Button';
+import { Alert } from '../../components/Alert';
+
+import SIGNUP_MUTATION from '../../graphql/signup.mutation';
 
 class SignUp extends Component {
   constructor(props) {
@@ -19,12 +25,31 @@ class SignUp extends Component {
       usernameValid: false,
       passwordValid: false,
       emailValid: false,
-      loading: false,
     };
     this.onPressSignUp = this.onPressSignUp.bind(this);
   }
 
-  onPressSignUp() {}
+  onPressSignUp() {
+    const { deviceUuid } = this.props.local;
+    const { username, password, email } = this.state;
+    this.props
+      .signup({ username, email, password, deviceUuid })
+      .then(({ data: { signup: user } }) => {
+        const ourUser = {
+          username: user.username,
+          token: user.authToken,
+        };
+        this.props.dispatch(setCurrentUser(ourUser));
+      })
+      .catch((error) => {
+        this.setState({
+          status: 'Sign Up Error',
+          errorMessage: error.message,
+        });
+        Keyboard.dismiss();
+        this.popRef.show();
+      });
+  }
 
   onChangeEmail = (value) => {
     let emailValid = false;
@@ -81,7 +106,19 @@ class SignUp extends Component {
             type="email"
           />
         </Holder>
-        <NextButton onPress={this.onPressSignUp} disabled={this.state.loading} />
+        <NextButton
+          onPress={this.onPressSignUp}
+          disabled={
+            !(this.state.usernameValid && this.state.passwordValid && this.state.emailValid)
+          }
+        />
+        <Alert
+          ref={(el) => {
+            this.popRef = el;
+          }}
+          status={this.state.status}
+          message={this.state.errorMessage}
+        />
       </Container>
     );
   }
@@ -96,6 +133,20 @@ SignUp.propTypes = {
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
   }),
+  dispatch: PropTypes.func.isRequired,
+  local: PropTypes.shape({
+    deviceUuid: PropTypes.string,
+  }),
+  signup: PropTypes.func.isRequired,
 };
 
-export default compose(connect(mapStateToProps))(SignUp);
+const signup = graphql(SIGNUP_MUTATION, {
+  props: ({ mutate }) => ({
+    signup: ({ username, email, password, deviceUuid }) =>
+      mutate({
+        variables: { user: { username, email, password, deviceUuid } },
+      }),
+  }),
+});
+
+export default compose(signup, connect(mapStateToProps))(SignUp);

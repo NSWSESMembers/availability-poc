@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { KeyboardAvoidingView, View, Text } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 
 import { Button } from './';
 

@@ -1,22 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  addNavigationHelpers,
-  StackNavigator,
-  TabNavigator,
-  NavigationActions,
-} from 'react-navigation';
+import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
-import { REHYDRATE } from 'redux-persist';
+// import { REHYDRATE } from 'redux-persist';
 
 import StackAuth from './screens/auth/StackAuth';
+
+import { Container } from './components/Container';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
 import Schedules from './screens/schedules.screen';
-import Signin from './screens/signin.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
@@ -53,7 +49,7 @@ const MainScreenNavigator = TabNavigator(
 const AppNavigator = StackNavigator(
   {
     Main: { screen: MainScreenNavigator },
-    Signin: { screen: Signin },
+    // Signin: { screen: Signin },
     NewGroup: { screen: NewGroup },
     SearchGroup: { screen: SearchGroup },
     Group: { screen: Group },
@@ -73,6 +69,7 @@ const initialNavState = AppNavigator.router.getStateForAction(tempNavState);
 export const navigationReducer = (state = initialNavState, action) => {
   let nextState;
   switch (action.type) {
+    /*
     case REHYDRATE:
       // convert persisted data to Immutable and confirm rehydration
       if (!action.payload || !action.payload.auth || !action.payload.auth.token) {
@@ -95,6 +92,7 @@ export const navigationReducer = (state = initialNavState, action) => {
       }
       break;
     }
+      */
     default:
       nextState = AppNavigator.router.getStateForAction(action, state);
       break;
@@ -107,7 +105,9 @@ export const navigationReducer = (state = initialNavState, action) => {
 const AppWithNavigationState = (props) => {
   const { dispatch, nav } = props;
 
-  console.log(nav);
+  if (props.auth.loading) {
+    return <Container />;
+  }
 
   if (!props.auth.username) {
     return <StackAuth />;
