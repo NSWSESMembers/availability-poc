@@ -146,7 +146,6 @@ class Schedules extends Component {
     if (loading || !user) {
       return (
         <View style={[styles.loading, styles.container]}>
-          <Text>Activity {(user === null).toString()}</Text>
           <ActivityIndicator />
         </View>
       );

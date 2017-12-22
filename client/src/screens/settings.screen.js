@@ -1,13 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Button,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -101,17 +95,15 @@ class Settings extends Component {
 
   updateLocation() {
     const reportError = (error) => {
-      Alert.alert(
-        'Error updating location',
-        error.message,
-      );
+      Alert.alert('Error updating location', error.message);
     };
 
     // `navigator` is a browser polyfill and does not need to be imported
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        this.props.updateLocation({ locationLat: latitude, locationLon: longitude })
+        this.props
+          .updateLocation({ locationLat: latitude, locationLon: longitude })
           .then((result) => {
             const success = result.data.updateLocation;
             console.log(`Updated location: ${latitude},${longitude} (${success})`);
@@ -148,14 +140,8 @@ class Settings extends Component {
       <View style={styles.container}>
         <View style={styles.userContainer}>
           <View style={styles.userInner}>
-            <Icon
-              name="user"
-              size={50}
-              style={styles.userImage}
-            />
-            <Text style={styles.inputInstructions}>
-              {user.username}
-            </Text>
+            <Icon name="user" size={50} style={styles.userImage} />
+            <Text style={styles.inputInstructions}>{user.username}</Text>
           </View>
         </View>
         <Text style={styles.emailHeader}>Email Account</Text>
@@ -184,7 +170,8 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ({ auth }) => ({ variables: { id: auth.id }, fetchPolicy: 'cache-only' }),
   props: ({ data: { loading, user } }) => ({
-    loading, user,
+    loading,
+    user,
   }),
 });
 
@@ -192,8 +179,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(
-  connect(mapStateToProps),
-  userQuery,
-  updateLocationMutation,
-)(Settings);
+export default compose(connect(mapStateToProps), userQuery, updateLocationMutation)(Settings);
