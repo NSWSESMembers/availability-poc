@@ -13,7 +13,8 @@
     "serve": "node dist/main.js",
     "deploy-heroku": "cd .. && git push heroku $(git subtree split --prefix server master):master --force",
     "lint": "eslint src tests",
-    "test": "jest"
+    "test-integration": "jest tests/",
+    "test-unit": "jest --testPathIgnorePatterns '^<rootDir>/tests/'"
   },
   "devDependencies": {
     "eslint": "^4.4.1",

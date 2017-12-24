@@ -4,5 +4,6 @@ cache: yarn
 env:
   - COMPONENT=client MODE=lint
   - COMPONENT=server MODE=lint
-  - COMPONENT=server MODE=test
+  - COMPONENT=server MODE=test-integration
+  - COMPONENT=server MODE=test-unit
 script: bash travis.sh
