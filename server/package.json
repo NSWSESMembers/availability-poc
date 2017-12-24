@@ -13,8 +13,12 @@
     "serve": "node dist/main.js",
     "deploy-heroku": "cd .. && git push heroku $(git subtree split --prefix server master):master --force",
     "lint": "eslint src tests",
-    "test-integration": "jest tests/",
-    "test-unit": "jest --testPathIgnorePatterns '^<rootDir>/tests/'"
+    "test-integration": "jest tests/ && codecov -F integration",
+    "test-unit": "jest --testPathIgnorePatterns '^<rootDir>/tests/' && codecov -F unittests"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "devDependencies": {
     "eslint": "^4.4.1",
@@ -32,6 +36,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
+    "codecov": "^3.0.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "express-jwt": "^5.3.0",
