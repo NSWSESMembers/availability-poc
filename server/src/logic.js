@@ -363,7 +363,9 @@ export const groupHandler = {
         }
         return user.getGroups({ where: { id: groupId } }).then((existing) => {
           if (existing.length) {
-            return Promise.reject(Error('Already a member!'));
+            return Promise.reject(
+              Error(`${user.id} is already a member of ${groupId}!`),
+            );
           }
           return group.addUser(user).then(() => group);
         });

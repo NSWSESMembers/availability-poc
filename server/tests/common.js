@@ -30,4 +30,22 @@ export const itReturnsFailure = (response) => {
   }));
 };
 
+export const itReturnsSuccessSync = (response) => {
+  it('returns success', () => {
+    if (response.errors) {
+      // eslint-disable-next-line no-console
+      console.log(response.errors[0].message);
+    }
+    expect(response.success).toBe(true);
+    expect(response.status).toBe(200);
+  });
+};
+
+export const itReturnsFailureSync = (response) => {
+  it('returns failure', () => {
+    expect(response.success).not.toBe(true);
+    expect(response.status).toBe(200);
+  });
+};
+
 export default run;

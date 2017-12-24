@@ -1,4 +1,4 @@
-import { itReturnsSuccess, itReturnsFailure, run, query } from './common';
+import { itReturnsSuccessSync, itReturnsSuccess, itReturnsFailureSync, run, query } from './common';
 
 describe('Get users group by passing filter', () => {
   const response = query(`
@@ -29,8 +29,65 @@ describe('Get users group by passing filter', () => {
     expect(res.data.user.groups[0].id).not.toBe(1);
   }));
 });
-describe('Manipulate user group membership - leave, join, join again', () => {
-  const leaveresponse = run(
+
+describe('Manipulate user group membership - join, join again, leave', async () => {
+  const joinresponse = await run(
+    {
+      query: `
+      mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
+        addUserToGroup(groupUpdate: $groupUpdate) {
+          id
+          name
+          tags {
+             name
+             id
+           }
+           users {
+             username
+             id
+           }
+        }
+      }
+      `,
+      variables: {
+        groupUpdate: {
+          groupId: 3,
+        },
+      },
+    },
+  );
+
+  itReturnsSuccessSync(joinresponse);
+
+  const joinagainresponse = await run(
+    {
+      query: `
+      mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
+        addUserToGroup(groupUpdate: $groupUpdate) {
+          id
+          name
+          tags {
+             name
+             id
+           }
+           users {
+             username
+             id
+           }
+        }
+      }
+      `,
+      variables: {
+        groupUpdate: {
+          groupId: 3,
+        },
+      },
+    },
+  );
+
+  itReturnsFailureSync(joinagainresponse);
+
+  const leaveresponse = await run(
     {
       query: `
       mutation removeUserFromGroup($groupUpdate: RemoveUserFromGroupInput!) {
@@ -39,78 +96,15 @@ describe('Manipulate user group membership - leave, join, join again', () => {
       `,
       variables: {
         groupUpdate: {
-          groupId: 2,
+          groupId: 3,
         },
       },
     },
   );
 
-  itReturnsSuccess(leaveresponse);
-  it('leaving should return true', () => leaveresponse.then((res) => {
-    expect(res.data.removeUserFromGroup).toEqual(true);
-  }));
-  const joinresponse = run(
-    {
-      query: `
-      mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
-        addUserToGroup(groupUpdate: $groupUpdate) {
-          id
-          name
-          tags {
-             name
-             id
-           }
-           users {
-             username
-             id
-           }
-        }
-      }
-      `,
-      variables: {
-        groupUpdate: {
-          groupId: 2,
-        },
-      },
-    },
-  );
+  itReturnsSuccessSync(leaveresponse);
 
-  itReturnsSuccess(joinresponse);
-  it('joining again should fail', () => joinresponse.then((res) => {
-    expect(res.data.addUserToGroup).toHaveProperty('name');
-    expect(res.data.addUserToGroup.users).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: 69,
-        }),
-      ]),
-    );
-  }));
-  const joinagainresponse = run(
-    {
-      query: `
-      mutation addUserToGroup($groupUpdate: AddUserToGroupInput!) {
-        addUserToGroup(groupUpdate: $groupUpdate) {
-          id
-          name
-          tags {
-             name
-             id
-           }
-           users {
-             username
-             id
-           }
-        }
-      }
-      `,
-      variables: {
-        groupUpdate: {
-          groupId: 2,
-        },
-      },
-    },
-  );
-
-  itReturnsFailure(joinagainresponse);
+  it('leaving should return true', () => {
+    expect(leaveresponse.data.removeUserFromGroup).toEqual(true);
+  });
 });
