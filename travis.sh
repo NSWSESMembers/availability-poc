@@ -6,7 +6,7 @@ cd "$COMPONENT"
 echo "Installing dependencies for $COMPONENT..."
 yarn
 
-if test "$COMPONENT" == "server" -a "$MODE" == "test"
+if test "$COMPONENT" == "server" -a "$MODE" == "test-integration"
 then
   echo "Building server..."
   yarn run build
