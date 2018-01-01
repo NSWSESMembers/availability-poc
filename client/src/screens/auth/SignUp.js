@@ -81,7 +81,6 @@ class SignUp extends Component {
     });
   };
 
-<<<<<<< HEAD
   onPressBack = () => {
     this.props.navigation.goBack();
   };
@@ -90,12 +89,6 @@ class SignUp extends Component {
     return (
       <Container>
         <NavBar onPressBack={this.onPressBack} />
-=======
-  render() {
-    return (
-      <Container>
-        <NavBar onPressBack={() => this.props.navigation.goBack()} />
->>>>>>> 51afef3bf5ae5c1c41454416043c02f3413769d9
         <Holder>
           <Header title="Sign Up" />
           <Input
