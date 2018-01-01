@@ -81,10 +81,14 @@ class SignUp extends Component {
     });
   };
 
+  onPressBack = () => {
+    this.props.navigation.goBack();
+  };
+
   render() {
     return (
       <Container>
-        <NavBar onPressBack={() => this.props.navigation.goBack()} />
+        <NavBar onPressBack={this.onPressBack} />
         <Holder>
           <Header title="Sign Up" />
           <Input

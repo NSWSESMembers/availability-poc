@@ -72,13 +72,14 @@ class SignIn extends Component {
     });
   };
 
+  onSignUp = () => {
+    this.props.navigation.navigate('SignUp');
+  };
+
   render() {
     return (
       <Container>
-        <NavBar
-          rightLinkText="Sign Up"
-          onPressRightLink={() => this.props.navigation.navigate('SignUp')}
-        />
+        <NavBar rightLinkText="Sign Up" onPressRightLink={this.onSignUp} />
         <Holder>
           <Header title="Login" />
           <Input
