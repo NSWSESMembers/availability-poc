@@ -26,10 +26,9 @@ class SignIn extends Component {
       passwordValid: false,
     };
     this.popupRef = null;
-    this.onPressLogin = this.onPressLogin.bind(this);
   }
 
-  onPressLogin() {
+  onPressLogin = () => {
     Keyboard.dismiss();
 
     const { username, password } = this.state;
@@ -51,7 +50,7 @@ class SignIn extends Component {
         });
         this.popRef.show();
       });
-  }
+  };
 
   onChangePassword = (value) => {
     let passwordValid = false;
