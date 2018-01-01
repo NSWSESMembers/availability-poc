@@ -22,4 +22,4 @@ const StackAuth = StackNavigator(
   },
 );
 
-module.exports = StackAuth;
+export default StackAuth;

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
-// import { REHYDRATE } from 'redux-persist';
 
 import StackAuth from './screens/auth/StackAuth';
 
@@ -69,30 +68,6 @@ const initialNavState = AppNavigator.router.getStateForAction(tempNavState);
 export const navigationReducer = (state = initialNavState, action) => {
   let nextState;
   switch (action.type) {
-    /*
-    case REHYDRATE:
-      // convert persisted data to Immutable and confirm rehydration
-      if (!action.payload || !action.payload.auth || !action.payload.auth.token) {
-        const { routes, index } = state;
-        if (routes[index].routeName !== 'Signin') {
-          nextState = AppNavigator.router.getStateForAction(
-            NavigationActions.navigate({ routeName: 'Signin' }),
-            state,
-          );
-        }
-      }
-      break;
-    case 'LOGOUT': {
-      const { routes, index } = state;
-      if (routes[index].routeName !== 'Signin') {
-        nextState = AppNavigator.router.getStateForAction(
-          NavigationActions.navigate({ routeName: 'Signin' }),
-          state,
-        );
-      }
-      break;
-    }
-      */
     default:
       nextState = AppNavigator.router.getStateForAction(action, state);
       break;

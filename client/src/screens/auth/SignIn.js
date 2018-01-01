@@ -30,6 +30,8 @@ class SignIn extends Component {
   }
 
   onPressLogin() {
+    Keyboard.dismiss();
+
     const { username, password } = this.state;
     const { deviceUuid } = this.props.local;
 
@@ -47,7 +49,6 @@ class SignIn extends Component {
           status: 'Login Error',
           errorMessage: error.message,
         });
-        Keyboard.dismiss();
         this.popRef.show();
       });
   }

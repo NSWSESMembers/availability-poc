@@ -9,31 +9,29 @@ import styles from './styles';
 const Input = (props) => {
   const { title, value, valid, placeholder, type, onChangeText } = props;
 
-  let typeProps = {};
-  switch (type) {
-    case 'username':
-      typeProps = {
-        autoCapitalize: 'none',
-        autoCorrect: false,
-        returnKeyType: 'next',
-      };
-      break;
-    case 'email':
-      typeProps = {
-        autoCapitalize: 'none',
-        autoCorrect: false,
-        keyboardType: 'email-address',
-        returnKeyType: 'next',
-      };
-      break;
-    case 'password':
-      typeProps = {
-        secureTextEntry: true,
-      };
-      break;
-    default:
-      break;
+  const propsForType = {
+    username: {
+      autoCapitalize: 'none',
+      autoCorrect: false,
+      returnKeyType: 'next',
+    },
+    email: {
+      autoCapitalize: 'none',
+      autoCorrect: false,
+      keyboardType: 'email-address',
+      returnKeyType: 'next',
+    },
+    password: {
+      secureTextEntry: true,
+    },
+  };
+
+  let typeProps = propsForType[type];
+
+  if (typeof typeProps === 'undefined') {
+    typeProps = {};
   }
+
   return (
     <View style={styles.defaultHolder}>
       {title && <Text style={styles.defaultText}>{title.toUpperCase()}</Text>}

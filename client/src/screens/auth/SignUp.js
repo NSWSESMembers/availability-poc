@@ -30,6 +30,7 @@ class SignUp extends Component {
   }
 
   onPressSignUp() {
+    Keyboard.dismiss();
     const { deviceUuid } = this.props.local;
     const { username, password, email } = this.state;
     this.props
@@ -46,7 +47,6 @@ class SignUp extends Component {
           status: 'Sign Up Error',
           errorMessage: error.message,
         });
-        Keyboard.dismiss();
         this.popRef.show();
       });
   }
