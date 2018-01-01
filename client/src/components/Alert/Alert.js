@@ -17,6 +17,7 @@ class Alert extends Component {
       deltaY: new Animated.Value(0),
     };
     this.hide = this.hide.bind(this);
+    this.show = this.show.bind(this);
   }
   _timeout = false;
 
@@ -96,4 +97,4 @@ Alert.propTypes = {
   message: PropTypes.string,
 };
 
-module.exports = Alert;
+export default Alert;
