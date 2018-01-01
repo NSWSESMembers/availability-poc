@@ -26,9 +26,16 @@ class SignIn extends Component {
       passwordValid: false,
     };
     this.popupRef = null;
+<<<<<<< HEAD
   }
 
   onPressLogin = () => {
+=======
+    this.onPressLogin = this.onPressLogin.bind(this);
+  }
+
+  onPressLogin() {
+>>>>>>> 51afef3bf5ae5c1c41454416043c02f3413769d9
     Keyboard.dismiss();
 
     const { username, password } = this.state;
@@ -50,7 +57,11 @@ class SignIn extends Component {
         });
         this.popRef.show();
       });
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> 51afef3bf5ae5c1c41454416043c02f3413769d9
 
   onChangePassword = (value) => {
     let passwordValid = false;
@@ -72,6 +83,7 @@ class SignIn extends Component {
     });
   };
 
+<<<<<<< HEAD
   onSignUp = () => {
     this.props.navigation.navigate('SignUp');
   };
@@ -80,6 +92,15 @@ class SignIn extends Component {
     return (
       <Container>
         <NavBar rightLinkText="Sign Up" onPressRightLink={this.onSignUp} />
+=======
+  render() {
+    return (
+      <Container>
+        <NavBar
+          rightLinkText="Sign Up"
+          onPressRightLink={() => this.props.navigation.navigate('SignUp')}
+        />
+>>>>>>> 51afef3bf5ae5c1c41454416043c02f3413769d9
         <Holder>
           <Header title="Login" />
           <Input
