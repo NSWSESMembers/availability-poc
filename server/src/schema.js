@@ -1,8 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import { Resolvers } from './resolvers';
 
 export const Schema = [`
-
   input CreateOrganisationInput {
     name: String!
   }
@@ -195,21 +193,10 @@ export const Schema = [`
   }
 `];
 
-export const executableSchema = makeExecutableSchema({
-  typeDefs: Schema,
-  resolvers: Resolvers,
-});
+export const getSchema = resolvers =>
+  makeExecutableSchema({
+    typeDefs: Schema,
+    resolvers,
+  });
 
-/*
-Add this to make the server produce mocked data for any undefined resolvers.
-
-import { addMockFunctionsToSchema } from 'graphql-tools';
-
-addMockFunctionsToSchema({
-  schema: executableSchema,
-  mocks: Mocks,
-  preserveResolvers: true,
-});
-*/
-
-export default executableSchema;
+export default getSchema;

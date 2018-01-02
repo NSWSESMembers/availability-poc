@@ -1,63 +1,69 @@
-import Sequelize from 'sequelize';
+// this file is only used by unit tests but is not a unit test
+// and therefore does not belong in __tests__
 
-export const defineModels = (db) => {
+// eslint-disable-next-line import/no-extraneous-dependencies
+import SequelizeMock from 'sequelize-mock';
+
+export const defineModels = () => {
+  const db = new SequelizeMock();
+
   // We can have multiple orgaisations so we can support multi-tenancy but the
   // the reality is we'll probably only have one
   const OrganisationModel = db.define('organisation', {
-    name: { type: Sequelize.STRING },
+    name: 'Test organisation',
   });
 
   const GroupModel = db.define('group', {
-    name: { type: Sequelize.STRING },
+    name: 'Test group',
   });
 
   const UserModel = db.define('user', {
-    email: { type: Sequelize.STRING },
-    username: { type: Sequelize.STRING },
-    password: { type: Sequelize.STRING },
-    version: { type: Sequelize.INTEGER }, // version the password
+    email: 'test@example.com',
+    username: 'test',
+    password: 'test',
+    version: 1,
   });
 
   const CapabilityModel = db.define('capability', {
-    name: { type: Sequelize.STRING },
+    name: 'test',
   });
 
   const TagModel = db.define('tag', {
-    name: { type: Sequelize.STRING },
+    name: 'test',
   });
 
   const DeviceModel = db.define('device', {
-    uuid: { type: Sequelize.STRING },
-    pushToken: { type: Sequelize.STRING },
-    locationLat: { type: Sequelize.STRING },
-    locationLon: { type: Sequelize.STRING },
-    locationTimestamp: { type: Sequelize.INTEGER },
+    uuid: '1234abc',
+    pushToken: 'testpushtoken',
+    locationLat: -34.4267554,
+    locationLon: 150.8880039,
+    locationTimestamp: 1514860289,
   });
 
   const EventModel = db.define('event', {
-    name: { type: Sequelize.STRING },
-    details: { type: Sequelize.STRING },
+    name: 'Test event',
+    details: 'Details of test event',
   });
 
   const ScheduleModel = db.define('schedule', {
-    name: { type: Sequelize.STRING },
-    details: { type: Sequelize.STRING },
-    startTime: { type: Sequelize.INTEGER },
-    endTime: { type: Sequelize.INTEGER },
+    name: 'Test schedule',
+    details: 'Details of test schedule',
+    startTime: 1514860289,
+    endTime: 1514860289 + (60 * 60),
   });
 
   const TimeSegmentModel = db.define('timesegment', {
-    status: { type: Sequelize.INTEGER },
-    startTime: { type: Sequelize.INTEGER },
-    endTime: { type: Sequelize.INTEGER },
-    lastUpdate: { type: Sequelize.INTEGER },
+    status: 'available',
+    startTime: 1514860289,
+    endTime: 1514860289 + (60 * 60),
+    lastUpdate: 1514860289,
   });
 
   const EventResponseModel = db.define('eventresponse', {
-    status: { type: Sequelize.STRING },
-    detail: { type: Sequelize.STRING },
-    destination: { type: Sequelize.STRING },
-    eta: { type: Sequelize.INTEGER },
+    status: 'responding',
+    detail: 'on my way',
+    destination: 'HQ',
+    eta: 1514860289,
   });
 
   // users <-> groups (many-to-many)

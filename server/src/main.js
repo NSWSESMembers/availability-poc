@@ -1,17 +1,28 @@
+import 'babel-polyfill';
 import express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import jwt from 'express-jwt';
 import JWT_SECRET from './config';
-import { User, Device } from './models';
-
-import { executableSchema } from './schema';
+import { getSchema } from './schema';
+import { setupDb } from './db';
+import { getHandlers } from './logic';
+import { getResolvers } from './resolvers';
+import { getCreators } from './creators';
 
 const GRAPHQL_PORT = 8080;
 const GRAPHQL_PATH = '/graphql';
 
 const port = process.env.PORT ? process.env.PORT : GRAPHQL_PORT;
+
+const { models } = setupDb();
+const creators = getCreators(models);
+const { User, Device } = models;
+
+const handlers = getHandlers({ models, creators });
+const resolvers = getResolvers(handlers);
+const schema = getSchema(resolvers);
 
 const app = express();
 
@@ -48,7 +59,7 @@ app.use(
     }
 
     return {
-      schema: executableSchema,
+      schema,
       context: {
         user,
         device,
