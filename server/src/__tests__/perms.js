@@ -1,4 +1,4 @@
-import { schedulePerms, eventPerms } from './perms';
+import { schedulePerms, eventPerms } from '../perms';
 
 describe('Schedule permissions', () => {
   describe('allowed', () => {

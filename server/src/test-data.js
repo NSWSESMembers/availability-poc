@@ -1,4 +1,3 @@
-import Creators from './creators';
 import distantFuture from './constants';
 
 const nowInUTC = () => {
@@ -6,7 +5,7 @@ const nowInUTC = () => {
   return Math.round(d.getTime() / 1000);
 };
 
-export const loadTestData = () =>
+export const loadTestData = Creators =>
   Creators.organisation({
     name: 'NSW SES',
   }).then(organisation =>
