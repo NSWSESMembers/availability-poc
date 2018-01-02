@@ -1,13 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  Button,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { FlatList, ActivityIndicator, Button, Text, TouchableHighlight, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -85,10 +78,7 @@ class Schedule extends Component {
       timeText = `${startText} - ${endText}`;
     }
     return (
-      <TouchableHighlight
-        key={id}
-        onPress={this.goToSchedule}
-      >
+      <TouchableHighlight key={id} onPress={this.goToSchedule}>
         <View style={styles.scheduleContainer}>
           <Icon name="calendar-check-o" size={24} color="orange" />
           <View style={styles.scheduleTextContainer}>
@@ -96,13 +86,11 @@ class Schedule extends Component {
               <Text style={styles.scheduleName}>{`${name} - ${timeText}`}</Text>
               <Text style={styles.scheduleLastUpdated} />
             </View>
-            <Text style={styles.scheduleText} numberOfLines={1}>{details}</Text>
+            <Text style={styles.scheduleText} numberOfLines={1}>
+              {details}
+            </Text>
           </View>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#8c8c8c"
-          />
+          <Icon name="angle-right" size={24} color="#8c8c8c" />
         </View>
       </TouchableHighlight>
     );
@@ -212,7 +200,10 @@ Schedules.propTypes = {
 const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
-    loading, networkStatus, refetch, user,
+    loading,
+    networkStatus,
+    refetch,
+    user,
   }),
 });
 
@@ -220,7 +211,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(
-  connect(mapStateToProps),
-  userQuery,
-)(Schedules);
+export default compose(connect(mapStateToProps), userQuery)(Schedules);
