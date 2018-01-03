@@ -9,6 +9,7 @@ import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
 import Schedules from './screens/schedules.screen';
+import Schedule from './screens/schedule.screen';
 import Signin from './screens/signin.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
@@ -47,6 +48,7 @@ const AppNavigator = StackNavigator({
   NewGroup: { screen: NewGroup },
   SearchGroup: { screen: SearchGroup },
   Group: { screen: Group },
+  Schedule: { screen: Schedule },
   Event: { screen: EventDetail },
 }, {
   mode: 'modal',

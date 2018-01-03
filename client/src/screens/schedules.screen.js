@@ -141,7 +141,7 @@ class Schedules extends Component {
 
   goToSchedule(schedule) {
     const { navigate } = this.props.navigation;
-    navigate('Schedule', { scheduleId: schedule.id, title: schedule.name });
+    navigate('Schedule', { scheduleId: schedule.id });
   }
 
   goToNewSchedule() {
