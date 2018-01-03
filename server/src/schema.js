@@ -95,7 +95,7 @@ export const Schema = [`
     username: String # this is the name we'll show other users
     organisation: Organisation! # the organisation this user belongs to
     groups(id: Int): [Group]! # groups the user belongs to
-    schedules: [Schedule]! # schedules from groups the user belongs to
+    schedules(id: Int): [Schedule]! # schedules from groups the user belongs to
     events: [Event]! # events from groups the user belongs to
     devices: [Device]! # devices this user has logged in to
     tags: [Tag]! # tags associated with this user

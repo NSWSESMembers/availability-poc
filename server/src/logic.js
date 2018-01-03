@@ -72,7 +72,10 @@ export const userHandler = {
         where: { groupId: groups.map(g => g.id) },
       }));
   },
-  schedules(user) {
+  schedules(user, args) {
+    if (args.id) {
+      return Schedule.findAll({ where: { id: args.id } });
+    }
     return user.getGroups()
       .then(groups => Schedule.findAll({
         where: { groupId: groups.map(g => g.id) },
