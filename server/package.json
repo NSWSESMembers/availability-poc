@@ -9,9 +9,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon --watch src src/main.js --exec babel-node",
-    "build": "babel src -d dist",
+    "build": "bash scripts/build.sh",
     "serve": "node dist/main.js",
-    "deploy-heroku": "cd .. && git push heroku $(git subtree split --prefix server master):master --force",
     "lint": "eslint src tests",
     "test-integration": "jest tests/ && codecov -F integration",
     "test-unit": "jest --testPathIgnorePatterns '^<rootDir>/(tests|dist)/' && codecov -F unittests",

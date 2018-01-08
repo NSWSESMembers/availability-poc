@@ -6,4 +6,20 @@ env:
   - COMPONENT=server MODE=lint
   - COMPONENT=server MODE=test-integration
   - COMPONENT=server MODE=test-unit
+
 script: bash travis.sh
+
+before_deploy:
+- cd server/dist
+
+jobs:
+  include:
+    - stage: deploy
+      env: COMPONENT=server MODE=build
+      deploy:
+        provider: heroku
+        skip_cleanup: true
+        app: ses-availability-api
+        on: master
+        api_key:
+          secure: lQeTIxRHSTTxOwTCd93DjWweDsGeZTD9VVqulNTPijwggEcE+hCXTLW6h15mv52FK/ikBXwUI0y7Y+Ot8mNTJspitw4bQVOHPbXZTAoti2Jy/4gHe+vtqXZW6GvvibuI6hePGRBum2lVTaCO3LPyMM397Em/ziCpPC45XM8IQdNhIpP4gBrq/x6Qrs4SsD3NlYDxDbyn2bhP0mYP4GGfdFJ0WiLEUL9xsHQ2H77z14FMSX9H65G7wul3O0xOga+4nK+T/eoL3drNydT2KPCdIV1nP4xxfA6b17gy2L1o03xolGH2+dF9iGBh8DrxF/6KLsAOdjMQWzfROoqxsCQlj+sr2rVzDEZXbBDSZQZDGlUzUI8lWfYO32bwZ29jk4rserLJnhbIq5HYVw8LrAQVHcUtfF0yJNZFUc3DJUOeV7NZKW0q4iPCisd4OkqopdhOj+XIfAcYc1wRZMmyhQMSPyscVWo0fgWju+T20xaEDoPYWCDpvk7dF/RqUDlGAjTjr/wgZ2LeO9Ko6W89UuGiLIMKJyWIdotBmBz5TdkPD4ZoDQrJaUhzUprhzUSFTqTA7CHicgUAddrSxYkrDsU9bsNEyBFljSwSoQ6iRe6D+KOOHdBBlJ7PkOOpxq7Hqv0PtBMjRfb9cQhWLiqslN29pAiYdxN0E8w6NA3efdUqMu8=
