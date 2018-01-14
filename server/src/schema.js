@@ -133,6 +133,9 @@ export const Schema = [`
     user: User!
     status: String!
     detail: String!
+    locationLatitude: Float
+    locationLongitude: Float
+    locationUpdate: Int
     destination: String!
     eta: Int!
   }

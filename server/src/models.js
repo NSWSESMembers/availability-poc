@@ -58,6 +58,9 @@ export const defineModels = (db) => {
     detail: { type: Sequelize.STRING },
     destination: { type: Sequelize.STRING },
     eta: { type: Sequelize.INTEGER },
+    locationLatitude: { type: Sequelize.FLOAT },
+    locationLongitude: { type: Sequelize.FLOAT },
+    locationTime: { type: Sequelize.INTEGER },
   });
 
   // users <-> groups (many-to-many)
