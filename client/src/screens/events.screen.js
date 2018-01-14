@@ -79,10 +79,8 @@ Header.propTypes = {
 };
 
 class Event extends Component {
-  constructor(props) {
-    super(props);
-
-    this.goToEvent = this.props.goToEvent.bind(this, this.props.event);
+  goToEvent = () => {
+    this.props.goToEvent(this.props.event);
   }
 
   render() {
@@ -129,25 +127,18 @@ class Events extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
-  constructor(props) {
-    super(props);
-    this.goToEvent = this.goToEvent.bind(this);
-    this.goToNewEvent = this.goToNewEvent.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     this.props.refetch();
   }
 
   keyExtractor = item => item.id;
 
-  goToEvent(event) {
+  goToEvent = (event) => {
     const { navigate } = this.props.navigation;
     navigate('Event', { id: event.id, title: event.name });
   }
 
-  goToNewEvent() {
+  goToNewEvent = () => {
     const { navigate } = this.props.navigation;
     navigate('NewEvent');
   }

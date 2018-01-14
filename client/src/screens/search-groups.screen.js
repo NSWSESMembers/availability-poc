@@ -66,14 +66,12 @@ class Group extends Component {
     super(props);
     this.myGroups = this.props.myGroups;
     this.navigation = this.props.navigation;
-    this.goToGroup = this.goToGroup.bind(this);
   }
 
-  goToGroup() {
+  goToGroup = () => {
     const { navigate } = this.navigation;
     navigate('Group', { groupId: this.props.group.id });
   }
-
 
   render() {
     const { id, name } = this.props.group;
@@ -129,12 +127,7 @@ class AllGroups extends Component {
     ),
   };
 
-  constructor(props) {
-    super(props);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     this.props.refetch();
   }
 

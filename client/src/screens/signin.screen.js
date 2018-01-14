@@ -77,17 +77,11 @@ class Signin extends Component {
     headerLeft: null,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      view: 'login',
-      username: '',
-      email: '',
-      password: '',
-    };
-    this.login = this.login.bind(this);
-    this.signup = this.signup.bind(this);
-    this.switchView = this.switchView.bind(this);
+  state = {
+    view: 'login',
+    username: '',
+    email: '',
+    password: '',
   }
 
   componentWillReceiveProps(nextProps) {
@@ -96,7 +90,7 @@ class Signin extends Component {
     }
   }
 
-  login() {
+  login = () => {
     const { username, password } = this.state;
 
     this.setState({
@@ -131,7 +125,7 @@ class Signin extends Component {
       });
   }
 
-  signup() {
+  signup = () => {
     this.setState({
       loading: true,
     });
@@ -159,7 +153,7 @@ class Signin extends Component {
       });
   }
 
-  switchView() {
+  switchView = () => {
     this.setState({
       view: this.state.view === 'signup' ? 'login' : 'signup',
     });

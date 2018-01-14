@@ -132,12 +132,7 @@ EventResponse.propTypes = {
 };
 
 class EventDetail extends Component {
-  constructor(props) {
-    super(props);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     // NYI
     this.props.refetch();
   }

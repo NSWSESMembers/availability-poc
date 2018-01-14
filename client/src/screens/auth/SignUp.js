@@ -16,20 +16,16 @@ import { Alert } from '../../components/Alert';
 import SIGNUP_MUTATION from '../../graphql/signup.mutation';
 
 class SignUp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      email: '',
-      usernameValid: false,
-      passwordValid: false,
-      emailValid: false,
-    };
-    this.onPressSignUp = this.onPressSignUp.bind(this);
+  state = {
+    username: '',
+    password: '',
+    email: '',
+    usernameValid: false,
+    passwordValid: false,
+    emailValid: false,
   }
 
-  onPressSignUp() {
+  onPressSignUp = () => {
     Keyboard.dismiss();
     const { deviceUuid } = this.props.local;
     const { username, password, email } = this.state;
