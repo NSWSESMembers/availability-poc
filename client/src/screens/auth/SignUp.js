@@ -37,6 +37,7 @@ class SignUp extends Component {
       .signup({ username, email, password, deviceUuid })
       .then(({ data: { signup: user } }) => {
         const ourUser = {
+          id: user.id,
           username: user.username,
           token: user.authToken,
         };

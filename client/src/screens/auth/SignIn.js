@@ -38,6 +38,7 @@ class SignIn extends Component {
       .login({ username, password, deviceUuid })
       .then(({ data: { login: user } }) => {
         const ourUser = {
+          id: user.id,
           username: user.username,
           token: user.authToken,
         };
