@@ -25,7 +25,7 @@ import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
 import EventResponse from './screens/event-response.screen';
-
+import EventResponseEdit from './screens/event-response-edit.screen';
 
 // this will determine whether the firebase modules have been compiled in or not
 const firebaseAvailable = !!NativeModules.RNFIRMessaging;
@@ -85,6 +85,9 @@ const StackEvents = StackNavigator(
     },
     Event: {
       screen: Event,
+    },
+    EventResponseEdit: {
+      screen: EventResponseEdit,
     },
   },
   {

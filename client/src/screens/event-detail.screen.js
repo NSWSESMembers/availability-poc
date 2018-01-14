@@ -4,6 +4,7 @@ import {
   FlatList,
   ActivityIndicator,
   Text,
+  Button,
   View,
   Dimensions,
 } from 'react-native';
@@ -151,31 +152,46 @@ EventHeader.propTypes = {
   }),
 };
 
-const EventResponse = (props) => {
-  const { user, status, detail } = props.response;
-  const color = {
-    responding: 'green',
-    unavailable: 'red',
-    enroute: 'green',
-  }[status.toLowerCase()];
-  return (
-    <View style={styles.respondContainer}>
-      <Icon name="user" size={24} color={color} />
-      <View style={styles.respondTextContainer}>
-        <Text style={styles.respondName} numberOfLines={1}>{user.username}</Text>
-        <Text style={styles.respondStatus} numberOfLines={1}>{status} - {detail}</Text>
+class EventResponse extends Component {
+  onPressEdit = () => {
+    this.props.onEdit(this.props.response);
+  }
+
+  render() {
+    const { user, status, detail } = this.props.response;
+    const userId = this.props.auth.id;
+    const color = {
+      responding: 'green',
+      unavailable: 'red',
+      enroute: 'green',
+    }[status.toLowerCase()];
+    const statusText = detail === '' ? status : `${status} - ${detail}`;
+    const isMe = userId === user.id;
+    return (
+      <View style={styles.respondContainer}>
+        <Icon name="user" size={24} color={color} />
+        <View style={styles.respondTextContainer}>
+          <Text style={styles.respondName} numberOfLines={1}>{user.displayName}</Text>
+          <Text style={styles.respondStatus} numberOfLines={1}>{statusText}</Text>
+        </View>
+        { isMe ? <Button title="edit" onPress={this.onPressEdit} /> : null }
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 EventResponse.propTypes = {
+  auth: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
   response: PropTypes.shape({
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      displayName: PropTypes.string.isRequired,
     }),
     status: PropTypes.string.isRequired,
     detail: PropTypes.string,
   }),
+  onEdit: PropTypes.func,
 };
 
 class EventDetail extends Component {
@@ -192,7 +208,12 @@ class EventDetail extends Component {
     if (typeof result === 'undefined') {
       throw Error(`Invalid item: ${item}`);
     }
-    return result(item[1]);
+    return [item[0], result(item[1])];
+  }
+
+  editResponse = (eventResponse) => {
+    const { navigate } = this.props.navigation;
+    navigate('EventResponseEdit', { eventResponse, eventId: this.props.event.id });
   }
 
   renderItem = ({ item }) => {
@@ -203,12 +224,15 @@ class EventDetail extends Component {
     return (
       <EventResponse
         response={item[1]}
+        auth={this.props.auth}
+        onEdit={this.editResponse}
       />
     );
   };
 
   render() {
     const { event, loading, networkStatus } = this.props;
+    console.log(event);
 
     // render loading placeholder while we fetch messages
     if (loading) {
@@ -249,9 +273,15 @@ class EventDetail extends Component {
   }
 }
 EventDetail.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
+  auth: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
   event: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -260,6 +290,7 @@ EventDetail.propTypes = {
       PropTypes.shape({
         user: PropTypes.shape({
           username: PropTypes.string.isRequired,
+          displayName: PropTypes.string.isRequired,
         }),
         status: PropTypes.string.isRequired,
         detail: PropTypes.string.isRequired,
