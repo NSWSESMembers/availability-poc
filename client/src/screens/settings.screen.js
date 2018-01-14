@@ -84,16 +84,7 @@ class Settings extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={28} name="cog" color={tintColor} />,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
-    this.logout = this.logout.bind(this);
-    this.updateLocation = this.updateLocation.bind(this);
-  }
-
-  updateLocation() {
+  updateLocation = () => {
     const reportError = (error) => {
       Alert.alert('Error updating location', error.message);
     };
@@ -120,7 +111,7 @@ class Settings extends Component {
     );
   }
 
-  logout() {
+  logout = () => {
     this.props.dispatch(logout());
   }
 

@@ -66,9 +66,8 @@ Header.propTypes = {
 };
 
 class Group extends Component {
-  constructor(props) {
-    super(props);
-    this.goToGroup = this.props.goToGroup.bind(this, this.props.group);
+  goToGroup = () => {
+    this.props.goToGroup(this.props.group);
   }
 
   render() {
@@ -123,31 +122,23 @@ class Groups extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
   };
 
-  constructor(props) {
-    super(props);
-    this.goToGroup = this.goToGroup.bind(this);
-    this.goToNewGroup = this.goToNewGroup.bind(this);
-    this.goToSearchGroup = this.goToSearchGroup.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     this.props.refetch();
   }
 
   keyExtractor = item => item.id;
 
-  goToGroup(group) {
+  goToGroup = (group) => {
     const { navigate } = this.props.navigation;
     navigate('Group', { groupId: group.id });
   }
 
-  goToNewGroup() {
+  goToNewGroup = () => {
     const { navigate } = this.props.navigation;
     navigate('NewGroup');
   }
 
-  goToSearchGroup() {
+  goToSearchGroup = () => {
     const { navigate } = this.props.navigation;
     navigate('SearchGroup');
   }

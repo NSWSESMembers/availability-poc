@@ -79,15 +79,8 @@ class FinalizeGroup extends Component {
     };
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      name: '',
-    };
-
-    this.create = this.create.bind(this);
-    this.pop = this.pop.bind(this);
+  state = {
+    name: '',
   }
 
   componentDidMount() {
@@ -100,11 +93,11 @@ class FinalizeGroup extends Component {
     }
   }
 
-  pop() {
+  pop = () => {
     this.props.navigation.goBack();
   }
 
-  create() {
+  create = () => {
     const { createGroup } = this.props;
 
     createGroup({

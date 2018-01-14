@@ -251,22 +251,13 @@ class Group extends Component {
     ),
   };
 
-  constructor(props) {
-    super(props);
-    this.joinGroup = this.joinGroup.bind(this);
-    this.leaveGroup = this.leaveGroup.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     this.props.refetch();
   }
 
-  getGroup() {
-    return this.props.user.organisation.groups[0];
-  }
+  getGroup = () => this.props.user.organisation.groups[0];
 
-  joinGroup() {
+  joinGroup = () => {
     this.props.joinGroupQry({ groupId: this.getGroup().id }).catch((error) => {
       Alert.alert(
         'Error Joining Group',

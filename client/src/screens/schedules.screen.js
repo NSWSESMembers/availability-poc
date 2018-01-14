@@ -61,10 +61,8 @@ Header.propTypes = {
 };
 
 class Schedule extends Component {
-  constructor(props) {
-    super(props);
-
-    this.goToSchedule = this.props.goToSchedule.bind(this, this.props.schedule);
+  goToSchedule = () => {
+    this.props.goToSchedule(this.props.schedule);
   }
 
   render() {
@@ -114,25 +112,18 @@ class Schedules extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar-check-o" color={tintColor} />,
   };
 
-  constructor(props) {
-    super(props);
-    this.goToSchedule = this.goToSchedule.bind(this);
-    this.goToNewSchedule = this.goToNewSchedule.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
-  }
-
-  onRefresh() {
+  onRefresh = () => {
     this.props.refetch();
   }
 
   keyExtractor = item => item.id;
 
-  goToSchedule(schedule) {
+  goToSchedule = (schedule) => {
     const { navigate } = this.props.navigation;
     navigate('Schedule', { scheduleId: schedule.id, title: schedule.name });
   }
 
-  goToNewSchedule() {
+  goToNewSchedule = () => {
     const { navigate } = this.props.navigation;
     navigate('NewSchedule');
   }
