@@ -103,8 +103,8 @@ Schedule.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
     details: PropTypes.string,
-    startTime: PropTypes.number.isRequired,
-    endTime: PropTypes.number.isRequired,
+    startTime: PropTypes.number,
+    endTime: PropTypes.number,
   }),
 };
 
@@ -190,8 +190,8 @@ Schedules.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         details: PropTypes.string.isRequired,
-        startTime: PropTypes.number.isRequired,
-        endTime: PropTypes.number.isRequired,
+        startTime: PropTypes.number,
+        endTime: PropTypes.number,
       }),
     ),
   }),
