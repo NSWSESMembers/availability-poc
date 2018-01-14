@@ -16,6 +16,7 @@ const EVENT_FRAGMENT = gql`
       user {
         id
         username
+        displayName
       }
     }
   }
