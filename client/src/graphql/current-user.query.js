@@ -23,6 +23,8 @@ export default gql`
         id
         name
         details
+        startTime
+        endTime
         timeSegments {
           startTime
           endTime
