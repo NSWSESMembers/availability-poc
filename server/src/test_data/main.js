@@ -10,7 +10,7 @@ export const loadTestData = (Creators, models) =>
   Creators.organisation({
     name: 'NSW SES',
   }).then((organisation) => {
-    const addTestUserAndGroup = (id, username, email, org, groupName) => Creators.user({
+    const addTestUserAndGroup = (id, username, email, groupName) => Creators.user({
       id,
       username,
       password: 'test123',
@@ -45,25 +45,62 @@ export const loadTestData = (Creators, models) =>
       });
       return user;
     });
-
-
     Promise.all([
-      addTestUserAndGroup(69, 'Test User', 'test@example.com', organisation, 'State Group').then(() => {
-        // bulk create X users
+      Creators.user({
+        id: 69,
+        username: 'test',
+        password: 'test',
+        email: 'test@example.com',
+        organisation,
+      }).then(user =>
+        Promise.all([
+          Creators.group({
+            name: 'State Group',
+            user,
+            organisation,
+          }),
+          Creators.device({
+            uuid: '1234abc',
+            user,
+          }),
+          Creators.capability({
+            name: 'Road Crash Rescue',
+            organisation,
+            user,
+          }),
+          Creators.capability({
+            name: 'Vertical Rescue',
+            organisation,
+            user,
+          }),
+          Creators.capability({
+            name: 'Flood Rescue',
+            organisation,
+            user,
+          }),
+          Creators.capability({
+            name: 'Chainsaw',
+            organisation,
+            user,
+          }),
+        ]),
+      ),
+    ]).then(() => {
+      Promise.all([
+      // bulk create X users
         Array(20).fill().map((_, i) => addTestUserAndGroup(
           100 + i,
           faker.name.findName(),
           faker.internet.email(),
-          organisation,
           `${faker.address.city()} Unit`,
-        ));
-      }),
+        )),
 
-    ]).then((users) => {
+      ]).then((users) => {
       // add all users to State Group
-      users.forEach((index, element) => {
-        models.Group.findOne({ where: { name: 'State Group' } }).then((group) => {
-          group.addUser(element);
+        users.forEach((index, element) => {
+          models.Group.findOne({ where: { name: 'State Group' } }).then((group) => {
+            group.addUser(element);
+          });
         });
       });
     });

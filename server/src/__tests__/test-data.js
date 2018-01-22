@@ -1,6 +1,6 @@
 import { loadTestData } from '../test_data/main';
-import { defineModels } from './models';
-import { getCreators } from './creators';
+import { defineModels } from '../models-mock';
+import { getCreators } from '../creators';
 
 const models = defineModels();
 const creators = getCreators(models);
