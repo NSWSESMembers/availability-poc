@@ -31,8 +31,8 @@ export const loadTestData = (Creators, models) =>
           name: `Team needed to ${faker.hacker.verb()} ${faker.hacker.noun()} in ${faker.address.city()}`,
           details: faker.hacker.phrase(),
           startTime: nowInUTC(),
-          // one day to one week away
-          endTime: nowInUTC() + Math.floor(Math.random() * 604800) + 86400,
+          // one week away
+          endTime: nowInUTC() + 604800,
           group,
         });
         Creators.schedule({
@@ -41,6 +41,14 @@ export const loadTestData = (Creators, models) =>
           startTime: 0,
           endTime: distantFuture,
           group,
+        }).then((schedule) => {
+          Creators.timeSegment({
+            status: 'Available',
+            startTime: nowInUTC() + 3600, // +1 hr
+            endTime: nowInUTC() + (3600 * 2), // +2 hr
+            schedule,
+            user,
+          });
         });
       });
       return user;
