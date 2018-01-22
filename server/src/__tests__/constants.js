@@ -1,5 +1,6 @@
-import constants from '../constants';
+import { distantFuture, nowInUTC } from '../constants';
 
 it('exists', () => {
-  expect(constants).toBeDefined();
+  expect(distantFuture).toBeDefined();
+  expect(nowInUTC).toBeDefined();
 });
