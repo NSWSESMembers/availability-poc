@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 
-import { loadTestData } from './test-data';
+import { loadTestData } from './test_data/main';
 import { defineModels } from './models';
 import { getCreators } from './creators';
 
@@ -12,7 +12,7 @@ const init = async ({ db, models }) => {
   await db.sync({ force: true });
 
   try {
-    await loadTestData(creators);
+    await loadTestData(creators, models);
     console.log('Finished creating test data');
   } catch (e) {
     console.log('Epic fail while trying to load test data');
