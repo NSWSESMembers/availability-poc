@@ -17,41 +17,58 @@ export const loadTestData = (Creators, models) =>
       email,
       organisation,
     }).then((user) => {
-      Creators.group({
-        name: groupName,
-        user,
-        organisation,
-      }).then((group) => {
-        Creators.event({
-          name: `Rescue of ${faker.name.jobType()}`,
-          details: faker.hacker.phrase(),
-          group,
-        });
-        Creators.schedule({
-          name: `Team needed to ${faker.hacker.verb()} ${faker.hacker.noun()} in ${faker.address.city()}`,
-          details: faker.hacker.phrase(),
-          startTime: nowInUTC(),
-          // one week away
-          endTime: nowInUTC() + 604800,
-          group,
-        });
-        Creators.schedule({
-          name: 'All member availability}',
-          details: faker.hacker.phrase(),
-          startTime: 0,
-          endTime: distantFuture,
-          group,
-        }).then((schedule) => {
-          Creators.timeSegment({
-            status: 'Available',
-            startTime: nowInUTC() + 3600, // +1 hr
-            endTime: nowInUTC() + (3600 * 2), // +2 hr
-            schedule,
-            user,
-          });
-        });
-      });
-      return user;
+      Promise.all([
+        Creators.capability({
+          name: 'Chainsaw',
+          organisation,
+          user,
+        }),
+        Creators.group({
+          name: groupName,
+          user,
+          organisation,
+        }).then((group) => {
+          Promise.all([
+            Creators.event({
+              name: `Rescue of ${faker.name.jobType()}`,
+              details: faker.hacker.phrase(),
+              group,
+            }).then((event) => {
+              Creators.eventResponse({
+                status: 'Responding',
+                detail: 'ETA 10 min',
+                destination: 'Scene',
+                eta: nowInUTC() + 600,
+                event,
+                user,
+              });
+            }),
+            Creators.schedule({
+              name: `Team needed to ${faker.hacker.verb()} ${faker.hacker.noun()} in ${faker.address.city()}`,
+              details: faker.hacker.phrase(),
+              startTime: nowInUTC(),
+              // one week away
+              endTime: nowInUTC() + 604800,
+              group,
+            }),
+            Creators.schedule({
+              name: 'All member availability}',
+              details: faker.hacker.phrase(),
+              startTime: 0,
+              endTime: distantFuture,
+              group,
+            }).then((schedule) => {
+              Creators.timeSegment({
+                status: 'Available',
+                startTime: nowInUTC() + 3600, // +1 hr
+                endTime: nowInUTC() + (3600 * 2), // +2 hr
+                schedule,
+                user,
+              });
+            }),
+          ]);
+        }),
+      ]);
     });
     Promise.all([
       Creators.user({
