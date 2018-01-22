@@ -48,11 +48,17 @@ export const loadTestData = (Creators, models) =>
 
 
     Promise.all([
-      addTestUserAndGroup(69, 'Test User', 'test@example.com', organisation, 'State Group'),
-      // bulk create X users
-      Array(20).fill().map((_, i) => {
-        addTestUserAndGroup(100 + i, faker.name.findName(), faker.internet.email(), organisation, `${faker.address.city()} Unit`);
+      addTestUserAndGroup(69, 'Test User', 'test@example.com', organisation, 'State Group').then(() => {
+        // bulk create X users
+        Array(20).fill().map((_, i) => addTestUserAndGroup(
+          100 + i,
+          faker.name.findName(),
+          faker.internet.email(),
+          organisation,
+          `${faker.address.city()} Unit`,
+        ));
       }),
+
     ]).then((users) => {
       // add all users to State Group
       users.forEach((index, element) => {
