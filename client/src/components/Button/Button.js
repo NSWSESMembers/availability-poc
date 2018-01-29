@@ -1,34 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-
+import { TouchableOpacity, Text } from 'react-native';
 import styles from './styles';
 
-const Button = ({ title, type, disabled, onPress }) => {
-  const txtType = `${type}Txt`;
+const Button = ({ text, onPress, type, disabled }) => {
+  let style = [styles.buttonStyle];
+  let textStyle = [styles.textStyle];
+
+  if (type === 'secondary') {
+    style = [styles.buttonStyleSecondary];
+    textStyle = [styles.textStyleSecondary];
+  }
 
   return (
-    <View>
-      <TouchableOpacity
-        style={disabled === true ? styles.disabled : styles.normal}
-        onPress={onPress}
-        disabled={disabled}
-      >
-        {type === 'submit' && (
-          <Icon style={[styles.defaultTxt, styles[txtType] || {}]} name="arrow-right" size={20} />
-        )}
-        <Text style={styles.defaultText}>{title}</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={style} onPress={() => onPress()} disabled={disabled}>
+      <Text style={textStyle}>{text}</Text>
+    </TouchableOpacity>
   );
 };
 
 Button.propTypes = {
-  title: PropTypes.string,
+  text: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
   type: PropTypes.string,
   disabled: PropTypes.bool,
-  onPress: PropTypes.func,
+};
+
+Button.defaultProps = {
+  type: 'primary',
+  disabled: false,
 };
 
 export default Button;

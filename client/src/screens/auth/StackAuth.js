@@ -1,14 +1,16 @@
 import { StackNavigator } from 'react-navigation';
 
+import Index from './Index';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
-const options = {
-  header: null,
-};
+import NavOptions from '../../config/NavOptions';
 
 const StackAuth = StackNavigator(
   {
+    Index: {
+      screen: Index,
+    },
     SignIn: {
       screen: SignIn,
     },
@@ -17,8 +19,9 @@ const StackAuth = StackNavigator(
     },
   },
   {
-    initialRouteName: 'SignIn',
-    navigationOptions: options,
+    initialRouteName: 'Index',
+    navigationOptions: NavOptions,
+    mode: 'modal',
   },
 );
 

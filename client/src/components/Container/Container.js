@@ -1,25 +1,26 @@
-import React from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { View } from 'react-native';
 import styles from './styles';
 
-const Container = ({ children, backgroundColor }) => {
-  const containerStyles = [styles.container];
+const Container = ({ children, isAlt }) => {
+  let containerStyles = [styles.container];
 
-  if (backgroundColor) {
-    containerStyles.push({ backgroundColor });
+  if (isAlt === true) {
+    containerStyles = [styles.containerAlt];
   }
 
-  return (
-    <TouchableWithoutFeedback>
-      <View style={containerStyles}>{children}</View>
-    </TouchableWithoutFeedback>
-  );
+  return <View style={containerStyles}>{children}</View>;
 };
 
 Container.propTypes = {
-  children: PropTypes.node,
-  backgroundColor: PropTypes.string,
+  // eslint-disable-next-line
+  children: PropTypes.any,
+  isAlt: PropTypes.bool,
+};
+
+Container.defaultProps = {
+  isAlt: false,
 };
 
 export default Container;

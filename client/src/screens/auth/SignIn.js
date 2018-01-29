@@ -1,36 +1,46 @@
 import React, { Component } from 'react';
-import { Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import { graphql, compose } from 'react-apollo';
-
 import PropTypes from 'prop-types';
-
-import { setCurrentUser } from '../../state/auth.actions';
-
-import { NextButton } from '../../components/Button';
-import { Container, Holder } from '../../components/Container';
-import { Header } from '../../components/Header';
-import { Input } from '../../components/TextInput';
-import { NavBar } from '../../components/NavBar';
-import { Alert } from '../../components/Alert';
+import { View, ActivityIndicator } from 'react-native';
+import { graphql, compose } from 'react-apollo';
 
 import LOGIN_MUTATION from '../../graphql/login.mutation';
 
+import { setCurrentUser } from '../../state/auth.actions';
+
+import { Alert } from '../../components/Alert';
+import { Container, Holder } from '../../components/Container';
+import { Input } from '../../components/Input';
+import { Button } from '../../components/Button';
+
 class SignIn extends Component {
+  static navigationOptions = () => ({
+    title: 'Sign In',
+  });
+
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: '',
-      usernameValid: false,
-      passwordValid: false,
+      status: '',
+      errorMessage: '',
     };
-    this.popupRef = null;
   }
 
-  onPressLogin = () => {
-    Keyboard.dismiss();
+  onChangePassword = (value) => {
+    this.setState({
+      password: value,
+    });
+  };
 
+  onChangeUsername = (value) => {
+    this.setState({
+      username: value,
+    });
+  };
+
+  handleSignIn = () => {
     const { username, password } = this.state;
     const { deviceUuid } = this.props.local;
 
@@ -53,53 +63,41 @@ class SignIn extends Component {
       });
   };
 
-  onChangePassword = (value) => {
-    let passwordValid = false;
-    if (value.length > 5) passwordValid = true;
-
-    this.setState({
-      password: value,
-      passwordValid,
-    });
-  };
-
-  onChangeUsername = (value) => {
-    let usernameValid = false;
-    if (value.length > 5) usernameValid = true;
-
-    this.setState({
-      username: value,
-      usernameValid,
-    });
-  };
-
-  onSignUp = () => {
-    this.props.navigation.navigate('SignUp');
-  };
-
   render() {
     return (
       <Container>
-        <NavBar rightLinkText="Sign Up" onPressRightLink={this.onSignUp} />
-        <Holder>
-          <Header title="Login" />
+        <Holder margin transparent>
           <Input
-            title="Username"
-            onChangeText={this.onChangeUsername}
-            valid={this.state.usernameValid}
             type="username"
+            placeholder="Username"
+            onChangeText={(value) => {
+              this.state.username = value;
+            }}
           />
           <Input
-            title="Password"
-            onChangeText={this.onChangePassword}
-            valid={this.state.passwordValid}
             type="password"
+            placeholder="Password"
+            onChangeText={(value) => {
+              this.state.password = value;
+            }}
           />
+          <Button text="Sign In" onPress={this.handleSignIn} disabled={this.state.authorizing} />
+          {this.state.authorizing && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <ActivityIndicator size="large" />
+            </View>
+          )}
         </Holder>
-        <NextButton
-          onPress={this.onPressLogin}
-          disabled={!(this.state.usernameValid && this.state.passwordValid)}
-        />
         <Alert
           ref={(el) => {
             this.popRef = el;
@@ -112,10 +110,12 @@ class SignIn extends Component {
   }
 }
 
+const mapStateToProps = ({ auth, local }) => ({
+  auth,
+  local,
+});
+
 SignIn.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
   local: PropTypes.shape({
     deviceUuid: PropTypes.string,
   }),
@@ -130,11 +130,6 @@ const login = graphql(LOGIN_MUTATION, {
         variables: { user: { username, password, deviceUuid } },
       }),
   }),
-});
-
-const mapStateToProps = ({ auth, local }) => ({
-  auth,
-  local,
 });
 
 export default compose(login, connect(mapStateToProps))(SignIn);

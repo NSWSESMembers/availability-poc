@@ -1,5 +1,6 @@
 import Button from './Button';
-import NextButton from './NextButton';
+import ButtonNavBar from './ButtonNavBar';
+import ButtonRow from './ButtonRow';
 import styles from './styles';
 
-export { Button, NextButton, styles };
+export { Button, ButtonNavBar, ButtonRow, styles };
