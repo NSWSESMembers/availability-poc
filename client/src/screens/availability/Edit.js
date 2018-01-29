@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Button, ButtonRow } from '../../components/Button';
 import { DatePicker } from '../../components/Calendar';
@@ -12,7 +13,8 @@ import { addAvailability } from '../../state/availability.actions';
 
 class Edit extends Component {
   static navigationOptions = () => ({
-    title: 'My Availability',
+    title: 'Availability',
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
   });
 
   constructor(props) {

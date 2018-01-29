@@ -3,13 +3,15 @@ import { View } from 'react-native';
 import SelectMultiple from 'react-native-select-multiple';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { setSelectedRequests } from '../../state/availability.actions';
 import requestsData from '../../fixtures/groups';
 
 class Requests extends Component {
   static navigationOptions = () => ({
-    title: 'Select Request(s)',
+    title: 'Availability',
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
   });
 
   onSelectionChange = (selectedRequests) => {
