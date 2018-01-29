@@ -1,43 +1,43 @@
 import { StyleSheet } from 'react-native';
-import Colors from '../../themes/Colors';
-
-const defaultStyle = {
-  height: 50,
-  borderRadius: 25,
-  borderWidth: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  flexDirection: 'row',
-  width: 50,
-};
 
 const styles = StyleSheet.create({
-  normal: {
-    ...defaultStyle,
-    borderColor: Colors.bdWhite,
-    backgroundColor: Colors.bgWhite,
-  },
-  disabled: {
-    ...defaultStyle,
-    borderColor: Colors.bdDisabled,
-    backgroundColor: Colors.bgDisabled,
-  },
-  defaultText: {
-    color: Colors.txtWhite,
+  textStyle: {
     fontSize: 20,
+    color: '#FFF',
+    textAlign: 'center',
   },
-  btnSubmitHolder: {
-    position: 'absolute',
-    right: 25,
-    bottom: 0,
-    paddingBottom: 25,
+  textStyleSecondary: {
+    fontSize: 20,
+    color: '#FFF',
+    textAlign: 'center',
   },
-  submit: {
-    backgroundColor: Colors.bgWhite,
-    width: 50,
+  buttonStyle: {
+    padding: 10,
+    backgroundColor: '#f48603',
+    width: '100%',
   },
-  submitTxt: {
-    color: Colors.txtMain,
+  buttonStyleSecondary: {
+    padding: 10,
+    backgroundColor: '#1c87c9',
+    width: '100%',
+  },
+  buttonNavBarIcon: {
+    marginRight: 10,
+    color: '#FFF',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    paddingTop: 5,
+    paddingBottom: 5,
+    justifyContent: 'space-between',
+  },
+  buttonRowTitle: {
+    fontSize: 11,
+    fontWeight: '900',
+    paddingTop: 5,
+  },
+  buttonRowDescription: {
+    paddingBottom: 5,
   },
 });
 

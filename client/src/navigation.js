@@ -4,6 +4,7 @@ import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-naviga
 import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
+import StackAvailability from './screens/availability/StackAvailability';
 
 import { Container } from './components/Container';
 
@@ -11,11 +12,9 @@ import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
-import Schedules from './screens/schedules.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
-import EventDetail from './screens/event-detail.screen';
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -33,43 +32,82 @@ const tabBarConfiguration = {
   },
 };
 
+const StackGroup = StackNavigator(
+  {
+    Index: {
+      screen: Groups,
+    },
+    NewGroup: {
+      screen: NewGroup,
+    },
+    SearchGroup: {
+      screen: SearchGroup,
+    },
+    Group: {
+      screen: Group,
+    },
+  },
+  {
+    headerMode: 'screen',
+  },
+);
+
+const StackHome = StackNavigator(
+  {
+    Index: {
+      screen: Home,
+    },
+  },
+  {
+    headerMode: 'screen',
+  },
+);
+
+const StackEvents = StackNavigator(
+  {
+    Index: {
+      screen: Events,
+    },
+  },
+  {
+    headerMode: 'screen',
+  },
+);
+
+const StackSettings = StackNavigator(
+  {
+    Index: {
+      screen: Settings,
+    },
+  },
+  {
+    headerMode: 'screen',
+  },
+);
+
 // tabs in main screen
 const MainScreenNavigator = TabNavigator(
   {
-    Home: { screen: Home },
-    Groups: { screen: Groups },
-    Schedules: { screen: Schedules },
-    Events: { screen: Events },
-    Settings: { screen: Settings },
+    Home: { screen: StackHome },
+    Groups: { screen: StackGroup },
+    Availability: { screen: StackAvailability },
+    Events: { screen: StackEvents },
+    Settings: { screen: StackSettings },
   },
   tabBarConfiguration,
 );
 
-const AppNavigator = StackNavigator(
-  {
-    Main: { screen: MainScreenNavigator },
-    // Signin: { screen: Signin },
-    NewGroup: { screen: NewGroup },
-    SearchGroup: { screen: SearchGroup },
-    Group: { screen: Group },
-    Event: { screen: EventDetail },
-  },
-  {
-    mode: 'modal',
-  },
-);
-
 // reducer initialization code
-const firstAction = AppNavigator.router.getActionForPathAndParams('Main');
-const tempNavState = AppNavigator.router.getStateForAction(firstAction);
-const initialNavState = AppNavigator.router.getStateForAction(tempNavState);
+const firstAction = MainScreenNavigator.router.getActionForPathAndParams('Home');
+const tempNavState = MainScreenNavigator.router.getStateForAction(firstAction);
+const initialNavState = MainScreenNavigator.router.getStateForAction(tempNavState);
 
 // reducer code
 export const navigationReducer = (state = initialNavState, action) => {
   let nextState;
   switch (action.type) {
     default:
-      nextState = AppNavigator.router.getStateForAction(action, state);
+      nextState = MainScreenNavigator.router.getStateForAction(action, state);
       break;
   }
 
@@ -88,7 +126,7 @@ const AppWithNavigationState = (props) => {
     return <StackAuth />;
   }
 
-  return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+  return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
 };
 
 AppWithNavigationState.propTypes = {

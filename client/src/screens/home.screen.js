@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { FlatList, Text, View } from 'react-native';
 import { ListItem, Separator } from '../components/List';
 
-import availability from '../fixtures/availability';
+import availabilityData from '../fixtures/availability';
 import events from '../fixtures/events';
 
 import { extendAppStyleSheet } from './style-sheet';
@@ -44,7 +44,7 @@ class Home extends Component {
         </View>
         <View>
           <FlatList
-            data={availability}
+            data={availabilityData}
             renderItem={({ item }) => (
               <ListItem
                 text={item.name}

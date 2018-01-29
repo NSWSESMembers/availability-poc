@@ -27,6 +27,8 @@
     "react-native-alphabetlistview": "^0.2.0",
     "react-native-code-push": "^5.2.0-beta",
     "react-native-maps": "^0.18.2",
+    "react-native-modal-datetime-picker": "^4.13.0",
+    "react-native-select-multiple": "^1.2.0",
     "react-native-vector-icons": "^4.4.2",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",

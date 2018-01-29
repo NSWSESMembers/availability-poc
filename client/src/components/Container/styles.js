@@ -1,13 +1,39 @@
 import { StyleSheet } from 'react-native';
-import Colors from '../../themes/Colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.bgMain,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#EEE',
   },
-  holder: {
-    padding: 25,
+  containerAlt: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1e3c78',
+  },
+  containerHolder: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  containerFooter: {
+    height: 75,
+    backgroundColor: '#FFF',
+    width: '100%',
+    flexDirection: 'row',
+  },
+  containerHalf: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  containerCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

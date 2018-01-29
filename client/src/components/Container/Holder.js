@@ -1,21 +1,30 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
 import styles from './styles';
 
-const Holder = ({ children, backgroundColor }) => {
-  const containerStyles = [styles.holder];
+const Container = ({ children, margin, marginBot, transparent }) => {
+  const containerStyles = [styles.containerHolder];
 
-  if (backgroundColor) {
-    containerStyles.push({ backgroundColor });
+  if (margin) {
+    containerStyles.push({ paddingTop: 20 });
+  }
+  if (marginBot) {
+    containerStyles.push({ paddingBottom: 20 });
+  }
+  if (transparent) {
+    containerStyles.push({ backgroundColor: 'transparent' });
   }
 
   return <View style={containerStyles}>{children}</View>;
 };
 
-Holder.propTypes = {
-  children: PropTypes.node,
-  backgroundColor: PropTypes.string,
+Container.propTypes = {
+  // eslint-disable-next-line
+  children: PropTypes.any,
+  margin: PropTypes.bool,
+  marginBot: PropTypes.bool,
+  transparent: PropTypes.bool,
 };
 
-export default Holder;
+export default Container;
