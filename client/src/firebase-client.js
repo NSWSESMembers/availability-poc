@@ -21,19 +21,17 @@ export class FirebaseClient {
     // request user permission for notifications - iOS
     FCM.requestPermissions();
 
-    FCM.getInitialNotification().then((notif) => {
-      console.log('INITIAL NOTIFICATION', notif);
-    });
+    FCM.getInitialNotification();
 
     self.notificationListener = FCM.on(FCMEvent.Notification, (notification) => {
       Alert.alert(
         notification.fcm.title,
         notification.fcm.body,
         [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
+          { text: 'OK' },
         ],
-        { cancelable: false }
-      )
+        { cancelable: false },
+      );
 
       if (notification.local_notification) {
         // this is a local notification
@@ -42,21 +40,33 @@ export class FirebaseClient {
       if (notification.opened_from_tray) {
         // app is open/resumed because user clicked banner
         // execute preregistered action associated with notification if exists
-        if (notification.aps && notification.aps.category && this.actions[notification.aps.category]) {
+        if (notification.aps &&
+            notification.aps.category &&
+            this.actions[notification.aps.category]) {
           this.actions[notification.aps.category](notification);
         }
         return;
       }
 
       if (Platform.OS === 'ios') {
-        // optional
-        // iOS requires developers to call completionHandler to end notification process. If you do not call it your background remote notifications could be throttled, to read more about it see the above documentation link.
-        // This library handles it for you automatically with default behavior (for remote notification, finish with NoData; for WillPresent, finish depend on "show_in_foreground"). However if you want to return different result, follow the following code to override
-        // notif._notificationType is available for iOS platfrom
-        console.log(notification._notificationType, NotificationType.NotificationResponse);
-        switch (notification._notificationType) {
+        /*
+        iOS requires developers to call completionHandler to end notification process.
+        If you do not call it your background remote notifications could be throttled,
+        to read more about it see the above documentation link.
+        This library handles it for you automatically with default
+        behavior (for remote notification,
+        finish with NoData; for WillPresent, finish depend on
+        "show_in_foreground").
+        However if you want to return different result, follow the following code to override
+        notif._notificationType is available for iOS platfrom
+        */
+        console.log(
+          notification._notificationType, // eslint-disable-line no-underscore-dangle
+          NotificationType.NotificationResponse,
+        );
+        switch (notification._notificationType) { // eslint-disable-line no-underscore-dangle
           case NotificationType.Remote:
-            notification.finish(RemoteNotificationResult.NewData); // other types available: RemoteNotificationResult.NewData, RemoteNotificationResult.ResultFailed
+            notification.finish(RemoteNotificationResult.NewData);
             break;
           case NotificationType.NotificationResponse:
             notification.finish();
@@ -66,9 +76,11 @@ export class FirebaseClient {
             if (this.onWillPresentNotification) {
               this.onWillPresentNotification(notification); // needs to call notification.finish
             } else {
-              notification.finish(WillPresentNotificationResult.All); // other types available: WillPresentNotificationResult.None
+              notification.finish(WillPresentNotificationResult.All);
             }
             break;
+          default:
+            console.log('Cannot handle: ', notification._notificationType); // eslint-disable-line no-underscore-dangle, no-console
         }
       }
     });

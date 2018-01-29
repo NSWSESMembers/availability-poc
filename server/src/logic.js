@@ -48,11 +48,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
         });
       },
       updateToken(_, args, ctx) {
-        return getAuthenticatedDevice(ctx).then((device) => {
-          return device.update({
-              pushToken: args.token.token,
-          });
-        });
+        return getAuthenticatedDevice(ctx).then(device => device.update({
+          pushToken: args.token.token,
+        }));
       },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {

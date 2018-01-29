@@ -124,9 +124,9 @@ const EventResponse = (props) => {
 EventResponse.propTypes = {
   response: PropTypes.shape({
     user: PropTypes.shape({
-      name: PropTypes.string.required,
+      name: PropTypes.string.isRequired,
     }),
-    status: PropTypes.string.required,
+    status: PropTypes.string.isRequired,
     detail: PropTypes.string,
   }),
 };

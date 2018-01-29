@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState, Alert } from 'react-native';
+import { AppState } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
+import { FCM } from 'react-native-fcm';
 import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 
 import { Container } from './components/Container';
-import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation.js';
+import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
@@ -136,10 +137,9 @@ const AppWithNavigationState = (props) => {
 };
 
 class AppNavState extends Component {
-
     state = {
       appState: AppState.currentState,
-      token: "",
+      token: '',
     }
 
     componentWillMount() {
@@ -151,9 +151,10 @@ class AppNavState extends Component {
 
       firebaseClient.init().then((registrationId) => {
         if (this.props.auth && this.props.registrationId !== this.state.token) {
-          this.setState({token : registrationId});
+          this.setState({ token: registrationId });
           return Promise.resolve(this.props.updateToken({ token: registrationId }));
         }
+        return Promise.resolve();
       });
 
       if (!nextProps.auth) {
@@ -161,11 +162,15 @@ class AppNavState extends Component {
           firebaseClient.clear();
         }
       }
+    }
 
+    componentWillUnmount() {
+      AppState.removeEventListener('change', this.handleAppStateChange);
     }
 
     handleAppStateChange = (nextAppState) => {
       console.log('App has changed state!', nextAppState);
+      console.log('From: ', this.state.appState);
       if (this.state.token && FCM.getBadgeNumber()) {
         // clear notifications from center/tray
         FCM.removeAllDeliveredNotifications();
@@ -173,10 +178,6 @@ class AppNavState extends Component {
         FCM.setBadgeNumber(0);
       }
       this.setState({ appState: nextAppState });
-    }
-
-    componentWillUnmount() {
-      AppState.removeEventListener('change', this.handleAppStateChange);
     }
 
     render() {
@@ -194,18 +195,13 @@ class AppNavState extends Component {
     }
 }
 
-AppWithNavigationState.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  nav: PropTypes.shape().isRequired,
-  auth: PropTypes.shape().isRequired,
-  updateToken: PropTypes.func
-};
-
 AppNavState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.shape().isRequired,
+  auth: PropTypes.shape().isRequired,
   updateToken: PropTypes.func,
   token: PropTypes.string,
+  registrationId: PropTypes.string,
 };
 
 const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
