@@ -5,22 +5,23 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const ButtonRow = ({ title, description, onPress }) => (
+const ButtonRow = ({ title, description, onPress, showIcon }) => (
   <TouchableOpacity onPress={() => onPress()}>
     <View style={styles.buttonRow}>
       <View>
         <Text style={styles.buttonRowTitle}>{title.toUpperCase()}</Text>
-        <Text style={styles.buttonRowDescription}>{description}</Text>
+        {description && <Text style={styles.buttonRowDescription}>{description}</Text>}
       </View>
-      <Icon name="angle-right" size={40} color="#EEE" />
+      {showIcon && <Icon name="angle-right" size={40} color="#EEE" /> }
     </View>
   </TouchableOpacity>
 );
 
 ButtonRow.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  onPress: PropTypes.func,
+  description: PropTypes.string,
+  onPress: PropTypes.func.isRequired,
+  showIcon: PropTypes.bool,
 };
 
 export default ButtonRow;

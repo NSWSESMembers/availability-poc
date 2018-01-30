@@ -4,13 +4,17 @@ import ModalSelector from 'react-native-modal-selector';
 
 
 import { View } from 'react-native';
-import { ButtonRow } from '../Button';
+import { ButtonRowNoPress } from '../Button';
 
 class ButtonRowPicker extends Component {
   onConfirm = (option) => {
     this.props.selected = option.label;
     this.props.onSelect(option.label);
   };
+
+  focusOnText = () => {
+
+  }
 
   render() {
     const data = [
@@ -25,7 +29,7 @@ class ButtonRowPicker extends Component {
           data={data}
           onChange={this.onConfirm}
         >
-          <ButtonRow
+          <ButtonRowNoPress
             title={this.props.title}
             showIcon
             description={`For this time period I am '${this.props.selected}'`}
