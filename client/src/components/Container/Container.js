@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StatusBar, View } from 'react-native';
+import { View } from 'react-native';
 import styles from './styles';
 
 const Container = ({ children, isAlt }) => {
@@ -12,7 +12,6 @@ const Container = ({ children, isAlt }) => {
 
   return (
     <View style={containerStyles}>
-      <StatusBar barStyle="light-content" />
       {children}
     </View>
   );
