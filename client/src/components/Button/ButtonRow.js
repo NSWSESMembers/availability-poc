@@ -20,7 +20,7 @@ const ButtonRow = ({ title, description, onPress }) => (
 ButtonRow.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
 };
 
 export default ButtonRow;
