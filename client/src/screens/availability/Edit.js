@@ -3,12 +3,11 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import ButtonRowPicker from '../../components/ButtonRowPicker';
 import { Button, ButtonRow } from '../../components/Button';
 import { DatePicker } from '../../components/Calendar';
 import { Container, Holder } from '../../components/Container';
 import { Separator } from '../../components/Separator';
-import { ButtonRowPicker } from '../../components/ButtonRowPicker';
 import { addAvailability } from '../../state/availability.actions';
 
 class Edit extends Component {

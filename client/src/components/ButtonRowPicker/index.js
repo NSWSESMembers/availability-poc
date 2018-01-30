@@ -1,3 +1,3 @@
 import ButtonRowPicker from './ButtonRowPicker';
 
-export { ButtonRowPicker };
+export default ButtonRowPicker;
