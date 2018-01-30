@@ -5,7 +5,7 @@ describe('Get users group by passing filter', () => {
     {
       user {
         id
-        groups(id: 2) {
+        groups(id: 1) {
           id
           schedules {
             id
@@ -25,8 +25,8 @@ describe('Get users group by passing filter', () => {
   it('Returns correct single entity', () => response.then((res) => {
     expect(res.data.user.groups.length).toBe(1);
     expect(res.data.user.groups[0]).toHaveProperty('id');
-    expect(res.data.user.groups[0].id).toBe(2);
-    expect(res.data.user.groups[0].id).not.toBe(1);
+    expect(res.data.user.groups[0].id).toBe(1);
+    expect(res.data.user.groups[0].id).not.toBe(2);
   }));
 });
 
