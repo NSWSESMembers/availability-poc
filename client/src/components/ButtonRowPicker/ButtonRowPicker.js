@@ -8,8 +8,8 @@ import { ButtonRow } from '../Button';
 
 class ButtonRowPicker extends Component {
   onConfirm = (option) => {
-    this.props.selected = option;
-    this.props.onSelect(option);
+    this.props.selected = option.label;
+    this.props.onSelect(option.label);
   };
 
   render() {
@@ -23,8 +23,7 @@ class ButtonRowPicker extends Component {
       <View>
         <ModalSelector
           data={data}
-          initValue="Select something yummy!"
-          onChange={(option) => { this.onConfirm(option.label); }}
+          onChange={this.onConfirm}
         >
           <ButtonRow
             title={this.props.title}
