@@ -7,10 +7,6 @@ import { View } from 'react-native';
 import { ButtonRow } from '../Button';
 
 class ButtonRowPicker extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   onConfirm = (option) => {
     this.props.selected = option;
     this.props.onSelect(option);

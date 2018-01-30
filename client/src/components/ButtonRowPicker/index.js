@@ -1,4 +1,3 @@
 import ButtonRowPicker from './ButtonRowPicker';
-import styles from './styles';
 
-export { ButtonRowPicker };
+export default ButtonRowPicker;
