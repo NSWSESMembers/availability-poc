@@ -1,16 +1,15 @@
 const Colors = {
-  txtMain: '#00a699',
-  txtMainRed: '#FF5A5F',
-  txtDescription: '#757575',
-  txtDark: '#484848',
+  txtMain: '#000',
+  txtDark: '#6B6B6B',
   txtWhite: '#ffffff',
   txtError: '#FF5A5F',
   txtSuccess: '#25ce66',
   txtLink: '#007AFF',
 
-  bgMain: '#00a699',
-  bgMainDark: '#4F6D7A', // For screens > auth
-  bgMainRed: '#FF5A5F',
+  bgMain: '#1e3c78',
+  bgBtn: '#f48603',
+  bgBtnSecondary: '#1c87c9',
+  bgLight: '#EEE',
   bgWhite: '#ffffff',
   bgDisabled: '#D3D3D3',
   bgError: '#FF5A5F',
@@ -21,6 +20,7 @@ const Colors = {
   bdDisabled: '#D3D3D3',
   bdLine: '#dddddd',
   bdInput: '#cbcbcb',
+  bdLight: '#DDD',
 };
 
 export default Colors;

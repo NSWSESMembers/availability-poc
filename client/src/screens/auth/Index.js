@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar, Text } from 'react-native';
+import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,7 +22,6 @@ class Index extends Component {
   render() {
     return (
       <Container isAlt>
-        <StatusBar barStyle="light-content" />
         <Center>
           <Icon name="bullhorn" size={90} color="#FFF" />
           <Text style={{ fontSize: 45, color: '#FFF' }}>Callout</Text>

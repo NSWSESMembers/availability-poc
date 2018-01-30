@@ -6,8 +6,7 @@ import styles from './styles';
 const Container = ({ children }) => <View style={styles.containerFooter}>{children}</View>;
 
 Container.propTypes = {
-  // eslint-disable-next-line
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
 };
 
 export default Container;

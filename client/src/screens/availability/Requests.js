@@ -10,7 +10,7 @@ import requestsData from '../../fixtures/groups';
 
 class Requests extends Component {
   static navigationOptions = () => ({
-    title: 'Availability',
+    title: 'Requests',
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
   });
 

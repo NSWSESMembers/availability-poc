@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import styles from './styles';
 
 const Container = ({ children, isAlt }) => {
@@ -10,12 +10,16 @@ const Container = ({ children, isAlt }) => {
     containerStyles = [styles.containerAlt];
   }
 
-  return <View style={containerStyles}>{children}</View>;
+  return (
+    <View style={containerStyles}>
+      <StatusBar barStyle="light-content" />
+      {children}
+    </View>
+  );
 };
 
 Container.propTypes = {
-  // eslint-disable-next-line
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
   isAlt: PropTypes.bool,
 };
 

@@ -1,29 +1,30 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../themes/Colors';
 
 const styles = StyleSheet.create({
   textStyle: {
     fontSize: 20,
-    color: '#FFF',
+    color: Colors.txtWhite,
     textAlign: 'center',
   },
   textStyleSecondary: {
     fontSize: 20,
-    color: '#FFF',
+    color: Colors.txtWhite,
     textAlign: 'center',
   },
   buttonStyle: {
     padding: 10,
-    backgroundColor: '#f48603',
+    backgroundColor: Colors.bgBtn,
     width: '100%',
   },
   buttonStyleSecondary: {
     padding: 10,
-    backgroundColor: '#1c87c9',
+    backgroundColor: Colors.bgBtnSecondary,
     width: '100%',
   },
   buttonNavBarIcon: {
     marginRight: 10,
-    color: '#FFF',
+    color: Colors.txtWhite,
   },
   buttonRow: {
     flexDirection: 'row',
