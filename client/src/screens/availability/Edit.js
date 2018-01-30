@@ -8,7 +8,7 @@ import { Button, ButtonRow } from '../../components/Button';
 import { DatePicker } from '../../components/Calendar';
 import { Container, Holder } from '../../components/Container';
 import { Separator } from '../../components/Separator';
-
+import { ButtonRowPicker } from '../../components/ButtonRowPicker';
 import { addAvailability } from '../../state/availability.actions';
 
 class Edit extends Component {
@@ -24,6 +24,7 @@ class Edit extends Component {
     this.state = {
       startDate: dt.set({ hour: 9, minute: 0 }).toDate(),
       endDate: dt.set({ hour: 17, minute: 0 }).toDate(),
+      availibilityStatus: 'Available',
     };
   }
 
@@ -32,6 +33,7 @@ class Edit extends Component {
       startDateTime: moment(this.state.startDate).unix(),
       endDateTime: moment(this.state.endDate).unix(),
       requests: this.props.selectedRequests,
+      availibilityStatus: this.state.availibilityStatus,
     };
 
     if (item.requests.length > 0) {
@@ -50,6 +52,10 @@ class Edit extends Component {
     this.setState({ endDate });
   };
 
+  handleAvailibilityStatusPicked = (availibilityStatus) => {
+    this.setState({ availibilityStatus });
+  };
+
   handleRequests = () => {
     this.props.navigation.navigate('Requests');
   };
@@ -66,18 +72,22 @@ class Edit extends Component {
           <ButtonRow title="Requests" description={requestDetail} onPress={this.handleRequests} />
         </Holder>
         <Holder>
-          <DatePicker date={this.state.startDate} onSelect={this.handleDatePicked} />
+          <DatePicker title="Selected Date" date={this.state.startDate} onSelect={this.handleDatePicked} />
         </Holder>
         <Separator />
         <Holder>
-          <DatePicker date={this.state.startDate} onSelect={this.handleDatePicked} mode="time" />
+          <DatePicker title="Start Time" date={this.state.startDate} onSelect={this.handleDatePicked} mode="time" />
         </Holder>
         <Separator />
         <Holder>
-          <DatePicker date={this.state.endDate} onSelect={this.handleEndTimePicked} mode="time" />
+          <DatePicker title="End Time" date={this.state.endDate} onSelect={this.handleEndTimePicked} mode="time" />
+        </Holder>
+        <Separator />
+        <Holder>
+          <ButtonRowPicker title="Availability" selected={this.state.availibilityStatus} onSelect={this.handleAvailibilityStatusPicked} />
         </Holder>
         <Holder margin transparent>
-          <Button onPress={this.handleSave} text="Submit Availability" />
+          <Button onPress={this.handleSave} text="Save Availability" />
         </Holder>
       </Container>
     );
@@ -103,6 +113,7 @@ Edit.propTypes = {
 const mapStateToProps = state => ({
   selectedRequests: state.availability.selectedRequests,
   selectedDate: state.availability.selectedDate,
+  availibilityStatus: state.availability.availibilityStatus,
 });
 
 export default connect(mapStateToProps)(Edit);

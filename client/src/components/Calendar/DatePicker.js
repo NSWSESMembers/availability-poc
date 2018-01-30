@@ -25,7 +25,7 @@ class DatePicker extends Component {
     return (
       <View>
         <ButtonRow
-          title="Date"
+          title={this.props.title}
           description={
             this.props.mode === 'date'
               ? moment(this.props.date).format('dddd, DD MMM YYYY')
@@ -50,6 +50,7 @@ DatePicker.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   mode: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
+  title: PropTypes.string,
 };
 
 DatePicker.defaultProps = {
