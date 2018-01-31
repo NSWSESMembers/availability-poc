@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import styles from './styles';
+import { TouchableOpacity, View } from 'react-native';
+import ButtonText from './ButtonText';
 
 const ButtonRow = ({ title, description, onPress, showIcon }) => (
-  <TouchableOpacity onPress={() => onPress()}>
-    <View style={styles.buttonRow}>
-      <View>
-        <Text style={styles.buttonRowTitle}>{title.toUpperCase()}</Text>
-        {description && <Text style={styles.buttonRowDescription}>{description}</Text>}
-      </View>
-      {showIcon && <Icon name="angle-right" size={40} color="#EEE" /> }
-    </View>
-  </TouchableOpacity>
+  <View>
+    {onPress === undefined ? (
+      <ButtonText icon={showIcon} title={title} description={description} />
+      ) : (
+        <TouchableOpacity onPress={() => onPress()}>
+          <ButtonText icon={showIcon} title={title} description={description} />
+        </TouchableOpacity>
+      )}
+  </View>
 );
 
 ButtonRow.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
   showIcon: PropTypes.bool,
 };
 

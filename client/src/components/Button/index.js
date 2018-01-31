@@ -1,7 +1,7 @@
 import Button from './Button';
 import ButtonNavBar from './ButtonNavBar';
-import ButtonRowNoPress from './ButtonRowNoPress';
 import ButtonRow from './ButtonRow';
+import ButtonText from './ButtonText';
 import styles from './styles';
 
-export { Button, ButtonNavBar, ButtonRowNoPress, ButtonRow, styles };
+export { Button, ButtonNavBar, ButtonText, ButtonRow, styles };

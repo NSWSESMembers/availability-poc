@@ -5,20 +5,20 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const ButtonRowNoPress = ({ title, description, showIcon }) => (
+const ButtonText = ({ title, description, icon }) => (
   <View style={styles.buttonRow}>
     <View>
       <Text style={styles.buttonRowTitle}>{title.toUpperCase()}</Text>
-      {description && <Text style={styles.buttonRowDescription}>{description}</Text>}
+      <Text style={styles.buttonRowDescription}>{description}</Text>
     </View>
-    {showIcon && <Icon name="angle-right" size={40} color="#EEE" />}
+    {icon && <Icon name="angle-right" size={40} color="#EEE" /> }
   </View>
 );
 
-ButtonRowNoPress.propTypes = {
+ButtonText.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
-  showIcon: PropTypes.bool,
+  icon: PropTypes.bool,
 };
 
-export default ButtonRowNoPress;
+export default ButtonText;

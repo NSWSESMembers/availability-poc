@@ -76,7 +76,7 @@ class Edit extends Component {
     return (
       <Container>
         <Holder>
-          <ButtonRow title="Requests" description={requestDetail} onPress={this.handleRequests} />
+          <ButtonRow title="Requests" showIcon description={requestDetail} onPress={this.handleRequests} />
         </Holder>
         <Holder>
           <DatePicker title="Selected Date" date={this.state.startDate} onSelect={this.handleDatePicked} />

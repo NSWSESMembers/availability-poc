@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { View, TextInput } from 'react-native';
-import { ButtonRowNoPress } from '../Button';
+import { ButtonRow } from '../Button';
 import styles from './styles';
 
 
@@ -15,7 +15,7 @@ class TextInputRow extends Component {
   render() {
     return (
       <View>
-        <ButtonRowNoPress
+        <ButtonRow
           title={this.props.title}
         />
         <TextInput
