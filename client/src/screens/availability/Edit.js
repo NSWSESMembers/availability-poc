@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ButtonRowPicker from '../../components/ButtonRowPicker';
+import TextInputRow from '../../components/TextInputRow';
 import { Button, ButtonRow } from '../../components/Button';
 import { DatePicker } from '../../components/Calendar';
 import { Container, Holder } from '../../components/Container';
@@ -24,6 +25,7 @@ class Edit extends Component {
       startDate: dt.set({ hour: 9, minute: 0 }).toDate(),
       endDate: dt.set({ hour: 17, minute: 0 }).toDate(),
       availibilityStatus: 'Available',
+      availibilityComment: '',
     };
   }
 
@@ -33,6 +35,8 @@ class Edit extends Component {
       endDateTime: moment(this.state.endDate).unix(),
       requests: this.props.selectedRequests,
       availibilityStatus: this.state.availibilityStatus,
+      availibilityComment: this.state.availibilityComment,
+
     };
 
     if (item.requests.length > 0) {
@@ -55,6 +59,10 @@ class Edit extends Component {
     this.setState({ availibilityStatus });
   };
 
+  handleAvailibilityComment = (availibilityComment) => {
+    this.setState({ availibilityComment });
+  };
+
   handleRequests = () => {
     this.props.navigation.navigate('Requests');
   };
@@ -68,7 +76,7 @@ class Edit extends Component {
     return (
       <Container>
         <Holder>
-          <ButtonRow title="Requests" description={requestDetail} onPress={this.handleRequests} />
+          <ButtonRow title="Requests" showIcon description={requestDetail} onPress={this.handleRequests} />
         </Holder>
         <Holder>
           <DatePicker title="Selected Date" date={this.state.startDate} onSelect={this.handleDatePicked} />
@@ -84,6 +92,10 @@ class Edit extends Component {
         <Separator />
         <Holder>
           <ButtonRowPicker title="Availability" selected={this.state.availibilityStatus} onSelect={this.handleAvailibilityStatusPicked} />
+        </Holder>
+        <Separator />
+        <Holder>
+          <TextInputRow title="Comments" comment={this.state.availibilityComment} onSelect={this.handleAvailibilityComment} />
         </Holder>
         <Holder margin transparent>
           <Button onPress={this.handleSave} text="Save Availability" />
@@ -113,6 +125,7 @@ const mapStateToProps = state => ({
   selectedRequests: state.availability.selectedRequests,
   selectedDate: state.availability.selectedDate,
   availibilityStatus: state.availability.availibilityStatus,
+  availibilityComment: state.availability.availibilityComment,
 });
 
 export default connect(mapStateToProps)(Edit);

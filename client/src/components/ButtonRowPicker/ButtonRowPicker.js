@@ -12,6 +12,10 @@ class ButtonRowPicker extends Component {
     this.props.onSelect(option.label);
   };
 
+  focusOnText = () => {
+
+  }
+
   render() {
     const data = [
       { key: 0, label: 'Available' },
