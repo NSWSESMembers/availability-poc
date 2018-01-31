@@ -382,7 +382,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
               return Promise.reject(Error('Invalid group!'));
             }
             return group.removeUser(user).then((rows) => {
-              if (rows) { return true; }
+              if (rows) { return group; }
               return false;
             });
           }),
