@@ -20,8 +20,7 @@ const Container = ({ children, margin, marginBot, transparent }) => {
 };
 
 Container.propTypes = {
-  // eslint-disable-next-line
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
   margin: PropTypes.bool,
   marginBot: PropTypes.bool,
   transparent: PropTypes.bool,

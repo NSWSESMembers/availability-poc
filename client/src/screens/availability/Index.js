@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StatusBar } from 'react-native';
+import { ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -70,14 +70,12 @@ class Index extends Component {
       .endOf('isoweek');
 
     // will be replaced by graphql calls
-    // eslint-disable-next-line
     const filteredItems = this.props.items.filter(
       item => item.startDateTime >= startOfWeek.unix() && item.startDateTime < endOfWeek.unix(),
     );
 
     return (
       <Container>
-        <StatusBar barStyle="light-content" />
         <Holder margin>
           <ScrollView
             horizontal

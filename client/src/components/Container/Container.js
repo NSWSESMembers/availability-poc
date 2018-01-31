@@ -10,12 +10,15 @@ const Container = ({ children, isAlt }) => {
     containerStyles = [styles.containerAlt];
   }
 
-  return <View style={containerStyles}>{children}</View>;
+  return (
+    <View style={containerStyles}>
+      {children}
+    </View>
+  );
 };
 
 Container.propTypes = {
-  // eslint-disable-next-line
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
   isAlt: PropTypes.bool,
 };
 

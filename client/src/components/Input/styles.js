@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../themes/Colors';
 
 const styles = StyleSheet.create({
   default: {
@@ -6,19 +7,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    color: '#1e3c78',
+    color: Colors.bgMain,
     fontWeight: '700',
     fontSize: 20,
     flex: 1,
   },
   defaultHolder: {
     borderBottomWidth: 0.5,
-    borderColor: '#797979',
+    borderColor: Colors.bdInput,
     marginBottom: 25,
     width: '100%',
   },
   defaultText: {
-    color: '#1e3c78',
+    color: Colors.bgMain,
     fontWeight: '700',
   },
   inputHolder: {

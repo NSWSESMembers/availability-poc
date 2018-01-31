@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../themes/Colors';
 
 const dayButton = {
   borderWidth: 0,
@@ -7,7 +8,7 @@ const dayButton = {
   justifyContent: 'center',
   width: 30,
   height: 30,
-  backgroundColor: '#fff',
+  backgroundColor: Colors.bgWhite,
   borderRadius: 30,
 };
 
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   empty: {
-    backgroundColor: '#FFF',
+    backgroundColor: Colors.bgWhite,
     marginTop: 20,
     padding: 10,
     alignItems: 'center',
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    backgroundColor: '#FFF',
+    backgroundColor: Colors.bgWhite,
   },
   rowDetail: {
     flexDirection: 'row',
@@ -37,25 +38,25 @@ const styles = StyleSheet.create({
   rowDetailItem: {
     margin: 5,
     padding: 5,
-    backgroundColor: '#68a0cf',
+    backgroundColor: Colors.bgBtnSecondary,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: Colors.bdWhite,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   rowDetailItemText: {
-    color: '#fff',
+    color: Colors.txtWhite,
   },
   rowHeader: {
     paddingLeft: 10,
-    backgroundColor: '#EEE',
+    backgroundColor: Colors.bgLight,
     paddingTop: 8,
     paddingBottom: 8,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#DDD',
+    borderColor: Colors.bdLight,
   },
   rowHeaderText: {
     fontSize: 11,
@@ -83,12 +84,12 @@ const styles = StyleSheet.create({
   topLine: {
     flex: 1,
     width: 2,
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.bgLight,
   },
   bottomLine: {
     flex: 1,
     width: 2,
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.bgLight,
   },
   hiddenLine: {
     width: 0,
@@ -97,14 +98,14 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 6,
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.bgLight,
   },
   content: {
     marginRight: 20,
   },
   contentText: {
     fontSize: 12,
-    color: '#6B6B6B',
+    color: Colors.txtDark,
     textAlign: 'right',
   },
   week: {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
   dayButton,
   dayButtonSelected: {
     ...dayButton,
-    backgroundColor: '#f48603',
+    backgroundColor: Colors.bgBtn,
   },
   dayText: {
     marginTop: 2,
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   dayHasDetailSelected: {
     alignItems: 'center',
     lineHeight: 2,
-    color: '#fff',
+    color: Colors.txtWhite,
   },
 });
 

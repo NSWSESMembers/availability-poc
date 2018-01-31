@@ -6,8 +6,7 @@ import styles from './styles';
 const Center = ({ children }) => <View style={styles.containerCenter}>{children}</View>;
 
 Center.propTypes = {
-  // eslint-disable-next-line
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
 };
 
 export default Center;
