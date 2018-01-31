@@ -15,6 +15,7 @@ export default gql`
        }
        events {
          id
+         name
          details
        }
        schedules {
