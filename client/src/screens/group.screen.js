@@ -269,7 +269,7 @@ class Group extends Component {
     });
   }
 
-  leaveGroup() {
+  leaveGroup = () => {
     this.props.leaveGroupQry({ groupId: this.getGroup().id }).then(() => {
     }).catch((error) => {
       Alert.alert(

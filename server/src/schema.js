@@ -183,7 +183,7 @@ export const Schema = [`
     updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
     removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean
     addUserToGroup(groupUpdate: AddUserToGroupInput!): Group
-    removeUserFromGroup(groupUpdate: RemoveUserFromGroupInput!): Boolean
+    removeUserFromGroup(groupUpdate: RemoveUserFromGroupInput!): Group
     createOrganisation(organisation: CreateOrganisationInput!): Organisation
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
