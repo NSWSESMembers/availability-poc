@@ -84,7 +84,7 @@ class Group extends Component {
     return (
       <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
-          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'orange'} size={24} />
+          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'green'} size={24} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
