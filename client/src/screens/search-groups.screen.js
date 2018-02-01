@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
+import { SearchBar } from 'react-native-elements';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -82,7 +84,7 @@ class Group extends Component {
     return (
       <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color={this.state.memberAlready ? 'red' : 'green'} />
+          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'orange'} size={24} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
               <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
@@ -165,6 +167,12 @@ class AllGroups extends Component {
     // render list of groups for user
     return (
       <View style={styles.container}>
+        <SearchBar
+          lightTheme
+          onChangeText={null}
+          onClearText={null}
+          placeholder="Search Here...but dont expect anything to happen"
+        />
         <FlatList
           data={user.organisation.groups}
           keyExtractor={this.keyExtractor}
