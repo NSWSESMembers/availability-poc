@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "211532699048",
+    "firebase_url": "https://availability-poc.firebaseio.com",
+    "project_id": "availability-poc",
+    "storage_bucket": "availability-poc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211532699048:android:b634c5a15c79eaaf",
+        "android_client_info": {
+          "package_name": "com.callout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211532699048-lj03t9ll39mnj7l6k7nfvda2q7n702ve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAASeIXtHxuPcgLZqkyYOJ691wt4CRMiI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

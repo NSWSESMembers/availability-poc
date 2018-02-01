@@ -1333,9 +1333,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-code-push@1.11.2-beta:
-  version "1.11.2-beta"
-  resolved "https://registry.yarnpkg.com/code-push/-/code-push-1.11.2-beta.tgz#642f5199edb0fd6d6d300e439883b03b8b252737"
+code-push@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/code-push/-/code-push-2.0.4.tgz#c0da90a8ca38f97478bf37136c78d066563f4905"
   dependencies:
     q "^1.4.1"
     recursive-fs "0.1.4"
@@ -4460,10 +4460,10 @@ react-native-branch@2.0.0-beta.3:
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
 react-native-code-push@^5.2.0-beta:
-  version "5.2.0-beta"
-  resolved "https://registry.yarnpkg.com/react-native-code-push/-/react-native-code-push-5.2.0-beta.tgz#ba27e6f4ad33b9ee8270ff6f7648d6d97d88649c"
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-code-push/-/react-native-code-push-5.2.1.tgz#b96cabf4be74e0caac8d55d1126aa48dba695490"
   dependencies:
-    code-push "1.11.2-beta"
+    code-push "2.0.4"
     glob "^5.0.15"
     hoist-non-react-statics "^2.3.1"
     inquirer "1.1.2"
@@ -4486,6 +4486,10 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
+react-native-fcm@^11.3.1:
+  version "11.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-fcm/-/react-native-fcm-11.3.1.tgz#eae59deb3972d19fdd8d8b52da18984377276e84"
+
 react-native-gesture-handler@1.0.0-alpha.30:
   version "1.0.0-alpha.30"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.30.tgz#7f79c2da5a59cc8ce20cf04c11360409a53bef59"
@@ -4507,6 +4511,12 @@ react-native-modal-datetime-picker@^4.13.0:
     moment "^2.19.0"
     prop-types "15.5.10"
     react-native-modal "3.1.0"
+
+react-native-modal-selector@0.0.24:
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/react-native-modal-selector/-/react-native-modal-selector-0.0.24.tgz#d5aa886b6782a4a3566452399deb21a8da7ae2a1"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-modal@3.1.0:
   version "3.1.0"
