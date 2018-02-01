@@ -38,7 +38,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       addDevice(user, deviceUuid) {
         return user.getDevices({ where: { uuid: deviceUuid } }).then((existing) => {
-          if (existing) {
+          if (existing.length) {
             return existing;
           }
           return Creators.device({
