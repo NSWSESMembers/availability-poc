@@ -171,12 +171,6 @@ class AppNavState extends Component {
     handleAppStateChange = (nextAppState) => {
       console.log('App has changed state!', nextAppState);
       console.log('From: ', this.state.appState);
-      if (this.state.token && FCM.getBadgeNumber()) {
-        // clear notifications from center/tray
-        FCM.removeAllDeliveredNotifications();
-
-        FCM.setBadgeNumber(0);
-      }
       this.setState({ appState: nextAppState });
     }
 
