@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Sequelize from 'sequelize';
+
 import JWT_SECRET from './config';
 import { schedulePerms, eventPerms } from './perms';
 
@@ -343,7 +345,17 @@ export const getHandlers = ({ models, creators: Creators }) => {
       users(group) {
         return group.getUsers();
       },
-      schedules(group) {
+      schedules(group, args) {
+        const { hasTimeSegments } = args;
+        console.log('MARK', hasTimeSegments);
+        if (hasTimeSegments) {
+          return group.getSchedules({
+            include: [{
+              model: TimeSegment,
+              where: { timesegment: Sequelize.col('scheduleId') },
+            }],
+          });
+        }
         return group.getSchedules();
       },
       events(group) {

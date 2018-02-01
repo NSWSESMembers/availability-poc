@@ -81,7 +81,7 @@ export const Schema = [`
     id: Int! # unique id for the group
     name: String # name of the group
     users: [User]! # users in the group
-    schedules: [Schedule]! # schedules associated with this group
+    schedules(hasTimeSegments: Boolean): [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
     tags: [Tag]! # tags associdated with this group
   }
