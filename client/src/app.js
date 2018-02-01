@@ -17,6 +17,7 @@ import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
 import { FirebaseClient } from './firebase-client';
 
+console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 

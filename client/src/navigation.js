@@ -4,7 +4,6 @@ import { AppState } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
-import { FCM } from 'react-native-fcm';
 import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
@@ -122,20 +121,6 @@ export const navigationReducer = (state = initialNavState, action) => {
   return nextState || state;
 };
 
-const AppWithNavigationState = (props) => {
-  const { dispatch, nav } = props;
-
-  if (props.auth.loading) {
-    return <Container />;
-  }
-
-  if (!props.auth.username) {
-    return <StackAuth />;
-  }
-
-  return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
-};
-
 class AppNavState extends Component {
     state = {
       appState: AppState.currentState,
@@ -149,13 +134,15 @@ class AppNavState extends Component {
     componentWillReceiveProps(nextProps) {
       console.log(nextProps);
 
-      firebaseClient.init().then((registrationId) => {
-        if (this.props.auth && this.props.registrationId !== this.state.token) {
-          this.setState({ token: registrationId });
-          return Promise.resolve(this.props.updateToken({ token: registrationId }));
-        }
-        return Promise.resolve();
-      });
+      if (this.props.auth.token) {
+        firebaseClient.init().then((registrationId) => {
+          if (this.props.auth && this.props.registrationId !== this.state.token) {
+            this.setState({ token: registrationId });
+            return Promise.resolve(this.props.updateToken({ token: registrationId }));
+          }
+          return Promise.resolve();
+        });
+      }
 
       if (!nextProps.auth) {
         if (firebaseClient.token) {
@@ -185,7 +172,7 @@ class AppNavState extends Component {
         return <StackAuth />;
       }
 
-      return <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+      return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
     }
 }
 
