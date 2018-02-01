@@ -20,7 +20,7 @@ import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
-import Event from './screens/events-detail.screen';
+import Event from './screens/event-detail.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
