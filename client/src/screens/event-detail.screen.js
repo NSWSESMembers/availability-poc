@@ -86,17 +86,30 @@ const SPACE = 0.01;
 const EventHeader = (props) => {
   const { name, details } = props.event;
 
+  function randomColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
+
+  function createHomeMarker() {
+    return {
+      id: 0,
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+    };
+  }
 
   function createMarker(modifier = 1) {
     return {
       id: modifier,
-      latitude: LATITUDE - (SPACE * modifier),
-      longitude: LONGITUDE - (SPACE * modifier),
+      latitude: LATITUDE - (SPACE * Math.random() * modifier),
+      longitude: LONGITUDE - (SPACE * Math.random() * modifier),
+      color: randomColor(),
     };
   }
 
   const MARKERS = [
-    createMarker(),
+    createHomeMarker(),
+    createMarker(1),
     createMarker(2),
     createMarker(3),
     createMarker(4),
@@ -124,6 +137,7 @@ const EventHeader = (props) => {
           <Marker
             key={marker.id}
             coordinate={marker}
+            pinColor={marker.color}
           />
         ))}
       </MapView>
