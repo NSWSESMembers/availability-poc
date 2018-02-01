@@ -10,6 +10,8 @@ import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 
 import { Container } from './components/Container';
+import { Progress } from './components/Progress';
+
 import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
@@ -165,7 +167,11 @@ class AppNavState extends Component {
       const { dispatch, nav } = this.props;
 
       if (this.props.auth.loading) {
-        return <Container />;
+        return (
+          <Container>
+            <Progress />
+          </Container>
+        );
       }
 
       if (!this.props.auth.username) {
