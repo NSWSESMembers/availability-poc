@@ -24,6 +24,7 @@ import Event from './screens/event-detail.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
+import EventResponse from './screens/event-response.screen';
 
 
 // this will determine whether the firebase modules have been compiled in or not
@@ -96,8 +97,12 @@ const StackSettings = StackNavigator(
     Index: {
       screen: Settings,
     },
+    EventResponse: {
+      screen: EventResponse,
+    },
   },
   {
+    mode: 'modal',
     headerMode: 'screen',
   },
 );

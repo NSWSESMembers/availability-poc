@@ -111,6 +111,11 @@ class Settings extends Component {
     );
   }
 
+  showEventResponse = () => {
+    const { navigate } = this.props.navigation;
+    navigate('EventResponse');
+  }
+
   logout = () => {
     this.props.dispatch(logout());
   }
@@ -140,6 +145,7 @@ class Settings extends Component {
         <Text />
         <Text />
         <Button title="Force Update Location" onPress={this.updateLocation} />
+        <Button title="Test Event Response" onPress={this.showEventResponse} />
         <Text />
         <Text />
         <Button title="Logout" onPress={this.logout} />
@@ -154,6 +160,9 @@ Settings.propTypes = {
   updateLocation: PropTypes.func,
   user: PropTypes.shape({
     username: PropTypes.string,
+  }),
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
   }),
 };
 
