@@ -5,8 +5,9 @@ import {
   ActivityIndicator,
   Text,
   View,
+  Dimensions,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -73,8 +74,46 @@ const styles = extendAppStyleSheet({
   },
 });
 
+const screen = Dimensions.get('window');
+
+const ASPECT_RATIO = screen.width / screen.height;
+const LATITUDE = -34.426498294;
+const LONGITUDE = 150.876496494;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const SPACE = 0.01;
+
 const EventHeader = (props) => {
   const { name, details } = props.event;
+
+  function randomColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
+
+  function createHomeMarker() {
+    return {
+      id: 0,
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+    };
+  }
+
+  function createMarker(modifier = 1) {
+    return {
+      id: modifier,
+      latitude: LATITUDE - (SPACE * Math.random() * modifier),
+      longitude: LONGITUDE - (SPACE * Math.random() * modifier),
+      color: randomColor(),
+    };
+  }
+
+  const MARKERS = [
+    createHomeMarker(),
+    createMarker(1),
+    createMarker(2),
+    createMarker(3),
+    createMarker(4),
+  ];
 
   return (
     <View>
@@ -87,13 +126,21 @@ const EventHeader = (props) => {
       </View>
       <MapView
         initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
         }}
         style={styles.map}
-      />
+      >
+        {MARKERS.map(marker => (
+          <Marker
+            key={marker.id}
+            coordinate={marker}
+            pinColor={marker.color}
+          />
+        ))}
+      </MapView>
     </View>
   );
 };
