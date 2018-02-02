@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState } from 'react-native';
+import { AppState, NativeModules } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
@@ -24,6 +24,11 @@ import Event from './screens/event-detail.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
+
+
+// this will determine whether the firebase modules have been compiled in or not
+const firebaseAvailable = !!NativeModules.RNFIRMessaging;
+
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -140,7 +145,7 @@ class AppNavState extends Component {
     componentWillReceiveProps(nextProps) {
       console.log(nextProps);
 
-      if (this.props.auth.token) {
+      if (this.props.auth.token && firebaseAvailable) {
         firebaseClient.init().then((registrationId) => {
           if (this.props.auth && this.props.registrationId !== this.state.token) {
             this.setState({ token: registrationId });
@@ -150,7 +155,7 @@ class AppNavState extends Component {
         });
       }
 
-      if (!nextProps.auth) {
+      if (!nextProps.auth && firebaseAvailable) {
         if (firebaseClient.token) {
           firebaseClient.clear();
         }
