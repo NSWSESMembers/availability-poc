@@ -27,6 +27,11 @@ export default gql`
         startTime
         endTime
         timeSegments {
+          user {
+            id
+          }
+          id
+          status
           startTime
           endTime
         }

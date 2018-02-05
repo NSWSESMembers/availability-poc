@@ -16,7 +16,7 @@ const minFromNow = (min) => {
 const MONDAY = getMonday();
 
 export const DEFAULT_USERNAME = 'test';
-export const DEFAULT_GROUP = 'Kiama';
+export const DEFAULT_GROUP = 'NSW SES';
 
 export const ORG_NAME = 'NSW SES';
 
@@ -99,19 +99,65 @@ export const USERS = [
   },
   {
     id: 21,
-    username: 'paramatta1',
+    username: 'parramatta1',
     password: 'test',
     displayName: 'Tim Dykes',
     email: 'paramatta1@example.com',
+  },
+  {
+    id: 22,
+    username: 'parramatta2',
+    password: 'test',
+    displayName: 'Ian India',
+    email: 'parramatta2@example.com',
+  },
+  {
+    id: 23,
+    username: 'parramatta3',
+    password: 'test',
+    displayName: 'Jane Juliet',
+    email: 'parramatta3@example.com',
+  },
+  {
+    id: 24,
+    username: 'parramatta4',
+    password: 'test',
+    displayName: 'Katt Kilo',
+    email: 'parramatta4@example.com',
+  },
+  {
+    id: 25,
+    username: 'parramatta5',
+    password: 'test',
+    displayName: 'Luke Lima',
+    email: 'parramatta5@example.com',
   },
 ];
 
 export const GROUPS = [
   {
+    name: 'Kiama',
+    users: [
+      'test',
+      'kiama1',
+      'kiama2',
+      'kiama3',
+      'kiama4',
+      'kiama5',
+      'kiama6',
+      'kiama7',
+      'kiama8',
+    ],
+  },
+  {
     name: 'Parramatta',
     users: [
       'test',
-      'paramatta1',
+      'parramatta1',
+      'parramatta2',
+      'parramatta3',
+      'parramatta4',
+      'parramatta5',
     ],
   },
   {
@@ -126,11 +172,29 @@ export const GROUPS = [
       'kiama6',
       'kiama7',
       'kiama8',
+      'parramatta1',
+      'parramatta2',
+      'parramatta3',
+      'parramatta4',
+      'parramatta5',
     ],
   },
 ];
 
 export const SCHEDULES = [
+  {
+    name: 'Wagga Wagga OOA',
+    details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
+    startTime: MONDAY + (60 * 60 * 24 * 1),
+    endTime: MONDAY + (60 * 60 * 24 * 3),
+    group: 'NSW SES',
+    timeSegmentUsers: [
+      'kiama1',
+      'kiama2',
+      'parramatta1',
+      'parramatta2',
+    ],
+  },
   {
     name: 'Kiama Rescue',
     details: 'Ongoing availability for RCR, VR, GLR',
@@ -154,6 +218,20 @@ export const SCHEDULES = [
       'kiama4',
       'kiama5',
       'kiama8',
+    ],
+  },
+  {
+    name: 'Parramatta Storm Team',
+    details: 'Non-urgent availability for storm jobs',
+    startTime: DISTANT_PAST,
+    endTime: DISTANT_FUTURE,
+    group: 'Parramatta',
+    timeSegmentUsers: [
+      'parramatta1',
+      'parramatta2',
+      'parramatta3',
+      'parramatta4',
+      'parramatta5',
     ],
   },
 ];
@@ -228,6 +306,29 @@ export const EVENTS = [
         detail: '',
         destination: 'HQ',
         eta: minFromNow(6),
+      },
+    ],
+  },
+  {
+    name: 'FR - WEBB STREET, NORTH PARRAMATTA NSW 2151',
+    details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
+    group: 'Parramatta',
+    responses: [
+      {
+        user: 'parramatta1',
+        status: 'responding',
+        destination: 'scene',
+        eta: minFromNow(5),
+      },
+      {
+        user: 'parramatta2',
+        status: 'responding',
+        destination: 'scene',
+      },
+      {
+        user: 'parramatta3',
+        status: 'unavailable',
+        detail: 'at work',
       },
     ],
   },

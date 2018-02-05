@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import _ from 'lodash';
+import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { Button, ButtonNavBar } from '../../components/Button';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+
+import { ButtonNavBar } from '../../components/Button';
 import { Calendar, Week } from '../../components/Calendar';
-import { Container, Holder } from '../../components/Container';
+import { Center, Container, Holder } from '../../components/Container';
 import { Progress } from '../../components/Progress';
 import { SeparatorClear } from '../../components/Separator';
 
-import {
-  clearAvailability,
-  setSelectedDate,
-  startWeekChange,
-} from '../../state/availability.actions';
+import { setSelectedDate, startWeekChange } from '../../state/availability.actions';
 
 class Index extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -28,8 +28,8 @@ class Index extends Component {
     this.props.dispatch(setSelectedDate(dt.unix()));
   };
 
-  onPressItem = () => {
-    this.props.navigation.navigate('Edit');
+  onPressItem = (timeSegment) => {
+    this.props.navigation.navigate('Edit', { timeSegment });
   };
 
   onScrollEnd = (e) => {
@@ -52,27 +52,74 @@ class Index extends Component {
     this.props.dispatch(setSelectedDate(dt.unix()));
   };
 
-  clearItems = () => {
-    this.props.dispatch(clearAvailability());
-  };
-
   render() {
+    const { loading, user } = this.props;
+
+    if (loading || !user) {
+      return (
+        <Container>
+          <Progress />
+        </Container>
+      );
+    }
+
+    // are they part of any groups?
+    if (user.groups.length === 0) {
+      return (
+        <Container>
+          <Center>
+            <Text>You are not part of any groups.</Text>
+          </Center>
+        </Container>
+      );
+    }
+
+    // do any of the groups have schedules?
+    // expands to check date range of requests
+    if (user.schedules.length === 0) {
+      return (
+        <Container>
+          <Center>
+            <Text>None of the groups you belong to have any open requests.</Text>
+          </Center>
+        </Container>
+      );
+    }
+
+    // move to redux filters alter
     const momentDate = moment.unix(this.props.selectedDate);
 
     // get start of week unix timestamp
     const startOfWeek = momentDate
       .clone()
       .isoWeekday(1)
-      .startOf('isoweek');
+      .startOf('isoweek')
+      .unix();
+
     const endOfWeek = momentDate
       .clone()
       .isoWeekday(1)
-      .endOf('isoweek');
+      .endOf('isoweek')
+      .unix();
 
-    // will be replaced by graphql calls
-    const filteredItems = this.props.items.filter(
-      item => item.startDateTime >= startOfWeek.unix() && item.startDateTime < endOfWeek.unix(),
-    );
+    const filteredItems = [];
+    _.forEach(user.schedules, (schedule) => {
+      _.forEach(schedule.timeSegments, (timeSegment) => {
+        if (
+          (timeSegment.startTime === 0 || timeSegment.startTime > startOfWeek) &&
+          (timeSegment.endTime === 2147483647 || timeSegment.endTime < endOfWeek)
+        ) {
+          filteredItems.push({
+            requestId: schedule.id,
+            requestName: schedule.name,
+            requestDetail: schedule.details,
+            startTime: timeSegment.startTime,
+            endTime: timeSegment.endTime,
+            id: timeSegment.id,
+          });
+        }
+      });
+    });
 
     return (
       <Container>
@@ -91,35 +138,91 @@ class Index extends Component {
         <SeparatorClear />
         {this.props.isChangingWeek && <Progress />}
         <Calendar items={filteredItems} onPressItem={this.onPressItem} />
-        {filteredItems.length > 0 && (
-          <Holder transparent marginBot>
-            <Button onPress={this.clearItems} text="Clear All" />
-          </Holder>
-        )}
       </Container>
     );
   }
 }
 
-const mapStateToProps = ({ availability }) => ({
+Index.propTypes = {
+  navigation: PropTypes.shape({
+    goBack: PropTypes.func,
+    navigate: PropTypes.func,
+    setParams: PropTypes.func,
+  }),
+  dispatch: PropTypes.func.isRequired,
+  selectedDate: PropTypes.number.isRequired,
+  isChangingWeek: PropTypes.bool,
+  loading: PropTypes.bool,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    organisation: PropTypes.shape({
+      groups: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+          tags: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+            }),
+          ),
+          users: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              username: PropTypes.string.isRequired,
+            }),
+          ),
+          schedules: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+              details: PropTypes.string.isRequired,
+              startTime: PropTypes.number.isRequired,
+              endTime: PropTypes.number.isRequired,
+              timeSegments: PropTypes.arrayOf(
+                PropTypes.shape({
+                  id: PropTypes.number.isRequired,
+                  status: PropTypes.number.isRequired,
+                  startTime: PropTypes.number.isRequired,
+                  endTime: PropTypes.number.isRequired,
+                  user: PropTypes.arrayOf(
+                    PropTypes.shape({
+                      id: PropTypes.number.isRequired,
+                    }),
+                  ),
+                }),
+              ),
+            }),
+          ),
+          events: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+              details: PropTypes.string.isRequired,
+            }),
+          ),
+        }),
+      ),
+    }),
+  }),
+};
+
+const userQuery = graphql(CURRENT_USER_QUERY, {
+  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
+    loading,
+    networkStatus,
+    refetch,
+    user,
+  }),
+});
+
+const mapStateToProps = ({ auth, availability }) => ({
+  auth,
   selectedDate: availability.selectedDate,
   isChangingWeek: availability.isChangingWeek,
   items: availability.items,
 });
 
-Index.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  selectedDate: PropTypes.number.isRequired,
-  isChangingWeek: PropTypes.bool,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      startDateTime: PropTypes.number.isRequired,
-      endDateTime: PropTypes.number.isRequired,
-    }),
-  ),
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
-};
-
-export default connect(mapStateToProps)(Index);
+export default compose(connect(mapStateToProps), userQuery)(Index);

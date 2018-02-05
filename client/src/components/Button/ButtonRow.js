@@ -6,12 +6,12 @@ import ButtonText from './ButtonText';
 const ButtonRow = ({ title, description, onPress, showIcon }) => (
   <View>
     {onPress === undefined ? (
-      <ButtonText icon={showIcon} title={title} description={description} />
-      ) : (
-        <TouchableOpacity onPress={() => onPress()}>
-          <ButtonText icon={showIcon} title={title} description={description} />
-        </TouchableOpacity>
-      )}
+      <ButtonText title={title} description={description} />
+    ) : (
+      <TouchableOpacity onPress={() => onPress()}>
+        <ButtonText icon={showIcon} title={title} description={description} />
+      </TouchableOpacity>
+    )}
   </View>
 );
 
