@@ -18,7 +18,7 @@ const Container = ({ children, isAlt }) => {
 };
 
 Container.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   isAlt: PropTypes.bool,
 };
 

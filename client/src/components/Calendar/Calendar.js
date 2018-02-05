@@ -19,9 +19,9 @@ const Calendar = ({ items, onPressItem }) => {
         </View>
       ) : (
         items.map(item => (
-          <View key={item.startDateTime}>
+          <View key={item.id}>
             <DayHeader item={item} />
-            <CalendarRow item={item} onPressItem={() => onPressItem()} />
+            <CalendarRow item={item} onPressItem={() => onPressItem(item)} />
           </View>
         ))
       )}
@@ -34,21 +34,21 @@ const DayHeader = ({ item }) => {
     <View style={styles.rowHeader}>
       <Text style={styles.rowHeaderText}>
         {moment
-          .unix(item.startDateTime)
+          .unix(item.startTime)
           .format('dddd, DD MMMM')
           .toUpperCase()}
       </Text>
     </View>
   );
   if (currentDay === undefined) {
-    currentDay = item.startDateTime;
+    currentDay = item.startTime;
   } else if (
-    moment.unix(item.startDateTime).format('YYYY-MM-DD') ===
+    moment.unix(item.startTime).format('YYYY-MM-DD') ===
     moment.unix(currentDay).format('YYYY-MM-DD')
   ) {
     header = <Separator />;
   } else {
-    currentDay = item.startDateTime;
+    currentDay = item.startTime;
   }
 
   return <View>{header}</View>;
@@ -57,8 +57,9 @@ const DayHeader = ({ item }) => {
 Calendar.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      startDateTime: PropTypes.number.isRequired,
-      endDateTime: PropTypes.number.isRequired,
+      startTime: PropTypes.number.isRequired,
+      endTime: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
     }),
   ),
   onPressItem: PropTypes.func,
@@ -66,8 +67,8 @@ Calendar.propTypes = {
 
 DayHeader.propTypes = {
   item: PropTypes.shape({
-    startDateTime: PropTypes.number.isRequired,
-    endDateTime: PropTypes.number.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
   }),
 };
 

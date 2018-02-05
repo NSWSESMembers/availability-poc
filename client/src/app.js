@@ -91,7 +91,7 @@ const reduxConfig = {
   key: 'primary',
   debug: __DEV__,
   storage: AsyncStorage,
-  blacklist: ['apollo', 'nav'], // don't persist apollo or nav for now
+  blacklist: ['apollo', 'nav', 'availability'], // don't persist apollo or nav for now
 };
 
 const reducers = {
