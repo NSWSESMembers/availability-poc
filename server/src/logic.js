@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import JWT_SECRET from './config';
+import { JWT_SECRET } from './config';
 import { schedulePerms, eventPerms } from './perms';
 
 // reusable function to check for a user with context
@@ -358,7 +358,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         const { name } = args.group;
         return getAuthenticatedUser(ctx)
           .then(user => Organisation.findById(user.organisationId)
-            .then(organisation => Creators.group({ name, user, organisation })),
+            .then(organisation => Creators.group({ name, users: [user], organisation })),
           );
       },
       addUserToGroup(_, args, ctx) {

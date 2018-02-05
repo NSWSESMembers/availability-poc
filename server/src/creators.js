@@ -83,20 +83,19 @@ export const getCreators = (models) => {
       });
     },
 
-    group: ({ organisation, name, user }) => {
+    group: ({ organisation, name, users }) => {
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
       }
-      if (!user || !user.id) {
-        return Promise.reject(Error('Must pass user'));
+      if (!users || users.length === 0) {
+        return Promise.reject(Error('Must pass at least one user'));
       }
       return Group.create({
         name,
         organisationId: organisation.id,
-      }).then(group =>
-        group.addUser(user)
-          .then(() => group),
-      );
+      }).then(
+        group => group.addUsers(users)
+          .then(() => group));
     },
 
     user: ({ id, username, password, email, version, organisation }) => {
@@ -144,9 +143,9 @@ export const getCreators = (models) => {
       }
       return EventResponse.create({
         status,
-        detail,
-        destination,
-        eta,
+        detail: detail || '',
+        destination: destination || '',
+        eta: eta || 0,
         userId: user.id,
         eventId: event.id,
       });

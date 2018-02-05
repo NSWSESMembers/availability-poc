@@ -57,8 +57,6 @@ describe('Manipulate user group membership - join, join again, leave', async () 
     },
   );
 
-  itReturnsSuccessSync(joinresponse);
-
   const joinagainresponse = await run(
     {
       query: `
@@ -85,8 +83,6 @@ describe('Manipulate user group membership - join, join again, leave', async () 
     },
   );
 
-  itReturnsFailureSync(joinagainresponse);
-
   const leaveresponse = await run(
     {
       query: `
@@ -102,8 +98,9 @@ describe('Manipulate user group membership - join, join again, leave', async () 
     },
   );
 
+  itReturnsSuccessSync(joinresponse);
+  itReturnsFailureSync(joinagainresponse);
   itReturnsSuccessSync(leaveresponse);
-
   it('leaving should return true', () => {
     expect(leaveresponse.data.removeUserFromGroup).toEqual(true);
   });
