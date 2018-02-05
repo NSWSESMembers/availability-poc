@@ -98,7 +98,7 @@ export const getCreators = (models) => {
           .then(() => group));
     },
 
-    user: ({ id, username, password, email, version, organisation }) => {
+    user: ({ id, username, password, email, name, version, organisation }) => {
       // it's fine for id to be left null/undefined
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
@@ -108,6 +108,7 @@ export const getCreators = (models) => {
           id,
           username,
           password: hash,
+          name: name || 'Default',
           email,
           version,
           organisationId: organisation.id,

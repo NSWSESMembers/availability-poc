@@ -14,6 +14,7 @@ export const defineModels = (db) => {
   const UserModel = db.define('user', {
     email: { type: Sequelize.STRING },
     username: { type: Sequelize.STRING },
+    name: { type: Sequelize.STRING },
     password: { type: Sequelize.STRING },
     version: { type: Sequelize.INTEGER }, // version the password
   });

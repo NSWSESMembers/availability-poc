@@ -20,6 +20,7 @@ export const defineModels = () => {
   const UserModel = db.define('user', {
     email: 'test@example.com',
     username: 'test',
+    name: 'Test User',
     password: 'test',
     version: 1,
   });
