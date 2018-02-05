@@ -7,23 +7,21 @@ import { Timeline } from './';
 
 const CalendarRow = ({ item, onPressItem }) => (
   <View style={styles.row}>
-    <Timeline startDateTime={item.startDateTime} endDateTime={item.endDateTime} />
+    <Timeline startDateTime={item.startTime} endDateTime={item.endTime} />
     <View style={styles.rowDetail}>
-      {item.requests.map(request => (
-        <TouchableOpacity onPress={() => onPressItem()} key={request.value}>
-          <View style={styles.rowDetailItem}>
-            <Text style={styles.rowDetailItemText}>{request.label}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+      <TouchableOpacity onPress={() => onPressItem()} key={item.id}>
+        <View style={styles.rowDetailItem}>
+          <Text style={styles.rowDetailItemText}>{item.requestName}</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   </View>
 );
 
 CalendarRow.propTypes = {
   item: PropTypes.shape({
-    startDateTime: PropTypes.number.isRequired,
-    endDateTime: PropTypes.number.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
   }),
   onPressItem: PropTypes.func,
 };

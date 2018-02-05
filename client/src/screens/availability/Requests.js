@@ -4,9 +4,14 @@ import SelectMultiple from 'react-native-select-multiple';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { graphql, compose } from 'react-apollo';
+
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+
+import { Container } from '../../components/Container';
+import { Progress } from '../../components/Progress';
 
 import { setSelectedRequests } from '../../state/availability.actions';
-import requestsData from '../../fixtures/groups';
 
 class Requests extends Component {
   static navigationOptions = () => ({
@@ -19,10 +24,25 @@ class Requests extends Component {
   };
 
   render() {
+    const { loading, user } = this.props;
+
+    if (loading || !user) {
+      return (
+        <Container>
+          <Progress />
+        </Container>
+      );
+    }
+
+    const selectMultiple = this.props.user.schedules.map(schedule => ({
+      label: schedule.name,
+      value: schedule.id.toString(),
+    }));
+
     return (
       <View>
         <SelectMultiple
-          items={requestsData.data}
+          items={selectMultiple}
           selectedItems={this.props.selectedRequests}
           onSelectionsChange={this.onSelectionChange}
         />
@@ -39,10 +59,35 @@ Requests.propTypes = {
       value: PropTypes.string.isRequired,
     }),
   ),
+  loading: PropTypes.bool,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    schedules: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        details: PropTypes.string.isRequired,
+        startTime: PropTypes.number.isRequired,
+        endTime: PropTypes.number.isRequired,
+      }),
+    ),
+  }),
 };
 
-const mapStateToProps = state => ({
-  selectedRequests: state.availability.selectedRequests,
+const userQuery = graphql(CURRENT_USER_QUERY, {
+  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
+    loading,
+    networkStatus,
+    refetch,
+    user,
+  }),
 });
 
-export default connect(mapStateToProps)(Requests);
+const mapStateToProps = ({ auth, availability }) => ({
+  auth,
+  selectedRequests: availability.selectedRequests,
+});
+
+export default compose(connect(mapStateToProps), userQuery)(Requests);
