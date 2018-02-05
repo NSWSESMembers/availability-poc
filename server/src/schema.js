@@ -10,6 +10,10 @@ export const Schema = [`
     locationLon: String!
   }
 
+  input TokenUpdateInput {
+    token: String!
+  }
+
   input CreateGroupInput {
     name: String!
   }
@@ -188,6 +192,7 @@ export const Schema = [`
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
     updateLocation(location: LocationUpdateInput!): Boolean
+    updateToken(token: TokenUpdateInput!): Boolean
   }
 
   schema {

@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
+import { AppState, NativeModules } from 'react-native';
+import { graphql, compose } from 'react-apollo';
+
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 
@@ -7,14 +10,26 @@ import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 
 import { Container } from './components/Container';
+import { Progress } from './components/Progress';
+
+import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
+
+import { firebaseClient } from './app';
 
 import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
+import Event from './screens/event-detail.screen';
 import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
+import EventResponse from './screens/event-response.screen';
+
+
+// this will determine whether the firebase modules have been compiled in or not
+const firebaseAvailable = !!NativeModules.RNFIRMessaging;
+
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -68,6 +83,9 @@ const StackEvents = StackNavigator(
     Index: {
       screen: Events,
     },
+    Event: {
+      screen: Event,
+    },
   },
   {
     headerMode: 'screen',
@@ -79,8 +97,12 @@ const StackSettings = StackNavigator(
     Index: {
       screen: Settings,
     },
+    EventResponse: {
+      screen: EventResponse,
+    },
   },
   {
+    mode: 'modal',
     headerMode: 'screen',
   },
 );
@@ -115,29 +137,86 @@ export const navigationReducer = (state = initialNavState, action) => {
   return nextState || state;
 };
 
-const AppWithNavigationState = (props) => {
-  const { dispatch, nav } = props;
+class AppNavState extends Component {
+    state = {
+      appState: AppState.currentState,
+      token: '',
+    }
 
-  if (props.auth.loading) {
-    return <Container />;
-  }
+    componentWillMount() {
+      AppState.addEventListener('change', this.handleAppStateChange);
+    }
 
-  if (!props.auth.username) {
-    return <StackAuth />;
-  }
+    componentWillReceiveProps(nextProps) {
+      console.log(nextProps);
 
-  return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
-};
+      if (this.props.auth.token && firebaseAvailable) {
+        firebaseClient.init().then((registrationId) => {
+          if (this.props.auth && this.props.registrationId !== this.state.token) {
+            this.setState({ token: registrationId });
+            return Promise.resolve(this.props.updateToken({ token: registrationId }));
+          }
+          return Promise.resolve();
+        });
+      }
 
-AppWithNavigationState.propTypes = {
+      if (!nextProps.auth && firebaseAvailable) {
+        if (firebaseClient.token) {
+          firebaseClient.clear();
+        }
+      }
+    }
+
+    componentWillUnmount() {
+      AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+
+    handleAppStateChange = (nextAppState) => {
+      console.log('App has changed state!', nextAppState);
+      console.log('From: ', this.state.appState);
+      this.setState({ appState: nextAppState });
+    }
+
+    render() {
+      const { dispatch, nav } = this.props;
+
+      if (this.props.auth.loading) {
+        return (
+          <Container>
+            <Progress />
+          </Container>
+        );
+      }
+
+      if (!this.props.auth.username) {
+        return <StackAuth />;
+      }
+
+      return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+    }
+}
+
+AppNavState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.shape().isRequired,
   auth: PropTypes.shape().isRequired,
+  updateToken: PropTypes.func,
+  token: PropTypes.string,
+  registrationId: PropTypes.string,
 };
+
+const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
+  props: ({ mutate }) => ({
+    updateToken: token =>
+      mutate({
+        variables: { token },
+      }),
+  }),
+});
 
 const mapStateToProps = ({ auth, nav }) => ({
   auth,
   nav,
 });
 
-export default connect(mapStateToProps)(AppWithNavigationState);
+export default compose(connect(mapStateToProps), updateTokenMutation)(AppNavState);

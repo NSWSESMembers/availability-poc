@@ -38,7 +38,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       addDevice(user, deviceUuid) {
         return user.getDevices({ where: { uuid: deviceUuid } }).then((existing) => {
-          if (existing) {
+          if (existing.length) {
             return existing;
           }
           return Creators.device({
@@ -46,6 +46,11 @@ export const getHandlers = ({ models, creators: Creators }) => {
             user,
           });
         });
+      },
+      updateToken(_, args, ctx) {
+        return getAuthenticatedDevice(ctx).then(device => device.update({
+          pushToken: args.token.token,
+        }));
       },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {

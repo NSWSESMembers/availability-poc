@@ -13,10 +13,10 @@ const init = async ({ db, models }) => {
 
   try {
     await loadTestData(creators);
-    console.log('Finished creating test data');
+    console.log('Finished creating test data'); // eslint-disable-line no-console
   } catch (e) {
-    console.log('Epic fail while trying to load test data');
-    console.log(e);
+    console.log('Epic fail while trying to load test data'); // eslint-disable-line no-console
+    console.log(e); // eslint-disable-line no-console
   }
 };
 
@@ -25,7 +25,7 @@ export const setupDb = () => {
   const db = new Sequelize('avail', null, null, {
     dialect: 'sqlite',
     storage: './avail.sqlite',
-    logging: console.log, // mark this true if you want to see logs
+    logging: console.log, // eslint-disable-line no-console
   });
 
   const models = defineModels(db);
