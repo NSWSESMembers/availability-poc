@@ -138,7 +138,7 @@ describe('create group', () => {
   });
 
   it('returns a group', async () => {
-    const result = await creators.group({ organisation, name, user });
+    const result = await creators.group({ organisation, name, users: [user] });
 
     expect(result.id).toBeDefined();
     expect(result.organisationId).toBe(organisation.id);

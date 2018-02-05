@@ -4,7 +4,7 @@ import { graphqlExpress, graphiqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import jwt from 'express-jwt';
-import JWT_SECRET from './config';
+import { JWT_SECRET, DEFAULT_USER_ID, DEFAULT_DEVICE_UUID } from './config';
 import { getSchema } from './schema';
 import { setupDb } from './db';
 import { getHandlers } from './logic';
@@ -41,11 +41,11 @@ app.use(
     // if the user is not logged in we assume they are the test user
     // to ease testing and enable the use of GraphiQL
     if (typeof req.user === 'undefined') {
-      user = User.findById(69);
+      user = User.findById(DEFAULT_USER_ID);
       device = Device.findOne({
         where: {
-          userId: 69,
-          uuid: '1234abc',
+          userId: DEFAULT_USER_ID,
+          uuid: DEFAULT_DEVICE_UUID,
         },
       });
     } else {

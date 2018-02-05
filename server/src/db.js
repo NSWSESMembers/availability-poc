@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 
-import { loadTestData } from './test-data';
+import { loadTestData } from './test-data/load';
 import { defineModels } from './models';
 import { getCreators } from './creators';
 

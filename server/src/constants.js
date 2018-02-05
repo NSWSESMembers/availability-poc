@@ -1,3 +1,2 @@
-const distantFuture = 2147483647;
-
-export default distantFuture;
+export const DISTANT_FUTURE = 2147483647;
+export const DISTANT_PAST = 0;
