@@ -95,7 +95,7 @@ export const Schema = [`
     id: Int! # unique id for the user
     email: String! # we will also require a unique email per user
     username: String # this is the name we'll show other users
-    name: String # full name of user
+    displayName: String # full name of user
     organisation: Organisation! # the organisation this user belongs to
     groups(id: Int): [Group]! # groups the user belongs to
     schedules: [Schedule]! # schedules from groups the user belongs to

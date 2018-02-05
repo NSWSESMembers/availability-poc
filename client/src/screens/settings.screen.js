@@ -24,6 +24,23 @@ const styles = extendAppStyleSheet({
   container: {
     flex: 1,
   },
+  username: {
+    borderColor: '#777',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    paddingHorizontal: 8,
+    paddingBottom: 2,
+    paddingTop: 5,
+    fontSize: 14,
+  },
+  usernameHeader: {
+    backgroundColor: '#dbdbdb',
+    color: '#000000',
+    paddingHorizontal: 8,
+    paddingBottom: 2,
+    paddingTop: 5,
+    fontSize: 16,
+  },
   email: {
     borderColor: '#777',
     borderBottomWidth: 1,
@@ -137,14 +154,18 @@ class Settings extends Component {
         <View style={styles.userContainer}>
           <View style={styles.userInner}>
             <Icon name="user" size={50} style={styles.userImage} />
-            <Text style={styles.inputInstructions}>{user.username}</Text>
+            <Text style={styles.inputInstructions}>{user.displayName}</Text>
           </View>
         </View>
-        <Text style={styles.emailHeader}>Email Account</Text>
+        <Text style={styles.usernameHeader}>User Name</Text>
+        <Text style={styles.username}>{user.username}</Text>
+        <Text style={styles.emailHeader}>Email Address</Text>
         <Text style={styles.email}>{user.email}</Text>
         <Text />
         <Text />
         <Button title="Force Update Location" onPress={this.updateLocation} />
+        <Text />
+        <Text />
         <Button title="Test Event Response" onPress={this.showEventResponse} />
         <Text />
         <Text />
@@ -159,7 +180,8 @@ Settings.propTypes = {
   loading: PropTypes.bool,
   updateLocation: PropTypes.func,
   user: PropTypes.shape({
-    username: PropTypes.string,
+    username: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
   }),
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,

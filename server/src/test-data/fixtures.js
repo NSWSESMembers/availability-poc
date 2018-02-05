@@ -38,7 +38,7 @@ export const USERS = [
     id: DEFAULT_USER_ID,
     username: DEFAULT_USERNAME,
     password: 'test',
-    name: 'Paddy Platypus',
+    displayName: 'Paddy Platypus',
     email: 'test@example.com',
   },
   {
