@@ -165,14 +165,14 @@ SectionHeader.propTypes = {
 };
 
 const MembersDisplay = (props) => {
-  const { id, username } = props.member;
+  const { id, displayName } = props.member;
   return (
     <TouchableHighlight key={id}>
       <View style={styles.groupContainer}>
         <Icon name="user" size={24} color="blue" />
         <View style={styles.groupTextContainer}>
           <View style={styles.groupTitleContainer}>
-            <Text style={styles.groupName} numberOfLines={1}>{username}</Text>
+            <Text style={styles.groupName} numberOfLines={1}>{displayName}</Text>
           </View>
         </View>
       </View>
@@ -182,7 +182,7 @@ const MembersDisplay = (props) => {
 MembersDisplay.propTypes = {
   member: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
   }),
 };
 
@@ -370,6 +370,7 @@ Group.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
     organisation: PropTypes.shape({
       groups: PropTypes.arrayOf(
         PropTypes.shape({
@@ -385,6 +386,7 @@ Group.propTypes = {
             PropTypes.shape({
               id: PropTypes.number.isRequired,
               username: PropTypes.string.isRequired,
+              displayName: PropTypes.string.isRequired,
             }),
           ),
           schedules: PropTypes.arrayOf(
