@@ -5,6 +5,7 @@ export default gql`
   query group($groupId: Int!){
     user {
       id
+      displayName
       username
       organisation {
         id
@@ -17,6 +18,7 @@ export default gql`
             }
             users {
              username
+             displayName
              id
             }
             schedules {
