@@ -1,4 +1,4 @@
-const Colors = {
+export default (Colors = {
   txtMain: '#000',
   txtDark: '#6B6B6B',
   txtWhite: '#ffffff',
@@ -9,6 +9,9 @@ const Colors = {
   bgMain: '#1e3c78',
   bgBtn: '#f48603',
   bgBtnSecondary: '#1c87c9',
+  bgBtnAvailable: 'green',
+  bgBtnUnavailable: 'red',
+  bgBtnUrgent: 'purple',
   bgLight: '#EEE',
   bgWhite: '#ffffff',
   bgDisabled: '#D3D3D3',
@@ -21,6 +24,4 @@ const Colors = {
   bdLine: '#dddddd',
   bdInput: '#cbcbcb',
   bdLight: '#DDD',
-};
-
-export default Colors;
+});

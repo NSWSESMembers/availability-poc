@@ -7,10 +7,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
-import CREATE_TIME_SEGMENT_MUTATION from '../../graphql/create-time-segment.mutation';
-import REMOVE_TIME_SEGMENT_MUTATION from '../../graphql/remove-time-segment.mutation';
-import UPDATE_TIME_SEGMENT_MUTATION from '../../graphql/update-time-segment.mutation';
+import {
+  CREATE_TIME_SEGMENT_MUTATION,
+  REMOVE_TIME_SEGMENT_MUTATION,
+  UPDATE_TIME_SEGMENT_MUTATION,
+} from '../../graphql/time-segment.mutation';
 
+import { Alert } from '../../components/Alert';
 import ButtonRowPicker from '../../components/ButtonRowPicker';
 import TextInputRow from '../../components/TextInputRow';
 import { Button, ButtonRow } from '../../components/Button';
@@ -66,6 +69,14 @@ class Edit extends Component {
   // scheduleId, status, startTime, endTime
   // TODO - add error handling
   handleSave = () => {
+    if (this.props.selectedRequests.length === 0) {
+      this.setState({
+        status: 'Availability Error',
+        errorMessage: 'You must select at least 1 request.',
+      });
+      this.popRef.show();
+      return;
+    }
     if (this.state.id === 0) {
       _.forEach(this.props.selectedRequests, (request) => {
         this.props.createTimeSegment({
@@ -164,6 +175,7 @@ class Edit extends Component {
             title="Availability"
             selected={this.state.availibilityStatus}
             onSelect={this.handleAvailibilityStatusPicked}
+            showIcon
           />
         </Holder>
         <Separator />
@@ -182,6 +194,13 @@ class Edit extends Component {
             <Button onPress={this.handleRemove} text="Remove Availability" type="secondary" />
           </Holder>
         )}
+        <Alert
+          ref={(el) => {
+            this.popRef = el;
+          }}
+          status={this.state.status}
+          message={this.state.errorMessage}
+        />
       </Container>
     );
   }

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ModalSelector from 'react-native-modal-selector';
-
-
 import { View } from 'react-native';
+
+import data from '../../fixtures/status';
 import { ButtonRow } from '../Button';
 
 class ButtonRowPicker extends Component {
@@ -12,26 +12,13 @@ class ButtonRowPicker extends Component {
     this.props.onSelect(option.label);
   };
 
-  focusOnText = () => {
-
-  }
-
   render() {
-    const data = [
-      { key: 0, label: 'Available' },
-      { key: 1, label: 'Unavailable' },
-      { key: 2, label: 'Unavailable - unless urgent' },
-    ];
-
     return (
       <View>
-        <ModalSelector
-          data={data}
-          onChange={this.onConfirm}
-        >
+        <ModalSelector data={data} onChange={this.onConfirm}>
           <ButtonRow
             title={this.props.title}
-            showIcon
+            showIconNoPress={this.props.showIcon}
             description={`For this time period I am '${this.props.selected}'`}
           />
         </ModalSelector>
@@ -44,6 +31,11 @@ ButtonRowPicker.propTypes = {
   title: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
   selected: PropTypes.string.isRequired,
+  showIcon: PropTypes.bool,
+};
+
+ButtonRowPicker.defaultProps = {
+  showIcon: false,
 };
 
 export default ButtonRowPicker;
