@@ -5,6 +5,7 @@ export default gql`
   query {
     user {
       id
+      displayName
       email
       username
       groups {

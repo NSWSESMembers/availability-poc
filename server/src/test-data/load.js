@@ -4,13 +4,13 @@ import {
 import { DEFAULT_DEVICE_UUID } from '../config';
 
 const createUser = (Creators, organisation, user) => {
-  const { id, username, password, email, name } = user;
+  const { id, username, password, email, displayName } = user;
   return Creators.user({
     id,
     username,
     password,
     email,
-    name,
+    displayName,
     organisation,
   }).then(u => Creators.device({ uuid: DEFAULT_DEVICE_UUID, user: u })
     .then(() => u));
