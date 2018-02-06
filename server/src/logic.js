@@ -347,7 +347,6 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       schedules(group, args) {
         const { hasTimeSegments } = args;
-        console.log('MARK', hasTimeSegments);
         if (hasTimeSegments) {
           return group.getSchedules({
             include: [{
