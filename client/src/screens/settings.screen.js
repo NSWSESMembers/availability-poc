@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Alert, Button, Text, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import md5 from 'md5';
 import Prompt from 'react-native-prompt';
 
@@ -197,12 +196,12 @@ class Settings extends Component {
           />
           <View style={styles.userContainer}>
             <View style={styles.userInner}>
-            <View style={styles.gravatar}>
-              <Image
-                style={{ width: 50, height: 50, paddingHorizontal: 10 }}
-                source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
-              />
-            </View>
+              <View style={styles.gravatar}>
+                <Image
+                  style={{ width: 50, height: 50, paddingHorizontal: 10 }}
+                  source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
+                />
+              </View>
               <Text
                 onPress={this.openPrompt}
                 style={styles.inputInstructions}
