@@ -113,9 +113,9 @@ class Settings extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={28} name="cog" color={tintColor} />,
   };
 
-state = {
-  promptVisible: false,
-}
+  state = {
+    promptVisible: false,
+  }
 
   updateLocation = () => {
     const reportError = (error) => {
@@ -248,7 +248,9 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps),
+export default compose(
+  connect(mapStateToProps),
   userQuery,
   updateUserProfileMutation,
-  updateLocationMutation)(Settings);
+  updateLocationMutation,
+)(Settings);
