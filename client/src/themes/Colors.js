@@ -1,4 +1,4 @@
-export default (Colors = {
+const Colors = {
   txtMain: '#000',
   txtDark: '#6B6B6B',
   txtWhite: '#ffffff',
@@ -24,4 +24,6 @@ export default (Colors = {
   bdLine: '#dddddd',
   bdInput: '#cbcbcb',
   bdLight: '#DDD',
-});
+};
+
+export default Colors;
