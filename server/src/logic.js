@@ -67,6 +67,15 @@ export const getHandlers = ({ models, creators: Creators }) => {
       query(_, __, ctx) {
         return getAuthenticatedUser(ctx);
       },
+      updateUserProfile(_, args, ctx) {
+        // TODO support more basic fields
+        const { displayName } = args.user;
+        return getAuthenticatedUser(ctx)
+          .then(user => user.update({
+            displayName,
+          }),
+          );
+      },
       groups(user, args) {
         if (args.id) {
           return user.getGroups({ where: { id: args.id } });
