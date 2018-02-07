@@ -198,7 +198,7 @@ class Settings extends Component {
             <View style={styles.userInner}>
               <View style={styles.gravatar}>
                 <Image
-                  style={{ width: 50, height: 50, paddingHorizontal: 10 }}
+                  style={{ borderRadius: 5, width: 50, height: 50, paddingHorizontal: 10 }}
                   source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
                 />
               </View>
