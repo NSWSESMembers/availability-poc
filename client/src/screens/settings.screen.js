@@ -5,7 +5,7 @@ import { ActivityIndicator, Alert, Button, Text, View, Image } from 'react-nativ
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import md5 from 'react-native-md5';
+import md5 from 'md5';
 
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
@@ -157,7 +157,7 @@ class Settings extends Component {
             <View style={styles.gravatar}>
               <Image
                 style={{ width: 50, height: 50, paddingHorizontal: 10 }}
-                source={{ uri: `https://www.gravatar.com/avatar/${md5.hex_md5(user.email)}?d=mm` }}
+                source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
               />
             </View>
             <Text style={styles.inputInstructions}>{user.displayName}</Text>
