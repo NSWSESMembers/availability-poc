@@ -60,6 +60,7 @@ Calendar.propTypes = {
       startTime: PropTypes.number.isRequired,
       endTime: PropTypes.number.isRequired,
       id: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
     }),
   ),
   onPressItem: PropTypes.func,

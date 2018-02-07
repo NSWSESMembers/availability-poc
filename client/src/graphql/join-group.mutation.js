@@ -6,25 +6,34 @@ export default gql`
       id
       name
       tags {
-         name
-         id
-       }
-       users {
-         username
-         id
-       }
-       events {
-         id
-         name
-         details
-       }
-       schedules {
-         id
-         name
-         details
-         startTime
-         endTime
-       }
+        name
+        id
+      }
+      users {
+        username
+        id
+      }
+      events {
+        id
+        name
+        details
+      }
+      schedules {
+        id
+        name
+        details
+        startTime
+        endTime
+        timeSegments {
+          user {
+            id
+          }
+          id
+          status
+          startTime
+          endTime
+        }
+      }
     }
   }
 `;

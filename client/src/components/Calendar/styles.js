@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   rowDetailItem: {
     margin: 5,
     padding: 5,
-    backgroundColor: Colors.bgBtnSecondary,
+    backgroundColor: Colors.bgBtnAvailable,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: Colors.bdWhite,

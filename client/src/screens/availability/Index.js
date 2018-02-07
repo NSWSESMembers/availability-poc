@@ -116,10 +116,13 @@ class Index extends Component {
             startTime: timeSegment.startTime,
             endTime: timeSegment.endTime,
             id: timeSegment.id,
+            status: timeSegment.status,
           });
         }
       });
     });
+
+    filteredItems.sort((a, b) => (a.startTime > b.startTime ? 1 : -1));
 
     return (
       <Container>

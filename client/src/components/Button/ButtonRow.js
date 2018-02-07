@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, View } from 'react-native';
 import ButtonText from './ButtonText';
 
-const ButtonRow = ({ title, description, onPress, showIcon }) => (
+const ButtonRow = ({ title, description, onPress, showIcon, showIconNoPress }) => (
   <View>
     {onPress === undefined ? (
-      <ButtonText title={title} description={description} />
+      <ButtonText icon={showIconNoPress} title={title} description={description} />
     ) : (
       <TouchableOpacity onPress={() => onPress()}>
         <ButtonText icon={showIcon} title={title} description={description} />
@@ -20,6 +20,12 @@ ButtonRow.propTypes = {
   description: PropTypes.string,
   onPress: PropTypes.func,
   showIcon: PropTypes.bool,
+  showIconNoPress: PropTypes.bool,
+};
+
+ButtonRow.defaultProps = {
+  showIcon: false,
+  showIconNoPress: false,
 };
 
 export default ButtonRow;
