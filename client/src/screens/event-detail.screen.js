@@ -195,6 +195,14 @@ EventResponse.propTypes = {
 };
 
 class EventDetail extends Component {
+  componentDidMount() {
+    this.timer = setInterval(this.onRefresh, 5000); // 5s
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   onRefresh = () => {
     // NYI
     this.props.refetch();
