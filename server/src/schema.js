@@ -144,7 +144,7 @@ export const Schema = [`
     detail: String!
     locationLatitude: Float
     locationLongitude: Float
-    locationUpdate: Int
+    locationTime: Int
     destination: String!
     eta: Int!
   }
