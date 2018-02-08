@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
+import StackHome from './screens/home/StackHome';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -16,7 +17,6 @@ import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
-import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
@@ -59,17 +59,6 @@ const StackGroup = StackNavigator(
     },
     Group: {
       screen: Group,
-    },
-  },
-  {
-    headerMode: 'screen',
-  },
-);
-
-const StackHome = StackNavigator(
-  {
-    Index: {
-      screen: Home,
     },
   },
   {

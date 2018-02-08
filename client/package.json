@@ -32,6 +32,7 @@
     "react-native-maps": "^0.18.2",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-modal-selector": "0.0.24",
+    "react-native-prompt": "https://github.com/OSPFNeighbour/react-native-prompt.git",
     "react-native-segmented-control-tab": "^3.2.2",
     "react-native-select-multiple": "^1.2.0",
     "react-native-vector-icons": "^4.4.2",
