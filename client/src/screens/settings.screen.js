@@ -1,9 +1,10 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ActivityIndicator, Alert, Button, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, Text, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
+import md5 from 'md5';
 import Prompt from 'react-native-prompt';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -84,9 +85,6 @@ const styles = extendAppStyleSheet({
     paddingVertical: 8,
     backgroundColor: '#ed3434',
   },
-  userImage: {
-    paddingHorizontal: 20,
-  },
   inputInstructions: {
     color: '#777',
     fontSize: 26,
@@ -97,6 +95,9 @@ const styles = extendAppStyleSheet({
     backgroundColor: '#c6c0c0',
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  gravatar: {
+    paddingHorizontal: 10,
   },
   userInner: {
     flexDirection: 'row',
@@ -195,7 +196,12 @@ class Settings extends Component {
           />
           <View style={styles.userContainer}>
             <View style={styles.userInner}>
-              <Icon name="user" size={50} style={styles.userImage} />
+              <View style={styles.gravatar}>
+                <Image
+                  style={{ borderRadius: 5, width: 50, height: 50, paddingHorizontal: 10 }}
+                  source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
+                />
+              </View>
               <Text
                 onPress={this.openPrompt}
                 style={styles.inputInstructions}
