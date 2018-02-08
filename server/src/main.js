@@ -10,6 +10,7 @@ import { setupDb } from './db';
 import { getHandlers } from './logic';
 import { getResolvers } from './resolvers';
 import { getCreators } from './creators';
+import { getCallback } from './callback';
 
 const GRAPHQL_PORT = 8080;
 const GRAPHQL_PATH = '/graphql';
@@ -71,6 +72,8 @@ app.use(
 app.use('/graphiql', graphiqlExpress({
   endpointURL: GRAPHQL_PATH,
 }));
+
+app.use('/hook', bodyParser.json(), getCallback('ses-hook'));
 
 const graphQLServer = createServer(app);
 
