@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
+import StackHome from './screens/home/StackHome';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -16,7 +17,6 @@ import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
-import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
@@ -29,7 +29,6 @@ import EventResponseEdit from './screens/event-response-edit.screen';
 
 // this will determine whether the firebase modules have been compiled in or not
 const firebaseAvailable = !!NativeModules.RNFIRMessaging;
-
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -60,17 +59,6 @@ const StackGroup = StackNavigator(
     },
     Group: {
       screen: Group,
-    },
-  },
-  {
-    headerMode: 'screen',
-  },
-);
-
-const StackHome = StackNavigator(
-  {
-    Index: {
-      screen: Home,
     },
   },
   {
@@ -145,76 +133,76 @@ class AppNavState extends Component {
     super(props);
     this.lastBackButtonPress = null;
   }
-    state = {
-      appState: AppState.currentState,
-      token: '',
-    }
+  state = {
+    appState: AppState.currentState,
+    token: '',
+  };
 
-    componentWillMount() {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        const { dispatch, nav } = this.props;
-        if (nav.index === 0) {
-          if (this.lastBackButtonPress + 2000 >= new Date().getTime()) {
-            BackHandler.exitApp();
-            return true;
-          }
-          ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
-          this.lastBackButtonPress = new Date().getTime();
-        }
-        dispatch({ type: 'Navigation/BACK' });
-        return true;
-      });
-      AppState.addEventListener('change', this.handleAppStateChange);
-    }
-
-    componentWillReceiveProps(nextProps) {
-      console.log(nextProps);
-
-      if (this.props.auth.token && firebaseAvailable) {
-        firebaseClient.init().then((registrationId) => {
-          if (this.props.auth && this.props.registrationId !== this.state.token) {
-            this.setState({ token: registrationId });
-            return Promise.resolve(this.props.updateToken({ token: registrationId }));
-          }
-          return Promise.resolve();
-        });
-      }
-
-      if (!nextProps.auth && firebaseAvailable) {
-        if (firebaseClient.token) {
-          firebaseClient.clear();
-        }
-      }
-    }
-
-    componentWillUnmount() {
-      BackHandler.removeEventListener('hardwareBackPress');
-      AppState.removeEventListener('change', this.handleAppStateChange);
-    }
-
-    handleAppStateChange = (nextAppState) => {
-      console.log('App has changed state!', nextAppState);
-      console.log('From: ', this.state.appState);
-      this.setState({ appState: nextAppState });
-    }
-
-    render() {
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
       const { dispatch, nav } = this.props;
-
-      if (this.props.auth.loading) {
-        return (
-          <Container>
-            <Progress />
-          </Container>
-        );
+      if (nav.index === 0) {
+        if (this.lastBackButtonPress + 2000 >= new Date().getTime()) {
+          BackHandler.exitApp();
+          return true;
+        }
+        ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
+        this.lastBackButtonPress = new Date().getTime();
       }
+      dispatch({ type: 'Navigation/BACK' });
+      return true;
+    });
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
 
-      if (!this.props.auth.username) {
-        return <StackAuth />;
-      }
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
 
-      return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+    if (this.props.auth.token && firebaseAvailable) {
+      firebaseClient.init().then((registrationId) => {
+        if (this.props.auth && this.props.registrationId !== this.state.token) {
+          this.setState({ token: registrationId });
+          return Promise.resolve(this.props.updateToken({ token: registrationId }));
+        }
+        return Promise.resolve();
+      });
     }
+
+    if (!nextProps.auth && firebaseAvailable) {
+      if (firebaseClient.token) {
+        firebaseClient.clear();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    console.log('App has changed state!', nextAppState);
+    console.log('From: ', this.state.appState);
+    this.setState({ appState: nextAppState });
+  };
+
+  render() {
+    const { dispatch, nav } = this.props;
+
+    if (this.props.auth.loading) {
+      return (
+        <Container>
+          <Progress />
+        </Container>
+      );
+    }
+
+    if (!this.props.auth.username) {
+      return <StackAuth />;
+    }
+
+    return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+  }
 }
 
 AppNavState.propTypes = {

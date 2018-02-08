@@ -4,6 +4,7 @@ import Colors from '../../themes/Colors';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: Colors.bgLight,

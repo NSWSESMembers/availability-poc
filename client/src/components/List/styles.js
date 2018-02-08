@@ -1,54 +1,39 @@
-import { StyleSheet } from 'react-native';
-
 import { extendAppStyleSheet } from '../../screens/style-sheet';
 
 const styles = extendAppStyleSheet({
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: 6,
-  },
-  indicator: {
-    backgroundColor: 'yellow',
-    borderColor: 'black',
-    borderRadius: 10,
-    borderWidth: 1,
-    height: 20,
-    marginLeft: 6,
-    marginRight: 12,
-    width: 20,
-  },
-  available: {
-    backgroundColor: '#77D353',
-    borderColor: '#44A020',
-  },
-  unavailable: {
-    backgroundColor: '#F95F62',
-    borderColor: '#930000',
-  },
-  separator: {
-    backgroundColor: '#E2E2E2',
+  container: {
+    elevation: 1,
+    borderRadius: 2,
+    backgroundColor: 'white',
     flex: 1,
-    height: StyleSheet.hairlineWidth,
-  },
-  eventCard: {
-    backgroundColor: '#EEE',
-    borderColor: '#CCC',
-    borderWidth: 1,
-    margin: 10,
-    marginBottom: 0,
-    padding: 10,
-  },
-  eventHeading: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start', // main axis
+    alignItems: 'center', // cross axis
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 18,
+    paddingRight: 16,
+    marginLeft: 14,
+    marginRight: 14,
+    marginTop: 0,
+    marginBottom: 6,
   },
-  eventAgo: {
-    color: '#333',
-    fontSize: 10,
+  textContainer: {
+    flex: 1,
+    flexDirection: 'column',
   },
-  eventUrgent: {
-    borderColor: 'red',
+  subtitleText: {
+    textAlignVertical: 'bottom',
+    includeFontPadding: false,
+    flex: 0,
+    fontSize: 12,
+    color: '#6B6B6B',
+  },
+  titleText: {
+    textAlignVertical: 'top',
+    includeFontPadding: false,
+    flex: 0,
+    marginRight: 8,
   },
 });
 
