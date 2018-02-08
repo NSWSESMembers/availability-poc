@@ -100,9 +100,11 @@ class Home extends Component {
                   subtitle={
                     schedule.item.startTime === 0
                       ? 'Ongoing'
-                      : `${moment(schedule.item.startTime).format('YYYY-MM-DD')} to ${moment(
-                          schedule.item.endTime,
-                        ).format('YYYY-MM-DD')}`
+                      : `${moment
+                          .unix(schedule.item.startTime)
+                          .format('YYYY-MM-DD')} to ${moment
+                          .unix(schedule.item.endTime)
+                          .format('YYYY-MM-DD')}`
                   }
                   icon="calendar"
                   onPress={() => this.handleSchedulePress(schedule)}
