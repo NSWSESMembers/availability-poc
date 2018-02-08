@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import moment from 'moment';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { Container, Holder } from '../../components/Container';
+import { Center, Container, Holder } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { Segment } from '../../components/Segment';
@@ -35,8 +35,7 @@ class Home extends Component {
   };
 
   handleEventPress = (event) => {
-    console.log(event);
-    // this.props.navigation.navigate('Event', { id: event.id, title: event.name });
+    this.props.navigation.navigate('Event', { id: event.item.id, title: event.item.name });
   };
 
   handleSchedulePress = () => {
@@ -53,7 +52,7 @@ class Home extends Component {
         </Container>
       );
     }
-    console.log(user);
+
     return (
       <Container>
         <Holder margin marginBot transparent>
@@ -67,6 +66,12 @@ class Home extends Component {
           <View style={{ flexDirection: 'row' }}>
             <FlatList
               data={user.events}
+              ListHeaderComponent={() =>
+                (!user.events.length ? (
+                  <Center>
+                    <Text>There are no events currently.</Text>
+                  </Center>
+                ) : null)}
               keyExtractor={event => event.id}
               renderItem={event => (
                 <ListItem
@@ -82,6 +87,12 @@ class Home extends Component {
           <View style={{ flexDirection: 'row' }}>
             <FlatList
               data={user.schedules}
+              ListHeaderComponent={() =>
+                (!user.schedules.length ? (
+                  <Center>
+                    <Text>There are no requests available. Make sure you have joined a group.</Text>
+                  </Center>
+                ) : null)}
               keyExtractor={schedule => schedule.id}
               renderItem={schedule => (
                 <ListItem
