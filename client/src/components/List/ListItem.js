@@ -1,47 +1,27 @@
 import React from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const ListItem = ({
-  type = 'list', // box
-  text,
-  summary,
-  onPress,
-  selected = false,
-}) => {
-  const colour = selected ? styles.available : styles.unavailable;
-
-  let rowStyle = styles.row;
-  if (type === 'box') {
-    rowStyle = styles.eventCard;
-    if (selected) {
-      rowStyle = [styles.eventCard, styles.eventUrgent];
-    }
-  }
-
-  return (
-    <TouchableHighlight onPress={onPress} underlayColor="#FFFFFF">
-      <View style={rowStyle}>
-        { type === 'list' ? (
-          <View style={[styles.indicator, colour]} />
-        ) : null}
-        <View>
-          <Text style={styles.h3}>{text}{selected}</Text>
-          <Text style={styles.summary}>{summary}</Text>
-        </View>
+const ListItem = ({ title, subtitle, icon, onPress }) => (
+  <TouchableOpacity onPress={() => onPress()}>
+    <View style={styles.container}>
+      <View style={styles.textContainer}>
+        {subtitle && <Text style={styles.subtitleText}>{subtitle}</Text>}
+        <Text style={styles.titleText}>{title}</Text>
       </View>
-    </TouchableHighlight>
-  );
-};
+      {icon && <Icon name={icon} size={30} />}
+    </View>
+  </TouchableOpacity>
+);
 
 ListItem.propTypes = {
-  type: PropTypes.string,
-  text: PropTypes.string,
-  summary: PropTypes.string,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  icon: PropTypes.string,
   onPress: PropTypes.func,
-  selected: PropTypes.bool,
 };
 
 export default ListItem;

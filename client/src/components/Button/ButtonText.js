@@ -11,7 +11,7 @@ const ButtonText = ({ title, description, icon }) => (
       <Text style={styles.buttonRowTitle}>{title.toUpperCase()}</Text>
       <Text style={styles.buttonRowDescription}>{description}</Text>
     </View>
-    {icon && <Icon name="angle-right" size={40} color="#EEE" /> }
+    {icon && <Icon name="angle-right" size={40} color="#EEE" />}
   </View>
 );
 

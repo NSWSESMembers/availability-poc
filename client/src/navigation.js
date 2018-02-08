@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
+import StackHome from './screens/home/StackHome';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -16,7 +17,6 @@ import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
-import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
@@ -26,10 +26,8 @@ import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
 import EventResponse from './screens/event-response.screen';
 
-
 // this will determine whether the firebase modules have been compiled in or not
 const firebaseAvailable = !!NativeModules.RNFIRMessaging;
-
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -60,17 +58,6 @@ const StackGroup = StackNavigator(
     },
     Group: {
       screen: Group,
-    },
-  },
-  {
-    headerMode: 'screen',
-  },
-);
-
-const StackHome = StackNavigator(
-  {
-    Index: {
-      screen: Home,
     },
   },
   {
@@ -138,62 +125,62 @@ export const navigationReducer = (state = initialNavState, action) => {
 };
 
 class AppNavState extends Component {
-    state = {
-      appState: AppState.currentState,
-      token: '',
-    }
+  state = {
+    appState: AppState.currentState,
+    token: '',
+  };
 
-    componentWillMount() {
-      AppState.addEventListener('change', this.handleAppStateChange);
-    }
+  componentWillMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
 
-    componentWillReceiveProps(nextProps) {
-      console.log(nextProps);
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
 
-      if (this.props.auth.token && firebaseAvailable) {
-        firebaseClient.init().then((registrationId) => {
-          if (this.props.auth && this.props.registrationId !== this.state.token) {
-            this.setState({ token: registrationId });
-            return Promise.resolve(this.props.updateToken({ token: registrationId }));
-          }
-          return Promise.resolve();
-        });
-      }
-
-      if (!nextProps.auth && firebaseAvailable) {
-        if (firebaseClient.token) {
-          firebaseClient.clear();
+    if (this.props.auth.token && firebaseAvailable) {
+      firebaseClient.init().then((registrationId) => {
+        if (this.props.auth && this.props.registrationId !== this.state.token) {
+          this.setState({ token: registrationId });
+          return Promise.resolve(this.props.updateToken({ token: registrationId }));
         }
+        return Promise.resolve();
+      });
+    }
+
+    if (!nextProps.auth && firebaseAvailable) {
+      if (firebaseClient.token) {
+        firebaseClient.clear();
       }
     }
+  }
 
-    componentWillUnmount() {
-      AppState.removeEventListener('change', this.handleAppStateChange);
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    console.log('App has changed state!', nextAppState);
+    console.log('From: ', this.state.appState);
+    this.setState({ appState: nextAppState });
+  };
+
+  render() {
+    const { dispatch, nav } = this.props;
+
+    if (this.props.auth.loading) {
+      return (
+        <Container>
+          <Progress />
+        </Container>
+      );
     }
 
-    handleAppStateChange = (nextAppState) => {
-      console.log('App has changed state!', nextAppState);
-      console.log('From: ', this.state.appState);
-      this.setState({ appState: nextAppState });
+    if (!this.props.auth.username) {
+      return <StackAuth />;
     }
 
-    render() {
-      const { dispatch, nav } = this.props;
-
-      if (this.props.auth.loading) {
-        return (
-          <Container>
-            <Progress />
-          </Container>
-        );
-      }
-
-      if (!this.props.auth.username) {
-        return <StackAuth />;
-      }
-
-      return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
-    }
+    return <MainScreenNavigator navigation={addNavigationHelpers({ dispatch, state: nav })} />;
+  }
 }
 
 AppNavState.propTypes = {
