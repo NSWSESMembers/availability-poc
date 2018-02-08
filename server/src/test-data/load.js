@@ -89,8 +89,26 @@ const createSchedules = (Creators, groups) => {
 
 const createEventResponse = (Creators, event, response, users) => {
   const user = users[response.user];
-  const { status, detail, destination, eta } = response;
-  return Creators.eventResponse({ status, detail, destination, eta, event, user });
+  const {
+    status,
+    detail,
+    destination,
+    eta,
+    locationLatitude,
+    locationLongitude,
+    locationTime,
+  } = response;
+  return Creators.eventResponse({
+    status,
+    detail,
+    destination,
+    eta,
+    locationLatitude,
+    locationLongitude,
+    locationTime,
+    event,
+    user,
+  });
 };
 
 const createEvent = (Creators, event, groups, users) => {

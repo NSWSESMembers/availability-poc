@@ -135,7 +135,17 @@ export const getCreators = (models) => {
       });
     },
 
-    eventResponse: ({ status, detail, destination, eta, event, user }) => {
+    eventResponse: ({
+      status,
+      detail,
+      destination,
+      eta,
+      locationLatitude,
+      locationLongitude,
+      locationTime,
+      event,
+      user,
+    }) => {
       if (!user || !user.id) {
         return Promise.reject(Error('Must pass user'));
       }
@@ -147,6 +157,9 @@ export const getCreators = (models) => {
         detail: detail || '',
         destination: destination || '',
         eta: eta || 0,
+        locationLatitude,
+        locationLongitude,
+        locationTime,
         userId: user.id,
         eventId: event.id,
       });

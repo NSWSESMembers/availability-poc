@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState, NativeModules } from 'react-native';
+import { AppState, NativeModules, BackHandler, ToastAndroid } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
-import StackHome from './screens/home/StackHome';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -17,6 +16,7 @@ import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
+import Home from './screens/home.screen';
 import Groups from './screens/groups.screen';
 import Group from './screens/group.screen';
 import Events from './screens/events.screen';
@@ -25,6 +25,7 @@ import Settings from './screens/settings.screen';
 import NewGroup from './screens/new-group.screen';
 import SearchGroup from './screens/search-groups.screen';
 import EventResponse from './screens/event-response.screen';
+import EventResponseEdit from './screens/event-response-edit.screen';
 
 // this will determine whether the firebase modules have been compiled in or not
 const firebaseAvailable = !!NativeModules.RNFIRMessaging;
@@ -65,6 +66,17 @@ const StackGroup = StackNavigator(
   },
 );
 
+const StackHome = StackNavigator(
+  {
+    Index: {
+      screen: Home,
+    },
+  },
+  {
+    headerMode: 'screen',
+  },
+);
+
 const StackEvents = StackNavigator(
   {
     Index: {
@@ -72,6 +84,9 @@ const StackEvents = StackNavigator(
     },
     Event: {
       screen: Event,
+    },
+    EventResponseEdit: {
+      screen: EventResponseEdit,
     },
   },
   {
@@ -125,12 +140,29 @@ export const navigationReducer = (state = initialNavState, action) => {
 };
 
 class AppNavState extends Component {
+  constructor(props) {
+    super(props);
+    this.lastBackButtonPress = null;
+  }
   state = {
     appState: AppState.currentState,
     token: '',
   };
 
   componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      const { dispatch, nav } = this.props;
+      if (nav.index === 0) {
+        if (this.lastBackButtonPress + 2000 >= new Date().getTime()) {
+          BackHandler.exitApp();
+          return true;
+        }
+        ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
+        this.lastBackButtonPress = new Date().getTime();
+      }
+      dispatch({ type: 'Navigation/BACK' });
+      return true;
+    });
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
@@ -155,6 +187,7 @@ class AppNavState extends Component {
   }
 
   componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress');
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 

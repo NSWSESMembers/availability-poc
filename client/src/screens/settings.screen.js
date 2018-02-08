@@ -1,14 +1,18 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ActivityIndicator, Alert, Button, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, Text, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import md5 from 'md5';
+import Prompt from 'react-native-prompt';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { extendAppStyleSheet } from './style-sheet';
 import CURRENT_USER_QUERY from '../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../graphql/update-location.mutation';
+
+import UPDATE_USERPROFILE_MUTATION from '../graphql/update-userprofile.mutation';
 import { logout } from '../state/auth.actions';
 
 const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
@@ -16,6 +20,15 @@ const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
     updateLocation: ({ locationLat, locationLon }) =>
       mutate({
         variables: { loc: { locationLat, locationLon } },
+      }),
+  }),
+});
+
+const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
+  props: ({ mutate }) => ({
+    updateUserProfile: ({ displayName }) =>
+      mutate({
+        variables: { user: { displayName } },
       }),
   }),
 });
@@ -72,9 +85,6 @@ const styles = extendAppStyleSheet({
     paddingVertical: 8,
     backgroundColor: '#ed3434',
   },
-  userImage: {
-    paddingHorizontal: 20,
-  },
   inputInstructions: {
     color: '#777',
     fontSize: 26,
@@ -85,6 +95,9 @@ const styles = extendAppStyleSheet({
     backgroundColor: '#c6c0c0',
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  gravatar: {
+    paddingHorizontal: 10,
   },
   userInner: {
     flexDirection: 'row',
@@ -100,6 +113,10 @@ class Settings extends Component {
     title: 'Settings',
     tabBarIcon: ({ tintColor }) => <Icon size={28} name="cog" color={tintColor} />,
   };
+
+  state = {
+    promptVisible: false,
+  }
 
   updateLocation = () => {
     const reportError = (error) => {
@@ -137,48 +154,84 @@ class Settings extends Component {
     this.props.dispatch(logout());
   }
 
-  render() {
-    const { loading, user } = this.props;
+  updateDisplayName = (value) => {
+    this.setState({ promptVisible: false });
+    this.props
+      .updateUserProfile({ displayName: value });
+  }
 
-    // render loading placeholder while we fetch data
-    if (loading || !user) {
+  openPrompt = () => {
+    this.setState({ promptVisible: true });
+  };
+
+    closePrompt = () => {
+      this.setState({ promptVisible: false });
+    };
+
+    cancelPrompt = () => {
+      this.setState({ promptVisible: false });
+    };
+
+    render() {
+      const { loading, user } = this.props;
+
+      // render loading placeholder while we fetch data
+      if (loading || !user) {
+        return (
+          <View style={[styles.loading, styles.container]}>
+            <ActivityIndicator />
+          </View>
+        );
+      }
+
       return (
-        <View style={[styles.loading, styles.container]}>
-          <ActivityIndicator />
+        <View style={styles.container}>
+          <Prompt
+            title="Change Display Name"
+            placeholder={user.displayName}
+            defaultValue={user.displayName}
+            visible={this.state.promptVisible}
+            onCancel={this.cancelPrompt}
+            onSubmit={this.updateDisplayName}
+          />
+          <View style={styles.userContainer}>
+            <View style={styles.userInner}>
+              <View style={styles.gravatar}>
+                <Image
+                  style={{ borderRadius: 5, width: 50, height: 50, paddingHorizontal: 10 }}
+                  source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
+                />
+              </View>
+              <Text
+                onPress={this.openPrompt}
+                style={styles.inputInstructions}
+              >{user.displayName}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.usernameHeader}>User Name</Text>
+          <Text style={styles.username}>{user.username}</Text>
+          <Text style={styles.emailHeader}>Email Address</Text>
+          <Text style={styles.email}>{user.email}</Text>
+          <Text />
+          <Text />
+          <Button title="Force Update Location" onPress={this.updateLocation} />
+          <Text />
+          <Text />
+          <Button title="Test Event Response" onPress={this.showEventResponse} />
+          <Text />
+          <Text />
+          <Button title="Logout" onPress={this.logout} />
         </View>
       );
     }
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.userContainer}>
-          <View style={styles.userInner}>
-            <Icon name="user" size={50} style={styles.userImage} />
-            <Text style={styles.inputInstructions}>{user.displayName}</Text>
-          </View>
-        </View>
-        <Text style={styles.usernameHeader}>User Name</Text>
-        <Text style={styles.username}>{user.username}</Text>
-        <Text style={styles.emailHeader}>Email Address</Text>
-        <Text style={styles.email}>{user.email}</Text>
-        <Text />
-        <Text />
-        <Button title="Force Update Location" onPress={this.updateLocation} />
-        <Text />
-        <Text />
-        <Button title="Test Event Response" onPress={this.showEventResponse} />
-        <Text />
-        <Text />
-        <Button title="Logout" onPress={this.logout} />
-      </View>
-    );
-  }
 }
 
 Settings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   updateLocation: PropTypes.func,
+  updateUserProfile: PropTypes.func,
   user: PropTypes.shape({
     username: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,
@@ -201,4 +254,9 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery, updateLocationMutation)(Settings);
+export default compose(
+  connect(mapStateToProps),
+  userQuery,
+  updateUserProfileMutation,
+  updateLocationMutation,
+)(Settings);

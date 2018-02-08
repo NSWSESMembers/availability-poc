@@ -67,6 +67,10 @@ export const Schema = [`
     email: String!
   }
 
+  input updateUserProfileInput {
+    displayName: String!
+  }
+
   input DeleteUserInput {
     username: String!
     email: String!
@@ -140,7 +144,7 @@ export const Schema = [`
     detail: String!
     locationLatitude: Float
     locationLongitude: Float
-    locationUpdate: Int
+    locationTime: Int
     destination: String!
     eta: Int!
   }
@@ -182,6 +186,7 @@ export const Schema = [`
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
     createUser(user: CreateUserInput!): User
+    updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment

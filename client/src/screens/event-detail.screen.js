@@ -4,6 +4,7 @@ import {
   FlatList,
   ActivityIndicator,
   Text,
+  Button,
   View,
   Dimensions,
 } from 'react-native';
@@ -81,104 +82,156 @@ const LATITUDE = -34.426498294;
 const LONGITUDE = 150.876496494;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const SPACE = 0.01;
 
-const EventHeader = (props) => {
-  const { name, details } = props.event;
 
-  function randomColor() {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+class EventHeader extends React.Component {
+  static makeMarkers(responses) {
+    function randomColor() {
+      return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    }
+
+    function createHomeMarker() {
+      return {
+        id: 'home',
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+      };
+    }
+
+    const markers = [
+      createHomeMarker(),
+    ];
+    responses.forEach((r) => {
+      if (r.locationLatitude !== null && r.locationLongitude !== null) {
+        markers.push({
+          id: r.user.username,
+          latitude: r.locationLatitude,
+          longitude: r.locationLongitude,
+          color: randomColor(),
+        });
+      }
+    });
+    return markers;
   }
 
-  function createHomeMarker() {
-    return {
-      id: 0,
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-    };
+  mapIsReady = () => {
+    const markers = EventHeader.makeMarkers(this.props.event.responses);
+    const markerIds = markers.map(m => m.id);
+    this.focusMap(markerIds, false);
   }
 
-  function createMarker(modifier = 1) {
-    return {
-      id: modifier,
-      latitude: LATITUDE - (SPACE * Math.random() * modifier),
-      longitude: LONGITUDE - (SPACE * Math.random() * modifier),
-      color: randomColor(),
-    };
+  focusMap(markers, animated) {
+    this.map.fitToSuppliedMarkers(markers, animated);
   }
 
-  const MARKERS = [
-    createHomeMarker(),
-    createMarker(1),
-    createMarker(2),
-    createMarker(3),
-    createMarker(4),
-  ];
+  render() {
+    const { name, details, responses } = this.props.event;
 
-  return (
-    <View>
-      <View style={styles.headerContainer}>
-        <Icon name="bullhorn" size={48} />
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerName} numberOfLines={1}>{name}</Text>
-          <Text style={styles.headerDetail} numberOfLines={3}>{details}</Text>
+    const markers = EventHeader.makeMarkers(responses);
+
+    return (
+      <View>
+        <View style={styles.headerContainer}>
+          <Icon name="bullhorn" size={48} />
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerName} numberOfLines={1}>{name}</Text>
+            <Text style={styles.headerDetail} numberOfLines={3}>{details}</Text>
+          </View>
         </View>
+        <MapView
+          onMapReady={this.mapIsReady}
+          ref={(ref) => { this.map = ref; }}
+          initialRegion={{
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}
+          style={styles.map}
+        >
+          {markers.map(marker => (
+            <Marker
+              key={marker.id}
+              identifier={marker.id}
+              coordinate={marker}
+              pinColor={marker.color}
+            />
+          ))}
+        </MapView>
       </View>
-      <MapView
-        initialRegion={{
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        }}
-        style={styles.map}
-      >
-        {MARKERS.map(marker => (
-          <Marker
-            key={marker.id}
-            coordinate={marker}
-            pinColor={marker.color}
-          />
-        ))}
-      </MapView>
-    </View>
-  );
-};
+    );
+  }
+}
 EventHeader.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string,
-    detail: PropTypes.string,
+    details: PropTypes.string,
+    responses: PropTypes.arrayOf(
+      PropTypes.shape({
+        user: PropTypes.shape({
+          username: PropTypes.string.isRequired,
+          displayName: PropTypes.string.isRequired,
+        }),
+        locationLatitude: PropTypes.float,
+        locationLongitude: PropTypes.float,
+        status: PropTypes.string.isRequired,
+        detail: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 
-const EventResponse = (props) => {
-  const { user, status, detail } = props.response;
-  const color = {
-    responding: 'green',
-    unavailable: 'red',
-    enroute: 'green',
-  }[status.toLowerCase()];
-  return (
-    <View style={styles.respondContainer}>
-      <Icon name="user" size={24} color={color} />
-      <View style={styles.respondTextContainer}>
-        <Text style={styles.respondName} numberOfLines={1}>{user.username}</Text>
-        <Text style={styles.respondStatus} numberOfLines={1}>{status} - {detail}</Text>
+class EventResponse extends Component {
+  onPressEdit = () => {
+    this.props.onEdit(this.props.response);
+  }
+
+  render() {
+    const { user, status, detail } = this.props.response;
+    const userId = this.props.auth.id;
+    const color = {
+      responding: 'green',
+      unavailable: 'red',
+      enroute: 'green',
+    }[status.toLowerCase()];
+    const statusText = detail === '' ? status : `${status} - ${detail}`;
+    const isMe = userId === user.id;
+    return (
+      <View style={styles.respondContainer}>
+        <Icon name="user" size={24} color={color} />
+        <View style={styles.respondTextContainer}>
+          <Text style={styles.respondName} numberOfLines={1}>{user.displayName}</Text>
+          <Text style={styles.respondStatus} numberOfLines={1}>{statusText}</Text>
+        </View>
+        { isMe ? <Button title="edit" onPress={this.onPressEdit} /> : null }
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 EventResponse.propTypes = {
+  auth: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
   response: PropTypes.shape({
     user: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      displayName: PropTypes.string.isRequired,
     }),
     status: PropTypes.string.isRequired,
     detail: PropTypes.string,
   }),
+  onEdit: PropTypes.func,
 };
 
 class EventDetail extends Component {
+  componentDidMount() {
+    this.timer = setInterval(this.onRefresh, 5000); // 5s
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   onRefresh = () => {
     // NYI
     this.props.refetch();
@@ -192,7 +245,12 @@ class EventDetail extends Component {
     if (typeof result === 'undefined') {
       throw Error(`Invalid item: ${item}`);
     }
-    return result(item[1]);
+    return [item[0], result(item[1])];
+  }
+
+  editResponse = (eventResponse) => {
+    const { navigate } = this.props.navigation;
+    navigate('EventResponseEdit', { eventResponse, eventId: this.props.event.id });
   }
 
   renderItem = ({ item }) => {
@@ -203,12 +261,15 @@ class EventDetail extends Component {
     return (
       <EventResponse
         response={item[1]}
+        auth={this.props.auth}
+        onEdit={this.editResponse}
       />
     );
   };
 
   render() {
     const { event, loading, networkStatus } = this.props;
+    console.log(event);
 
     // render loading placeholder while we fetch messages
     if (loading) {
@@ -249,9 +310,15 @@ class EventDetail extends Component {
   }
 }
 EventDetail.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
+  auth: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
   event: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -260,6 +327,7 @@ EventDetail.propTypes = {
       PropTypes.shape({
         user: PropTypes.shape({
           username: PropTypes.string.isRequired,
+          displayName: PropTypes.string.isRequired,
         }),
         status: PropTypes.string.isRequired,
         detail: PropTypes.string.isRequired,

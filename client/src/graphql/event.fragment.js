@@ -13,9 +13,12 @@ const EVENT_FRAGMENT = gql`
       detail
       destination
       eta
+      locationLatitude
+      locationLongitude
       user {
         id
         username
+        displayName
       }
     }
   }
