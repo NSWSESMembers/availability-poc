@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState, NativeModules } from 'react-native';
+import { AppState, NativeModules, BackHandler, ToastAndroid } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
@@ -141,12 +141,29 @@ export const navigationReducer = (state = initialNavState, action) => {
 };
 
 class AppNavState extends Component {
+  constructor(props) {
+    super(props);
+    this.lastBackButtonPress = null;
+  }
     state = {
       appState: AppState.currentState,
       token: '',
     }
 
     componentWillMount() {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        const { dispatch, nav } = this.props;
+        if (nav.index === 0) {
+          if (this.lastBackButtonPress + 2000 >= new Date().getTime()) {
+            BackHandler.exitApp();
+            return true;
+          }
+          ToastAndroid.show('Press again to exit', ToastAndroid.SHORT);
+          this.lastBackButtonPress = new Date().getTime();
+        }
+        dispatch({ type: 'Navigation/BACK' });
+        return true;
+      });
       AppState.addEventListener('change', this.handleAppStateChange);
     }
 
@@ -171,6 +188,7 @@ class AppNavState extends Component {
     }
 
     componentWillUnmount() {
+      BackHandler.removeEventListener('hardwareBackPress');
       AppState.removeEventListener('change', this.handleAppStateChange);
     }
 
