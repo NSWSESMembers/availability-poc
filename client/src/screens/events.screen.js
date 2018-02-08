@@ -71,7 +71,7 @@ const styles = extendAppStyleSheet({
 
 const Header = ({ onPress }) => (
   <View style={styles.header}>
-    <Button title="New Event" onPress={onPress} />
+    <Button disabled title="New Event" onPress={onPress} />
   </View>
 );
 Header.propTypes = {
