@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   FlatList,
   ActivityIndicator,
-  Button,
   Text,
   TouchableHighlight,
   View,
@@ -68,15 +67,6 @@ const styles = extendAppStyleSheet({
     padding: 12,
   },
 });
-
-const Header = ({ onPress }) => (
-  <View style={styles.header}>
-    <Button disabled title="New Event" onPress={onPress} />
-  </View>
-);
-Header.propTypes = {
-  onPress: PropTypes.func.isRequired,
-};
 
 class Event extends Component {
   goToEvent = () => {
@@ -162,7 +152,6 @@ class Events extends Component {
     if (!events.length) {
       return (
         <View style={styles.container}>
-          <Header onPress={this.goToNewEvent} />
           <Text style={styles.warning}>You do not have any events.</Text>
         </View>
       );
@@ -175,7 +164,6 @@ class Events extends Component {
           data={events}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
-          ListHeaderComponent={() => <Header onPress={this.goToNewEvent} />}
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
