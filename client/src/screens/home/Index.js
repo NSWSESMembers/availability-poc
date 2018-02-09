@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 import { FlatList, Text, View } from 'react-native';
 import moment from 'moment';
+import { goToEvent, goToRequest } from '../../state/navigation.actions';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
@@ -23,10 +24,6 @@ class Home extends Component {
     selectedIndex: 0,
   };
 
-  handleNavigate = () => {
-    this.props.navigation.navigate('Edit');
-  };
-
   handleIndexChange = (index) => {
     this.setState({
       ...this.state,
@@ -35,11 +32,11 @@ class Home extends Component {
   };
 
   handleEventPress = (event) => {
-    this.props.navigation.navigate('Event', { id: event.item.id, title: event.item.name });
+    this.props.dispatch(goToEvent(event.item.id));
   };
 
-  handleSchedulePress = () => {
-    this.props.navigation.navigate('Availability');
+  handleSchedulePress = (request) => {
+    this.props.dispatch(goToRequest(request.item.id));
   };
 
   render() {
@@ -130,9 +127,7 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
 });
 
 Home.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
+  dispatch: PropTypes.func,
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   user: PropTypes.shape({

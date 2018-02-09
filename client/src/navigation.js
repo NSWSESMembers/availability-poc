@@ -99,7 +99,7 @@ const StackSettings = StackNavigator(
 );
 
 // tabs in main screen
-const MainScreenNavigator = TabNavigator(
+export const MainScreenNavigator = TabNavigator(
   {
     Home: { screen: StackHome },
     Groups: { screen: StackGroup },
@@ -111,22 +111,6 @@ const MainScreenNavigator = TabNavigator(
 );
 
 // reducer initialization code
-const firstAction = MainScreenNavigator.router.getActionForPathAndParams('Home');
-const tempNavState = MainScreenNavigator.router.getStateForAction(firstAction);
-const initialNavState = MainScreenNavigator.router.getStateForAction(tempNavState);
-
-// reducer code
-export const navigationReducer = (state = initialNavState, action) => {
-  let nextState;
-  switch (action.type) {
-    default:
-      nextState = MainScreenNavigator.router.getStateForAction(action, state);
-      break;
-  }
-
-  // Simply return the original `state` if `nextState` is null or undefined.
-  return nextState || state;
-};
 
 class AppNavState extends Component {
   constructor(props) {
@@ -156,8 +140,6 @@ class AppNavState extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-
     if (this.props.auth.token && firebaseAvailable) {
       firebaseClient.init().then((registrationId) => {
         if (this.props.auth && this.props.registrationId !== this.state.token) {

@@ -8,8 +8,8 @@ import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { WillPresentNotificationResult } from 'react-native-fcm';
-
-import AppWithNavigationState, { navigationReducer } from './navigation';
+import navigation from './state/navigation.reducer';
+import AppWithNavigationState from './navigation'; // , { navigationReducer }
 import auth from './state/auth.reducer';
 import availability from './state/availability.reducer';
 import local from './state/local.reducer';
@@ -104,7 +104,7 @@ const reduxConfig = {
 
 const reducers = {
   apollo: client.reducer(),
-  nav: navigationReducer,
+  nav: navigation,
   auth,
   local,
   availability,

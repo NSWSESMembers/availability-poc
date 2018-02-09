@@ -13,6 +13,9 @@ const StackHome = StackNavigator(
     Edit: {
       screen: Edit,
     },
+    AvailabilityEdit: {
+      screen: Edit,
+    },
     Requests: {
       screen: Requests,
     },
