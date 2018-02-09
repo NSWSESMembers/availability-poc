@@ -38,10 +38,10 @@ export const eventPerms = {
       userPromise,
       eventPromise,
     ]).then(([user, event]) => {
-      if (!user) {
+      if (user === null) {
         return Promise.reject(Error('Invalid user'));
       }
-      if (!event) {
+      if (event === null) {
         return Promise.reject(Error('Invalid event'));
       }
 
@@ -56,8 +56,11 @@ export const eventPerms = {
           );
         }
 
-        return event;
+        return { event, user };
       });
     });
+  },
+  userWantsToWrite(args) {
+    return this.userWantsToRead(args);
   },
 };

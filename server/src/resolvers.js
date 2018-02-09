@@ -145,6 +145,9 @@ export const getResolvers = (handlers) => {
       updateTimeSegment(_, args, ctx) {
         return timeSegmentHandler.updateTimeSegment(_, args, ctx);
       },
+      setEventResponse(_, args, ctx) {
+        return eventHandler.setResponse(args, ctx);
+      },
     },
   };
 };
