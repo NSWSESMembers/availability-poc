@@ -9,7 +9,7 @@ import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { WillPresentNotificationResult } from 'react-native-fcm';
 import navigation from './state/navigation.reducer';
-import AppWithNavigationState from './navigation'; // , { navigationReducer }
+import AppWithNavigationState from './navigation';
 import auth from './state/auth.reducer';
 import availability from './state/availability.reducer';
 import local from './state/local.reducer';
