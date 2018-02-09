@@ -87,7 +87,7 @@ describe('Event permissions', () => {
 
     it('with no promises', () =>
       expect(eventPerms.userWantsToRead({ user, event }))
-        .resolves.toBe(event),
+        .resolves.toMatchObject({ event, user }),
     );
 
     it('with promises', () =>
@@ -95,7 +95,7 @@ describe('Event permissions', () => {
         user: Promise.resolve(user),
         event: Promise.resolve(event),
       }))
-        .resolves.toBe(event),
+        .resolves.toMatchObject({ event, user }),
     );
   });
 

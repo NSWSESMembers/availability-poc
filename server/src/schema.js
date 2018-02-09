@@ -76,6 +76,17 @@ export const Schema = [`
     email: String!
   }
 
+  input SetEventResponseInput {
+    id: Int!
+    status: String
+    detail: String
+    locationLatitude: Float
+    locationLongitude: Float
+    locationTime: Int
+    destination: String
+    eta: Int
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -199,6 +210,7 @@ export const Schema = [`
     signup(user: SignupInput!): User
     updateLocation(location: LocationUpdateInput!): Boolean
     updateToken(token: TokenUpdateInput!): Boolean
+    setEventResponse(response: SetEventResponseInput!): EventResponse
   }
 
   schema {

@@ -313,13 +313,36 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return eventPerms.userWantsToRead({
           user: getAuthenticatedUser(ctx),
           event: Event.findById(args.id),
-        });
+        }).then(({ event }) => event);
       },
       group(event) {
         return event.getGroup();
       },
       responses(event) {
         return event.getEventresponses();
+      },
+      setResponse(args, ctx) {
+        const {
+          id,
+        } = args.response;
+        return eventPerms.userWantsToWrite({
+          user: getAuthenticatedUser(ctx),
+          event: Event.findById(id),
+        }).then(({ event, user }) => event.getEventresponses({ where: { userId: user.id } })
+          .then((result) => {
+            const updateArgs = { ...args.response };
+            delete updateArgs.id;
+
+            if (result.length > 0) {
+              return result[0].update(updateArgs);
+            }
+
+            return Creators.eventResponse({
+              event,
+              user,
+              ...updateArgs,
+            });
+          }));
       },
     },
 
