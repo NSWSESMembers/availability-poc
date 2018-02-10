@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import EVENT_RESPONSE_FRAGMENT from './event-response.fragment';
+
 const EVENT_FRAGMENT = gql`
   fragment EventFragment on Event {
     id
@@ -9,19 +11,10 @@ const EVENT_FRAGMENT = gql`
       id
     }
     responses {
-      status
-      detail
-      destination
-      eta
-      locationLatitude
-      locationLongitude
-      user {
-        id
-        username
-        displayName
-      }
+      ... EventResponseFragment
     }
   }
+  ${EVENT_RESPONSE_FRAGMENT}
 `;
 
 export default EVENT_FRAGMENT;

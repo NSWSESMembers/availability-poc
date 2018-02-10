@@ -1,3 +1,4 @@
+/* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
@@ -16,6 +17,7 @@ import _ from 'lodash';
 
 import { extendAppStyleSheet } from './style-sheet';
 import EVENT_QUERY from '../graphql/event.query';
+import SET_EVENT_RESPONSE_MUTATION from '../graphql/set-event-response.mutation';
 
 const styles = extendAppStyleSheet({
   respondContainer: {
@@ -226,16 +228,68 @@ EventResponse.propTypes = {
 class EventDetail extends Component {
   componentDidMount() {
     this.timer = setInterval(this.onRefresh, 5000); // 5s
+    this.manageLocationTracking();
+  }
+
+  componentDidUpdate() {
+    this.manageLocationTracking();
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
+    if (this.geoWatch !== null) {
+      navigator.geolocation.clearWatch(this.geoWatch);
+      this.geoWatch = null;
+    }
   }
 
   onRefresh = () => {
     // NYI
     this.props.refetch();
   }
+
+  manageLocationTracking() {
+    const { props } = this;
+    if (!this.props.event) {
+      return;
+    }
+    const responding = props.event.responses.some(
+      r => props.auth.id === r.user.id && r.status.toLowerCase() === 'responding',
+    );
+
+    if (responding && this.geoWatch === null) {
+      this.geoWatch = navigator.geolocation.watchPosition(
+        (position) => {
+          this.updateLocation(props, position);
+        },
+        (err) => {
+          console.log(`Unable to update location: ${err}`);
+        },
+        { enableHighAccuracy: true, maximumAge: 1000 },
+      );
+    } else if (!responding && this.geoWatch !== null) {
+      navigator.geolocation.clearWatch(this.geoWatch);
+      this.geoWatch = null;
+    }
+  }
+
+  updateLocation = _.throttle((props, position) => {
+    const { latitude, longitude } = position.coords;
+    props
+      .setEventResponseQuery({
+        id: props.event.id,
+        locationLatitude: latitude,
+        locationLongitude: longitude,
+      })
+      .then(() => {
+        console.log('location updated');
+      })
+      .catch((err) => {
+        console.log(`Failed to update location: ${latitude},${longitude} (${err})`);
+      });
+  }, 4000);
+
+  geoWatch = null;
 
   keyExtractor = (item) => {
     const result = {
@@ -269,7 +323,6 @@ class EventDetail extends Component {
 
   render() {
     const { event, loading, networkStatus } = this.props;
-    console.log(event);
 
     // render loading placeholder while we fetch messages
     if (loading) {
@@ -344,6 +397,21 @@ const userQuery = graphql(EVENT_QUERY, {
   }),
 });
 
+const setEventResponse = graphql(SET_EVENT_RESPONSE_MUTATION, {
+  props: ({ mutate }) => ({
+    setEventResponseQuery: response =>
+      mutate({
+        variables: { response },
+        refetchQueries: [
+          {
+            query: EVENT_QUERY,
+            variables: { eventId: response.id },
+          },
+        ],
+      }),
+  }),
+});
+
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
@@ -351,4 +419,5 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   userQuery,
+  setEventResponse,
 )(EventDetail);

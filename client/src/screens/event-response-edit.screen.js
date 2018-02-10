@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import SET_EVENT_RESPONSE_MUTATION from '../graphql/set-event-response.mutation';
+import EVENT_QUERY from '../graphql/event.query';
 
 import { extendAppStyleSheet } from './style-sheet';
 
@@ -93,11 +94,12 @@ class EventResponseEdit extends Component {
   setTentative = () => {
     this.updateAndReturn({ status: 'tentative' });
   }
-  updateAndReturn = (/* params */) => {
+  updateAndReturn = (params) => {
     this.setState({ loading: true });
-    Alert.alert('NYI');
-    /* coming real soon™
-    this.props.setEventResponseQuery(params)
+    this.props.setEventResponseQuery({
+      id: this.eventId,
+      ...params,
+    })
       .then(() => {
         this.setState({ loading: false });
         this.props.navigation.goBack();
@@ -105,14 +107,13 @@ class EventResponseEdit extends Component {
       .catch((error) => {
         this.setState({ loading: false });
         Alert.alert(
-          'Error Joining Group',
+          'Error updating response',
           error.message,
           [
             { text: 'OK', onPress: () => {} },
           ],
         );
       });
-    */
   }
   render() {
     const { eventResponse } = this;
@@ -132,7 +133,7 @@ class EventResponseEdit extends Component {
 }
 
 EventResponseEdit.propTypes = {
-  /* setEventResponseQuery: PropTypes.func.isRequired, */
+  setEventResponseQuery: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     goBack: PropTypes.func.isRequired,
     state: PropTypes.shape({
@@ -150,9 +151,15 @@ EventResponseEdit.propTypes = {
 
 const setEventResponse = graphql(SET_EVENT_RESPONSE_MUTATION, {
   props: ({ mutate }) => ({
-    setEventResponseQuery: ({ response }) =>
+    setEventResponseQuery: response =>
       mutate({
         variables: { response },
+        refetchQueries: [
+          {
+            query: EVENT_QUERY,
+            variables: { eventId: response.id },
+          },
+        ],
       }),
   }),
 });
