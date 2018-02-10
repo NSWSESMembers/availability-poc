@@ -38,6 +38,7 @@ class Edit extends Component {
       const {
         requestId,
         requestName,
+        status,
         startTime,
         endTime,
         id,
@@ -53,7 +54,7 @@ class Edit extends Component {
         id,
         startTime: moment.unix(startTime).toDate(),
         endTime: moment.unix(endTime).toDate(),
-        availibilityStatus: 'Available',
+        availibilityStatus: status,
         availibilityComment: '',
       };
     } else {
