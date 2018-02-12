@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native-scripts start",
-    "test": "jest",
+    "test": "jest --config=jest.config.json",
     "push-ios": "code-push release-react availability-poc ios",
     "push-android": "code-push release-react availability-poc-android android",
     "lint": "eslint src"
@@ -32,7 +32,8 @@
     "react-native-maps": "^0.18.2",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-modal-selector": "0.0.24",
-    "react-native-prompt": "https://github.com/OSPFNeighbour/react-native-prompt.git",
+    "react-native-prompt":
+      "https://github.com/OSPFNeighbour/react-native-prompt.git",
     "react-native-segmented-control-tab": "^3.2.2",
     "react-native-select-multiple": "^1.2.0",
     "react-native-vector-icons": "^4.4.2",

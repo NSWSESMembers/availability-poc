@@ -36,8 +36,8 @@ class Edit extends Component {
 
     if (props.navigation.state.params && props.navigation.state.params.timeSegment) {
       const {
-        requestId,
-        requestName,
+        scheduleId,
+        scheduleName,
         status,
         startTime,
         endTime,
@@ -46,7 +46,7 @@ class Edit extends Component {
 
       // set selectedRequests
       this.props.dispatch(
-        setSelectedRequests([{ label: requestName, value: requestId.toString() }]),
+        setSelectedRequests([{ label: scheduleName, value: scheduleId.toString() }]),
       );
 
       // initialize other state
