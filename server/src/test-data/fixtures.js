@@ -241,6 +241,22 @@ export const EVENTS = [
     name: 'VR at Gerringong Falls',
     details: '2 climbers stranded 50m from top of cliff.',
     group: 'Kiama',
+    eventMarkers: [
+      {
+        name: 'lhq',
+        detail: 'Local Head Quarters',
+        icon: 'lhq',
+        locationLatitude: -34.6643156,
+        locationLongitude: 150.8438914,
+      },
+      {
+        name: 'scene',
+        detail: 'scene',
+        icon: 'scene',
+        locationLatitude: -34.66828,
+        locationLongitude: 150.85219,
+      },
+    ],
     responses: [
       {
         user: 'test',
@@ -286,6 +302,29 @@ export const EVENTS = [
     name: 'RCR - Princes Highway, Gerringong',
     details: '2 car MVA. Head on collision. 3 people trapped.',
     group: 'Kiama',
+    eventMarkers: [
+      {
+        name: 'lhq',
+        detail: 'Local Head Quarters',
+        icon: 'lhq',
+        locationLatitude: -34.6643156,
+        locationLongitude: 150.8438914,
+      },
+      {
+        name: 'scene',
+        detail: 'scene',
+        icon: 'scene',
+        locationLatitude: -34.7297649,
+        locationLongitude: 150.8249098,
+      },
+      {
+        name: 'landing',
+        detail: 'Helo landing site',
+        icon: 'helo',
+        locationLatitude: -34.7310698,
+        locationLongitude: 150.821659,
+      },
+    ],
     responses: [
       {
         user: 'kiama1',
@@ -331,6 +370,22 @@ export const EVENTS = [
     name: 'FR - WEBB STREET, NORTH PARRAMATTA NSW 2151',
     details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
     group: 'Parramatta',
+    eventMarkers: [
+      {
+        name: 'lhq',
+        detail: 'Local Head Quarters',
+        icon: 'lhq',
+        locationLatitude: -33.7986904,
+        locationLongitude: 150.9952783,
+      },
+      {
+        name: 'scene',
+        detail: 'scene',
+        icon: 'scene',
+        locationLatitude: -33.8031162,
+        locationLongitude: 151.0169367,
+      },
+    ],
     responses: [
       {
         user: 'parramatta1',

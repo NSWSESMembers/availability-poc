@@ -146,6 +146,7 @@ export const Schema = [`
     details: String!
     group: Group!
     responses: [EventResponse]!
+    eventMarkers: [EventMarker]
   }
 
   type EventResponse {
@@ -158,6 +159,15 @@ export const Schema = [`
     locationTime: Int
     destination: String!
     eta: Int!
+  }
+
+  type EventMarker {
+    event: Event!
+    name: String
+    detail: String
+    icon: String
+    locationLatitude: Float!
+    locationLongitude: Float!
   }
 
   type Schedule {

@@ -217,3 +217,32 @@ describe('create eventResponse', () => {
     expect(result.userId).toBe(user.id);
   });
 });
+
+describe('create eventMarker', () => {
+  const name = 'test';
+  const detail = 'test';
+  const icon = 'test';
+  const locationLatitude = '123.456789';
+  const locationLongitude = '123.456789';
+  const event = { id: 123895 };
+
+
+  it('rejects due to missing event', async () => {
+    await expect(creators.eventMarker({ })).rejects.toThrow();
+  });
+
+  it('returns a eventMarker', async () => {
+    const result = await creators.eventMarker({
+      name,
+      detail,
+      icon,
+      locationLatitude,
+      locationLongitude,
+      event,
+    });
+
+    expect(result.id).toBeDefined();
+    expect(result.name).toBe(name);
+    expect(result.eventId).toBe(event.id);
+  });
+});

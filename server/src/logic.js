@@ -321,6 +321,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
       responses(event) {
         return event.getEventresponses();
       },
+      eventMarkers(event) {
+        return event.getEventmarkers();
+      },
       setResponse(args, ctx) {
         const {
           id,
