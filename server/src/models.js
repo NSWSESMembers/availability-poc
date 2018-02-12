@@ -64,6 +64,14 @@ export const defineModels = (db) => {
     locationTime: { type: Sequelize.INTEGER },
   });
 
+  const EventMarkerModel = db.define('eventmarker', {
+    name: { type: Sequelize.STRING },
+    detail: { type: Sequelize.STRING },
+    icon: { type: Sequelize.STRING },
+    locationLatitude: { type: Sequelize.FLOAT },
+    locationLongitude: { type: Sequelize.FLOAT },
+  });
+
   // users <-> groups (many-to-many)
   UserModel.belongsToMany(GroupModel, { through: 'group_user' });
   GroupModel.belongsToMany(UserModel, { through: 'group_user' });
@@ -116,6 +124,10 @@ export const defineModels = (db) => {
   EventResponseModel.belongsTo(UserModel);
   UserModel.hasMany(EventResponseModel);
 
+  // event marker locations belong to an event
+  EventMarkerModel.belongsTo(EventModel);
+  EventModel.hasMany(EventMarkerModel);
+
   // tags belong to one organisation for now
   TagModel.belongsTo(OrganisationModel);
   OrganisationModel.hasMany(TagModel);
@@ -133,6 +145,7 @@ export const defineModels = (db) => {
     Device: db.models.device,
     Event: db.models.event,
     EventResponse: db.models.eventresponse,
+    EventMarker: db.models.eventmarker,
     Schedule: db.models.schedule,
     TimeSegment: db.models.timesegment,
   };

@@ -71,6 +71,9 @@ export const getResolvers = (handlers) => {
       responses(eventt, args, ctx) {
         return eventHandler.responses(eventt, args, ctx);
       },
+      eventMarkers(event, args, ctx) {
+        return eventHandler.eventMarkers(event, args, ctx);
+      },
     },
     EventResponse: {
       user(response, args, ctx) {

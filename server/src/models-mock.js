@@ -67,6 +67,14 @@ export const defineModels = () => {
     eta: 1514860289,
   });
 
+  const EventMarkerModel = db.define('eventmarker', {
+    name: 'marker1',
+    detail: 'mock marker',
+    icon: 'marker1',
+    locationLatitude: '123.456789',
+    locationLongitude: '123.456789',
+  });
+
   // users <-> groups (many-to-many)
   UserModel.belongsToMany(GroupModel, { through: 'group_user' });
   GroupModel.belongsToMany(UserModel, { through: 'group_user' });
@@ -113,6 +121,10 @@ export const defineModels = () => {
   TimeSegmentModel.belongsTo(UserModel);
   UserModel.hasMany(TimeSegmentModel);
 
+  // event marker locations belong to an event
+  EventMarkerModel.belongsTo(EventModel);
+  EventModel.hasMany(EventMarkerModel);
+
   // event responses belong to a combination of user/event
   EventResponseModel.belongsTo(EventModel);
   EventModel.hasMany(EventResponseModel);
@@ -136,6 +148,7 @@ export const defineModels = () => {
     Device: db.models.device,
     Event: db.models.event,
     EventResponse: db.models.eventresponse,
+    EventMarker: db.models.eventmarker,
     Schedule: db.models.schedule,
     TimeSegment: db.models.timesegment,
   };
