@@ -132,8 +132,8 @@ const createEventMarker = (Creators, event, marker) => {
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
-  const { name, details, responses, eventMarkers } = event;
-  return Creators.event({ name, details, group })
+  const { name, details, location, sourceIdentifier, permalink, responses, eventMarkers } = event;
+  return Creators.event({ name, details, location, sourceIdentifier, permalink, group })
     .then(e => Promise.all(
       eventMarkers.map(em => createEventMarker(Creators, e, em)),
       responses.map(r => createEventResponse(Creators, e, r, users)),

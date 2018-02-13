@@ -27,13 +27,16 @@ export const getCreators = (models) => {
       });
     },
 
-    event: ({ name, details, group }) => {
+    event: ({ name, details, location, sourceIdentifier, permalink, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
       return Event.create({
         name,
         details,
+        location,
+        sourceIdentifier,
+        permalink,
         groupId: group.id,
       });
     },

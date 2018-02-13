@@ -240,6 +240,9 @@ export const EVENTS = [
   {
     name: 'VR at Gerringong Falls',
     details: '2 climbers stranded 50m from top of cliff.',
+    location: '-34.66828, 150.85219',
+    sourceIdentifier: '654-321',
+    permalink: 'https://jobssytem.com/jobs/c33367701511b4f6020ec61ded352059',
     group: 'Kiama',
     eventMarkers: [
       {
@@ -301,6 +304,9 @@ export const EVENTS = [
   {
     name: 'RCR - Princes Highway, Gerringong',
     details: '2 car MVA. Head on collision. 3 people trapped.',
+    location: '-34.7297649, 150.8249098',
+    sourceIdentifier: '123-456',
+    permalink: 'https://jobssytem.com/jobs/123456',
     group: 'Kiama',
     eventMarkers: [
       {
@@ -369,6 +375,9 @@ export const EVENTS = [
   {
     name: 'FR - WEBB STREET, NORTH PARRAMATTA NSW 2151',
     details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
+    location: '25 Webb St North Parramatta 2151',
+    sourceIdentifier: '111-222',
+    permalink: 'https://jobssytem.com/jobs/111-222',
     group: 'Parramatta',
     eventMarkers: [
       {
