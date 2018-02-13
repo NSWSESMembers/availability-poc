@@ -25,7 +25,7 @@ const CalendarRow = ({ item, onPressItem }) => {
       <View style={styles.rowDetail}>
         <TouchableOpacity onPress={() => onPressItem()} key={item.id}>
           <View style={buttonStyles}>
-            <Text style={styles.rowDetailItemText}>{item.requestName}</Text>
+            <Text style={styles.rowDetailItemText}>{item.scheduleName}</Text>
           </View>
         </TouchableOpacity>
       </View>
