@@ -76,6 +76,10 @@ export const Schema = [`
     email: String!
   }
 
+  input EventLocationInput {
+    id: Int! # unique id for the Event Location
+  }
+
   input SetEventResponseInput {
     id: Int!
     status: String
@@ -83,7 +87,7 @@ export const Schema = [`
     locationLatitude: Float
     locationLongitude: Float
     locationTime: Int
-    destination: String
+    destination: EventLocationInput
     eta: Int
   }
 
@@ -160,11 +164,12 @@ export const Schema = [`
     locationLatitude: Float
     locationLongitude: Float
     locationTime: Int
-    destination: String!
+    destination: EventLocation
     eta: Int!
   }
 
   type EventLocation {
+    id: Int! # unique id for the EventMarker
     event: Event!
     name: String
     detail: String

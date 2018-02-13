@@ -4,7 +4,10 @@ const EVENT_RESPONSE_FRAGMENT = gql`
   fragment EventResponseFragment on EventResponse {
     status
     detail
-    destination
+    destination {
+      id
+      name
+    }
     eta
     locationLatitude
     locationLongitude

@@ -157,13 +157,13 @@ export const getCreators = (models) => {
       return EventResponse.create({
         status,
         detail: detail || '',
-        destination: destination || '',
         eta: eta || 0,
         locationLatitude,
         locationLongitude,
         locationTime,
         userId: user.id,
         eventId: event.id,
+        eventlocationId: (destination ? destination.id : null),
       });
     },
     eventLocation: ({ name, detail, icon, locationLatitude, locationLongitude, event }) => {

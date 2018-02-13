@@ -194,7 +194,10 @@ describe('GraphQL query - Current user', () => {
             responses {
               status
               detail
-              destination
+              destination {
+                id
+                name
+              }
               eta
               user {
                 id

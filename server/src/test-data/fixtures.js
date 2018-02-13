@@ -263,7 +263,7 @@ export const EVENTS = [
       {
         user: 'test',
         status: 'attending',
-        destination: 'Scene',
+        destination: 'scene',
         eta: minFromNow(15),
         locationLatitude: -34.6568146,
         locationLongitude: 150.7007574,
@@ -272,7 +272,7 @@ export const EVENTS = [
       {
         user: 'kiama1',
         status: 'attending',
-        destination: 'HQ',
+        destination: 'lhq',
         eta: minFromNow(15),
         locationLatitude: -34.6924526,
         locationLongitude: 150.8458543,
@@ -292,7 +292,7 @@ export const EVENTS = [
         user: 'kiama4',
         status: 'attending',
         detail: 'coming from work',
-        destination: 'HQ',
+        destination: 'lhq',
         eta: minFromNow(30),
         locationLatitude: -34.6820157,
         locationLongitude: 150.7718252,
@@ -322,7 +322,7 @@ export const EVENTS = [
         locationLongitude: 150.8249098,
       },
       {
-        name: 'landing',
+        name: 'helo',
         detail: 'Helo landing site',
         icon: 'helo',
         locationLatitude: -34.7310698,
@@ -333,7 +333,7 @@ export const EVENTS = [
       {
         user: 'kiama1',
         status: 'responding',
-        destination: 'HQ',
+        destination: 'lhq',
         eta: minFromNow(13),
         locationLatitude: -34.3979983,
         locationLongitude: 150.8688112,
@@ -356,7 +356,7 @@ export const EVENTS = [
       {
         user: 'kiama7',
         status: 'responding',
-        destination: 'scene',
+        destination: 'helo',
         locationLatitude: -34.3929698,
         locationLongitude: 150.8688112,
         locationTime: minFromNow(-1),
@@ -365,7 +365,7 @@ export const EVENTS = [
         user: 'kiama8',
         status: 'responding',
         detail: '',
-        destination: 'HQ',
+        destination: 'lhq',
         eta: minFromNow(6),
       },
     ],

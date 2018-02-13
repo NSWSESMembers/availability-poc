@@ -249,6 +249,10 @@ EventResponse.propTypes = {
     status: PropTypes.string.isRequired,
     detail: PropTypes.string,
     eta: PropTypes.number,
+    destination: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
   }),
   onEdit: PropTypes.func,
 };
