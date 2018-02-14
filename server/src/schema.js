@@ -157,6 +157,8 @@ export const Schema = [
     group: Group!
     responses: [EventResponse]!
     eventLocations: [EventLocation]
+    startTime: Int!
+    endTime: Int!
   }
 
   type EventResponse {

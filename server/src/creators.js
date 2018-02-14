@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 
+import { DISTANT_FUTURE } from './constants';
+
 // returns a set of creators bound to the given models
 export const getCreators = (models) => {
   const {
@@ -37,6 +39,8 @@ export const getCreators = (models) => {
         sourceIdentifier,
         permalink,
         groupId: group.id,
+        startTime: (new Date()).getTime() / 1000,
+        endTime: DISTANT_FUTURE, // no end time
       });
     },
 
