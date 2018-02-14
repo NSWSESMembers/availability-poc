@@ -9,10 +9,52 @@ import { goToEvent, goToRequest } from '../../state/navigation.actions';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { Center, Container, Holder } from '../../components/Container';
+import { Center, Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
-import { Segment } from '../../components/Segment';
+
+const EventItem = ({ event, dispatch }) => (
+  <ListItem
+    title={event.name}
+    icon="bullhorn"
+    onPress={() => dispatch(goToEvent(event.id))}
+  />
+);
+EventItem.propTypes = {
+  event: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }),
+  dispatch: PropTypes.func.isRequired,
+};
+
+const ScheduleItem = ({ schedule, dispatch }) => {
+  let subtitle = 'Ongoing';
+  if (schedule.startTime !== 0) {
+    const start = moment.unix(schedule.startTime).format('YYYY-MM-DD');
+    const end = moment.unix(schedule.endTime).format('YYYY-MM-DD');
+    subtitle = `${start} to ${end}`;
+  }
+
+  return (
+    <ListItem
+      title={schedule.name}
+      subtitle={subtitle}
+      icon="calendar"
+      onPress={() => dispatch(goToRequest(schedule.id))}
+    />
+  );
+};
+ScheduleItem.propTypes = {
+  schedule: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
+  }),
+  dispatch: PropTypes.func.isRequired,
+};
+
 
 class Home extends Component {
   static navigationOptions = {
@@ -20,24 +62,25 @@ class Home extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
   };
 
-  state = {
-    selectedIndex: 0,
-  };
-
-  handleIndexChange = (index) => {
-    this.setState({
-      ...this.state,
-      selectedIndex: index,
-    });
-  };
-
-  handleEventPress = (event) => {
-    this.props.dispatch(goToEvent(event.item.id));
-  };
-
-  handleSchedulePress = (request) => {
-    this.props.dispatch(goToRequest(request.item.id));
-  };
+  renderItem = ({ item }) => {
+    if (item.type === 'event') {
+      return (
+        <EventItem
+          event={item.event}
+          dispatch={this.props.dispatch}
+        />
+      );
+    }
+    if (item.type === 'schedule') {
+      return (
+        <ScheduleItem
+          schedule={item.schedule}
+          dispatch={this.props.dispatch}
+        />
+      );
+    }
+    throw Error(`Invalid type: ${item.type}`);
+  }
 
   render() {
     const { loading, user } = this.props;
@@ -49,69 +92,41 @@ class Home extends Component {
         </Container>
       );
     }
+    const items = [];
+    user.events.forEach((e) => {
+      items.push({
+        type: 'event',
+        id: e.id,
+        event: e,
+        sortKey: 0,
+      });
+    });
+    user.schedules.forEach((s) => {
+      items.push({
+        type: 'schedule',
+        id: s.id,
+        schedule: s,
+        sortKey: s.startTime,
+      });
+    });
+
+    items.sort(i => i.sortKey);
 
     return (
-      <Container>
-        <Holder margin marginBot transparent>
-          <Segment
-            values={['Events', 'Requests']}
-            handleIndexChange={this.handleIndexChange}
-            selectedIndex={this.state.selectedIndex}
-          />
-        </Holder>
-        {this.state.selectedIndex === 0 ? (
-          <View style={{ flexDirection: 'row' }}>
-            <FlatList
-              data={user.events}
-              ListHeaderComponent={() =>
-                (!user.events.length ? (
-                  <Center>
-                    <Text>There are no events currently.</Text>
-                  </Center>
-                ) : null)}
-              keyExtractor={event => event.id}
-              renderItem={event => (
-                <ListItem
-                  title={event.item.name}
-                  icon="bullhorn"
-                  onPress={() => this.handleEventPress(event)}
-                />
-              )}
-              refreshing={this.props.networkStatus === 4}
-            />
-          </View>
-        ) : (
-          <View style={{ flexDirection: 'row' }}>
-            <FlatList
-              data={user.schedules}
-              ListHeaderComponent={() =>
-                (!user.schedules.length ? (
-                  <Center>
-                    <Text>There are no requests available. Make sure you have joined a group.</Text>
-                  </Center>
-                ) : null)}
-              keyExtractor={schedule => schedule.id}
-              renderItem={schedule => (
-                <ListItem
-                  title={schedule.item.name}
-                  subtitle={
-                    schedule.item.startTime === 0
-                      ? 'Ongoing'
-                      : `${moment
-                          .unix(schedule.item.startTime)
-                          .format('YYYY-MM-DD')} to ${moment
-                          .unix(schedule.item.endTime)
-                          .format('YYYY-MM-DD')}`
-                  }
-                  icon="calendar"
-                  onPress={() => this.handleSchedulePress(schedule)}
-                />
-              )}
-              refreshing={this.props.networkStatus === 4}
-            />
-          </View>
-        )}
-      </Container>
+      <View style={{ flexDirection: 'row', flex: 1.0 }}>
+        <FlatList
+          data={items}
+          ListHeaderComponent={() =>
+            (!items.length ? (
+              <Center>
+                <Text>There is nothing interesting happening right now.</Text>
+              </Center>
+            ) : null)}
+          keyExtractor={item => `${item.type}-${item.id}`}
+          renderItem={this.renderItem}
+          refreshing={this.props.networkStatus === 4}
+        />
+      </View>
     );
   }
 }
