@@ -40,6 +40,8 @@ export const defineModels = (db) => {
     details: { type: Sequelize.STRING },
     sourceIdentifier: { type: Sequelize.STRING },
     permalink: { type: Sequelize.STRING },
+    startTime: { type: Sequelize.INTEGER },
+    endTime: { type: Sequelize.INTEGER },
   });
 
   const ScheduleModel = db.define('schedule', {

@@ -46,7 +46,8 @@ export const defineModels = () => {
     details: 'Details of test event',
     sourceIdentifier: '123-456',
     permalink: 'https://jobsystem.com/jobs/123456',
-
+    startTime: 1514860289,
+    endTime: 1514860289 + (60 * 60),
   });
 
   const ScheduleModel = db.define('schedule', {
