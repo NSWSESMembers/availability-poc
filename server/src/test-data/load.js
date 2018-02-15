@@ -119,7 +119,7 @@ const createEventMarker = (Creators, event, marker) => {
     locationLatitude,
     locationLongitude,
   } = marker;
-  return Creators.eventMarker({
+  return Creators.eventLocation({
     name,
     detail,
     icon,
