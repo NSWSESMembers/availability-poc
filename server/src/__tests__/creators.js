@@ -218,7 +218,7 @@ describe('create eventResponse', () => {
   });
 });
 
-describe('create eventMarker', () => {
+describe('create eventLocation', () => {
   const name = 'test';
   const detail = 'test';
   const icon = 'test';
@@ -228,11 +228,11 @@ describe('create eventMarker', () => {
 
 
   it('rejects due to missing event', async () => {
-    await expect(creators.eventMarker({ })).rejects.toThrow();
+    await expect(creators.eventLocation({ })).rejects.toThrow();
   });
 
-  it('returns a eventMarker', async () => {
-    const result = await creators.eventMarker({
+  it('returns a eventLocation', async () => {
+    const result = await creators.eventLocation({
       name,
       detail,
       icon,
