@@ -13,11 +13,14 @@ import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import _ from 'lodash';
 
 import { extendAppStyleSheet } from './style-sheet';
 import EVENT_QUERY from '../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../graphql/set-event-response.mutation';
+import markers from '../assets/images/map/markers';
+import { UserMarker } from '../components/MapMarker/';
 
 const styles = extendAppStyleSheet({
   respondContainer: {
@@ -87,49 +90,50 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 
 class EventHeader extends React.Component {
-  static makeMarkers(responses) {
-    function randomColor() {
-      return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    }
+  static makeEventMarkers(eventMarkers) {
+    const mapMarkers = [];
 
-    function createHomeMarker() {
-      return {
-        id: 'home',
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-      };
-    }
-
-    const markers = [
-      createHomeMarker(),
-    ];
-    responses.forEach((r) => {
+    eventMarkers.forEach((r) => {
       if (r.locationLatitude !== null && r.locationLongitude !== null) {
-        markers.push({
-          id: r.user.username,
+        mapMarkers.push({
+          id: r.name,
           latitude: r.locationLatitude,
           longitude: r.locationLongitude,
-          color: randomColor(),
+          image: markers(r.icon),
         });
       }
     });
-    return markers;
+    return mapMarkers;
+  }
+  static makeResponseMarkers(responses) {
+    const mapMarkers = [];
+
+    responses.forEach((r) => {
+      if (r.locationLatitude !== null && r.locationLongitude !== null) {
+        mapMarkers.push({
+          displayName: r.user.displayName,
+          id: r.user.username,
+          latitude: r.locationLatitude,
+          longitude: r.locationLongitude,
+        });
+      }
+    });
+    return mapMarkers;
   }
 
   mapIsReady = () => {
-    const markers = EventHeader.makeMarkers(this.props.event.responses);
-    const markerIds = markers.map(m => m.id);
-    this.focusMap(markerIds, false);
+    this.focusMap(false);
   }
 
-  focusMap(markers, animated) {
-    this.map.fitToSuppliedMarkers(markers, animated);
+  focusMap(animated) {
+    this.map.fitToElements(animated);
   }
 
   render() {
-    const { name, details, responses } = this.props.event;
+    const { name, details, responses, eventMarkers } = this.props.event;
 
-    const markers = EventHeader.makeMarkers(responses);
+    const mapResponseMarkers = EventHeader.makeResponseMarkers(responses);
+    const mapEventMarkers = EventHeader.makeEventMarkers(eventMarkers);
 
     return (
       <View>
@@ -151,12 +155,23 @@ class EventHeader extends React.Component {
           }}
           style={styles.map}
         >
-          {markers.map(marker => (
+          {mapResponseMarkers.map(marker => (
             <Marker
+              coordinate={marker}
+              key={marker.id}
+            >
+              <UserMarker
+                name={marker.displayName}
+              />
+            </Marker>
+          ))}
+          {mapEventMarkers.map(marker => (
+            <Marker
+              title={marker.id}
               key={marker.id}
               identifier={marker.id}
               coordinate={marker}
-              pinColor={marker.color}
+              image={marker.image}
             />
           ))}
         </MapView>
@@ -168,6 +183,15 @@ EventHeader.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string,
     details: PropTypes.string,
+    eventMarkers: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        detail: PropTypes.string,
+        icon: PropTypes.string,
+        locationLatitude: PropTypes.float,
+        locationLongitude: PropTypes.float,
+      }),
+    ),
     responses: PropTypes.arrayOf(
       PropTypes.shape({
         user: PropTypes.shape({
@@ -189,14 +213,17 @@ class EventResponse extends Component {
   }
 
   render() {
-    const { user, status, detail } = this.props.response;
+    const { user, status, detail, eta } = this.props.response;
     const userId = this.props.auth.id;
     const color = {
-      responding: 'green',
+      attending: 'green',
       unavailable: 'red',
       enroute: 'green',
     }[status.toLowerCase()];
-    const statusText = detail === '' ? status : `${status} - ${detail}`;
+    const etaText = eta === 0 ? '' : `- ETA ${moment.unix(eta).fromNow()}`;
+    const statusText = detail === ''
+      ? `${status} ${etaText}`
+      : `${status} - ${detail} ${etaText}`;
     const isMe = userId === user.id;
     return (
       <View style={styles.respondContainer}>
@@ -221,6 +248,7 @@ EventResponse.propTypes = {
     }),
     status: PropTypes.string.isRequired,
     detail: PropTypes.string,
+    eta: PropTypes.number,
   }),
   onEdit: PropTypes.func,
 };

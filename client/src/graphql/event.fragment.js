@@ -10,6 +10,13 @@ const EVENT_FRAGMENT = gql`
     group {
       id
     }
+    eventMarkers {
+      name
+      detail
+      icon
+      locationLatitude
+      locationLongitude
+    }
     responses {
       ... EventResponseFragment
     }
