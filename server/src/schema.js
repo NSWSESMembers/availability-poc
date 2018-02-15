@@ -146,7 +146,7 @@ export const Schema = [`
     details: String!
     group: Group!
     responses: [EventResponse]!
-    eventLocations: [EventLocation]
+    eventMarkers: [EventMarker]
   }
 
   type EventResponse {
@@ -161,7 +161,7 @@ export const Schema = [`
     eta: Int!
   }
 
-  type EventLocation {
+  type EventMarker {
     event: Event!
     name: String
     detail: String

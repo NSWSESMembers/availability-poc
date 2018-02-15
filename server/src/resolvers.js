@@ -71,8 +71,8 @@ export const getResolvers = (handlers) => {
       responses(eventt, args, ctx) {
         return eventHandler.responses(eventt, args, ctx);
       },
-      eventLocations(event, args, ctx) {
-        return eventHandler.eventLocations(event, args, ctx);
+      eventMarkers(event, args, ctx) {
+        return eventHandler.eventMarkers(event, args, ctx);
       },
     },
     EventResponse: {

@@ -67,7 +67,7 @@ export const defineModels = () => {
     eta: 1514860289,
   });
 
-  const EventLocationModel = db.define('eventlocation', {
+  const EventMarkerModel = db.define('eventmarker', {
     name: 'marker1',
     detail: 'mock marker',
     icon: 'marker1',
@@ -122,8 +122,8 @@ export const defineModels = () => {
   UserModel.hasMany(TimeSegmentModel);
 
   // event marker locations belong to an event
-  EventLocationModel.belongsTo(EventModel);
-  EventModel.hasMany(EventLocationModel);
+  EventMarkerModel.belongsTo(EventModel);
+  EventModel.hasMany(EventMarkerModel);
 
   // event responses belong to a combination of user/event
   EventResponseModel.belongsTo(EventModel);
