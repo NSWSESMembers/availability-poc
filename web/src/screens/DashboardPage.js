@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 
-const ExpenseDashboardPage = () => (
+const DashboardPage = () => (
   <div style={{ display: 'flex', margin: 40 }}>
     <Grid container spacing={24} direction="column">
       <Grid container item spacing={0} justify="center">
@@ -14,4 +14,4 @@ const ExpenseDashboardPage = () => (
   </div>
 );
 
-export default ExpenseDashboardPage;
+export default DashboardPage;

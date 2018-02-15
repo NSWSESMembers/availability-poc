@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import Hidden from 'material-ui/Hidden';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 
@@ -37,11 +36,13 @@ const Header = ({ classes, isAuthenticated }) => (
             Callout
           </NavLink>
         </Typography>
-        <Button color="inherit">
-          <NavLink to="/Login" className={classes.link}>
-            Login
-          </NavLink>
-        </Button>
+        {isAuthenticated && (
+          <Button color="inherit">
+            <NavLink to="/Login" className={classes.link}>
+              Logout
+            </NavLink>
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   </div>
@@ -49,10 +50,11 @@ const Header = ({ classes, isAuthenticated }) => (
 
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: !!state.auth.uid,
+  isAuthenticated: !!state.auth.token,
 });
 
 export default compose(connect(mapStateToProps), withStyles(styles))(Header);

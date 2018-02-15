@@ -11,6 +11,8 @@ import { getHandlers } from './logic';
 import { getResolvers } from './resolvers';
 import { getCreators } from './creators';
 
+const cors = require('cors');
+
 const GRAPHQL_PORT = 8080;
 const GRAPHQL_PATH = '/graphql';
 
@@ -26,6 +28,8 @@ const schema = getSchema(resolvers);
 
 const app = express();
 
+app.use(cors());
+
 // `context` must be an object and can't be undefined when using connectors
 app.use(
   '/graphql',
@@ -37,6 +41,7 @@ app.use(
   graphqlExpress((req) => {
     let user;
     let device;
+    console.log(req);
 
     // if the user is not logged in we assume they are the test user
     // to ease testing and enable the use of GraphiQL
@@ -68,9 +73,12 @@ app.use(
   }),
 );
 
-app.use('/graphiql', graphiqlExpress({
-  endpointURL: GRAPHQL_PATH,
-}));
+app.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: GRAPHQL_PATH,
+  }),
+);
 
 const graphQLServer = createServer(app);
 
