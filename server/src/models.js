@@ -66,7 +66,7 @@ export const defineModels = (db) => {
     locationTime: { type: Sequelize.INTEGER },
   });
 
-  const EventMarkerModel = db.define('eventmarker', {
+  const EventLocationModel = db.define('eventlocation', {
     name: { type: Sequelize.STRING },
     detail: { type: Sequelize.STRING },
     icon: { type: Sequelize.STRING },
@@ -127,8 +127,8 @@ export const defineModels = (db) => {
   UserModel.hasMany(EventResponseModel);
 
   // event marker locations belong to an event
-  EventMarkerModel.belongsTo(EventModel);
-  EventModel.hasMany(EventMarkerModel);
+  EventLocationModel.belongsTo(EventModel);
+  EventModel.hasMany(EventLocationModel);
 
   // tags belong to one organisation for now
   TagModel.belongsTo(OrganisationModel);
@@ -147,7 +147,7 @@ export const defineModels = (db) => {
     Device: db.models.device,
     Event: db.models.event,
     EventResponse: db.models.eventresponse,
-    EventMarker: db.models.eventmarker,
+    EventLocation: db.models.eventlocation,
     Schedule: db.models.schedule,
     TimeSegment: db.models.timesegment,
   };

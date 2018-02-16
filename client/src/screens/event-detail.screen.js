@@ -90,10 +90,10 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 
 class EventHeader extends React.Component {
-  static makeEventMarkers(eventMarkers) {
+  static makeEventLocations(eventLocations) {
     const mapMarkers = [];
 
-    eventMarkers.forEach((r) => {
+    eventLocations.forEach((r) => {
       if (r.locationLatitude !== null && r.locationLongitude !== null) {
         mapMarkers.push({
           id: r.name,
@@ -130,10 +130,10 @@ class EventHeader extends React.Component {
   }
 
   render() {
-    const { name, details, responses, eventMarkers } = this.props.event;
+    const { name, details, responses, eventLocations } = this.props.event;
 
     const mapResponseMarkers = EventHeader.makeResponseMarkers(responses);
-    const mapEventMarkers = EventHeader.makeEventMarkers(eventMarkers);
+    const mapEventLocations = EventHeader.makeEventLocations(eventLocations);
 
     return (
       <View>
@@ -165,7 +165,7 @@ class EventHeader extends React.Component {
               />
             </Marker>
           ))}
-          {mapEventMarkers.map(marker => (
+          {mapEventLocations.map(marker => (
             <Marker
               title={marker.id}
               key={marker.id}
@@ -183,7 +183,7 @@ EventHeader.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string,
     details: PropTypes.string,
-    eventMarkers: PropTypes.arrayOf(
+    eventLocations: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
         detail: PropTypes.string,
