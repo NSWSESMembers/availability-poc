@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 export const getCreators = (models) => {
   const {
     Organisation, Group, User, Capability, Tag, Device, Event,
-    Schedule, TimeSegment, EventResponse, EventMarker,
+    Schedule, TimeSegment, EventResponse, EventLocation,
   } = models;
 
   return {
@@ -166,11 +166,11 @@ export const getCreators = (models) => {
         eventId: event.id,
       });
     },
-    eventMarker: ({ name, detail, icon, locationLatitude, locationLongitude, event }) => {
+    eventLocation: ({ name, detail, icon, locationLatitude, locationLongitude, event }) => {
       if (!event || !event.id) {
         return Promise.reject(Error('Must pass event'));
       }
-      return EventMarker.create({
+      return EventLocation.create({
         name,
         detail,
         icon,

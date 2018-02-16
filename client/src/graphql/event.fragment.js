@@ -10,7 +10,7 @@ const EVENT_FRAGMENT = gql`
     group {
       id
     }
-    eventMarkers {
+    eventLocations {
       name
       detail
       icon

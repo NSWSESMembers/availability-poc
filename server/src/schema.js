@@ -149,7 +149,7 @@ export const Schema = [`
     permalink: String,
     group: Group!
     responses: [EventResponse]!
-    eventMarkers: [EventMarker]
+    eventLocations: [EventLocation]
   }
 
   type EventResponse {
@@ -164,7 +164,7 @@ export const Schema = [`
     eta: Int!
   }
 
-  type EventMarker {
+  type EventLocation {
     event: Event!
     name: String
     detail: String

@@ -111,15 +111,15 @@ const createEventResponse = (Creators, event, response, users) => {
   });
 };
 
-const createEventMarker = (Creators, event, marker) => {
+const createEventLocation = (Creators, event, location) => {
   const {
     name,
     detail,
     icon,
     locationLatitude,
     locationLongitude,
-  } = marker;
-  return Creators.eventMarker({
+  } = location;
+  return Creators.eventLocation({
     name,
     detail,
     icon,
@@ -132,10 +132,10 @@ const createEventMarker = (Creators, event, marker) => {
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
-  const { name, details, sourceIdentifier, permalink, responses, eventMarkers } = event;
+  const { name, details, sourceIdentifier, permalink, responses, eventLocations } = event;
   return Creators.event({ name, details, sourceIdentifier, permalink, group })
     .then(e => Promise.all(
-      eventMarkers.map(em => createEventMarker(Creators, e, em)),
+      eventLocations.map(em => createEventLocation(Creators, e, em)),
       responses.map(r => createEventResponse(Creators, e, r, users)),
     ));
 };

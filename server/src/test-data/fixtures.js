@@ -243,7 +243,7 @@ export const EVENTS = [
     sourceIdentifier: '654-321',
     permalink: 'https://jobssytem.com/jobs/c33367701511b4f6020ec61ded352059',
     group: 'Kiama',
-    eventMarkers: [
+    eventLocations: [
       {
         name: 'lhq',
         detail: 'Local Head Quarters',
@@ -306,7 +306,7 @@ export const EVENTS = [
     sourceIdentifier: '123-456',
     permalink: 'https://jobssytem.com/jobs/123456',
     group: 'Kiama',
-    eventMarkers: [
+    eventLocations: [
       {
         name: 'lhq',
         detail: 'Local Head Quarters',
@@ -376,7 +376,7 @@ export const EVENTS = [
     sourceIdentifier: '111-222',
     permalink: 'https://jobssytem.com/jobs/111-222',
     group: 'Parramatta',
-    eventMarkers: [
+    eventLocations: [
       {
         name: 'lhq',
         detail: 'Local Head Quarters',
