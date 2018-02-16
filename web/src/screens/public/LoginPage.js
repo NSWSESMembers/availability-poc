@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'recompose';
+import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Snackbar from 'material-ui/Snackbar';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import { compose } from 'recompose';
-import { graphql } from 'react-apollo';
-
-import { connect } from 'react-redux';
-
-import { Link } from 'react-router-dom';
 
 import { uuidv4 } from '../../utils';
-
 import { setCurrentUser } from '../../actions/auth';
 
 import LOGIN_MUTATION from '../../graphql/login.mutation';
@@ -53,42 +51,23 @@ class LoginPage extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state);
 
     const deviceUuid = uuidv4();
-
-    console.log(deviceUuid);
 
     const { username, password } = this.state;
     this.props
       .login({ username, password, deviceUuid })
-      .then(({ data }) => {
-        console.log('got data', data);
+      .then(({ data: { login: user } }) => {
+        const ourUser = {
+          id: user.id,
+          username: user.username,
+          token: user.authToken,
+        };
+        this.props.dispatch(setCurrentUser(ourUser));
       })
       .catch((error) => {
         this.setState(() => ({ message: error.message, open: true }));
-        setTimeout(() => {
-          this.setState(() => ({ message: '', open: false }));
-        }, 3000);
       });
-    // .then((data) => {
-    //   console.log(data);
-    //   console.log('return');
-    //   // const ourUser = {
-    //   //   id: user.id,
-    //   //   username: user.username,
-    //   //   token: user.authToken,
-    //   // };
-    //   // console.log('setting user');
-    //   // this.props.dispatch(setCurrentUser(ourUser));
-    // })
-    // .catch((error) => {
-    //   console.log('error', error);
-    // });
-
-    /*
-
-      */
   };
 
   handleClose = () => {
@@ -157,12 +136,13 @@ const login = graphql(LOGIN_MUTATION, {
 });
 
 LoginPage.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.shape({}).isRequired,
   dispatch: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ isAuthenticated: true });
+const mapStateToProps = state => ({
+  isAuthenticated: !!state.auth.token,
+});
 
 export default compose(connect(mapStateToProps), withStyles(styles), login)(LoginPage);
-
-// graphql(CurrentUser),

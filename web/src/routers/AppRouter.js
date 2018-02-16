@@ -2,11 +2,14 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Reboot from 'material-ui/Reboot';
 
-import DashboardPage from '../screens/DashboardPage';
 import LoginPage from '../screens/public/LoginPage';
-import SignupPage from '../screens/public/SignUpPage';
-import NotFoundPage from '../screens/NotFoundPage';
-import Header from '../components/layout/Header';
+import SignupPage from '../screens/public/SignupPage';
+import NotFoundPage from '../screens/public/NotFoundPage';
+
+import DashboardPage from '../screens/private/DashboardPage';
+
+import Header from '../screens/partial/Header';
+
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 

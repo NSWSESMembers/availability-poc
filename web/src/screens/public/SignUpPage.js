@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
@@ -29,7 +30,7 @@ const styles = () => ({
   },
 });
 
-class SignUpPage extends React.Component {
+class SignupPage extends React.Component {
   state = {
     open: false,
     message: '',
@@ -67,7 +68,6 @@ class SignUpPage extends React.Component {
           token: user.authToken,
         };
         this.props.dispatch(setCurrentUser(ourUser));
-        this.props.history.push('/dashboard');
       })
       .catch((error) => {
         this.setState(() => ({ message: error.message, open: true }));
@@ -148,6 +148,10 @@ const signup = graphql(SIGNUP_MUTATION, {
   }),
 });
 
-const mapStateToProps = state => ({ isAuthenticated: true });
+SignupPage.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  signup: PropTypes.func.isRequired,
+};
 
-export default compose(connect(), withStyles(styles), signup)(SignUpPage);
+export default compose(connect(), withStyles(styles), signup)(SignupPage);

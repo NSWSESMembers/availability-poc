@@ -10,6 +10,8 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 
+import { logout } from '../../actions/auth';
+
 const styles = {
   root: {
     width: '100%',
@@ -27,29 +29,36 @@ const styles = {
   },
 };
 
-const Header = ({ classes, isAuthenticated }) => (
-  <div className={classes.root}>
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="title" color="inherit" className={classes.flex}>
-          <NavLink to="/" className={classes.link}>
-            Callout
-          </NavLink>
-        </Typography>
-        {isAuthenticated && (
-          <Button color="inherit">
-            <NavLink to="/Login" className={classes.link}>
-              Logout
-            </NavLink>
-          </Button>
-        )}
-      </Toolbar>
-    </AppBar>
-  </div>
-);
+class Header extends React.Component {
+  handleLogout = () => {
+    this.props.dispatch(logout());
+  };
+  render() {
+    const { classes, isAuthenticated } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="title" color="inherit" className={classes.flex}>
+              <NavLink to="/" className={classes.link}>
+                Callout
+              </NavLink>
+            </Typography>
+            {isAuthenticated && (
+              <Button color="inherit" onClick={this.handleLogout}>
+                Logout
+              </Button>
+            )}
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
+}
 
 Header.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.shape({}).isRequired,
+  dispatch: PropTypes.func,
   isAuthenticated: PropTypes.bool.isRequired,
 };
 
