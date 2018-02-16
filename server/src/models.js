@@ -38,6 +38,8 @@ export const defineModels = (db) => {
   const EventModel = db.define('event', {
     name: { type: Sequelize.STRING },
     details: { type: Sequelize.STRING },
+    sourceIdentifier: { type: Sequelize.STRING },
+    permalink: { type: Sequelize.STRING },
   });
 
   const ScheduleModel = db.define('schedule', {
