@@ -44,6 +44,9 @@ export const defineModels = () => {
   const EventModel = db.define('event', {
     name: 'Test event',
     details: 'Details of test event',
+    sourceIdentifier: '123-456',
+    permalink: 'https://jobsystem.com/jobs/123456',
+
   });
 
   const ScheduleModel = db.define('schedule', {
