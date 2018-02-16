@@ -144,7 +144,6 @@ export const Schema = [`
     id: Int!
     name: String!
     details: String!
-    location: String
     sourceIdentifier: String,
     permalink: String,
     group: Group!
