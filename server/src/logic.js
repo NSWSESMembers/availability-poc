@@ -336,15 +336,23 @@ export const getHandlers = ({ models, creators: Creators }) => {
             const updateArgs = { ...args.response };
             delete updateArgs.id;
 
-            if (result.length > 0) {
-              return result[0].update(updateArgs);
-            }
+            return event.getEventlocations({ where: { id: updateArgs.destination.id } })
+              .then((destination) => {
+                if (!destination) {
+                  return Promise.reject(Error('Unknown destination passed'));
+                }
+                updateArgs.eventlocationId = (destination ? destination.id : null);
 
-            return Creators.eventResponse({
-              event,
-              user,
-              ...updateArgs,
-            });
+                if (result.length > 0) {
+                  return result[0].update(updateArgs);
+                }
+
+                return Creators.eventResponse({
+                  event,
+                  user,
+                  ...updateArgs,
+                });
+              });
           }));
       },
     },
@@ -352,6 +360,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
     eventResponse: {
       user(response) {
         return response.getUser();
+      },
+      destination(response) {
+        return response.getEventlocation();
       },
     },
 

@@ -59,7 +59,6 @@ export const defineModels = (db) => {
   const EventResponseModel = db.define('eventresponse', {
     status: { type: Sequelize.STRING },
     detail: { type: Sequelize.STRING },
-    destination: { type: Sequelize.STRING },
     eta: { type: Sequelize.INTEGER },
     locationLatitude: { type: Sequelize.FLOAT },
     locationLongitude: { type: Sequelize.FLOAT },
@@ -129,6 +128,10 @@ export const defineModels = (db) => {
   // event marker locations belong to an event
   EventLocationModel.belongsTo(EventModel);
   EventModel.hasMany(EventLocationModel);
+
+  // event marker locations belong to a eventResponse
+  EventResponseModel.belongsTo(EventLocationModel);
+  EventLocationModel.hasMany(EventResponseModel);
 
   // tags belong to one organisation for now
   TagModel.belongsTo(OrganisationModel);

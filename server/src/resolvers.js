@@ -79,6 +79,9 @@ export const getResolvers = (handlers) => {
       user(response, args, ctx) {
         return eventResponseHandler.user(response, args, ctx);
       },
+      destination(response, args, ctx) {
+        return eventResponseHandler.destination(response, args, ctx);
+      },
     },
     Organisation: {
       groups(org, args, ctx) {

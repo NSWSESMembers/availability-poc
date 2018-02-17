@@ -85,8 +85,8 @@ class EventResponseEdit extends Component {
     loading: false,
   }
 
-  setRespond = () => {
-    this.updateAndReturn({ status: 'responding' });
+  setAttending = () => {
+    this.updateAndReturn({ status: 'attending' });
   }
   setUnavailable = () => {
     this.updateAndReturn({ status: 'unavailable' });
@@ -98,6 +98,9 @@ class EventResponseEdit extends Component {
     this.setState({ loading: true });
     this.props.setEventResponseQuery({
       id: this.eventId,
+      destination: {
+        id: this.eventResponse.destination.id,
+      },
       ...params,
     })
       .then(() => {
@@ -122,8 +125,8 @@ class EventResponseEdit extends Component {
         <Text>{`Event ID: ${this.eventId}`}</Text>
         <Text>{`Status: ${eventResponse.status}`}</Text>
         <Text>{`Detail: ${eventResponse.detail}`}</Text>
-        <Text>{`Destination: ${eventResponse.destination}`}</Text>
-        <Button title="Responding" onPress={this.setRespond} />
+        <Text>{`Destination: ID:${eventResponse.destination.id} Name:${eventResponse.destination.name}`}</Text>
+        <Button title="Attending" onPress={this.setAttending} />
         <Button title="Tentative" onPress={this.setTentative} />
         <Button title="Unavailable" onPress={this.setUnavailable} />
         { this.state.loading ? <ActivityIndicator /> : null }
@@ -142,7 +145,10 @@ EventResponseEdit.propTypes = {
         eventResponse: PropTypes.shape({
           status: PropTypes.string,
           detail: PropTypes.string,
-          destination: PropTypes.string,
+          destination: PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string,
+          }),
         }),
       }),
     }),

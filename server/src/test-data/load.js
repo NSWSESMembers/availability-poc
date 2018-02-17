@@ -87,21 +87,22 @@ const createSchedules = (Creators, groups) => {
   );
 };
 
-const createEventResponse = (Creators, event, response, users) => {
+const createEventResponse = (Creators, event, response, markers, users) => {
   const user = users[response.user];
+  const marker = markers[response.destination];
   const {
     status,
     detail,
-    destination,
     eta,
     locationLatitude,
     locationLongitude,
     locationTime,
   } = response;
+
   return Creators.eventResponse({
     status,
     detail,
-    destination,
+    destination: marker,
     eta,
     locationLatitude,
     locationLongitude,
@@ -129,15 +130,28 @@ const createEventLocation = (Creators, event, location) => {
   });
 };
 
+const createEventLocations = (Creators, event, locations) => {
+  const results = {};
+  return Promise.all(
+    locations.map(location => createEventLocation(Creators, event, location)
+      .then((s) => {
+        results[s.name] = s;
+      })),
+  ).then(() => results);
+};
+
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
   const { name, details, sourceIdentifier, permalink, responses, eventLocations } = event;
   return Creators.event({ name, details, sourceIdentifier, permalink, group })
-    .then(e => Promise.all(
-      eventLocations.map(em => createEventLocation(Creators, e, em)),
-      responses.map(r => createEventResponse(Creators, e, r, users)),
-    ));
+    .then((e) => {
+      createEventLocations(Creators, e, eventLocations).then((em) => {
+        Promise.all(
+          responses.map(r => createEventResponse(Creators, e, r, em, users)),
+        );
+      });
+    });
 };
 
 const createEvents = (Creators, groups, users) =>
