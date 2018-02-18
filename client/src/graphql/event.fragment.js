@@ -11,6 +11,7 @@ const EVENT_FRAGMENT = gql`
       id
     }
     eventLocations {
+      id
       name
       detail
       icon

@@ -213,8 +213,9 @@ class EventResponse extends Component {
   }
 
   render() {
-    const { user, status, detail, eta } = this.props.response;
+    const { user, status, detail, eta, destination } = this.props.response;
     const userId = this.props.auth.id;
+    const destinationName = destination ? destination.name : '';
     const color = {
       attending: 'green',
       unavailable: 'red',
@@ -222,15 +223,15 @@ class EventResponse extends Component {
     }[status.toLowerCase()];
     const etaText = eta === 0 ? '' : `- ETA ${moment.unix(eta).fromNow()}`;
     const statusText = detail === ''
-      ? `${status} ${etaText}`
-      : `${status} - ${detail} ${etaText}`;
+      ? `${status} ${destinationName} ${etaText}`
+      : `${status} ${destinationName} - ${detail} ${etaText}`;
     const isMe = userId === user.id;
     return (
       <View style={styles.respondContainer}>
         <Icon name="user" size={24} color={color} />
         <View style={styles.respondTextContainer}>
           <Text style={styles.respondName} numberOfLines={1}>{user.displayName}</Text>
-          <Text style={styles.respondStatus} numberOfLines={1}>{statusText}</Text>
+          <Text style={styles.respondStatus} numberOfLines={1}>{statusText} </Text>
         </View>
         { isMe ? <Button title="edit" onPress={this.onPressEdit} /> : null }
       </View>
@@ -336,7 +337,11 @@ class EventDetail extends Component {
 
   editResponse = (eventResponse) => {
     const { navigate } = this.props.navigation;
-    navigate('EventResponseEdit', { eventResponse, eventId: this.props.event.id });
+    navigate('EventResponseEdit', {
+      eventResponse,
+      eventId: this.props.event.id,
+      eventLocations: this.props.event.eventLocations,
+    });
   }
 
   renderItem = ({ item }) => {
@@ -408,6 +413,15 @@ EventDetail.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
+    eventLocations: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        detail: PropTypes.string,
+        icon: PropTypes.string,
+        locationLatitude: PropTypes.float,
+        locationLongitude: PropTypes.float,
+      }),
+    ),
     responses: PropTypes.arrayOf(
       PropTypes.shape({
         user: PropTypes.shape({
