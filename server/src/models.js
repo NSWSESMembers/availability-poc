@@ -37,6 +37,7 @@ export const defineModels = (db) => {
 
   const EventModel = db.define('event', {
     name: { type: Sequelize.STRING },
+    externalIdentifier: { type: Sequelize.STRING },
     details: { type: Sequelize.STRING },
     sourceIdentifier: { type: Sequelize.STRING },
     permalink: { type: Sequelize.STRING },
@@ -124,6 +125,7 @@ export const defineModels = (db) => {
   // event responses belong to a combination of user/event
   EventResponseModel.belongsTo(EventModel);
   EventModel.hasMany(EventResponseModel);
+  EventModel.hasOne(EventLocationModel, { as: 'primaryLocation' });
   EventResponseModel.belongsTo(UserModel);
   UserModel.hasMany(EventResponseModel);
 
