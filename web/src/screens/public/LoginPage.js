@@ -51,7 +51,6 @@ class LoginPage extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-
     const deviceUuid = uuidv4();
 
     const { username, password } = this.state;
@@ -76,6 +75,7 @@ class LoginPage extends React.Component {
 
   render() {
     const { classes } = this.props;
+    console.log(this.props);
     return (
       <form onSubmit={this.onSubmit}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

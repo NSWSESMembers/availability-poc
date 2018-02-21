@@ -25,7 +25,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   if (store.getState().auth.token) {
     operation.setContext({
       headers: {
-        authorization: store.getState().auth.token || null,
+        authorization: store.getState().auth.token ? `Bearer ${store.getState().auth.token}` : null,
       },
     });
   }

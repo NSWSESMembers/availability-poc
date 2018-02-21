@@ -7,6 +7,8 @@ import SignupPage from '../screens/public/SignupPage';
 import NotFoundPage from '../screens/public/NotFoundPage';
 
 import DashboardPage from '../screens/private/DashboardPage';
+import SchedulePage from '../screens/private/SchedulePage';
+import AddSchedulePage from '../screens/private/AddSchedulePage';
 
 import Header from '../screens/partial/Header';
 
@@ -22,6 +24,8 @@ const AppRouter = () => (
         <PublicRoute path="/" component={LoginPage} exact />
         <PublicRoute path="/signup" component={SignupPage} exact />
         <PrivateRoute path="/dashboard" component={DashboardPage} />
+        <PrivateRoute path="/schedule/:id" component={SchedulePage} />
+        <PrivateRoute path="/schedule" component={AddSchedulePage} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>
