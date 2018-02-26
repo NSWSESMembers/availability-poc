@@ -3,10 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native-scripts start",
+    "start": "react-native start",
     "test": "jest --config=jest.config.json",
     "push-ios": "code-push release-react availability-poc ios",
     "push-android": "code-push release-react availability-poc-android android",
+    "run-ios": "react-native run-ios",
+    "run-android": "react-native run-android",
     "lint": "eslint src"
   },
   "dependencies": {
