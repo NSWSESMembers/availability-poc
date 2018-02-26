@@ -68,13 +68,19 @@ Our project was built with `react-native init`.
 
 For iOS you should be able to build and get running in the simulator with:
 ```sh
-react-native run-ios
+yarn run-ios
 ```
 
 For Android you must create an AVD (Android Virtual Device) in Android Studio
 and boot it in the emulator. Then you can build and run the app with:
 ```sh
-react-native run-android
+yarn run-android
+```
+
+Both of these should start the React Native bundler automatically but you can
+also run it manually using:
+```sh
+yarn start
 ```
 
 
@@ -100,8 +106,8 @@ configured to use [@sdunster](https://github.com/sdunster)'s account.
 
 New bundles can be built and deployed using code-push:
 ```sh
-yarn run push-android
-yarn run push-ios
+yarn push-android
+yarn push-ios
 ```
 
 To actually build and deploy the APK (Android) or IPA (iOS) you'll want to
