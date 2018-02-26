@@ -75,7 +75,6 @@ class LoginPage extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log(this.props);
     return (
       <form onSubmit={this.onSubmit}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

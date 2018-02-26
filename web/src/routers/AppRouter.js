@@ -6,9 +6,9 @@ import LoginPage from '../screens/public/LoginPage';
 import SignupPage from '../screens/public/SignupPage';
 import NotFoundPage from '../screens/public/NotFoundPage';
 
-import DashboardPage from '../screens/private/DashboardPage';
-import SchedulePage from '../screens/private/SchedulePage';
-import AddSchedulePage from '../screens/private/AddSchedulePage';
+import Dashboard from '../screens/private/Dashboard';
+import ViewSchedule from '../screens/private/Schedules/ViewSchedule';
+import AddSchedule from '../screens/private/Schedules/AddSchedule';
 
 import Header from '../screens/partial/Header';
 
@@ -23,9 +23,9 @@ const AppRouter = () => (
       <Switch>
         <PublicRoute path="/" component={LoginPage} exact />
         <PublicRoute path="/signup" component={SignupPage} exact />
-        <PrivateRoute path="/dashboard" component={DashboardPage} />
-        <PrivateRoute path="/schedule/:id" component={SchedulePage} />
-        <PrivateRoute path="/schedule" component={AddSchedulePage} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/request/:id" component={ViewSchedule} />
+        <PrivateRoute path="/request" component={AddSchedule} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>

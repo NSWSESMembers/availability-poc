@@ -231,7 +231,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return schedule.getGroup();
       },
       createSchedule(_, args) {
-        const { name, groupId } = args.schedule;
+        const { name, details, startTime, endTime, groupId } = args.schedule;
 
         return Group.findById(groupId)
           .then((group) => {
@@ -241,6 +241,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
             // TODO: check whether the user is a member of the group
             return Creators.schedule({
               name,
+              details,
+              startTime,
+              endTime,
               group,
             });
           });

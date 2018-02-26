@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
@@ -9,27 +9,20 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import PhonelinkRingIcon from 'material-ui-icons/PhonelinkRing';
 
 import { logout } from '../../actions/auth';
 
-const styles = {
-  root: {
-    width: '100%',
-  },
-  flex: {
-    flex: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-  link: {
-    color: 'white',
-    textDecoration: 'none',
-  },
-};
+import styles from './Header.styles';
 
 class Header extends React.Component {
+  handleChange = () => {
+    const { history } = this.props;
+    if (history.location.pathname !== '/dashboard') {
+      history.push('/dashboard');
+    }
+  };
   handleLogout = () => {
     this.props.dispatch(logout());
   };
@@ -38,9 +31,10 @@ class Header extends React.Component {
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Toolbar>
-            <Typography variant="title" color="inherit" className={classes.flex}>
-              <NavLink to="/" className={classes.link}>
+          <Toolbar className={classes.flex}>
+            <PhonelinkRingIcon className={classes.icon} />
+            <Typography variant="headline" color="inherit" className={classes.flexGrow}>
+              <NavLink to="/dashboard" className={classes.link}>
                 Callout
               </NavLink>
             </Typography>
@@ -51,6 +45,11 @@ class Header extends React.Component {
             )}
           </Toolbar>
         </AppBar>
+        <AppBar position="static" color="default">
+          <Tabs value="Requests" onChange={this.handleChange} style={{ marginLeft: 30 }}>
+            <Tab value="Requests" label="Requests" />
+          </Tabs>
+        </AppBar>
       </div>
     );
   }
@@ -58,6 +57,7 @@ class Header extends React.Component {
 
 Header.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({}),
   dispatch: PropTypes.func,
   isAuthenticated: PropTypes.bool.isRequired,
 };
@@ -66,4 +66,4 @@ const mapStateToProps = state => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles))(Header);
+export default compose(connect(mapStateToProps), withStyles(styles))(withRouter(Header));
