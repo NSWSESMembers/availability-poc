@@ -9,8 +9,8 @@ import Prompt from 'react-native-prompt';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
-
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
+
 
 const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   props: ({ mutate }) => ({
@@ -117,58 +117,58 @@ class Profile extends Component {
     this.setState({ promptVisible: true });
   };
 
-    closePrompt = () => {
-      this.setState({ promptVisible: false });
-    };
+  closePrompt = () => {
+    this.setState({ promptVisible: false });
+  };
 
-    cancelPrompt = () => {
-      this.setState({ promptVisible: false });
-    };
+  cancelPrompt = () => {
+    this.setState({ promptVisible: false });
+  };
 
-    render() {
-      const { loading, user } = this.props;
+  render() {
+    const { loading, user } = this.props;
 
-      // render loading placeholder while we fetch data
-      if (loading || !user) {
-        return (
-          <View style={[styles.loading, styles.container]}>
-            <ActivityIndicator />
-          </View>
-        );
-      }
-
+    // render loading placeholder while we fetch data
+    if (loading || !user) {
       return (
-        <View style={styles.container}>
-          <Prompt
-            title="Change Display Name"
-            placeholder={user.displayName}
-            defaultValue={user.displayName}
-            visible={this.state.promptVisible}
-            onCancel={this.cancelPrompt}
-            onSubmit={this.updateDisplayName}
-          />
-          <View style={styles.userContainer}>
-            <View style={styles.userInner}>
-              <View style={styles.gravatar}>
-                <Image
-                  style={{ borderRadius: 5, width: 50, height: 50, paddingHorizontal: 10 }}
-                  source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
-                />
-              </View>
-              <Text
-                onPress={this.openPrompt}
-                style={styles.inputInstructions}
-              >{user.displayName}
-              </Text>
-            </View>
-          </View>
-          <Text style={styles.usernameHeader}>User Name</Text>
-          <Text style={styles.username}>{user.username}</Text>
-          <Text style={styles.emailHeader}>Email Address</Text>
-          <Text style={styles.email}>{user.email}</Text>
+        <View style={[styles.loading, styles.container]}>
+          <ActivityIndicator />
         </View>
       );
     }
+
+    return (
+      <View style={styles.container}>
+        <Prompt
+          title="Change Display Name"
+          placeholder={user.displayName}
+          defaultValue={user.displayName}
+          visible={this.state.promptVisible}
+          onCancel={this.cancelPrompt}
+          onSubmit={this.updateDisplayName}
+        />
+        <View style={styles.userContainer}>
+          <View style={styles.userInner}>
+            <View style={styles.gravatar}>
+              <Image
+                style={{ borderRadius: 5, width: 50, height: 50, paddingHorizontal: 10 }}
+                source={{ uri: `https://www.gravatar.com/avatar/${md5(user.email)}?d=mm` }}
+              />
+            </View>
+            <Text
+              onPress={this.openPrompt}
+              style={styles.inputInstructions}
+            >{user.displayName}
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.usernameHeader}>User Name</Text>
+        <Text style={styles.username}>{user.username}</Text>
+        <Text style={styles.emailHeader}>Email Address</Text>
+        <Text style={styles.email}>{user.email}</Text>
+      </View>
+    );
+  }
 }
 
 Profile.propTypes = {
