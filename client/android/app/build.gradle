@@ -150,6 +150,7 @@ android {
 
 dependencies {
     compile project(':react-native-device-info')
+    compile project(':bugsnag-react-native')
     compile (project(':react-native-maps')){
         exclude group: "com.google.android.gms"
     }

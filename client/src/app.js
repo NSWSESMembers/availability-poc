@@ -1,5 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Alert } from 'react-native';
+import { Client as BugSnagClient } from 'bugsnag-react-native';
 
 import { ApolloProvider } from 'react-apollo';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -26,6 +27,8 @@ export const firebaseClient = new FirebaseClient({
     return notification.finish(WillPresentNotificationResult.All);
   },
 });
+
+export const bugsnag = (BugSnagClient.typeof ? new BugSnagClient() : undefined);
 
 // middleware for requests
 networkInterface.use([
