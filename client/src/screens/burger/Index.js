@@ -15,6 +15,7 @@ import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
 import { logout } from '../../state/auth.actions';
+import { bugsnag } from '../../app';
 
 const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
   props: ({ mutate }) => ({
@@ -98,52 +99,61 @@ class Burger extends Component {
     });
   }
 
-    checkForUpdate = () => {
-      codePush.checkForUpdate()
-        .then((update) => {
-          if (update) {
-            Alert.alert(
-              'Update Available',
-              `Version ${update.appVersion} (${(update.packageSize / 1024 / 1024).toFixed(2)}mb) is available for download`,
-              [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Install & Restart', onPress: this.installUpdate },
-              ],
-              { cancelable: false },
-            );
-          } else {
-            Alert.alert('No updates available.');
-          }
-        });
-    }
+  checkForUpdate = () => {
+    codePush.checkForUpdate()
+      .then((update) => {
+        if (update) {
+          Alert.alert(
+            'Update Available',
+            `Version ${update.appVersion} (${(update.packageSize / 1024 / 1024).toFixed(2)}mb) is available for download`,
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Install & Restart', onPress: this.installUpdate },
+            ],
+            { cancelable: false },
+          );
+        } else {
+          Alert.alert('No updates available.');
+        }
+      });
+  }
 
-    installUpdate = () => {
-      codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
-    }
+  installUpdate = () => {
+    codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
+  }
 
-    render() {
-      return (
-        <Center>
-          <Text />
-          <Button text="User Profile" onPress={this.showUserProfile} />
-          <Text />
-          <Text />
-          <Button text="Force Update Location" onPress={this.updateLocation} />
-          <Text />
-          <Text />
-          <Button text="Test Event Response" onPress={this.showEventResponse} />
-          <Text />
-          <Text />
-          <Button text="Check For Updates" onPress={this.checkForUpdate} />
-          <Text />
-          <Text />
-          <Button text="About" onPress={this.about} />
-          <Text />
-          <Text />
-          <Button text="Logout" onPress={this.logout} />
-        </Center>
-      );
+  crashReport = () => {
+    if (bugsnag) {
+      bugsnag.notify(new Error('Test error'));
     }
+  };
+
+  render() {
+    return (
+      <Center>
+        <Text />
+        <Button text="User Profile" onPress={this.showUserProfile} />
+        <Text />
+        <Text />
+        <Button text="Force Update Location" onPress={this.updateLocation} />
+        <Text />
+        <Text />
+        <Button text="Test Event Response" onPress={this.showEventResponse} />
+        <Text />
+        <Text />
+        <Button text="Check For Updates" onPress={this.checkForUpdate} />
+        <Text />
+        <Text />
+        <Button text="Test Bugsnag" onPress={this.crashReport} />
+        <Text />
+        <Text />
+        <Button text="About" onPress={this.about} />
+        <Text />
+        <Text />
+        <Button text="Logout" onPress={this.logout} />
+      </Center>
+    );
+  }
 }
 
 Burger.propTypes = {

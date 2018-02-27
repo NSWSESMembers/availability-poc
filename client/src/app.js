@@ -1,5 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Alert } from 'react-native';
+import { Client as BugSnagClient } from 'bugsnag-react-native';
 
 import { ApolloProvider } from 'react-apollo';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -18,6 +19,8 @@ import { GRAPHQL_ENDPOINT } from './config';
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
+
+export const bugsnag = (BugSnagClient.typeof ? new BugSnagClient() : undefined);
 
 // middleware for requests
 networkInterface.use([
