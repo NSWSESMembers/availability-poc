@@ -64,7 +64,6 @@ class Dashboard extends React.Component {
     }
 
     const filteredItems = filterSchedules(this.props.user.schedules, { groupId, order, orderBy });
-
     return (
       <div className={classes.root}>
         <div className={classes.actionPanel}>
@@ -101,9 +100,7 @@ class Dashboard extends React.Component {
               {filteredItems.map(schedule => (
                 <TableRow key={schedule.id}>
                   <TableCell>
-                    <Link to={`/request/${schedule.id}`}>
-                      {schedule.name} {schedule.id}
-                    </Link>
+                    <Link to={`/request/${schedule.id}`}>{schedule.name}</Link>
                   </TableCell>
                   <TableCell>{schedule.group}</TableCell>
                   <TableCell>{schedule.type}</TableCell>
@@ -149,15 +146,16 @@ Dashboard.propTypes = {
 
 const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  props: ({ data: { loading, user } }) => ({
+  props: ({ data: { loading, user, networkStatus, refetch } }) => ({
     loading,
     user,
+    networkStatus,
+    refetch,
   }),
 });
 
 const mapStateToProps = ({ auth }) => ({
   auth,
-  isAuthenticated: !!auth.token,
 });
 
 export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(Dashboard);

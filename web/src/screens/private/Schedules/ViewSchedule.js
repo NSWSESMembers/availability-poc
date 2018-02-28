@@ -22,85 +22,81 @@ import SCHEDULE_QUERY from '../../../graphql/schedule.query';
 
 import styles from './ViewSchedule.styles';
 
-class ViewSchedule extends React.Component {
-  render() {
-    const { classes } = this.props;
-
-    if (this.props.loading) {
-      return <CircularProgress className={classes.progress} size={50} />;
-    }
-
-    const columnData = [{ id: 'name', label: 'Name' }];
-
-    const begin = moment()
-      .isoWeekday(1)
-      .startOf('week');
-
-    const end = moment()
-      .isoWeekday(1)
-      .startOf('week')
-      .add(7, 'days');
-
-    const diff = end.diff(begin, 'days');
-
-    for (let i = 1; i <= diff; i += 1) {
-      begin.add(1, 'days');
-      columnData.push({
-        id: i,
-        label: begin.format('MMM D'),
-        startTime: begin.unix(),
-        endTime: begin
-          .clone()
-          .add(1, 'days')
-          .add(-1, 'seconds')
-          .unix(),
-      });
-    }
-
-    return (
-      <Paper className={classes.root}>
-        <div className={classes.toolbar}>
-          <NavLink to="/dashboard">
-            <ArrowBackIcon />
-          </NavLink>
-          <Typography variant="title" color="inherit" className={classes.paperTitle}>
-            {this.props.schedule.name} - ({this.props.schedule.group.name})
-          </Typography>
-          <Typography variant="title" color="inherit" className={classes.paperTitle} />
-        </div>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              {columnData.map(column => <TableCell key={column.id}>{column.label}</TableCell>)}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.props.schedule.group.users.map(user => (
-              <TableRow key={user.id}>
-                {columnData.map(
-                  column =>
-                    (column.id === 'name' ? (
-                      <TableCell key={user.id}>{user.displayName}</TableCell>
-                    ) : (
-                      <ViewScheduleItem
-                        key={user.id + column.startTime}
-                        userId={user.id}
-                        startTime={column.startTime}
-                        endTime={column.endTime}
-                        timeSegments={this.props.schedule.timeSegments.filter(
-                          timeSegment => timeSegment.user.id === user.id,
-                        )}
-                      />
-                    )),
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
-    );
+const ViewSchedule = ({ classes, loading, schedule }) => {
+  if (loading) {
+    return <CircularProgress className={classes.progress} size={50} />;
   }
-}
+
+  const columnData = [{ id: 'name', label: 'Name' }];
+
+  const begin = moment()
+    .isoWeekday(1)
+    .startOf('week');
+
+  const end = moment()
+    .isoWeekday(1)
+    .startOf('week')
+    .add(7, 'days');
+
+  const diff = end.diff(begin, 'days');
+
+  for (let i = 1; i <= diff; i += 1) {
+    begin.add(1, 'days');
+    columnData.push({
+      id: i,
+      label: begin.format('MMM D'),
+      startTime: begin.unix(),
+      endTime: begin
+        .clone()
+        .add(1, 'days')
+        .add(-1, 'seconds')
+        .unix(),
+    });
+  }
+
+  return (
+    <Paper className={classes.root}>
+      <div className={classes.toolbar}>
+        <NavLink to="/dashboard">
+          <ArrowBackIcon />
+        </NavLink>
+        <Typography variant="title" color="inherit" className={classes.paperTitle}>
+          {schedule.name} - ({schedule.group.name})
+        </Typography>
+        <Typography variant="title" color="inherit" className={classes.paperTitle} />
+      </div>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            {columnData.map(column => <TableCell key={column.id}>{column.label}</TableCell>)}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {schedule.group.users.map(user => (
+            <TableRow key={user.id}>
+              {columnData.map(
+                column =>
+                  (column.id === 'name' ? (
+                    <TableCell key={user.id}>{user.displayName}</TableCell>
+                  ) : (
+                    <ViewScheduleItem
+                      key={user.id + column.startTime}
+                      userId={user.id}
+                      startTime={column.startTime}
+                      endTime={column.endTime}
+                      timeSegments={schedule.timeSegments.filter(
+                        timeSegment => timeSegment.user.id === user.id,
+                      )}
+                    />
+                  )),
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Paper>
+  );
+};
 
 ViewSchedule.propTypes = {
   classes: PropTypes.shape({}).isRequired,
@@ -134,7 +130,10 @@ ViewSchedule.propTypes = {
 
 const scheduleQuery = graphql(SCHEDULE_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  options: ownProps => ({ variables: { id: ownProps.match.params.id } }),
+  options: ownProps => ({
+    variables: { id: ownProps.match.params.id },
+    fetchPolicy: 'network-only',
+  }),
   props: ({ data: { loading, schedule } }) => ({
     schedule,
     loading,
