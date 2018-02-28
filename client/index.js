@@ -14,5 +14,5 @@ const codePushOptions = {
 
 AppRegistry.registerComponent(
   'Callout',
-  () => codePush(codePushOptions)(App)
+  () => codePush(codePushOptions)(App),
 );
