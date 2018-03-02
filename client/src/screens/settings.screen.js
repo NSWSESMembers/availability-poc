@@ -190,7 +190,7 @@ class Settings extends Component {
         );
       });
     }
-    
+
     checkForUpdate = () => {
       codePush.checkForUpdate()
         .then((update) => {
