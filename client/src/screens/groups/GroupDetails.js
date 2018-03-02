@@ -15,12 +15,12 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
-import distantFuture from '../constants';
-import { extendAppStyleSheet } from './style-sheet';
-import SEARCH_GROUP_QUERY from '../graphql/search-group.query';
-import JOIN_GROUP_MUTATION from '../graphql/join-group.mutation';
-import LEAVE_GROUP_MUTATION from '../graphql/leave-group.mutation';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import distantFuture from '../../constants';
+import { extendAppStyleSheet } from '../style-sheet';
+import SEARCH_GROUP_QUERY from '../../graphql/search-group.query';
+import JOIN_GROUP_MUTATION from '../../graphql/join-group.mutation';
+import LEAVE_GROUP_MUTATION from '../../graphql/leave-group.mutation';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 const styles = extendAppStyleSheet({
   groupContainer: {
@@ -244,12 +244,10 @@ ScheduleDisplay.propTypes = {
 };
 
 class Group extends Component {
-  static navigationOptions = {
-    title: 'Group',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon size={24} name="group" color={tintColor} />
-    ),
-  };
+  static navigationOptions = () => ({
+    title: 'Groups',
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
+  });
 
   onRefresh = () => {
     this.props.refetch();

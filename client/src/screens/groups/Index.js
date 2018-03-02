@@ -1,21 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { FlatList, ActivityIndicator, Button, Text, TouchableHighlight, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import { SearchBar } from 'react-native-elements';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
-import { extendAppStyleSheet } from './style-sheet';
-import ALL_GROUPS_QUERY from '../graphql/all-groups.query';
+import { extendAppStyleSheet } from '../style-sheet';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+import { ButtonNavBar } from '../../components/Button';
+
 
 const styles = extendAppStyleSheet({
   groupContainer: {
@@ -63,36 +56,42 @@ const styles = extendAppStyleSheet({
   },
 });
 
-class Group extends Component {
-  constructor(props) {
-    super(props);
-    this.myGroups = this.props.myGroups;
-    this.navigation = this.props.navigation;
-  }
+const Header = ({ onPress, onPressFind }) => (
+  <View style={styles.header}>
+    <Button title="Create New Group" onPress={onPress} />
+    <Button title="Find & Join Groups" onPress={onPressFind} />
+  </View>
+);
+Header.propTypes = {
+  onPress: PropTypes.func.isRequired,
+  onPressFind: PropTypes.func.isRequired,
+};
 
+class Group extends Component {
   goToGroup = () => {
-    const { navigate } = this.navigation;
-    navigate('Group', { groupId: this.props.group.id });
+    this.props.goToGroup(this.props.group);
   }
 
   render() {
     const { id, name } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
-    this.state = {
-      memberAlready: _.some(this.props.myGroups, g => g.id === this.props.group.id),
-    };
+
     return (
       <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
-          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'green'} size={24} />
+          <Icon name="group" size={24} color="orange" />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
+              <Text style={styles.groupName} numberOfLines={1}>
+                {name}
+              </Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupText} numberOfLines={1}>{tags}
+            <Text style={styles.groupText} numberOfLines={1}>
+              {tags}
             </Text>
           </View>
+          <Icon name="angle-right" size={24} color="#8c8c8c" />
         </View>
       </TouchableHighlight>
     );
@@ -100,15 +99,7 @@ class Group extends Component {
 }
 
 Group.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-  }),
-  myGroups: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-    }),
-  ),
+  goToGroup: PropTypes.func.isRequired,
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
@@ -118,16 +109,26 @@ Group.propTypes = {
         name: PropTypes.string,
       }),
     ),
+    users: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        username: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 
-class AllGroups extends Component {
-  static navigationOptions = {
-    title: 'All Groups',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon size={24} name="group" color={tintColor} />
-    ),
-  };
+class Groups extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Groups',
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
+    headerRight:
+  <View style={{ flexDirection: 'row' }}>
+    <ButtonNavBar onPress={() => navigation.navigate('NewGroup')} icon="plus" />
+    <ButtonNavBar onPress={() => navigation.navigate('SearchGroup')} icon="search" />
+  </View>,
+
+  });
 
   onRefresh = () => {
     this.props.refetch();
@@ -135,16 +136,21 @@ class AllGroups extends Component {
 
   keyExtractor = item => item.id;
 
-  renderItem = ({ item }) => (
-    <Group
-      group={item}
-      myGroups={this.props.user.groups}
-      navigation={this.props.navigation}
-    />
-  );
+  goToGroup = (group) => {
+    const { navigate } = this.props.navigation;
+    navigate('Group', { groupId: group.id });
+  }
+
+  goToSearchGroup = () => {
+    const { navigate } = this.props.navigation;
+    navigate('SearchGroup');
+  }
+
+  renderItem = ({ item }) => <Group group={item} goToGroup={this.goToGroup} />;
 
   render() {
     const { loading, user, networkStatus } = this.props;
+
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -154,11 +160,11 @@ class AllGroups extends Component {
       );
     }
 
-    if (user && !user.organisation.groups.length) {
+    if (user && !user.groups.length) {
       return (
         <View style={styles.container}>
-          <Text style={styles.warning}>
-            There are no groups in this organisation
+          <Text onPress={this.onRefresh} style={styles.warning}>
+            You are not a member of any groups. click to reload
           </Text>
         </View>
       );
@@ -167,25 +173,18 @@ class AllGroups extends Component {
     // render list of groups for user
     return (
       <View style={styles.container}>
-        <SearchBar
-          lightTheme
-          onChangeText={null}
-          onClearText={null}
-          placeholder="Search Here...but dont expect anything to happen"
-        />
         <FlatList
-          data={user.organisation.groups}
+          data={user.groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
           onRefresh={this.onRefresh}
-          extraData={user} // redraw if this changes
           refreshing={networkStatus === 4}
         />
       </View>
     );
   }
 }
-AllGroups.propTypes = {
+Groups.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -194,33 +193,35 @@ AllGroups.propTypes = {
   refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    organisation: PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          name: PropTypes.string.isRequired,
-          tags: PropTypes.arrayOf(
-            PropTypes.shape({
-              id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
-            }),
-          ),
-        }),
-      ),
-    }),
+    username: PropTypes.string.isRequired,
     groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        tags: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string,
+          }),
+        ),
+        users: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            username: PropTypes.string.isRequired,
+          }),
+        ),
       }),
     ),
   }),
 };
 
-const groupsQuery = graphql(ALL_GROUPS_QUERY, {
+const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
-    loading, networkStatus, refetch, user,
+    loading,
+    networkStatus,
+    refetch,
+    user,
   }),
 });
 
@@ -228,7 +229,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(
-  connect(mapStateToProps),
-  groupsQuery,
-)(AllGroups);
+export default compose(connect(mapStateToProps), userQuery)(Groups);

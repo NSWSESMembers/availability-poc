@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Button, Text, TouchableHighlight, View } from 'react-native';
+import {
+  FlatList,
+  ActivityIndicator,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import { graphql, compose } from 'react-apollo';
+import { SearchBar } from 'react-native-elements';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
-import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import { extendAppStyleSheet } from '../style-sheet';
+import ALL_GROUPS_QUERY from '../../graphql/all-groups.query';
 
 const styles = extendAppStyleSheet({
   groupContainer: {
@@ -54,42 +63,36 @@ const styles = extendAppStyleSheet({
   },
 });
 
-const Header = ({ onPress, onPressFind }) => (
-  <View style={styles.header}>
-    <Button title="Create New Group" onPress={onPress} />
-    <Button title="Find & Join Groups" onPress={onPressFind} />
-  </View>
-);
-Header.propTypes = {
-  onPress: PropTypes.func.isRequired,
-  onPressFind: PropTypes.func.isRequired,
-};
-
 class Group extends Component {
+  constructor(props) {
+    super(props);
+    this.myGroups = this.props.myGroups;
+    this.navigation = this.props.navigation;
+  }
+
   goToGroup = () => {
-    this.props.goToGroup(this.props.group);
+    const { navigate } = this.navigation;
+    navigate('Group', { groupId: this.props.group.id });
   }
 
   render() {
     const { id, name } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
-
+    this.state = {
+      memberAlready: _.some(this.props.myGroups, g => g.id === this.props.group.id),
+    };
     return (
       <TouchableHighlight key={id} onPress={this.goToGroup}>
         <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color="orange" />
+          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'green'} size={24} />
           <View style={styles.groupTextContainer}>
             <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>
-                {name}
-              </Text>
+              <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
               <Text style={styles.groupLastUpdated}>{id}</Text>
             </View>
-            <Text style={styles.groupText} numberOfLines={1}>
-              {tags}
+            <Text style={styles.groupText} numberOfLines={1}>{tags}
             </Text>
           </View>
-          <Icon name="angle-right" size={24} color="#8c8c8c" />
         </View>
       </TouchableHighlight>
     );
@@ -97,7 +100,15 @@ class Group extends Component {
 }
 
 Group.propTypes = {
-  goToGroup: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
+  myGroups: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ),
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
@@ -107,19 +118,15 @@ Group.propTypes = {
         name: PropTypes.string,
       }),
     ),
-    users: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        username: PropTypes.string.isRequired,
-      }),
-    ),
   }),
 };
 
-class Groups extends Component {
+class AllGroups extends Component {
   static navigationOptions = {
-    title: 'Groups',
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
+    title: 'All Groups',
+    tabBarIcon: ({ tintColor }) => (
+      <Icon size={24} name="group" color={tintColor} />
+    ),
   };
 
   onRefresh = () => {
@@ -128,26 +135,16 @@ class Groups extends Component {
 
   keyExtractor = item => item.id;
 
-  goToGroup = (group) => {
-    const { navigate } = this.props.navigation;
-    navigate('Group', { groupId: group.id });
-  }
-
-  goToNewGroup = () => {
-    const { navigate } = this.props.navigation;
-    navigate('NewGroup');
-  }
-
-  goToSearchGroup = () => {
-    const { navigate } = this.props.navigation;
-    navigate('SearchGroup');
-  }
-
-  renderItem = ({ item }) => <Group group={item} goToGroup={this.goToGroup} />;
+  renderItem = ({ item }) => (
+    <Group
+      group={item}
+      myGroups={this.props.user.groups}
+      navigation={this.props.navigation}
+    />
+  );
 
   render() {
     const { loading, user, networkStatus } = this.props;
-
     // render loading placeholder while we fetch messages
     if (loading || !user) {
       return (
@@ -157,37 +154,38 @@ class Groups extends Component {
       );
     }
 
-    if (user && !user.groups.length) {
+    if (user && !user.organisation.groups.length) {
       return (
         <View style={styles.container}>
-          <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup} />
-          <Text onPress={this.onRefresh} style={styles.warning}>
-            You are not a member of any groups. click to reload
+          <Text style={styles.warning}>
+            There are no groups in this organisation
           </Text>
         </View>
       );
     }
 
-    const makeHeader = () => (
-      <Header onPress={this.goToNewGroup} onPressFind={this.goToSearchGroup} />
-    );
-
     // render list of groups for user
     return (
       <View style={styles.container}>
+        <SearchBar
+          lightTheme
+          onChangeText={null}
+          onClearText={null}
+          placeholder="Search Here...but dont expect anything to happen"
+        />
         <FlatList
-          data={user.groups}
+          data={user.organisation.groups}
           keyExtractor={this.keyExtractor}
           renderItem={this.renderItem}
-          ListHeaderComponent={makeHeader}
           onRefresh={this.onRefresh}
+          extraData={user} // redraw if this changes
           refreshing={networkStatus === 4}
         />
       </View>
     );
   }
 }
-Groups.propTypes = {
+AllGroups.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -196,35 +194,33 @@ Groups.propTypes = {
   refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
+    organisation: PropTypes.shape({
+      groups: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+          tags: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+            }),
+          ),
+        }),
+      ),
+    }),
     groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        tags: PropTypes.arrayOf(
-          PropTypes.shape({
-            id: PropTypes.number,
-            name: PropTypes.string,
-          }),
-        ),
-        users: PropTypes.arrayOf(
-          PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            username: PropTypes.string.isRequired,
-          }),
-        ),
       }),
     ),
   }),
 };
 
-const userQuery = graphql(CURRENT_USER_QUERY, {
+const groupsQuery = graphql(ALL_GROUPS_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
-    loading,
-    networkStatus,
-    refetch,
-    user,
+    loading, networkStatus, refetch, user,
   }),
 });
 
@@ -232,4 +228,7 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Groups);
+export default compose(
+  connect(mapStateToProps),
+  groupsQuery,
+)(AllGroups);
