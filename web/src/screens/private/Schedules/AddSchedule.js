@@ -29,16 +29,18 @@ import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import styles from './AddSchedule.styles';
 
 function getSteps() {
-  return ['Select group', 'Specify details', 'Enter dates'];
+  return ['Select group', 'Specify details', 'Capabilities', 'Enter dates'];
 }
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return '';
+      return 'Who will the request target?';
     case 1:
-      return 'Enter a meaningful title and details for the request. Capabilities will be added in the future here.';
+      return 'Enter a meaningful title and details for the request. Priority does nothing yet.';
     case 2:
+      return 'What capabilities are required for the request?';
+    case 3:
       return 'Dates can be an ongoing request with no end date or within a specified date range. e.g. a request for a weekend weather event.';
     default:
       return 'Unknown step';
@@ -52,6 +54,8 @@ class AddSchedule extends React.Component {
     name: '',
     groupId: '',
     details: '',
+    priority: 2,
+    capability: '',
     startTime: moment()
       .add(1, 'day')
       .startOf('day')
@@ -67,6 +71,16 @@ class AddSchedule extends React.Component {
   onGroupChange = (e) => {
     const groupId = e.target.value;
     this.setState(() => ({ groupId }));
+  };
+
+  onPriorityChange = (e) => {
+    const priority = e.target.value;
+    this.setState(() => ({ priority }));
+  };
+
+  onCapabilityChange = (e) => {
+    const capability = e.target.value;
+    this.setState(() => ({ capability }));
   };
 
   onNameChange = (e) => {
@@ -211,9 +225,79 @@ class AddSchedule extends React.Component {
                             margin="normal"
                           />
                         </FormControl>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="priority">
+                            priority
+                          </InputLabel>
+                          <Select
+                            value={this.state.priority}
+                            onChange={this.onPriorityChange}
+                          >
+                            <MenuItem value="1" key={1}>
+                              High
+                            </MenuItem>
+                            <MenuItem value="2" key={2}>
+                              Medium
+                            </MenuItem>
+                            <MenuItem value="3" key={3}>
+                              Low
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
                       </div>
                     )}
                     {index === 2 && (
+                      <div>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="capability" required>
+                            capability
+                          </InputLabel>
+                          <Select
+                            value={this.state.capability}
+                            onChange={this.onCapabilityChange}
+                            required
+                          >
+                            <MenuItem value="1" key={1}>
+                              Chainsaw L1 (Cross Cut)
+                            </MenuItem>
+                            <MenuItem value="2" key={2}>
+                            Chainsaw L2 (Intermediate Felling)
+                            </MenuItem>
+                            <MenuItem value="3" key={3}>
+                              Community First Responder Registation
+                            </MenuItem>
+                            <MenuItem value="4" key={4}>
+                              Flood Rescue Boat Operator
+                            </MenuItem>
+                            <MenuItem value="5" key={5}>
+                              Flood Rescue Operator Level 1
+                            </MenuItem>
+                            <MenuItem value="6" key={6}>
+                              Flood Rescue Operator Level 2
+                            </MenuItem>
+                            <MenuItem value="7" key={7}>
+                              Flood Rescue Operator Level 3
+                            </MenuItem>
+                            <MenuItem value="8" key={8}>
+                              Generea Land Rescue Operator
+                            </MenuItem>
+                            <MenuItem value="9" key={9}>
+                            Land Search
+                            </MenuItem>
+                            <MenuItem value="10" key={10}>
+                              Storm and Water Damage - Ground
+                            </MenuItem>
+                            <MenuItem value="11" key={11}>
+                              Storm and Water Damage - Heights
+                            </MenuItem>
+                            <MenuItem value="12" key={12}>
+                              Vertical Rescue Operator
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    )}
+                    {index === 3 && (
                       <div>
                         <FormControlLabel
                           control={
@@ -272,7 +356,8 @@ class AddSchedule extends React.Component {
                           disabled={
                             (activeStep === 0 && this.state.groupId === '') ||
                             (activeStep === 1 && this.state.name === '') ||
-                            (activeStep === 2 &&
+                            (activeStep === 2 && this.state.capability === '') ||
+                            (activeStep === 3 &&
                               (this.state.useDates &&
                                 this.state.startTime === '' &&
                                 this.state.endTime === ''))

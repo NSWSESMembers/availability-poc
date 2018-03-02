@@ -7,7 +7,6 @@ export default () => ({
     width: 30,
     height: 30,
     fontSize: 16,
-    cursor: 'pointer',
   },
   avatarUN: {
     backgroundColor: 'red',
@@ -17,7 +16,6 @@ export default () => ({
     width: 30,
     height: 30,
     fontSize: 16,
-    cursor: 'pointer',
   },
   avatarUR: {
     backgroundColor: 'purple',
@@ -27,6 +25,8 @@ export default () => ({
     width: 30,
     height: 30,
     fontSize: 16,
-    cursor: 'pointer',
+  },
+  tooltip: {
+    textAlign: 'center',
   },
 });

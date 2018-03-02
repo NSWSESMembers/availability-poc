@@ -7,7 +7,7 @@ import styles from './ViewScheduleItem.styles';
 
 import TimeLabel from './TimeLabel';
 
-const ViewScheduleItem = ({ classes, userId, startTime, endTime, timeSegments }) => {
+const ViewScheduleItem = ({ classes, userId, startTime, endTime, timeSegments, onClick }) => {
   const userSegments = timeSegments.filter(
     timeSegment => timeSegment.startTime >= startTime && timeSegment.endTime < endTime,
   );
@@ -18,19 +18,22 @@ const ViewScheduleItem = ({ classes, userId, startTime, endTime, timeSegments })
 
   return (
     <TableCell key={userId} className={classes.tableCell}>
-      {timeSegments
-        .filter(
-          timeSegment => timeSegment.startTime >= startTime && timeSegment.startTime < endTime,
-        )
-        .map(userSegment => (
-          <div key={`${userSegment.user.id}-${userSegment.startTime}`}>
-            <TimeLabel
-              status={userSegment.status}
-              startTime={userSegment.startTime}
-              endTime={userSegment.endTime}
-            />
-          </div>
-        ))}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {timeSegments
+          .filter(
+            timeSegment => timeSegment.startTime >= startTime && timeSegment.startTime < endTime,
+          )
+          .map(userSegment => (
+            <div key={`${userSegment.user.id}-${userSegment.startTime}`}>
+              <TimeLabel
+                status={userSegment.status}
+                startTime={userSegment.startTime}
+                endTime={userSegment.endTime}
+                onClick={onClick}
+              />
+            </div>
+          ))}
+      </div>
     </TableCell>
   );
 };
@@ -40,6 +43,7 @@ ViewScheduleItem.propTypes = {
   userId: PropTypes.number.isRequired,
   startTime: PropTypes.number.isRequired,
   endTime: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
   timeSegments: PropTypes.arrayOf(
     PropTypes.shape({
       status: PropTypes.string.isRequired,

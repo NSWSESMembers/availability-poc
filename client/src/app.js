@@ -4,7 +4,7 @@ import { AsyncStorage, Alert } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 import { createStore, applyMiddleware, compose } from 'redux';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { persistStore, persistCombineReducers } from 'redux-persist'; 
+import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { WillPresentNotificationResult } from 'react-native-fcm';
