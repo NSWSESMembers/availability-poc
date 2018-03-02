@@ -1,3 +1,6 @@
+import codePush from 'react-native-code-push';
+
+
 // Misc utils
 export const capitalizeFirstLetter = string => (
   string[0].toUpperCase() + string.slice(1)
@@ -12,3 +15,7 @@ export const uuidv4 = () => (
     /* eslint-enable no-bitwise */
   })
 );
+
+export const codePushHash = () => codePush.getCurrentPackage().then(result => (
+  result ? result.packageHash.slice(0, 7) : '00000000'
+));

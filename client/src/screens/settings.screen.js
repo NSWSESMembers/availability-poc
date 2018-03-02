@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import md5 from 'md5';
 import Prompt from 'react-native-prompt';
+import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -173,6 +174,23 @@ class Settings extends Component {
       this.setState({ promptVisible: false });
     };
 
+    about = () => {
+      const DeviceInfoAvailable = DeviceInfo.typeof;
+
+      codePush.getCurrentPackage().then((result) => {
+        Alert.alert(
+          'About',
+          `
+        getBundleId: ${DeviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
+        BuildNumber: ${DeviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
+        getReadableVersion: ${DeviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
+        CodePushlabel: ${result ? result.label : 'No CP package installed'}
+        CodePushHash: ${result ? result.packageHash : 'No CP package installed'}
+        `,
+        );
+      });
+    }
+
     checkForUpdate = () => {
       codePush.checkForUpdate()
         .then((update) => {
@@ -246,6 +264,9 @@ class Settings extends Component {
           <Text />
           <Text />
           <Button title="Check For Updates" onPress={this.checkForUpdate} />
+          <Text />
+          <Text />
+          <Button title="About" onPress={this.about} />
           <Text />
           <Text />
           <Button title="Logout" onPress={this.logout} />
