@@ -190,7 +190,29 @@ class Settings extends Component {
         );
       });
     }
+    
+    checkForUpdate = () => {
+      codePush.checkForUpdate()
+        .then((update) => {
+          if (update) {
+            Alert.alert(
+              'Update Available',
+              `Version ${update.appVersion} (${(update.packageSize / 1024 / 1024).toFixed(2)}mb) is available for download`,
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Install & Restart', onPress: this.installUpdate },
+              ],
+              { cancelable: false },
+            );
+          } else {
+            Alert.alert('No updates available.');
+          }
+        });
+    }
 
+    installUpdate = () => {
+      codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
+    }
 
     render() {
       const { loading, user } = this.props;
@@ -239,6 +261,9 @@ class Settings extends Component {
           <Text />
           <Text />
           <Button title="Test Event Response" onPress={this.showEventResponse} />
+          <Text />
+          <Text />
+          <Button title="Check For Updates" onPress={this.checkForUpdate} />
           <Text />
           <Text />
           <Button title="About" onPress={this.about} />

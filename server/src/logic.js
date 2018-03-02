@@ -335,14 +335,13 @@ export const getHandlers = ({ models, creators: Creators }) => {
           .then((result) => {
             const updateArgs = { ...args.response };
             delete updateArgs.id;
-
             return event.getEventlocations({ where: { id: updateArgs.destination.id } })
               .then((destination) => {
                 if (!destination) {
                   return Promise.reject(Error('Unknown destination passed'));
                 }
-                updateArgs.eventlocationId = (destination ? destination.id : null);
-
+                delete updateArgs.destination;
+                updateArgs.eventlocationId = destination[0].id;
                 if (result.length > 0) {
                   return result[0].update(updateArgs);
                 }
