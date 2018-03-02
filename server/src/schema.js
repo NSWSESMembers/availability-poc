@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 
-export const Schema = [`
+export const Schema = [
+  `
   input CreateOrganisationInput {
     name: String!
   }
@@ -33,6 +34,9 @@ export const Schema = [`
 
   input CreateScheduleInput {
     name: String!
+    details: String!
+    startTime: Int!
+    endTime: Int!
     groupId: Int!
   }
 
@@ -234,7 +238,8 @@ export const Schema = [`
     query: Query,
     mutation: Mutation
   }
-`];
+`,
+];
 
 export const getSchema = resolvers =>
   makeExecutableSchema({

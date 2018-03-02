@@ -12,6 +12,7 @@ import {
   REMOVE_TIME_SEGMENT_MUTATION,
   UPDATE_TIME_SEGMENT_MUTATION,
 } from '../../graphql/time-segment.mutation';
+import SCHEDULE_QUERY from '../../graphql/schedule.query';
 
 import { Alert } from '../../components/Alert';
 import ButtonRowPicker from '../../components/ButtonRowPicker';
@@ -106,6 +107,20 @@ class Edit extends Component {
   };
 
   handleDatePicked = (startTime) => {
+    const hour = moment(this.state.endTime).get('hour');
+    const minute = moment(this.state.endTime).get('minute');
+
+    const endTime = moment(startTime);
+    endTime.set({
+      hour,
+      minute,
+    });
+
+    this.setState({ startTime });
+    this.setState({ endTime: endTime.toDate() });
+  };
+
+  handleStartTimePicked = (startTime) => {
     this.setState({ startTime });
   };
 
@@ -157,7 +172,7 @@ class Edit extends Component {
           <DatePicker
             title="Start Time"
             date={this.state.startTime}
-            onSelect={this.handleDatePicked}
+            onSelect={this.handleStartTimePicked}
             mode="time"
           />
         </Holder>
@@ -237,6 +252,10 @@ const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
         refetchQueries: [
           {
             query: CURRENT_USER_QUERY,
+          },
+          {
+            query: SCHEDULE_QUERY,
+            variables: { id: scheduleId },
           },
         ],
       }),
