@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import md5 from 'md5';
 import Prompt from 'react-native-prompt';
+import codePush from 'react-native-code-push';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { extendAppStyleSheet } from './style-sheet';
@@ -172,6 +173,29 @@ class Settings extends Component {
       this.setState({ promptVisible: false });
     };
 
+    checkForUpdate = () => {
+      codePush.checkForUpdate()
+        .then((update) => {
+          if (update) {
+            Alert.alert(
+              'Update Available',
+              `Version ${update.appVersion} (${(update.packageSize / 1024 / 1024).toFixed(2)}mb) is available for download`,
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Install & Restart', onPress: this.installUpdate },
+              ],
+              { cancelable: false },
+            );
+          } else {
+            Alert.alert('No updates available.');
+          }
+        });
+    }
+
+    installUpdate = () => {
+      codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
+    }
+
     render() {
       const { loading, user } = this.props;
 
@@ -219,6 +243,9 @@ class Settings extends Component {
           <Text />
           <Text />
           <Button title="Test Event Response" onPress={this.showEventResponse} />
+          <Text />
+          <Text />
+          <Button title="Check For Updates" onPress={this.checkForUpdate} />
           <Text />
           <Text />
           <Button title="Logout" onPress={this.logout} />
