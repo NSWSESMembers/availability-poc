@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 import StackHome from './screens/home/StackHome';
+import StackGroups from './screens/groups/StackGroups';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -17,13 +18,10 @@ import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
 
-import Groups from './screens/groups.screen';
-import Group from './screens/group.screen';
+
 import Events from './screens/events.screen';
 import Event from './screens/event-detail.screen';
 import Settings from './screens/settings.screen';
-import NewGroup from './screens/new-group.screen';
-import SearchGroup from './screens/search-groups.screen';
 import EventResponse from './screens/event-response.screen';
 import EventResponseEdit from './screens/event-response-edit.screen';
 
@@ -45,26 +43,6 @@ const tabBarConfiguration = {
     showLabel: true,
   },
 };
-
-const StackGroup = StackNavigator(
-  {
-    Index: {
-      screen: Groups,
-    },
-    NewGroup: {
-      screen: NewGroup,
-    },
-    SearchGroup: {
-      screen: SearchGroup,
-    },
-    Group: {
-      screen: Group,
-    },
-  },
-  {
-    headerMode: 'screen',
-  },
-);
 
 const StackEvents = StackNavigator(
   {
@@ -102,7 +80,7 @@ const StackSettings = StackNavigator(
 export const MainScreenNavigator = TabNavigator(
   {
     Home: { screen: StackHome },
-    Groups: { screen: StackGroup },
+    Groups: { screen: StackGroups },
     Availability: { screen: StackAvailability },
     Events: { screen: StackEvents },
     Settings: { screen: StackSettings },

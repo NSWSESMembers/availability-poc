@@ -12,10 +12,11 @@ import {
 import { graphql, compose } from 'react-apollo';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
-import CREATE_GROUP_MUTATION from '../graphql/create-group.mutation';
+import { extendAppStyleSheet } from '../style-sheet';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+import CREATE_GROUP_MUTATION from '../../graphql/create-group.mutation';
 
 const goToNewGroup = () => NavigationActions.back();
 
@@ -64,12 +65,13 @@ const styles = extendAppStyleSheet({
   },
 });
 
-class FinalizeGroup extends Component {
+class NewGroup extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     const isReady = state.params && state.params.mode === 'ready';
     return {
-      title: 'New Group',
+      title: 'Groups',
+      tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
       headerRight: (
         isReady ? <Button
           title="Create"
@@ -153,7 +155,7 @@ class FinalizeGroup extends Component {
   }
 }
 
-FinalizeGroup.propTypes = {
+NewGroup.propTypes = {
   createGroup: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     dispatch: PropTypes.func,
@@ -196,4 +198,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   createGroupMutation,
-)(FinalizeGroup);
+)(NewGroup);
