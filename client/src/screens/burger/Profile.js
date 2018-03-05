@@ -1,30 +1,16 @@
-/* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ActivityIndicator, Alert, Button, Text, View, Image } from 'react-native';
+import { ActivityIndicator, Text, View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import md5 from 'md5';
 import Prompt from 'react-native-prompt';
-import DeviceInfo from 'react-native-device-info';
-import codePush from 'react-native-code-push';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
-import UPDATE_LOCATION_MUTATION from '../graphql/update-location.mutation';
+import { extendAppStyleSheet } from '../style-sheet';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import UPDATE_USERPROFILE_MUTATION from '../graphql/update-userprofile.mutation';
-import { logout } from '../state/auth.actions';
-
-const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
-  props: ({ mutate }) => ({
-    updateLocation: ({ locationLat, locationLon }) =>
-      mutate({
-        variables: { loc: { locationLat, locationLon } },
-      }),
-  }),
-});
+import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
 
 const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   props: ({ mutate }) => ({
@@ -110,50 +96,14 @@ const styles = extendAppStyleSheet({
   },
 });
 
-class Settings extends Component {
+class Profile extends Component {
   static navigationOptions = {
-    title: 'Settings',
-    tabBarIcon: ({ tintColor }) => <Icon size={28} name="cog" color={tintColor} />,
+    title: 'More',
+    tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
   };
 
   state = {
     promptVisible: false,
-  }
-
-  updateLocation = () => {
-    const reportError = (error) => {
-      Alert.alert('Error updating location', error.message);
-    };
-
-    // `navigator` is a browser polyfill and does not need to be imported
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        this.props
-          .updateLocation({ locationLat: latitude, locationLon: longitude })
-          .then((result) => {
-            const success = result.data.updateLocation;
-            console.log(`Updated location: ${latitude},${longitude} (${success})`);
-          })
-          .catch((err) => {
-            console.log(`Failed to update location: ${latitude},${longitude} (${err})`);
-            reportError(err);
-          });
-      },
-      (err) => {
-        reportError(err);
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-    );
-  }
-
-  showEventResponse = () => {
-    const { navigate } = this.props.navigation;
-    navigate('EventResponse');
-  }
-
-  logout = () => {
-    this.props.dispatch(logout());
   }
 
   updateDisplayName = (value) => {
@@ -173,46 +123,6 @@ class Settings extends Component {
     cancelPrompt = () => {
       this.setState({ promptVisible: false });
     };
-
-    about = () => {
-      const DeviceInfoAvailable = DeviceInfo.typeof;
-
-      codePush.getCurrentPackage().then((result) => {
-        Alert.alert(
-          'About',
-          `
-        getBundleId: ${DeviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
-        BuildNumber: ${DeviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
-        getReadableVersion: ${DeviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
-        CodePushlabel: ${result ? result.label : 'No CP package installed'}
-        CodePushHash: ${result ? result.packageHash : 'No CP package installed'}
-        `,
-        );
-      });
-    }
-
-    checkForUpdate = () => {
-      codePush.checkForUpdate()
-        .then((update) => {
-          if (update) {
-            Alert.alert(
-              'Update Available',
-              `Version ${update.appVersion} (${(update.packageSize / 1024 / 1024).toFixed(2)}mb) is available for download`,
-              [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Install & Restart', onPress: this.installUpdate },
-              ],
-              { cancelable: false },
-            );
-          } else {
-            Alert.alert('No updates available.');
-          }
-        });
-    }
-
-    installUpdate = () => {
-      codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
-    }
 
     render() {
       const { loading, user } = this.props;
@@ -255,37 +165,17 @@ class Settings extends Component {
           <Text style={styles.username}>{user.username}</Text>
           <Text style={styles.emailHeader}>Email Address</Text>
           <Text style={styles.email}>{user.email}</Text>
-          <Text />
-          <Text />
-          <Button title="Force Update Location" onPress={this.updateLocation} />
-          <Text />
-          <Text />
-          <Button title="Test Event Response" onPress={this.showEventResponse} />
-          <Text />
-          <Text />
-          <Button title="Check For Updates" onPress={this.checkForUpdate} />
-          <Text />
-          <Text />
-          <Button title="About" onPress={this.about} />
-          <Text />
-          <Text />
-          <Button title="Logout" onPress={this.logout} />
         </View>
       );
     }
 }
 
-Settings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+Profile.propTypes = {
   loading: PropTypes.bool,
-  updateLocation: PropTypes.func,
   updateUserProfile: PropTypes.func,
   user: PropTypes.shape({
     username: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,
-  }),
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
   }),
 };
 
@@ -306,5 +196,4 @@ export default compose(
   connect(mapStateToProps),
   userQuery,
   updateUserProfileMutation,
-  updateLocationMutation,
-)(Settings);
+)(Profile);

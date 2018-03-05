@@ -10,6 +10,7 @@ import StackAuth from './screens/auth/StackAuth';
 import StackAvailability from './screens/availability/StackAvailability';
 import StackHome from './screens/home/StackHome';
 import StackGroups from './screens/groups/StackGroups';
+import StackBurger from './screens/burger/StackBurger';
 
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
@@ -21,8 +22,6 @@ import { firebaseClient } from './app';
 
 import Events from './screens/events.screen';
 import Event from './screens/event-detail.screen';
-import Settings from './screens/settings.screen';
-import EventResponse from './screens/event-response.screen';
 import EventResponseEdit from './screens/event-response-edit.screen';
 
 // this will determine whether the firebase modules have been compiled in or not
@@ -61,21 +60,6 @@ const StackEvents = StackNavigator(
   },
 );
 
-const StackSettings = StackNavigator(
-  {
-    Index: {
-      screen: Settings,
-    },
-    EventResponse: {
-      screen: EventResponse,
-    },
-  },
-  {
-    mode: 'modal',
-    headerMode: 'screen',
-  },
-);
-
 // tabs in main screen
 export const MainScreenNavigator = TabNavigator(
   {
@@ -83,7 +67,7 @@ export const MainScreenNavigator = TabNavigator(
     Groups: { screen: StackGroups },
     Availability: { screen: StackAvailability },
     Events: { screen: StackEvents },
-    Settings: { screen: StackSettings },
+    More: { screen: StackBurger },
   },
   tabBarConfiguration,
 );

@@ -9,8 +9,8 @@ import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import { extendAppStyleSheet } from '../style-sheet';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 const styles = extendAppStyleSheet({
   responseContainer: {
