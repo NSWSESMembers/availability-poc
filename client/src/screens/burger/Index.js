@@ -9,9 +9,8 @@ import codePush from 'react-native-code-push';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Button } from '../../components/Button';
-import { Holder } from '../../components/Container';
+import { Center } from '../../components/Container';
 
-import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
@@ -33,12 +32,6 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
         variables: { user: { displayName } },
       }),
   }),
-});
-
-const styles = extendAppStyleSheet({
-  container: {
-    flex: 1,
-  },
 });
 
 class Burger extends Component {
@@ -130,7 +123,7 @@ class Burger extends Component {
 
     render() {
       return (
-        <Holder style={styles.container}>
+        <Center>
           <Text />
           <Button text="User Profile" onPress={this.showUserProfile} />
           <Text />
@@ -148,7 +141,7 @@ class Burger extends Component {
           <Text />
           <Text />
           <Button text="Logout" onPress={this.logout} />
-        </Holder>
+        </Center>
       );
     }
 }
