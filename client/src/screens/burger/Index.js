@@ -82,15 +82,15 @@ class Burger extends Component {
   }
 
   about = () => {
-    const DeviceInfoAvailable = DeviceInfo.typeof;
+    const deviceInfoAvailable = DeviceInfo.typeof;
 
     codePush.getCurrentPackage().then((result) => {
       Alert.alert(
         'About',
         `
-        getBundleId: ${DeviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
-        BuildNumber: ${DeviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
-        getReadableVersion: ${DeviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
+        getBundleId: ${deviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
+        BuildNumber: ${deviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
+        getReadableVersion: ${deviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
         CodePushlabel: ${result ? result.label : 'No CP package installed'}
         CodePushHash: ${result ? result.packageHash : 'No CP package installed'}
         `,
