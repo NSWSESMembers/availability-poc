@@ -33,18 +33,16 @@ function getSteps() {
 }
 
 function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return 'Who will the request target?';
-    case 1:
-      return 'Enter a meaningful title and details for the request. Priority does nothing yet.';
-    case 2:
-      return 'What capabilities are required for the request?';
-    case 3:
-      return 'Dates can be an ongoing request with no end date or within a specified date range. e.g. a request for a weekend weather event.';
-    default:
-      return 'Unknown step';
+  const steps = [
+    'Who will the request target?',
+    'Enter a meaningful title and details for the request. Priority does nothing yet.',
+    'What capabilities are required for the request?',
+    'Dates can be an ongoing request with no end date or within a specified date range. e.g. a request for a weekend weather event.',
+  ];
+  if (step >= steps.length) {
+    return 'Unknown step';
   }
+  return steps[step];
 }
 
 class AddSchedule extends React.Component {
@@ -226,13 +224,8 @@ class AddSchedule extends React.Component {
                           />
                         </FormControl>
                         <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="priority">
-                            priority
-                          </InputLabel>
-                          <Select
-                            value={this.state.priority}
-                            onChange={this.onPriorityChange}
-                          >
+                          <InputLabel htmlFor="priority">priority</InputLabel>
+                          <Select value={this.state.priority} onChange={this.onPriorityChange}>
                             <MenuItem value="1" key={1}>
                               High
                             </MenuItem>
@@ -261,7 +254,7 @@ class AddSchedule extends React.Component {
                               Chainsaw L1 (Cross Cut)
                             </MenuItem>
                             <MenuItem value="2" key={2}>
-                            Chainsaw L2 (Intermediate Felling)
+                              Chainsaw L2 (Intermediate Felling)
                             </MenuItem>
                             <MenuItem value="3" key={3}>
                               Community First Responder Registation
@@ -282,7 +275,7 @@ class AddSchedule extends React.Component {
                               Generea Land Rescue Operator
                             </MenuItem>
                             <MenuItem value="9" key={9}>
-                            Land Search
+                              Land Search
                             </MenuItem>
                             <MenuItem value="10" key={10}>
                               Storm and Water Damage - Ground
