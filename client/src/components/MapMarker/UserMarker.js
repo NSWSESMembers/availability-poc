@@ -4,10 +4,14 @@ import { View, Text } from 'react-native';
 
 import styles from './styles';
 
-const UserMarker = ({ name }) => (
+const UserMarker = ({ name, status, destination }) => (
   <View style={styles.container}>
     <View style={styles.bubble}>
       <Text style={[styles.name]}>{name}</Text>
+      {destination &&
+        <Text style={[styles.destination]}>
+          {status.toUpperCase()} {destination.toUpperCase()}
+        </Text>}
     </View>
     <View style={styles.arrowBorder} />
     <View style={styles.arrow} />
@@ -16,6 +20,8 @@ const UserMarker = ({ name }) => (
 
 UserMarker.propTypes = {
   name: PropTypes.string.isRequired,
+  destination: PropTypes.string,
+  status: PropTypes.string,
 };
 
 export default UserMarker;

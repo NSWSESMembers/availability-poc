@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { AppState, NativeModules, BackHandler, ToastAndroid } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 
-import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
+import { addNavigationHelpers, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 
 import StackAuth from './screens/auth/StackAuth';
@@ -11,18 +11,13 @@ import StackAvailability from './screens/availability/StackAvailability';
 import StackHome from './screens/home/StackHome';
 import StackGroups from './screens/groups/StackGroups';
 import StackBurger from './screens/burger/StackBurger';
-
+import StackEvents from './screens/events/StackEvents';
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
 
 import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
 
 import { firebaseClient } from './app';
-
-
-import Events from './screens/events.screen';
-import Event from './screens/event-detail.screen';
-import EventResponseEdit from './screens/event-response-edit.screen';
 
 // this will determine whether the firebase modules have been compiled in or not
 const firebaseAvailable = !!NativeModules.RNFIRMessaging;
@@ -42,23 +37,6 @@ const tabBarConfiguration = {
     showLabel: true,
   },
 };
-
-const StackEvents = StackNavigator(
-  {
-    Index: {
-      screen: Events,
-    },
-    Event: {
-      screen: Event,
-    },
-    EventResponseEdit: {
-      screen: EventResponseEdit,
-    },
-  },
-  {
-    headerMode: 'screen',
-  },
-);
 
 // tabs in main screen
 export const MainScreenNavigator = TabNavigator(

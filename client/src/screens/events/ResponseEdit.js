@@ -10,10 +10,10 @@ import {
 import { graphql, compose } from 'react-apollo';
 import ModalSelector from 'react-native-modal-selector';
 
-import SET_EVENT_RESPONSE_MUTATION from '../graphql/set-event-response.mutation';
-import EVENT_QUERY from '../graphql/event.query';
+import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
+import EVENT_QUERY from '../../graphql/event.query';
 
-import { extendAppStyleSheet } from './style-sheet';
+import { extendAppStyleSheet } from '../style-sheet';
 
 const styles = extendAppStyleSheet({
   respondContainer: {
@@ -84,26 +84,31 @@ class EventResponseEdit extends Component {
     this.eventResponse = eventResponse;
     this.eventLocations = eventLocations;
     this.state = {
-      destination: eventResponse.destination.name,
-      destinationId: eventResponse.destination.id,
+      destination: (eventResponse ? eventResponse.destination.name : ''),
+      status: (eventResponse ? eventResponse.status : ''),
+      detail: (eventResponse ? eventResponse.detail : ''),
+      destinationId: (eventResponse ? eventResponse.destination.id : ''),
       loading: false,
     };
   }
 
   setAttending = () => {
-    this.updateAndReturn({ status: 'attending' });
+    this.setState({ status: 'attending' });
+    this.updateAndReturn('attending');
   }
   setUnavailable = () => {
-    this.updateAndReturn({ status: 'unavailable' });
+    this.setState({ status: 'unavailable' });
+    this.updateAndReturn('unavailable');
   }
   setTentative = () => {
-    this.updateAndReturn({ status: 'tentative' });
+    this.setState({ status: 'tentative' });
+    this.updateAndReturn('tentative');
   }
   handleDestinationPicked = (destination) => {
     this.setState({ destination: destination.label });
     this.setState({ destinationId: destination.key });
   };
-  updateAndReturn = (params) => {
+  updateAndReturn = (status) => {
     this.setState({
       loading: true,
     });
@@ -112,7 +117,8 @@ class EventResponseEdit extends Component {
       destination: {
         id: this.state.destinationId,
       },
-      ...params,
+      detail: this.state.detail,
+      status,
     })
       .then(() => {
         this.setState({ loading: false });
@@ -130,7 +136,6 @@ class EventResponseEdit extends Component {
       });
   }
   render() {
-    const { eventResponse } = this;
     const locationObjects = this.eventLocations.map(location => ({
       key: location.id,
       label: location.name,
@@ -138,8 +143,8 @@ class EventResponseEdit extends Component {
     return (
       <View style={styles.container}>
         <Text>{`Event ID: ${this.eventId}`}</Text>
-        <Text>{`Status: ${eventResponse.status}`}</Text>
-        <Text>{`Detail: ${eventResponse.detail}`}</Text>
+        <Text>{`Status: ${this.state.status}`}</Text>
+        <Text>{`Detail: ${this.state.detail}`}</Text>
         <Text>{`Destination: ID:${this.state.destinationId} Name:${this.state.destination}`}</Text>
         <ModalSelector
           data={locationObjects}

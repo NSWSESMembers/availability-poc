@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import moment from 'moment';
 import { goToEvent, goToRequest } from '../../state/navigation.actions';
 
@@ -14,11 +14,7 @@ import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
 const EventItem = ({ event, dispatch }) => (
-  <ListItem
-    title={event.name}
-    icon="bullhorn"
-    onPress={() => dispatch(goToEvent(event.id))}
-  />
+  <ListItem title={event.name} icon="bullhorn" onPress={() => dispatch(goToEvent(event.id))} />
 );
 EventItem.propTypes = {
   event: PropTypes.shape({
@@ -38,7 +34,7 @@ const ScheduleItem = ({ schedule, dispatch }) => {
   return (
     <ListItem
       title={schedule.name}
-      subtitle={subtitle}
+      supertitle={subtitle}
       icon="calendar"
       onPress={() => dispatch(goToRequest(schedule.id))}
     />
@@ -55,7 +51,6 @@ ScheduleItem.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-
 class Home extends Component {
   static navigationOptions = {
     title: 'Home',
@@ -64,23 +59,13 @@ class Home extends Component {
 
   renderItem = ({ item }) => {
     if (item.type === 'event') {
-      return (
-        <EventItem
-          event={item.event}
-          dispatch={this.props.dispatch}
-        />
-      );
+      return <EventItem event={item.event} dispatch={this.props.dispatch} />;
     }
     if (item.type === 'schedule') {
-      return (
-        <ScheduleItem
-          schedule={item.schedule}
-          dispatch={this.props.dispatch}
-        />
-      );
+      return <ScheduleItem schedule={item.schedule} dispatch={this.props.dispatch} />;
     }
     throw Error(`Invalid type: ${item.type}`);
-  }
+  };
 
   render() {
     const { loading, user } = this.props;
@@ -113,7 +98,7 @@ class Home extends Component {
     items.sort(i => i.sortKey);
 
     return (
-      <View style={{ flexDirection: 'row', flex: 1.0 }}>
+      <Container>
         <FlatList
           data={items}
           ListHeaderComponent={() =>
@@ -126,7 +111,7 @@ class Home extends Component {
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
         />
-      </View>
+      </Container>
     );
   }
 }

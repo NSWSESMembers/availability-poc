@@ -5,21 +5,28 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const ListItem = ({ title, subtitle, icon, onPress }) => (
+const ListItem = ({ title, bold, wide, supertitle, subtitle, icon, onPress }) => (
   <TouchableOpacity onPress={() => onPress()}>
-    <View style={styles.container}>
+    <View style={wide ? styles.containerWide : styles.container}>
       <View style={styles.textContainer}>
+        {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
+        {!bold ?
+          <Text style={styles.titleText}>{title}</Text>
+        : <Text style={styles.titleTextBold}>{title}</Text>
+        }
         {subtitle && <Text style={styles.subtitleText}>{subtitle}</Text>}
-        <Text style={styles.titleText}>{title}</Text>
       </View>
-      {icon && <Icon name={icon} size={30} />}
+      {icon && <Icon style={styles.icon} name={icon} size={30} />}
     </View>
   </TouchableOpacity>
 );
 
 ListItem.propTypes = {
   title: PropTypes.string,
+  bold: PropTypes.bool,
+  wide: PropTypes.bool,
   subtitle: PropTypes.string,
+  supertitle: PropTypes.string,
   icon: PropTypes.string,
   onPress: PropTypes.func,
 };

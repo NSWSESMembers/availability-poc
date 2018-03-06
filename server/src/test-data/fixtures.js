@@ -332,20 +332,20 @@ export const EVENTS = [
     responses: [
       {
         user: 'kiama1',
-        status: 'responding',
+        status: 'attending',
         destination: 'lhq',
         eta: minFromNow(13),
-        locationLatitude: -34.3979983,
-        locationLongitude: 150.8688112,
+        locationLatitude: -34.6710783,
+        locationLongitude: 150.8290703,
         locationTime: minFromNow(-1),
       },
       {
         user: 'kiama5',
-        status: 'responding',
+        status: 'tentative',
         destination: 'scene',
         eta: minFromNow(2),
-        locationLatitude: -34.3929698,
-        locationLongitude: 150.8688112,
+        locationLatitude: -34.6404527,
+        locationLongitude: 150.8503345,
         locationTime: minFromNow(-1),
       },
       {
@@ -355,15 +355,15 @@ export const EVENTS = [
       },
       {
         user: 'kiama7',
-        status: 'responding',
+        status: 'attending',
         destination: 'helo',
-        locationLatitude: -34.3929698,
-        locationLongitude: 150.8688112,
+        locationLatitude: -34.7287161,
+        locationLongitude: 150.8349063,
         locationTime: minFromNow(-1),
       },
       {
         user: 'kiama8',
-        status: 'responding',
+        status: 'tentative',
         detail: '',
         destination: 'lhq',
         eta: minFromNow(6),
@@ -395,7 +395,7 @@ export const EVENTS = [
     responses: [
       {
         user: 'parramatta1',
-        status: 'responding',
+        status: 'attending',
         destination: 'scene',
         eta: minFromNow(5),
         locationLatitude: -33.8323275,
@@ -404,7 +404,7 @@ export const EVENTS = [
       },
       {
         user: 'parramatta2',
-        status: 'responding',
+        status: 'attending',
         destination: 'scene',
         locationLatitude: -33.8323275,
         locationLongitude: 151.0063851,
