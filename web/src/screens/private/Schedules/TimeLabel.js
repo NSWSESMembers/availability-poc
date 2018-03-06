@@ -9,12 +9,18 @@ import Avatar from 'material-ui/Avatar';
 import convertStatus from '../../../selectors/status';
 import styles from './TimeLabel.styles';
 
-const TimeLabel = ({ classes, status, startTime, endTime, onClick }) => {
+const TimeLabel = ({ classes, status, startTime = 0, endTime = 0, onClick }) => {
   const hours = moment.duration(moment.unix(endTime).diff(moment.unix(startTime))).asHours();
 
   switch (convertStatus(status)) {
     case 'AV':
-      return (
+      return numeral(hours).format('0') === '0' ? (
+        <div className="opaque">
+          <Avatar className={classes.avatarAV} onClick={onClick}>
+            {numeral(hours).format('0[.]0')}
+          </Avatar>
+        </div>
+      ) : (
         <Avatar className={classes.avatarAV} onClick={onClick}>
           {numeral(hours).format('0[.]0')}
         </Avatar>
@@ -43,8 +49,8 @@ const TimeLabel = ({ classes, status, startTime, endTime, onClick }) => {
 TimeLabel.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   status: PropTypes.string.isRequired,
-  startTime: PropTypes.number.isRequired,
-  endTime: PropTypes.number.isRequired,
+  startTime: PropTypes.number,
+  endTime: PropTypes.number,
   onClick: PropTypes.func,
 };
 

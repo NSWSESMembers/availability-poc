@@ -14,7 +14,7 @@ const TimeCountLabel = ({ classes, status, amount }) => {
   switch (convertStatus(status)) {
     case 'AV':
       return (
-        <Tooltip className={classes.tooltip} title={`${amount} people available`}>
+        <Tooltip title={`${amount} people available`}>
           <Avatar
             className={classes.avatarAV}
             style={amount === '0' ? { opacity: 0.35 } : { opacity: 1 }}
