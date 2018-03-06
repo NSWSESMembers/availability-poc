@@ -17,6 +17,8 @@ import configureStore from './store/configureStore';
 
 import { logout } from './actions/auth';
 
+import './styles/styles.scss';
+
 const { store, persistor } = configureStore();
 
 const httpLink = new HttpLink({ uri: GRAPHQL_ENDPOINT });

@@ -27,6 +27,25 @@ module.exports = (env) => {
           test: /\.js$/,
           exclude: /node_modules/,
         },
+        {
+          test: /\.s?css$/,
+          use: CSSExtract.extract({
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  sourceMap: true,
+                },
+              },
+              {
+                loader: 'sass-loader',
+                options: {
+                  sourceMap: true,
+                },
+              },
+            ],
+          }),
+        },
       ],
     },
     plugins: [CSSExtract],
