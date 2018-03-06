@@ -16,6 +16,7 @@ import UPDATE_LOCATION_MUTATION from '../graphql/update-location.mutation';
 
 import UPDATE_USERPROFILE_MUTATION from '../graphql/update-userprofile.mutation';
 import { logout } from '../state/auth.actions';
+import { bugsnag } from '../app';
 
 const updateLocationMutation = graphql(UPDATE_LOCATION_MUTATION, {
   props: ({ mutate }) => ({
@@ -214,6 +215,12 @@ class Settings extends Component {
       codePush.sync({ updateDialog: false, installMode: codePush.InstallMode.IMMEDIATE });
     }
 
+    crashReport = () => {
+      if (bugsnag) {
+        bugsnag.notify(new Error('Test error'));
+      }
+    };
+
     render() {
       const { loading, user } = this.props;
 
@@ -267,6 +274,9 @@ class Settings extends Component {
           <Text />
           <Text />
           <Button title="About" onPress={this.about} />
+          <Text />
+          <Text />
+          <Button title="Test Bugsnag" onPress={this.crashReport} />
           <Text />
           <Text />
           <Button title="Logout" onPress={this.logout} />
