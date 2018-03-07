@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 import Avatar from 'material-ui/Avatar';
+import PersonIcon from 'material-ui-icons/Person';
+import SentimentVeryDissatisfiedIcon from 'material-ui-icons/PersonOutline';
+import SentimentNeutralIcon from 'material-ui-icons/PeopleOutline';
 
 import Tooltip from 'material-ui/Tooltip';
 
-import convertStatus from '../../../selectors/status';
+import { convertStatus } from '../../../selectors/status';
 
 import styles from './TimeCountLabel.styles';
 
@@ -19,7 +22,7 @@ const TimeCountLabel = ({ classes, status, amount }) => {
             className={classes.avatarAV}
             style={amount === '0' ? { opacity: 0.35 } : { opacity: 1 }}
           >
-            {amount}
+            <PersonIcon />
           </Avatar>
         </Tooltip>
       );
@@ -30,7 +33,7 @@ const TimeCountLabel = ({ classes, status, amount }) => {
             className={classes.avatarUN}
             style={amount === '0' ? { opacity: 0.35 } : { opacity: 1 }}
           >
-            {amount}
+            <SentimentVeryDissatisfiedIcon />
           </Avatar>
         </Tooltip>
       );
@@ -41,7 +44,7 @@ const TimeCountLabel = ({ classes, status, amount }) => {
             className={classes.avatarUR}
             style={amount === '0' ? { opacity: 0.35 } : { opacity: 1 }}
           >
-            {amount}
+            <PersonIcon />
           </Avatar>
         </Tooltip>
       );

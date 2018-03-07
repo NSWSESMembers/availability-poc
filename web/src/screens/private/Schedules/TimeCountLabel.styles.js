@@ -1,4 +1,4 @@
-export default () => ({
+export default theme => ({
   avatarAV: {
     backgroundColor: 'green',
     color: 'white',
@@ -28,5 +28,10 @@ export default () => ({
   },
   tooltip: {
     textAlign: 'center',
+  },
+  icon: {
+    padding: 0,
+    marginRight: 3,
+    color: 'green',
   },
 });

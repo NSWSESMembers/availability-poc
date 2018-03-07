@@ -5,4 +5,9 @@ export default () => ({
     borderStyle: 'solid',
     padding: 0,
   },
+  flexCenter: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

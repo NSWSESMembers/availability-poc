@@ -11,17 +11,9 @@ import { withStyles } from 'material-ui/styles';
 
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import { CircularProgress } from 'material-ui/Progress';
+import TextField from 'material-ui/TextField';
 import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from 'material-ui/Dialog';
 
 import Paper from 'material-ui/Paper';
 
@@ -33,20 +25,43 @@ import ViewScheduleItem from './ViewScheduleItem';
 import { peopleCount } from '../../../selectors/timeSegments';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
+import {
+  CREATE_TIME_SEGMENT_MUTATION,
+  REMOVE_TIME_SEGMENT_MUTATION,
+  UPDATE_TIME_SEGMENT_MUTATION,
+} from '../../../graphql/time-segment.mutation';
+
+import TimeModal from '../../../components/Modals/TimeModal';
 
 import styles from './ViewSchedule.styles';
 
 class ViewSchedule extends React.Component {
   state = {
-    open: false,
+    modalOpen: false,
+    modalStatus: '',
+    modalStartTime: 0,
+    modalEndTime: 0,
+    modalUser: undefined,
   };
 
-  onClick = () => {
-    console.log('item');
-    this.setState({ open: true });
+  onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
+    this.setState({ modalOpen: true, modalUser, modalStatus, modalStartTime, modalEndTime });
   };
-  handleClose = () => {
-    this.setState({ open: false });
+  onCancelModal = () => {
+    this.setState({ modalOpen: false });
+  };
+  onSaveModal = (newStartTime, newEndTime) => {
+    const startTime = moment(newStartTime).unix();
+    const endTime = moment(newEndTime).unix();
+
+    console.log(startTime, 'next', endTime);
+    this.props.createTimeSegment({
+      scheduleId: parseInt(this.props.match.params.id, 10),
+      status: this.state.modalStatus,
+      startTime,
+      endTime,
+    });
+    this.setState({ modalOpen: false });
   };
   render() {
     const { classes, loading, schedule } = this.props;
@@ -91,8 +106,14 @@ class ViewSchedule extends React.Component {
           <Typography variant="title" color="inherit" className={classes.paperTitle}>
             {schedule.name} - ({schedule.group.name})
           </Typography>
-          <Typography variant="title" color="inherit" className={classes.paperTitle} />
         </div>
+        <Typography gutterBottom noWrap>
+          <br />
+          {`
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          `}
+        </Typography>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
@@ -154,7 +175,7 @@ class ViewSchedule extends React.Component {
                       {column.label}
                     </TableCell>
                   ) : (
-                    <TableCell key={column.id} className={classes.tableCellHeader}>
+                    <TableCell key={column.id} className={classes.tableCellHeader} style={{ paddingRight: 0 }}>
                       <div
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
@@ -177,10 +198,10 @@ class ViewSchedule extends React.Component {
                     ) : (
                       <ViewScheduleItem
                         key={`vsi-${user.id}-${column.startTime}`}
-                        userId={user.id}
+                        user={user}
                         startTime={column.startTime}
                         endTime={column.endTime}
-                        onClick={this.onClick}
+                        onOpenModal={this.onOpenModal}
                         timeSegments={schedule.timeSegments}
                       />
                     )),
@@ -189,34 +210,15 @@ class ViewSchedule extends React.Component {
             ))}
           </TableBody>
         </Table>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Edit Availability</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              In this modal, you will be able to edit the availability item (or remove it)
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Availability"
-              type="email"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleClose} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <TimeModal
+          onCancel={this.onCancelModal}
+          onSave={this.onSaveModal}
+          open={this.state.modalOpen}
+          status={this.state.modalStatus}
+          startTime={this.state.modalStartTime}
+          endTime={this.state.modalEndTime}
+          user={this.state.modalUser}
+        />
       </Paper>
     );
   }
@@ -225,6 +227,11 @@ class ViewSchedule extends React.Component {
 ViewSchedule.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.node,
+    }).isRequired,
+  }).isRequired,
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -256,7 +263,7 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ownProps => ({
     variables: { id: ownProps.match.params.id },
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
   }),
   props: ({ data: { loading, schedule } }) => ({
     schedule,
@@ -264,8 +271,54 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
   }),
 });
 
+const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
+  props: ({ mutate }) => ({
+    createTimeSegment: ({ scheduleId, status, startTime, endTime }) =>
+      mutate({
+        variables: { timeSegment: { scheduleId, status, startTime, endTime } },
+        refetchQueries: [
+          {
+            query: SCHEDULE_QUERY,
+            variables: { id: scheduleId },
+          },
+        ],
+      }),
+  }),
+});
+
+const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
+  props: ({ mutate }) => ({
+    removeTimeSegment: ({ segmentId }) =>
+      mutate({
+        variables: { timeSegment: { segmentId } },
+        refetchQueries: [
+          {
+            query: SCHEDULE_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
+  props: ({ mutate }) => ({
+    updateTimeSegment: ({ segmentId, status, startTime, endTime }) =>
+      mutate({
+        variables: { timeSegment: { segmentId, status, startTime, endTime } },
+        refetchQueries: [
+          {
+            query: SCHEDULE_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), scheduleQuery)(ViewSchedule);
+export default compose(connect(mapStateToProps), withStyles(styles), scheduleQuery,
+  createTimeSegment,
+  removeTimeSegment,
+  updateTimeSegment)(ViewSchedule);

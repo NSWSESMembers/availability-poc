@@ -27,5 +27,6 @@ export default () => ({
   },
   toolbar: {
     display: 'flex',
+    justifyContent: 'space-between',
   },
 });
