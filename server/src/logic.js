@@ -348,10 +348,10 @@ export const getHandlers = ({ models, creators: Creators }) => {
                 if (result.length > 0) {
                   return result[0].update(updateArgs);
                 }
-
                 return Creators.eventResponse({
                   event,
                   user,
+                  destination: destination[0],
                   ...updateArgs,
                 });
               });
