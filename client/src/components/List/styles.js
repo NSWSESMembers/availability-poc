@@ -15,8 +15,8 @@ const styles = extendAppStyleSheet({
     paddingRight: 16,
     marginLeft: 14,
     marginRight: 14,
-    marginTop: 0,
-    marginBottom: 6,
+    marginTop: 6,
+    marginBottom: 0,
   },
   textContainer: {
     flex: 1,
