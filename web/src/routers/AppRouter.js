@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Reboot from 'material-ui/Reboot';
 
 import LoginPage from '../screens/public/LoginPage';
-import SignupPage from '../screens/public/SignupPage';
+import SignupPage from '../screens/public/SignUpPage';
 import NotFoundPage from '../screens/public/NotFoundPage';
 
 import Dashboard from '../screens/private/Dashboard';

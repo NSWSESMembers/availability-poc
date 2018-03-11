@@ -42,7 +42,6 @@ app.use(
   graphqlExpress((req) => {
     let user;
     let device;
-    console.log(req);
 
     // if the user is not logged in we assume they are the test user
     // to ease testing and enable the use of GraphiQL

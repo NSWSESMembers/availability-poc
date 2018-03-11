@@ -176,14 +176,12 @@ class ViewSchedule extends React.Component {
                       </TableCell>
                     ) : (
                       <ViewScheduleItem
-                        key={`${user.id}-${column.startTime}`}
+                        key={`vsi-${user.id}-${column.startTime}`}
                         userId={user.id}
                         startTime={column.startTime}
                         endTime={column.endTime}
                         onClick={this.onClick}
-                        timeSegments={schedule.timeSegments.filter(
-                          timeSegment => timeSegment.user.id === user.id,
-                        )}
+                        timeSegments={schedule.timeSegments}
                       />
                     )),
                 )}

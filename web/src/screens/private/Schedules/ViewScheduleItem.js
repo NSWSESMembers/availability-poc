@@ -3,36 +3,61 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { TableCell } from 'material-ui/Table';
 
+import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
+
 import styles from './ViewScheduleItem.styles';
 
 import TimeLabel from './TimeLabel';
 
 const ViewScheduleItem = ({ classes, userId, startTime, endTime, timeSegments, onClick }) => {
-  const userSegments = timeSegments.filter(
-    timeSegment => timeSegment.startTime >= startTime && timeSegment.endTime < endTime,
+  const currentSegments = timeSegments.filter(
+    timeSegment =>
+      timeSegment.startTime >= startTime &&
+      timeSegment.endTime < endTime &&
+      timeSegment.user.id === userId,
   );
 
-  if (userSegments.length === 0) {
+  const availableCount = currentSegments.filter(
+    userSegment => userSegment.status === STATUS_AVAILABILITY,
+  );
+  const unavailableCount = currentSegments.filter(
+    userSegment => userSegment.status === STATUS_UNAVAILABLE,
+  );
+  const urgentCount = currentSegments.filter(
+    userSegment => userSegment.status === STATUS_UNLESS_URGENT,
+  );
+
+  return (
+    <TableCell className={classes.tableCell}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {availableCount === 0 ? (
+          <TimeLabel status={STATUS_AVAILABILITY} onClick={onClick} />
+        ) : (
+          <TimeLabel status={STATUS_AVAILABILITY} onClick={onClick} />
+        )}
+        <TimeLabel status={STATUS_UNAVAILABLE} onClick={onClick} />
+        <TimeLabel status={STATUS_UNLESS_URGENT} onClick={onClick} />
+      </div>
+    </TableCell>
+  );
+
+  if (currentSegments.length === 0) {
     return <TableCell className={classes.tableCell} />;
   }
 
   return (
-    <TableCell key={userId} className={classes.tableCell}>
+    <TableCell className={classes.tableCell}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {timeSegments
-          .filter(
-            timeSegment => timeSegment.startTime >= startTime && timeSegment.startTime < endTime,
-          )
-          .map(userSegment => (
-            <div key={`${userSegment.user.id}-${userSegment.startTime}`}>
-              <TimeLabel
-                status={userSegment.status}
-                startTime={userSegment.startTime}
-                endTime={userSegment.endTime}
-                onClick={onClick}
-              />
-            </div>
-          ))}
+        {currentSegments.map(userSegment => (
+          <div key={`${userSegment.user.id}-${userSegment.startTime}-${userSegment.status}`}>
+            <TimeLabel
+              status={userSegment.status}
+              startTime={userSegment.startTime}
+              endTime={userSegment.endTime}
+              onClick={onClick}
+            />
+          </div>
+        ))}
       </div>
     </TableCell>
   );
