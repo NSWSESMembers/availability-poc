@@ -352,6 +352,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
                   return Creators.eventResponse({
                     event,
                     user,
+                    destination: destination[0],
                     ...updateArgs,
                   });
                 });
