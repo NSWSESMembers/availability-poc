@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState, NativeModules, BackHandler, ToastAndroid } from 'react-native';
-import { graphql, compose } from 'react-apollo';
+import { AppState, BackHandler, ToastAndroid } from 'react-native';
+import { compose } from 'react-apollo';
 
 import { addNavigationHelpers, TabNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -14,13 +14,6 @@ import StackBurger from './screens/burger/StackBurger';
 import StackEvents from './screens/events/StackEvents';
 import { Container } from './components/Container';
 import { Progress } from './components/Progress';
-
-import UPDATE_TOKEN_MUTATION from './graphql/update-token.mutation';
-
-import { firebaseClient } from './app';
-
-// this will determine whether the firebase modules have been compiled in or not
-const firebaseAvailable = !!NativeModules.RNFIRMessaging;
 
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
@@ -59,7 +52,6 @@ class AppNavState extends Component {
   }
   state = {
     appState: AppState.currentState,
-    token: '',
   };
 
   componentWillMount() {
@@ -77,24 +69,6 @@ class AppNavState extends Component {
       return true;
     });
     AppState.addEventListener('change', this.handleAppStateChange);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.auth.token && firebaseAvailable) {
-      firebaseClient.init().then((registrationId) => {
-        if (this.props.auth && this.props.registrationId !== this.state.token) {
-          this.setState({ token: registrationId });
-          return Promise.resolve(this.props.updateToken({ token: registrationId }));
-        }
-        return Promise.resolve();
-      });
-    }
-
-    if (!nextProps.auth && firebaseAvailable) {
-      if (firebaseClient.token) {
-        firebaseClient.clear();
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -131,23 +105,11 @@ AppNavState.propTypes = {
   dispatch: PropTypes.func.isRequired,
   nav: PropTypes.shape().isRequired,
   auth: PropTypes.shape().isRequired,
-  updateToken: PropTypes.func,
-  token: PropTypes.string,
-  registrationId: PropTypes.string,
 };
-
-const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
-  props: ({ mutate }) => ({
-    updateToken: token =>
-      mutate({
-        variables: { token },
-      }),
-  }),
-});
 
 const mapStateToProps = ({ auth, nav }) => ({
   auth,
   nav,
 });
 
-export default compose(connect(mapStateToProps), updateTokenMutation)(AppNavState);
+export default compose(connect(mapStateToProps))(AppNavState);
