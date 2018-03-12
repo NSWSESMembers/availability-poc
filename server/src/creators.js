@@ -29,7 +29,7 @@ export const getCreators = (models) => {
       });
     },
 
-    event: ({ name, details, sourceIdentifier, permalink, group }) => {
+    event: ({ name, details, sourceIdentifier, permalink, group, location }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -38,11 +38,19 @@ export const getCreators = (models) => {
         details,
         sourceIdentifier,
         permalink,
+        location,
         groupId: group.id,
         startTime: (new Date()).getTime() / 1000,
         endTime: DISTANT_FUTURE, // no end time
       });
     },
+
+    location: ({ name, detail, locationLatitude, locationLongitude }) => EventLocation.create({
+      name,
+      detail,
+      locationLatitude,
+      locationLongitude,
+    }),
 
     tag: ({ name, organisation, user, group }) => {
       if (!user || !user.id) {
