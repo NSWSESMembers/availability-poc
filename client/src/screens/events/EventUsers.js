@@ -52,6 +52,7 @@ class EventUsers extends Component {
     if (!loading || event) {
       event.responses.forEach((r) => {
         const tempResponse = Object.assign({}, r); // clone r to tempResponse
+        if (!tempResponse.detail) delete tempResponse.detail;
         switch (tempResponse.status) {
           case 'unavailable':
             unavailableUsers.push(tempResponse);
@@ -102,7 +103,6 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
                   icon="user"
-                  onPress={() => this.handleEventPress(event)}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
@@ -125,7 +125,6 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
                   icon="user"
-                  onPress={(undefined)}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
@@ -148,7 +147,6 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.detail}
                   icon="user"
-                  onPress={(undefined)}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
