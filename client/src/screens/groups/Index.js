@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Button, Text, TouchableHighlight, View } from 'react-native';
+import { FlatList, Button, Text, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -8,48 +8,12 @@ import { connect } from 'react-redux';
 import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import { ButtonNavBar } from '../../components/Button';
+import { ListItem } from '../../components/List';
+import { Container, Holder } from '../../components/Container';
+import { Progress } from '../../components/Progress';
 
 
 const styles = extendAppStyleSheet({
-  groupContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  groupName: {
-    fontWeight: 'bold',
-    flex: 0.7,
-  },
-  groupTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 6,
-  },
-  groupText: {
-    color: '#8c8c8c',
-  },
-  groupImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-  },
-  groupTitleContainer: {
-    flexDirection: 'row',
-  },
-  groupLastUpdated: {
-    flex: 0.3,
-    color: '#8c8c8c',
-    fontSize: 11,
-    textAlign: 'right',
-  },
-  groupUsername: {
-    paddingVertical: 4,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -73,27 +37,17 @@ class Group extends Component {
   }
 
   render() {
-    const { id, name } = this.props.group;
+    const { name } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
 
     return (
-      <TouchableHighlight key={id} onPress={this.goToGroup}>
-        <View style={styles.groupContainer}>
-          <Icon name="group" size={24} color="orange" />
-          <View style={styles.groupTextContainer}>
-            <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>
-                {name}
-              </Text>
-              <Text style={styles.groupLastUpdated}>{id}</Text>
-            </View>
-            <Text style={styles.groupText} numberOfLines={1}>
-              {tags}
-            </Text>
-          </View>
-          <Icon name="angle-right" size={24} color="#8c8c8c" />
-        </View>
-      </TouchableHighlight>
+      <ListItem
+        title={name}
+        bold
+        subtitle={tags !== '' ? tags : 'No Tags'}
+        icon="group"
+        onPress={this.goToGroup}
+      />
     );
   }
 }
@@ -152,28 +106,28 @@ class Groups extends Component {
   render() {
     const { loading, user, networkStatus } = this.props;
 
-    // render loading placeholder while we fetch messages
+    // render loading placeholder while we fetch groups
     if (loading || !user) {
       return (
-        <View style={[styles.loading, styles.container]}>
-          <ActivityIndicator />
-        </View>
+        <Container>
+          <Progress />
+        </Container>
       );
     }
 
     if (user && !user.groups.length) {
       return (
-        <View style={styles.container}>
-          <Text onPress={this.onRefresh} style={styles.warning}>
+        <Holder wide transparent>
+          <Text onPress={this.onRefresh}>
             You are not a member of any groups. click to reload
           </Text>
-        </View>
+        </Holder>
       );
     }
 
     // render list of groups for user
     return (
-      <View style={styles.container}>
+      <Holder wide transparent>
         <FlatList
           data={user.groups}
           keyExtractor={this.keyExtractor}
@@ -181,7 +135,7 @@ class Groups extends Component {
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
-      </View>
+      </Holder>
     );
   }
 }

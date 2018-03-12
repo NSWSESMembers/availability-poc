@@ -269,9 +269,9 @@ class EventDetail extends Component {
 
     if (!event) {
       return (
-        <View style={styles.container}>
+        <Container>
           <Text style={styles.warning}>Unable to load event.</Text>
-        </View>
+        </Container>
       );
     }
 

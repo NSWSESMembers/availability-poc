@@ -2,66 +2,18 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   FlatList,
-  ActivityIndicator,
-  Text,
-  TouchableHighlight,
-  View,
 } from 'react-native';
-import { graphql, compose } from 'react-apollo';
-import { SearchBar } from 'react-native-elements';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { graphql, compose } from 'react-apollo';
+import { SearchBar } from 'react-native-elements';
+import { Container, Holder } from '../../components/Container';
+import { ListItem } from '../../components/List';
+import { Progress } from '../../components/Progress';
 
-import { extendAppStyleSheet } from '../style-sheet';
-import ALL_GROUPS_QUERY from '../../graphql/all-groups.query';
-
-const styles = extendAppStyleSheet({
-  groupContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  groupName: {
-    fontWeight: 'bold',
-    flex: 0.7,
-  },
-  groupTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 6,
-  },
-  groupText: {
-    color: '#8c8c8c',
-  },
-  groupImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-  },
-  groupTitleContainer: {
-    flexDirection: 'row',
-  },
-  groupLastUpdated: {
-    flex: 0.3,
-    color: '#8c8c8c',
-    fontSize: 11,
-    textAlign: 'right',
-  },
-  groupUsername: {
-    paddingVertical: 4,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-});
+import SEARCH_GROUP_QUERY from '../../graphql/search-group.query';
 
 class Group extends Component {
   constructor(props) {
@@ -76,25 +28,19 @@ class Group extends Component {
   }
 
   render() {
-    const { id, name } = this.props.group;
+    const { name } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
     this.state = {
       memberAlready: _.some(this.props.myGroups, g => g.id === this.props.group.id),
     };
     return (
-      <TouchableHighlight key={id} onPress={this.goToGroup}>
-        <View style={styles.groupContainer}>
-          <Icon name={this.state.memberAlready ? 'users' : 'user-plus'} color={this.state.memberAlready ? 'orange' : 'green'} size={24} />
-          <View style={styles.groupTextContainer}>
-            <View style={styles.groupTitleContainer}>
-              <Text style={styles.groupName} numberOfLines={1}>{name}</Text>
-              <Text style={styles.groupLastUpdated}>{id}</Text>
-            </View>
-            <Text style={styles.groupText} numberOfLines={1}>{tags}
-            </Text>
-          </View>
-        </View>
-      </TouchableHighlight>
+      <ListItem
+        title={name}
+        bold
+        subtitle={tags !== '' ? tags : 'No Tags'}
+        icon="group"
+        onPress={this.goToGroup}
+      />
     );
   }
 }
@@ -121,7 +67,7 @@ Group.propTypes = {
   }),
 };
 
-class AllGroups extends Component {
+class SearchGroups extends Component {
   static navigationOptions = {
     title: 'Search Groups',
     tabBarLabel: 'Groups',
@@ -132,6 +78,10 @@ class AllGroups extends Component {
 
   onRefresh = () => {
     this.props.refetch();
+  }
+
+  applyFilter = (text) => {
+    this.props.refetch({ filter: text });
   }
 
   keyExtractor = item => item.id;
@@ -146,34 +96,21 @@ class AllGroups extends Component {
 
   render() {
     const { loading, user, networkStatus } = this.props;
-    // render loading placeholder while we fetch messages
-    if (loading || !user) {
-      return (
-        <View style={[styles.loading, styles.container]}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-
-    if (user && !user.organisation.groups.length) {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.warning}>
-            There are no groups in this organisation
-          </Text>
-        </View>
-      );
-    }
 
     // render list of groups for user
     return (
-      <View style={styles.container}>
+      <Holder wide transparent>
         <SearchBar
           lightTheme
-          onChangeText={null}
+          onChangeText={text => this.applyFilter(text)}
           onClearText={null}
           placeholder="Search Here...but dont expect anything to happen"
         />
+        {(loading || !user) ? (
+          <Container>
+            <Progress />
+          </Container>
+      ) : (
         <FlatList
           data={user.organisation.groups}
           keyExtractor={this.keyExtractor}
@@ -182,11 +119,13 @@ class AllGroups extends Component {
           extraData={user} // redraw if this changes
           refreshing={networkStatus === 4}
         />
-      </View>
+      )
+    }
+      </Holder>
     );
   }
 }
-AllGroups.propTypes = {
+SearchGroups.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -218,8 +157,12 @@ AllGroups.propTypes = {
   }),
 };
 
-const groupsQuery = graphql(ALL_GROUPS_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
+const groupsQuery = graphql(SEARCH_GROUP_QUERY, {
+  options: () => ({
+    variables: {
+      filter: '',
+    },
+  }),
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading, networkStatus, refetch, user,
   }),
@@ -232,4 +175,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   groupsQuery,
-)(AllGroups);
+)(SearchGroups);

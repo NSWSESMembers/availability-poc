@@ -99,7 +99,7 @@ export const Schema = [
     id: Int! # unique id for the organisation
     name: String!
     users: [User]!
-    groups(id: Int): [Group]!
+    groups(id: Int,filter: String): [Group]!
     tags: [Tag]!
     capabilities: [Capability]!
   }

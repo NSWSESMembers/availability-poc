@@ -2,14 +2,14 @@ import gql from 'graphql-tag';
 
 // get the user and all user's groups
 export default gql`
-  query group($groupId: Int!){
+  query group($filter: String,$groupId: Int){
     user {
       id
       displayName
       username
       organisation {
         id
-         groups(id: $groupId) {
+         groups(filter: $filter,id: $groupId) {
             name
             id
             tags {

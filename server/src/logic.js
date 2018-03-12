@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
+
 import { JWT_SECRET } from './config';
 import { schedulePerms, eventPerms } from './perms';
 
@@ -380,6 +382,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
         // TODO: think about who we show the complete organisation group list to
         if (args.id) {
           return org.getGroups({ where: { Id: args.id } });
+        }
+        if (args.filter) {
+          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } } });
         }
         return org.getGroups();
       },
