@@ -317,7 +317,7 @@ class EventDetail extends Component {
               wide
               bold
               title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
-              subtitle={myStatus ? (`Destination ${myStatus.destination.name}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
+              subtitle={myStatus ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
               icon="location-arrow"
               onPress={() => this.editResponse(myStatus)}
             />
