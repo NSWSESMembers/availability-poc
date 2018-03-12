@@ -4,64 +4,18 @@ import {
   FlatList,
   ActivityIndicator,
   Text,
-  TouchableHighlight,
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import { ListItem } from '../../components/List';
+import { Holder } from '../../components/Container';
 
-import { extendAppStyleSheet } from './style-sheet';
-import CURRENT_USER_QUERY from '../graphql/current-user.query';
+import { extendAppStyleSheet } from '../style-sheet';
+import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 const styles = extendAppStyleSheet({
-  eventContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  eventName: {
-    fontWeight: 'bold',
-    flex: 0.7,
-    fontSize: 16,
-  },
-  eventTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 6,
-  },
-  eventText: {
-    color: '#8c8c8c',
-    fontSize: 14,
-  },
-  eventImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-  },
-  eventTitleContainer: {
-    flexDirection: 'row',
-  },
-  eventLastUpdated: {
-    flex: 0.3,
-    color: '#8c8c8c',
-    fontSize: 12,
-    textAlign: 'right',
-  },
-  eventUsername: {
-    paddingVertical: 4,
-  },
-  header: {
-    alignItems: 'flex-start',
-    padding: 6,
-    borderColor: '#eee',
-    borderBottomWidth: 1,
-  },
   warning: {
     textAlign: 'center',
     padding: 12,
@@ -74,29 +28,15 @@ class Event extends Component {
   }
 
   render() {
-    const { id, name, details } = this.props.event;
-    const time = '5 mins ago';
+    const { name, details } = this.props.event;
     return (
-      <TouchableHighlight
-        key={id}
+      <ListItem
+        title={name}
+        bold
+        subtitle={details}
+        icon="bullhorn"
         onPress={this.goToEvent}
-      >
-        <View style={styles.eventContainer}>
-          <Icon name="bullhorn" size={24} color="orange" />
-          <View style={styles.eventTextContainer}>
-            <View style={styles.eventTitleContainer}>
-              <Text style={styles.eventName}>{name}</Text>
-              <Text style={styles.eventLastUpdated}>{time}</Text>
-            </View>
-            <Text style={styles.eventText} numberOfLines={2}>{details}</Text>
-          </View>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#8c8c8c"
-          />
-        </View>
-      </TouchableHighlight>
+      />
     );
   }
 }
@@ -159,7 +99,7 @@ class Events extends Component {
 
     // render list of events for user
     return (
-      <View style={styles.container}>
+      <Holder wide transparent>
         <FlatList
           data={events}
           keyExtractor={this.keyExtractor}
@@ -167,7 +107,7 @@ class Events extends Component {
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
-      </View>
+      </Holder>
     );
   }
 }

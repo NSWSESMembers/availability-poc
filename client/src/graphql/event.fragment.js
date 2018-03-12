@@ -7,6 +7,8 @@ const EVENT_FRAGMENT = gql`
     id
     name
     details
+    sourceIdentifier
+    permalink
     group {
       id
     }

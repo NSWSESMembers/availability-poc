@@ -2,11 +2,11 @@ import { StackNavigator } from 'react-navigation';
 
 import Burger from './Index';
 import Profile from './Profile';
-import EventResponse from './event-response.screen';
+import EventResponse from '../events/Response';
 
 import NavOptions from '../../config/NavOptions';
 
-const StackGroups = StackNavigator(
+const StackBurger = StackNavigator(
   {
     Groups: {
       screen: Burger,
@@ -24,4 +24,4 @@ const StackGroups = StackNavigator(
   },
 );
 
-export default StackGroups;
+export default StackBurger;

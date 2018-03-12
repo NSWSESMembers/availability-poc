@@ -2,25 +2,45 @@ import { extendAppStyleSheet } from '../../screens/style-sheet';
 
 const styles = extendAppStyleSheet({
   container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     elevation: 1,
     borderRadius: 2,
     backgroundColor: 'white',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start', // main axis
-    alignItems: 'center', // cross axis
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 18,
-    paddingRight: 16,
-    marginLeft: 14,
-    marginRight: 14,
-    marginTop: 6,
-    marginBottom: 0,
+    paddingLeft: 8,
+    paddingRight: 8,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 0,
+    marginBottom: 6,
+  },
+  containerWide: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    elevation: 1,
+    borderRadius: 2,
+    backgroundColor: 'white',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 8,
+    paddingRight: 8,
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 0,
+    marginBottom: 6,
   },
   textContainer: {
-    flex: 1,
     flexDirection: 'column',
+    flexShrink: 1,
+  },
+  supertitleText: {
+    textAlignVertical: 'top',
+    includeFontPadding: false,
+    flex: 0,
+    fontSize: 12,
+    color: '#6B6B6B',
   },
   subtitleText: {
     textAlignVertical: 'bottom',
@@ -34,6 +54,16 @@ const styles = extendAppStyleSheet({
     includeFontPadding: false,
     flex: 0,
     marginRight: 8,
+  },
+  titleTextBold: {
+    textAlignVertical: 'top',
+    includeFontPadding: false,
+    flex: 0,
+    marginRight: 8,
+    fontWeight: 'bold',
+  },
+  icon: {
+    alignSelf: 'center',
   },
 });
 

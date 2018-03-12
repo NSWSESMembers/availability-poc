@@ -1,14 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  Text,
-  Button,
-  View,
-  Dimensions,
-} from 'react-native';
+import { Text, View, Dimensions, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,67 +9,22 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { extendAppStyleSheet } from './style-sheet';
-import EVENT_QUERY from '../graphql/event.query';
-import SET_EVENT_RESPONSE_MUTATION from '../graphql/set-event-response.mutation';
-import markers from '../assets/images/map/markers';
-import { UserMarker } from '../components/MapMarker/';
+import { extendAppStyleSheet } from '../style-sheet';
+import EVENT_QUERY from '../../graphql/event.query';
+import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
+import markers from '../../assets/images/map/markers';
+import { UserMarker } from '../../components/MapMarker/';
+import { Container, Holder } from '../../components/Container';
+import { ListItem } from '../../components/List';
+
+import { Progress } from '../../components/Progress';
 
 const styles = extendAppStyleSheet({
-  respondContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  respondName: {
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  respondTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 6,
-  },
-  respondStatus: {
-    flex: 1,
-    color: '#8c8c8c',
-    fontSize: 11,
-  },
-  headerContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  headerTextContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 6,
-  },
-  headerName: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  headerDetail: {
-  },
   map: {
     backgroundColor: '#f9f9f9',
-    flex: 1,
-    flexDirection: 'row',
-    height: 300,
-  },
-  placeholder: {
-    flex: 1,
-    fontWeight: 'bold',
-    fontSize: 48,
-    textAlign: 'center',
+    flexGrow: 1,
+    zIndex: -1,
+    ...StyleSheet.absoluteFillObject,
   },
 });
 
@@ -87,7 +35,6 @@ const LATITUDE = -34.426498294;
 const LONGITUDE = 150.876496494;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
 
 class EventHeader extends React.Component {
   static makeEventLocations(eventLocations) {
@@ -112,6 +59,8 @@ class EventHeader extends React.Component {
       if (r.locationLatitude !== null && r.locationLongitude !== null) {
         mapMarkers.push({
           displayName: r.user.displayName,
+          status: r.status,
+          destination: r.destination && r.destination.name,
           id: r.user.username,
           latitude: r.locationLatitude,
           longitude: r.locationLongitude,
@@ -123,30 +72,43 @@ class EventHeader extends React.Component {
 
   mapIsReady = () => {
     this.focusMap(false);
-  }
+  };
 
   focusMap(animated) {
     this.map.fitToElements(animated);
   }
 
-  render() {
-    const { name, details, responses, eventLocations } = this.props.event;
+  render() { // TODO: use peralink for external linking
+    const {
+      name,
+      details,
+      permalink, // eslint-disable-line no-unused-vars
+      responses,
+      eventLocations,
+    } = this.props.event;
 
     const mapResponseMarkers = EventHeader.makeResponseMarkers(responses);
     const mapEventLocations = EventHeader.makeEventLocations(eventLocations);
-
+    // TODO: permalink support opens url in brower
     return (
-      <View>
-        <View style={styles.headerContainer}>
-          <Icon name="bullhorn" size={48} />
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerName} numberOfLines={1}>{name}</Text>
-            <Text style={styles.headerDetail} numberOfLines={3}>{details}</Text>
-          </View>
+      <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
+        <View style={{ top: 6 }}>
+          <Holder wide transparent>
+            <ListItem
+              wide
+              title={name}
+              bold
+              subtitle={details}
+              icon="external-link"
+              onPress={() => undefined}
+            />
+          </Holder>
         </View>
         <MapView
           onMapReady={this.mapIsReady}
-          ref={(ref) => { this.map = ref; }}
+          ref={(ref) => {
+            this.map = ref;
+          }}
           initialRegion={{
             latitude: LATITUDE,
             longitude: LONGITUDE,
@@ -156,12 +118,11 @@ class EventHeader extends React.Component {
           style={styles.map}
         >
           {mapResponseMarkers.map(marker => (
-            <Marker
-              coordinate={marker}
-              key={marker.id}
-            >
+            <Marker coordinate={marker} key={marker.id}>
               <UserMarker
                 name={marker.displayName}
+                status={marker.status}
+                destination={marker.destination}
               />
             </Marker>
           ))}
@@ -183,6 +144,7 @@ EventHeader.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string,
     details: PropTypes.string,
+    permalink: PropTypes.string,
     eventLocations: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
@@ -207,58 +169,12 @@ EventHeader.propTypes = {
   }),
 };
 
-class EventResponse extends Component {
-  onPressEdit = () => {
-    this.props.onEdit(this.props.response);
-  }
-
-  render() {
-    const { user, status, detail, eta, destination } = this.props.response;
-    const userId = this.props.auth.id;
-    const destinationName = destination ? destination.name : '';
-    const color = {
-      attending: 'green',
-      unavailable: 'red',
-      enroute: 'green',
-    }[status.toLowerCase()];
-    const etaText = eta === 0 ? '' : `- ETA ${moment.unix(eta).fromNow()}`;
-    const statusText = detail === ''
-      ? `${status} ${destinationName} ${etaText}`
-      : `${status} ${destinationName} - ${detail} ${etaText}`;
-    const isMe = userId === user.id;
-    return (
-      <View style={styles.respondContainer}>
-        <Icon name="user" size={24} color={color} />
-        <View style={styles.respondTextContainer}>
-          <Text style={styles.respondName} numberOfLines={1}>{user.displayName}</Text>
-          <Text style={styles.respondStatus} numberOfLines={1}>{statusText} </Text>
-        </View>
-        { isMe ? <Button title="edit" onPress={this.onPressEdit} /> : null }
-      </View>
-    );
-  }
-}
-EventResponse.propTypes = {
-  auth: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-  }),
-  response: PropTypes.shape({
-    user: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      displayName: PropTypes.string.isRequired,
-    }),
-    status: PropTypes.string.isRequired,
-    detail: PropTypes.string,
-    eta: PropTypes.number,
-    destination: PropTypes.shape({
-      id: PropTypes.number,
-      name: PropTypes.string,
-    }),
-  }),
-  onEdit: PropTypes.func,
-};
-
 class EventDetail extends Component {
+  static navigationOptions = {
+    title: 'Events',
+    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
+  };
+
   componentDidMount() {
     this.timer = setInterval(this.onRefresh, 5000); // 5s
     this.manageLocationTracking();
@@ -279,30 +195,30 @@ class EventDetail extends Component {
   onRefresh = () => {
     // NYI
     this.props.refetch();
-  }
+  };
 
   manageLocationTracking() {
     const { props } = this;
     if (!this.props.event) {
       return;
     }
-    const responding = props.event.responses.some(
-      r => props.auth.id === r.user.id && r.status.toLowerCase() === 'responding',
-    );
 
-    if (responding && this.geoWatch === null) {
-      this.geoWatch = navigator.geolocation.watchPosition(
-        (position) => {
-          this.updateLocation(props, position);
-        },
-        (err) => {
-          console.log(`Unable to update location: ${err}`);
-        },
-        { enableHighAccuracy: true, maximumAge: 1000 },
-      );
-    } else if (!responding && this.geoWatch !== null) {
-      navigator.geolocation.clearWatch(this.geoWatch);
-      this.geoWatch = null;
+    const myStatus = props.event.responses.find(r => props.auth.id === r.user.id);
+    if (myStatus) {
+      if (myStatus.status.toLowerCase() !== 'unavailable' && this.geoWatch === null) {
+        this.geoWatch = navigator.geolocation.watchPosition(
+          (position) => {
+            this.updateLocation(props, position);
+          },
+          (err) => {
+            console.log(`Unable to update location: ${err}`);
+          },
+          { enableHighAccuracy: true, maximumAge: 1000 },
+        );
+      } else if (myStatus.status.toLowerCase() !== 'responding' && this.geoWatch !== null) {
+        navigator.geolocation.clearWatch(this.geoWatch);
+        this.geoWatch = null;
+      }
     }
   }
 
@@ -324,17 +240,6 @@ class EventDetail extends Component {
 
   geoWatch = null;
 
-  keyExtractor = (item) => {
-    const result = {
-      info: i => i.id,
-      response: i => i.user.id,
-    }[item[0]];
-    if (typeof result === 'undefined') {
-      throw Error(`Invalid item: ${item}`);
-    }
-    return [item[0], result(item[1])];
-  }
-
   editResponse = (eventResponse) => {
     const { navigate } = this.props.navigation;
     navigate('EventResponseEdit', {
@@ -342,59 +247,90 @@ class EventDetail extends Component {
       eventId: this.props.event.id,
       eventLocations: this.props.event.eventLocations,
     });
-  }
+  };
 
-  renderItem = ({ item }) => {
-    if (item[0] === 'info') {
-      return <EventHeader event={item[1]} />;
-    }
-
-    return (
-      <EventResponse
-        response={item[1]}
-        auth={this.props.auth}
-        onEdit={this.editResponse}
-      />
-    );
+  eventUsers = () => {
+    const { navigate } = this.props.navigation;
+    navigate('EventUsers', {
+      eventId: this.props.event.id,
+    });
   };
 
   render() {
-    const { event, loading, networkStatus } = this.props;
-
-    // render loading placeholder while we fetch messages
+    const { event, loading } = this.props;
     if (loading) {
       return (
-        <View style={[styles.loading, styles.container]}>
-          <ActivityIndicator />
-        </View>
+        <Container>
+          <Progress />
+        </Container>
       );
     }
 
     if (!event) {
       return (
         <View style={styles.container}>
-          <Text style={styles.warning}>
-            Unable to load event.
-          </Text>
+          <Text style={styles.warning}>Unable to load event.</Text>
         </View>
       );
     }
 
-    const rows = [
-      ['info', event],
-    ].concat(_.map(event.responses, r => ['response', r]));
+    const myStatus = this.props.event.responses.find(
+      r => this.props.auth.id === r.user.id,
+    );
 
-    // render list of groups for user
+    const attendingUsers = [];
+    const unavailableUsers = [];
+    const summaryByDestinationUsers = {};
+
+    event.responses.forEach((r) => {
+      if (r.destination) { // make object of reponses by destination name
+        if (!_.has(summaryByDestinationUsers, r.destination.name)) {
+          summaryByDestinationUsers[r.destination.name] = [];
+        }
+        summaryByDestinationUsers[r.destination.name].push(r);
+      }
+      switch (r.status) {
+        case 'unavailable':
+          unavailableUsers.push(r);
+          break;
+        case 'attending':
+          attendingUsers.push(r);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // TODO: not like this im guessing
+    const summaryByDestinationUsersArray = [];
+    _.keys(summaryByDestinationUsers).forEach((r) => {
+      summaryByDestinationUsersArray.push(`${summaryByDestinationUsers[r].length} to ${r.toUpperCase()}`);
+    });
+    const summaryByDestinationUsersString = summaryByDestinationUsersArray.join(', ');
+
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={rows}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderItem}
-          onRefresh={this.onRefresh}
-          extraData={event} // redraw if this changes
-          refreshing={networkStatus === 4}
-        />
+      <View style={{ flex: 1 }}>
+        <EventHeader event={event} />
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+          <Holder wide transparent>
+            <ListItem
+              wide
+              bold
+              title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
+              subtitle={myStatus ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
+              icon="location-arrow"
+              onPress={() => this.editResponse(myStatus)}
+            />
+            <ListItem
+              wide
+              bold
+              title={`${attendingUsers.length} people are attending`}
+              subtitle={summaryByDestinationUsersString}
+              icon="group"
+              onPress={this.eventUsers}
+            />
+          </Holder>
+        </View>
       </View>
     );
   }
@@ -404,7 +340,6 @@ EventDetail.propTypes = {
     navigate: PropTypes.func,
   }),
   loading: PropTypes.bool,
-  networkStatus: PropTypes.number,
   refetch: PropTypes.func,
   auth: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -413,6 +348,8 @@ EventDetail.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
+    sourceIdentifier: PropTypes.string,
+    permalink: PropTypes.string,
     eventLocations: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
@@ -435,11 +372,13 @@ EventDetail.propTypes = {
   }),
 };
 
-const userQuery = graphql(EVENT_QUERY, {
+const eventQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.id } }),
   props: ({ data: { loading, event, refetch } }) => ({
-    loading, event, refetch,
+    loading,
+    event,
+    refetch,
   }),
 });
 
@@ -462,8 +401,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(
-  connect(mapStateToProps),
-  userQuery,
-  setEventResponse,
-)(EventDetail);
+export default compose(connect(mapStateToProps), eventQuery, setEventResponse)(EventDetail);

@@ -7,9 +7,9 @@ const styles = StyleSheet.create({
   },
   bubble: {
     flex: 0,
-    flexDirection: 'row',
     alignSelf: 'flex-start',
     backgroundColor: '#5A6DFF',
+    opacity: 0.8,
     padding: 2,
     borderRadius: 3,
     borderColor: '#161AF9',
@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
   name: {
     color: '#FFFFFF',
     fontSize: 13,
+  },
+  destination: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    alignSelf: 'center',
   },
   arrow: {
     backgroundColor: 'transparent',
