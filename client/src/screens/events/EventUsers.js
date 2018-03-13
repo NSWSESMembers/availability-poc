@@ -15,7 +15,8 @@ import { Segment } from '../../components/Segment';
 
 class EventUsers extends Component {
   static navigationOptions = {
-    title: 'Events',
+    title: 'User Responses',
+    tabBarLabel: 'Events',
     tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 

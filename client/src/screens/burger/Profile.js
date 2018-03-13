@@ -98,7 +98,8 @@ const styles = extendAppStyleSheet({
 
 class Profile extends Component {
   static navigationOptions = {
-    title: 'More',
+    title: 'My Profile',
+    tabBarLabel: 'More',
     tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
   };
 

@@ -70,7 +70,8 @@ class NewGroup extends Component {
     const { state } = navigation;
     const isReady = state.params && state.params.mode === 'ready';
     return {
-      title: 'Groups',
+      title: 'New Group',
+      tabBarLabel: 'Groups',
       tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
       headerRight: (
         isReady ? <Button

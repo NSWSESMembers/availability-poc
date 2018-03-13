@@ -171,7 +171,8 @@ EventHeader.propTypes = {
 
 class EventDetail extends Component {
   static navigationOptions = {
-    title: 'Events',
+    title: 'Event Detail',
+    tabBarLabel: 'Events',
     tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
