@@ -1,4 +1,4 @@
-export default theme => ({
+export default () => ({
   avatarAV: {
     backgroundColor: 'green',
     color: 'white',

@@ -5,7 +5,6 @@ import { withStyles } from 'material-ui/styles';
 import Avatar from 'material-ui/Avatar';
 import PersonIcon from 'material-ui-icons/Person';
 import SentimentVeryDissatisfiedIcon from 'material-ui-icons/PersonOutline';
-import SentimentNeutralIcon from 'material-ui-icons/PeopleOutline';
 
 import Tooltip from 'material-ui/Tooltip';
 

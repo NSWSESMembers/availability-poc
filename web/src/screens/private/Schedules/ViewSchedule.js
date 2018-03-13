@@ -4,25 +4,23 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
-
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import { CircularProgress } from 'material-ui/Progress';
-import TextField from 'material-ui/TextField';
+import ExpansionPanel, {
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+} from 'material-ui/ExpansionPanel';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
-
 import Paper from 'material-ui/Paper';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
 
-import TimeCountLabel from './TimeCountLabel';
-import ViewScheduleItem from './ViewScheduleItem';
-
 import { peopleCount } from '../../../selectors/timeSegments';
+import dates from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
 import {
@@ -31,6 +29,8 @@ import {
   UPDATE_TIME_SEGMENT_MUTATION,
 } from '../../../graphql/time-segment.mutation';
 
+import TimeCountLabel from './TimeCountLabel';
+import ViewScheduleItem from './ViewScheduleItem';
 import TimeModal from '../../../components/Modals/TimeModal';
 
 import styles from './ViewSchedule.styles';
@@ -50,16 +50,13 @@ class ViewSchedule extends React.Component {
   onCancelModal = () => {
     this.setState({ modalOpen: false });
   };
-  onSaveModal = (newStartTime, newEndTime) => {
-    const startTime = moment(newStartTime).unix();
-    const endTime = moment(newEndTime).unix();
-
-    console.log(startTime, 'next', endTime);
+  onSaveModal = (startTime, endTime, userId) => {
     this.props.createTimeSegment({
+      userId,
       scheduleId: parseInt(this.props.match.params.id, 10),
       status: this.state.modalStatus,
-      startTime,
-      endTime,
+      startTime: moment(startTime).unix(),
+      endTime: moment(endTime).unix(),
     });
     this.setState({ modalOpen: false });
   };
@@ -69,157 +66,143 @@ class ViewSchedule extends React.Component {
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
-
-    const columnData = [{ id: 'name', label: 'Name' }];
-
-    const begin = moment()
-      .isoWeekday(1)
-      .startOf('week');
-
-    const end = moment()
-      .isoWeekday(1)
-      .startOf('week')
-      .add(7, 'days');
-
-    const diff = end.diff(begin, 'days');
-
-    for (let i = 1; i <= diff; i += 1) {
-      begin.add(1, 'days');
-      columnData.push({
-        id: i,
-        label: begin.format('ddd, MMM D'),
-        startTime: begin.unix(),
-        endTime: begin
-          .clone()
-          .add(1, 'days')
-          .add(-1, 'seconds')
-          .unix(),
-      });
-    }
+    const columnData = dates();
 
     return (
-      <Paper className={classes.root}>
-        <div className={classes.toolbar}>
-          <NavLink to="/dashboard">
-            <ArrowBackIcon />
-          </NavLink>
-          <Typography variant="title" color="inherit" className={classes.paperTitle}>
-            {schedule.name} - ({schedule.group.name})
-          </Typography>
-        </div>
-        <Typography gutterBottom noWrap>
-          <br />
-          {`
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          `}
-        </Typography>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              {columnData.map((column) => {
-                if (column.id === 'name') {
-                  return (
-                    <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
-                      Totals
-                    </TableCell>
-                  );
-                }
-                const amountAvailable = peopleCount(schedule.timeSegments, {
-                  status: STATUS_AVAILABLE,
-                  startTime: column.startTime,
-                  endTime: column.endTime,
-                });
-                const amountUnvailable = peopleCount(schedule.timeSegments, {
-                  status: STATUS_UNAVAILABLE,
-                  startTime: column.startTime,
-                  endTime: column.endTime,
-                });
-                const amountUrgent = peopleCount(schedule.timeSegments, {
-                  status: STATUS_UNLESS_URGENT,
-                  startTime: column.startTime,
-                  endTime: column.endTime,
-                });
+      <div className={classes.root}>
+        <ExpansionPanel>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="title" className={classes.paperTitle}>
+              {schedule.name} - ({schedule.group.name})
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
+              ex, sit amet blandit leo lobortis eget.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
 
-                return (
-                  <TableCell
-                    key={column.id}
-                    className={classes.tableCellHeader}
-                    style={{ paddingRight: 0 }}
-                  >
-                    <div
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        <Paper className={classes.rootPaper}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                {columnData.map((column) => {
+                  if (column.id === 'name') {
+                    return (
+                      <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
+                        Totals
+                      </TableCell>
+                    );
+                  }
+                  const amountAvailable = peopleCount(schedule.timeSegments, {
+                    status: STATUS_AVAILABLE,
+                    startTime: column.startTime,
+                    endTime: column.endTime,
+                  });
+                  const amountUnvailable = peopleCount(schedule.timeSegments, {
+                    status: STATUS_UNAVAILABLE,
+                    startTime: column.startTime,
+                    endTime: column.endTime,
+                  });
+                  const amountUrgent = peopleCount(schedule.timeSegments, {
+                    status: STATUS_UNLESS_URGENT,
+                    startTime: column.startTime,
+                    endTime: column.endTime,
+                  });
+
+                  return (
+                    <TableCell
+                      key={column.id}
+                      className={classes.tableCellHeader}
+                      style={{ paddingRight: 0 }}
                     >
-                      <TimeCountLabel
-                        status={STATUS_AVAILABLE}
-                        amount={amountAvailable.toString()}
-                      />
-                      <TimeCountLabel
-                        status={STATUS_UNAVAILABLE}
-                        amount={amountUnvailable.toString()}
-                      />
-                      <TimeCountLabel
-                        status={STATUS_UNLESS_URGENT}
-                        amount={amountUrgent.toString()}
-                      />
-                    </div>
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-            <TableRow>
-              {columnData.map(
-                column =>
-                  (column.id === 'name' ? (
-                    <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
-                      {column.label}
-                    </TableCell>
-                  ) : (
-                    <TableCell key={column.id} className={classes.tableCellHeader} style={{ paddingRight: 0 }}>
                       <div
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
-                        <Link to="/dashboard">{column.label}</Link>
+                        <TimeCountLabel
+                          status={STATUS_AVAILABLE}
+                          amount={amountAvailable.toString()}
+                        />
+                        <TimeCountLabel
+                          status={STATUS_UNAVAILABLE}
+                          amount={amountUnvailable.toString()}
+                        />
+                        <TimeCountLabel
+                          status={STATUS_UNLESS_URGENT}
+                          amount={amountUrgent.toString()}
+                        />
                       </div>
                     </TableCell>
-                  )),
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {schedule.group.users.map(user => (
-              <TableRow key={user.id}>
+                  );
+                })}
+              </TableRow>
+              <TableRow>
                 {columnData.map(
                   column =>
                     (column.id === 'name' ? (
-                      <TableCell key={user.id} className={classes.tableCellFirst}>
-                        <Link to="/dashboard">{user.displayName}</Link>
+                      <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
+                        {column.label}
                       </TableCell>
                     ) : (
-                      <ViewScheduleItem
-                        key={`vsi-${user.id}-${column.startTime}`}
-                        user={user}
-                        startTime={column.startTime}
-                        endTime={column.endTime}
-                        onOpenModal={this.onOpenModal}
-                        timeSegments={schedule.timeSegments}
-                      />
+                      <TableCell
+                        key={column.id}
+                        className={classes.tableCellHeader}
+                        style={{ paddingRight: 0 }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Link to="/dashboard">{column.label}</Link>
+                        </div>
+                      </TableCell>
                     )),
                 )}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <TimeModal
-          onCancel={this.onCancelModal}
-          onSave={this.onSaveModal}
-          open={this.state.modalOpen}
-          status={this.state.modalStatus}
-          startTime={this.state.modalStartTime}
-          endTime={this.state.modalEndTime}
-          user={this.state.modalUser}
-        />
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {schedule.group.users.map(user => (
+                <TableRow key={user.id}>
+                  {columnData.map(
+                    column =>
+                      (column.id === 'name' ? (
+                        <TableCell key={user.id} className={classes.tableCellFirst}>
+                          <Link to="/dashboard">
+                            {user.displayName}
+                            {user.id}
+                          </Link>
+                        </TableCell>
+                      ) : (
+                        <ViewScheduleItem
+                          key={`vsi-${user.id}-${column.startTime}`}
+                          user={user}
+                          startTime={column.startTime}
+                          endTime={column.endTime}
+                          onOpenModal={this.onOpenModal}
+                          timeSegments={schedule.timeSegments}
+                        />
+                      )),
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <TimeModal
+            onCancel={this.onCancelModal}
+            onSave={this.onSaveModal}
+            open={this.state.modalOpen}
+            status={this.state.modalStatus}
+            startTime={this.state.modalStartTime}
+            endTime={this.state.modalEndTime}
+            user={this.state.modalUser}
+          />
+        </Paper>
+      </div>
     );
   }
 }
@@ -257,6 +240,7 @@ ViewSchedule.propTypes = {
       }),
     ),
   }),
+  createTimeSegment: PropTypes.func.isRequired,
 };
 
 const scheduleQuery = graphql(SCHEDULE_QUERY, {
@@ -273,9 +257,9 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ scheduleId, status, startTime, endTime }) =>
+    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime }) =>
       mutate({
-        variables: { timeSegment: { scheduleId, status, startTime, endTime } },
+        variables: { timeSegment: { userId, scheduleId, status, startTime, endTime } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -318,7 +302,11 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), scheduleQuery,
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  scheduleQuery,
   createTimeSegment,
   removeTimeSegment,
-  updateTimeSegment)(ViewSchedule);
+  updateTimeSegment,
+)(ViewSchedule);

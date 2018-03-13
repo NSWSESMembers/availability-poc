@@ -22,7 +22,10 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
 
   return (
     <TableCell
-      className={`${classes.tableCell} ${(availableCount === 0 && unavailableCount === 0 && urgentCount === 0) && 'opaque'}`}
+      className={`${classes.tableCell} ${availableCount === 0 &&
+        unavailableCount === 0 &&
+        urgentCount === 0 &&
+        'opaque'}`}
       style={{ paddingRight: 0 }}
     >
       <div className={classes.flexCenter}>
@@ -34,8 +37,22 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
           endTime={endTime}
           onOpenModal={onOpenModal}
         />
-        <TimeLabel user={user} status={STATUS_UNAVAILABLE} amount={unavailableCount} startTime={startTime} endTime={endTime} onOpenModal={onOpenModal} />
-        <TimeLabel user={user} status={STATUS_UNLESS_URGENT} amount={urgentCount} startTime={startTime} endTime={endTime} onOpenModal={onOpenModal} />
+        <TimeLabel
+          user={user}
+          status={STATUS_UNAVAILABLE}
+          amount={unavailableCount}
+          startTime={startTime}
+          endTime={endTime}
+          onOpenModal={onOpenModal}
+        />
+        <TimeLabel
+          user={user}
+          status={STATUS_UNLESS_URGENT}
+          amount={urgentCount}
+          startTime={startTime}
+          endTime={endTime}
+          onOpenModal={onOpenModal}
+        />
       </div>
     </TableCell>
   );

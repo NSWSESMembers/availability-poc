@@ -5,7 +5,6 @@ import numeral from 'numeral';
 
 import { withStyles } from 'material-ui/styles';
 import Avatar from 'material-ui/Avatar';
-import Tooltip from 'material-ui/Tooltip';
 
 import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';
 import styles from './TimeLabel.styles';
@@ -28,14 +27,12 @@ const TimeLabel = ({ classes, user, status, amount, startTime, endTime, onOpenMo
   }
 
   return (
-    <Tooltip title={`add ${status.toLowerCase()} time`}>
-      <Avatar
-        className={`${avatarClass} ${amount === 0 && 'semi-opaque'}`}
-        onClick={(e => onOpenModal(e, user, status, startTime, endTime))}
-      >
-        {numeral(amount).format('0[.]0')}
-      </Avatar>
-    </Tooltip>
+    <Avatar
+      className={`${avatarClass} ${amount === 0 && 'semi-opaque'}`}
+      onClick={e => onOpenModal(e, user, status, startTime, endTime)}
+    >
+      {numeral(amount).format('0[.]0')}
+    </Avatar>
   );
 };
 
@@ -50,4 +47,3 @@ TimeLabel.propTypes = {
 };
 
 export default withStyles(styles)(TimeLabel);
-

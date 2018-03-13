@@ -1,7 +1,12 @@
 export default () => ({
   root: {
     margin: 30,
+    marginTop: 10,
     padding: 16,
+  },
+  rootPaper: {
+    padding: 16,
+    marginTop: 16,
   },
   table: {
     marginTop: 20,
@@ -22,9 +27,7 @@ export default () => ({
     borderColor: '#E0E0E0',
     borderStyle: 'solid',
   },
-  paperTitle: {
-    marginLeft: 10,
-  },
+  paperTitle: {},
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
