@@ -123,7 +123,8 @@ Group.propTypes = {
 
 class AllGroups extends Component {
   static navigationOptions = {
-    title: 'All Groups',
+    title: 'Search Groups',
+    tabBarLabel: 'Groups',
     tabBarIcon: ({ tintColor }) => (
       <Icon size={24} name="group" color={tintColor} />
     ),

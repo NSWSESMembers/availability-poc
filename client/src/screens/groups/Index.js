@@ -120,7 +120,8 @@ Group.propTypes = {
 
 class Groups extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Groups',
+    title: 'My Groups',
+    tabBarLabel: 'Groups',
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
     headerRight:
   <View style={{ flexDirection: 'row' }}>

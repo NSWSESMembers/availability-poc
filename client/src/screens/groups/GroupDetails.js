@@ -245,7 +245,8 @@ ScheduleDisplay.propTypes = {
 
 class Group extends Component {
   static navigationOptions = () => ({
-    title: 'Groups',
+    title: 'Group Details',
+    tabBarLabel: 'Groups',
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
   });
 

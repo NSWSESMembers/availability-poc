@@ -53,7 +53,8 @@ Event.propTypes = {
 
 class Events extends Component {
   static navigationOptions = {
-    title: 'Events',
+    title: 'My Events',
+    tabBarLabel: 'Events',
     tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
