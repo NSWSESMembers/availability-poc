@@ -60,7 +60,7 @@ class EventUsers extends Component {
             break;
           case 'attending':
             tempResponse.etaText = tempResponse.eta === 0 ? '' : `- ETA ${moment.unix(tempResponse.eta).fromNow()}`;
-            tempResponse.statusText = tempResponse.detail === ''
+            tempResponse.statusText = !tempResponse.detail || tempResponse.detail === ''
               ? `${tempResponse.status} ${tempResponse.destination.name} ${tempResponse.etaText}`
               : `${tempResponse.status} ${tempResponse.destination.name} - ${tempResponse.detail} ${tempResponse.etaText}`;
             attendingUsers.push(tempResponse);
@@ -75,7 +75,6 @@ class EventUsers extends Component {
           default:
             break;
         }
-        console.log(tempResponse);
       });
     }
 
