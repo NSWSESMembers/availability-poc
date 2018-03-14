@@ -76,12 +76,30 @@ class SearchGroups extends Component {
     ),
   };
 
+  state = {
+    filterString: '',
+    typingTimeout: 0,
+  };
+
   onRefresh = () => {
     this.props.refetch();
   }
 
-  applyFilter = (text) => {
-    this.props.refetch({ filter: text });
+  applyFilter = () => {
+    this.props.refetch({ filter: this.state.filterString });
+  }
+
+  searchOnPress = (text) => {
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+
+    this.setState({
+      filterString: text,
+      typingTimeout: setTimeout(() => {
+        this.applyFilter();
+      }, 500),
+    });
   }
 
   keyExtractor = item => item.id;
@@ -102,9 +120,9 @@ class SearchGroups extends Component {
       <Holder wide transparent>
         <SearchBar
           lightTheme
-          onChangeText={text => this.applyFilter(text)}
+          onChangeText={text => this.searchOnPress(text)}
           onClearText={null}
-          placeholder="Search Here...but dont expect anything to happen"
+          placeholder="Search"
         />
         {(loading || !user) ? (
           <Container>
