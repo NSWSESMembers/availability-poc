@@ -13,8 +13,8 @@ const styles = extendAppStyleSheet({
     paddingRight: 8,
     marginLeft: 10,
     marginRight: 10,
-    marginTop: 0,
-    marginBottom: 6,
+    marginTop: 6,
+    marginBottom: 0,
   },
   containerWide: {
     flexDirection: 'row',
