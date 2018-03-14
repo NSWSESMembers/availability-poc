@@ -1,4 +1,4 @@
-export default theme => ({
+export default () => ({
   avatarAV: {
     backgroundColor: 'green',
     color: 'white',
@@ -35,15 +35,15 @@ export default theme => ({
     color: 'green',
   },
   marginAV: {
-    margin: theme.spacing.unit,
+    margin: 5,
     color: 'green',
   },
   marginUN: {
-    margin: theme.spacing.unit,
+    margin: 5,
     color: 'red',
   },
   marginUR: {
-    margin: theme.spacing.unit,
+    margin: 5,
     color: 'purple',
   },
 });

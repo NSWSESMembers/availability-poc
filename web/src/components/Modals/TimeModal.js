@@ -36,11 +36,25 @@ class TimeModal extends React.Component {
       moment.unix(this.props.startTime).format('MM-DD-YYYY ') + this.state.newEndTime,
       'MM-DD-YYYY HH:mm',
     );
-    this.props.onSave(startTime, endTime, this.props.user.id);
+    this.props.onSave(startTime, endTime, this.props.user.id, this.props.timeSegmentId);
+  };
+
+  onDeleteTime = () => {
+    this.props.onDelete(this.props.timeSegmentId);
   };
 
   render() {
-    const { classes, open, onCancel, user, status, startTime } = this.props;
+    const {
+      classes,
+      open,
+      onCancel,
+      user,
+      status,
+      startTime,
+      timeSegmentId,
+      timeSegmentStartTime,
+      timeSegmentEndTime,
+    } = this.props;
     return (
       <Dialog open={open} onClose={onCancel} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
@@ -55,7 +69,11 @@ class TimeModal extends React.Component {
             id="time"
             label="Start Time"
             type="time"
-            defaultValue={this.state.newStartTime}
+            defaultValue={
+                timeSegmentStartTime === 0 ?
+                  this.state.newStartTime :
+                  moment.unix(timeSegmentStartTime).format('HH:mm')
+                }
             className={classes.textField}
             onChange={this.onStartTimeChange}
             InputLabelProps={{
@@ -69,7 +87,11 @@ class TimeModal extends React.Component {
             id="time"
             label="End Time"
             type="time"
-            defaultValue={this.state.newEndTime}
+            defaultValue={
+              timeSegmentEndTime === 0 ?
+                this.state.newEndTime :
+                moment.unix(timeSegmentEndTime).format('HH:mm')
+            }
             className={classes.textField}
             onChange={this.onEndTimeChange}
             InputLabelProps={{
@@ -81,6 +103,12 @@ class TimeModal extends React.Component {
           />
         </DialogContent>
         <DialogActions>
+          {
+            timeSegmentId > 0 &&
+            <Button onClick={this.onDeleteTime} color="primary">
+              Delete
+            </Button>
+          }
           <Button onClick={onCancel} color="primary">
             Cancel
           </Button>
@@ -101,9 +129,13 @@ TimeModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onSave: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
   startTime: PropTypes.number.isRequired,
   // endTime: PropTypes.number.isRequired,
+  timeSegmentId: PropTypes.number.isRequired,
+  timeSegmentStartTime: PropTypes.number.isRequired,
+  timeSegmentEndTime: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(TimeModal);

@@ -16,12 +16,10 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import Badge from 'material-ui/Badge';
-import MailIcon from 'material-ui-icons/Person';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
 
-import { peopleCount } from '../../../selectors/timeSegments';
+import { peopleCount, searchTimeSegments } from '../../../selectors/timeSegments';
 import dates from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
@@ -44,22 +42,75 @@ class ViewSchedule extends React.Component {
     modalStartTime: 0,
     modalEndTime: 0,
     modalUser: undefined,
+    modalTimeSegmentId: 0,
+    modalTimeSegmentStartTime: 0,
+    modalTimeSegmentEndTime: 0,
   };
 
   onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
-    this.setState({ modalOpen: true, modalUser, modalStatus, modalStartTime, modalEndTime });
+    // find existing segments
+    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments,
+      {
+        status: modalStatus,
+        startTime: modalStartTime,
+        endTime: modalEndTime,
+        userId: modalUser.id,
+      });
+
+    let modalTimeSegmentId = 0;
+    let modalTimeSegmentStartTime = 0;
+    let modalTimeSegmentEndTime = 0;
+
+    if (modalTimeSegments.length > 0) {
+      modalTimeSegmentId = modalTimeSegments[0].id;
+      modalTimeSegmentStartTime = modalTimeSegments[0].startTime;
+      modalTimeSegmentEndTime = modalTimeSegments[0].endTime;
+    }
+
+    this.setState({
+      modalOpen: true,
+      modalUser,
+      modalStatus,
+      modalStartTime,
+      modalEndTime,
+      modalTimeSegmentId,
+      modalTimeSegmentStartTime,
+      modalTimeSegmentEndTime,
+    });
   };
   onCancelModal = () => {
     this.setState({ modalOpen: false });
   };
-  onSaveModal = (startTime, endTime, userId) => {
-    this.props.createTimeSegment({
-      userId,
-      scheduleId: parseInt(this.props.match.params.id, 10),
-      status: this.state.modalStatus,
-      startTime: moment(startTime).unix(),
-      endTime: moment(endTime).unix(),
-    });
+  onSaveModal = (startTime, endTime, userId, timeSegmentId) => {
+    if (timeSegmentId > 0) {
+      this.props.updateTimeSegment({
+        scheduleId: parseInt(this.props.match.params.id, 10),
+        segmentId: timeSegmentId,
+        status: this.state.modalStatus,
+        startTime: moment(startTime).unix(),
+        endTime: moment(endTime).unix(),
+      });
+    } else {
+      this.props.createTimeSegment({
+        userId,
+        scheduleId: parseInt(this.props.match.params.id, 10),
+        status: this.state.modalStatus,
+        startTime: moment(startTime).unix(),
+        endTime: moment(endTime).unix(),
+      });
+    }
+
+    this.setState({ modalOpen: false });
+  };
+  onDeleteModal = (timeSegmentId) => {
+    console.log(timeSegmentId);
+    if (timeSegmentId > 0) {
+      this.props.removeTimeSegment({
+        scheduleId: parseInt(this.props.match.params.id, 10),
+        segmentId: timeSegmentId,
+      });
+    }
+
     this.setState({ modalOpen: false });
   };
   render() {
@@ -176,7 +227,6 @@ class ViewSchedule extends React.Component {
                         <TableCell key={user.id} className={classes.tableCellFirst}>
                           <Link to="/dashboard">
                             {user.displayName}
-                            {user.id}
                           </Link>
                         </TableCell>
                       ) : (
@@ -197,11 +247,15 @@ class ViewSchedule extends React.Component {
           <TimeModal
             onCancel={this.onCancelModal}
             onSave={this.onSaveModal}
+            onDelete={this.onDeleteModal}
             open={this.state.modalOpen}
             status={this.state.modalStatus}
             startTime={this.state.modalStartTime}
             endTime={this.state.modalEndTime}
             user={this.state.modalUser}
+            timeSegmentId={this.state.modalTimeSegmentId}
+            timeSegmentStartTime={this.state.modalTimeSegmentStartTime}
+            timeSegmentEndTime={this.state.modalTimeSegmentEndTime}
           />
         </Paper>
       </div>
@@ -243,6 +297,8 @@ ViewSchedule.propTypes = {
     ),
   }),
   createTimeSegment: PropTypes.func.isRequired,
+  removeTimeSegment: PropTypes.func.isRequired,
+  updateTimeSegment: PropTypes.func.isRequired,
 };
 
 const scheduleQuery = graphql(SCHEDULE_QUERY, {
@@ -274,12 +330,13 @@ const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
 
 const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    removeTimeSegment: ({ segmentId }) =>
+    removeTimeSegment: ({ segmentId, scheduleId }) =>
       mutate({
         variables: { timeSegment: { segmentId } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
+            variables: { id: scheduleId },
           },
         ],
       }),
@@ -288,12 +345,13 @@ const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
 
 const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    updateTimeSegment: ({ segmentId, status, startTime, endTime }) =>
+    updateTimeSegment: ({ segmentId, status, startTime, endTime, scheduleId }) =>
       mutate({
         variables: { timeSegment: { segmentId, status, startTime, endTime } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
+            variables: { id: scheduleId },
           },
         ],
       }),
