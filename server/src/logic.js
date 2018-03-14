@@ -254,7 +254,6 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       createTimeSegment(_, args, ctx) {
         const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
-console.log('xxxuserid', userId);
         return getAuthenticatedUser(ctx).then(user =>
           Schedule.findById(scheduleId).then((schedule) => {
             if (!schedule) {
