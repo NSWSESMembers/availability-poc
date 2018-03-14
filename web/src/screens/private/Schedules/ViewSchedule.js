@@ -16,6 +16,8 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
+import Badge from 'material-ui/Badge';
+import MailIcon from 'material-ui-icons/Person';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
 

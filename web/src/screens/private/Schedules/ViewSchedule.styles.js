@@ -1,4 +1,4 @@
-export default () => ({
+export default theme => ({
   root: {
     margin: 30,
     marginTop: 10,
@@ -31,5 +31,9 @@ export default () => ({
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
+  },
+  margin: {
+    margin: theme.spacing.unit * 2,
+    color: 'red',
   },
 });
