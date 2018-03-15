@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const ListItem = ({ title, bold, wide, supertitle, subtitle, icon, onPress }) => (
+const ListItem = ({ title, bold, subtitleEllipsis, wide, supertitle, subtitle, icon, onPress }) => (
   <TouchableOpacity onPress={() => onPress()}>
     <View style={wide ? styles.containerWide : styles.container}>
       <View style={styles.textContainer}>
@@ -14,7 +14,12 @@ const ListItem = ({ title, bold, wide, supertitle, subtitle, icon, onPress }) =>
           <Text style={styles.titleText}>{title}</Text>
         : <Text style={styles.titleTextBold}>{title}</Text>
         }
-        {subtitle && <Text style={styles.subtitleText}>{subtitle}</Text>}
+        {subtitle &&
+          <Text style={styles.subtitleText}>
+            { (subtitleEllipsis && (subtitle).length > 80) ?
+            (`${(subtitle).substring(0, 80 - 3)}...`) :
+            subtitle }
+          </Text>}
       </View>
       {icon && <Icon style={styles.icon} name={icon} size={30} />}
     </View>
@@ -24,6 +29,7 @@ const ListItem = ({ title, bold, wide, supertitle, subtitle, icon, onPress }) =>
 ListItem.propTypes = {
   title: PropTypes.string,
   bold: PropTypes.bool,
+  subtitleEllipsis: PropTypes.bool,
   wide: PropTypes.bool,
   subtitle: PropTypes.string,
   supertitle: PropTypes.string,

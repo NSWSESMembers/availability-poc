@@ -14,7 +14,14 @@ import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
 const EventItem = ({ event, dispatch }) => (
-  <ListItem title={event.name} icon="bullhorn" onPress={() => dispatch(goToEvent(event.id))} />
+  <ListItem
+    title={event.name}
+    bold
+    subtitle={event.details}
+    subtitleEllipsis
+    icon="bullhorn"
+    onPress={() => dispatch(goToEvent(event.id))}
+  />
 );
 EventItem.propTypes = {
   event: PropTypes.shape({
@@ -34,7 +41,8 @@ const ScheduleItem = ({ schedule, dispatch }) => {
   return (
     <ListItem
       title={schedule.name}
-      supertitle={subtitle}
+      bold
+      subtitle={subtitle}
       icon="calendar"
       onPress={() => dispatch(goToRequest(schedule.id))}
     />
