@@ -235,9 +235,7 @@ class EventDetail extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
-          <View
-            style={{ top: 6 }}
-          >
+          <View>
             <Holder wide transparent>
               <ListItem
                 wide
@@ -283,7 +281,7 @@ class EventDetail extends Component {
           </MapView>
         </View>
         <View
-          style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}
+          style={{ position: 'absolute', bottom: 6, left: 0, right: 0 }}
         >
           <Holder wide transparent>
             <ListItem
