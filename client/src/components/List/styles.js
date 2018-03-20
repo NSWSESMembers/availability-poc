@@ -1,6 +1,6 @@
-import { extendAppStyleSheet } from '../../screens/style-sheet';
+import { StyleSheet } from 'react-native';
 
-const styles = extendAppStyleSheet({
+const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
