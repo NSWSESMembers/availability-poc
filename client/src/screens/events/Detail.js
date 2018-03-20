@@ -36,7 +36,14 @@ const LONGITUDE = 150.876496494;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-class EventHeader extends React.Component {
+
+class EventDetail extends Component {
+  static navigationOptions = {
+    title: 'Event Detail',
+    tabBarLabel: 'Events',
+    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
+  };
+
   static makeEventLocations(eventLocations) {
     const mapMarkers = [];
 
@@ -70,112 +77,6 @@ class EventHeader extends React.Component {
     return mapMarkers;
   }
 
-  mapIsReady = () => {
-    this.focusMap(false);
-  };
-
-  focusMap(animated) {
-    this.map.fitToElements(animated);
-  }
-
-  render() { // TODO: use peralink for external linking
-    const {
-      name,
-      details,
-      permalink, // eslint-disable-line no-unused-vars
-      responses,
-      eventLocations,
-    } = this.props.event;
-
-    const mapResponseMarkers = EventHeader.makeResponseMarkers(responses);
-    const mapEventLocations = EventHeader.makeEventLocations(eventLocations);
-    // TODO: permalink support opens url in brower
-    return (
-      <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
-        <View style={{ top: 6 }}>
-          <Holder wide transparent>
-            <ListItem
-              wide
-              title={name}
-              bold
-              subtitle={details}
-              icon="external-link"
-              onPress={() => undefined}
-            />
-          </Holder>
-        </View>
-        <MapView
-          onMapReady={this.mapIsReady}
-          ref={(ref) => {
-            this.map = ref;
-          }}
-          initialRegion={{
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }}
-          style={styles.map}
-        >
-          {mapResponseMarkers.map(marker => (
-            <Marker coordinate={marker} key={marker.id}>
-              <UserMarker
-                name={marker.displayName}
-                status={marker.status}
-                destination={marker.destination}
-              />
-            </Marker>
-          ))}
-          {mapEventLocations.map(marker => (
-            <Marker
-              title={marker.id}
-              key={marker.id}
-              identifier={marker.id}
-              coordinate={marker}
-              image={marker.image}
-            />
-          ))}
-        </MapView>
-      </View>
-    );
-  }
-}
-EventHeader.propTypes = {
-  event: PropTypes.shape({
-    name: PropTypes.string,
-    details: PropTypes.string,
-    permalink: PropTypes.string,
-    eventLocations: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        detail: PropTypes.string,
-        icon: PropTypes.string,
-        locationLatitude: PropTypes.float,
-        locationLongitude: PropTypes.float,
-      }),
-    ),
-    responses: PropTypes.arrayOf(
-      PropTypes.shape({
-        user: PropTypes.shape({
-          username: PropTypes.string.isRequired,
-          displayName: PropTypes.string.isRequired,
-        }),
-        locationLatitude: PropTypes.float,
-        locationLongitude: PropTypes.float,
-        status: PropTypes.string.isRequired,
-        detail: PropTypes.string.isRequired,
-      }),
-    ),
-  }),
-};
-
-class EventDetail extends Component {
-  static navigationOptions = {
-    title: 'Event Detail',
-    tabBarLabel: 'Events',
-    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
-  };
-
   componentDidMount() {
     this.timer = setInterval(this.onRefresh, 5000); // 5s
     this.manageLocationTracking();
@@ -197,6 +98,22 @@ class EventDetail extends Component {
     // NYI
     this.props.refetch();
   };
+
+  mapOnLayout = (marks, locations) => {
+    const mergedpoints = marks.concat(locations);
+    this.map.fitToCoordinates(
+      mergedpoints,
+      {
+        edgePadding: {
+          top: 300,
+          right: 100,
+          bottom: 300,
+          left: 100,
+        },
+        animated: false,
+      },
+    );
+  }
 
   manageLocationTracking() {
     const { props } = this;
@@ -259,6 +176,12 @@ class EventDetail extends Component {
 
   render() {
     const { event, loading } = this.props;
+    let mapResponseMarkers = [];
+    let mapEventLocations = [];
+    if (!loading && event) {
+      mapResponseMarkers = EventDetail.makeResponseMarkers(event.responses);
+      mapEventLocations = EventDetail.makeEventLocations(event.eventLocations);
+    }
     if (loading) {
       return (
         <Container>
@@ -311,8 +234,57 @@ class EventDetail extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <EventHeader event={event} />
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+        <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
+          <View
+            style={{ top: 6 }}
+          >
+            <Holder wide transparent>
+              <ListItem
+                wide
+                title={event.name}
+                bold
+                subtitle={event.details}
+                icon="external-link"
+                onPress={() => undefined}
+              />
+            </Holder>
+          </View>
+          <MapView
+            onMapReady={() => this.mapOnLayout(mapResponseMarkers, mapEventLocations)}
+            ref={(ref) => {
+          this.map = ref;
+        }}
+            initialRegion={{
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        }}
+            style={styles.map}
+          >
+            {mapResponseMarkers.map(marker => (
+              <Marker coordinate={marker} key={marker.id}>
+                <UserMarker
+                  name={marker.displayName}
+                  status={marker.status}
+                  destination={marker.destination}
+                />
+              </Marker>
+        ))}
+            {mapEventLocations.map(marker => (
+              <Marker
+                title={marker.id}
+                key={marker.id}
+                identifier={marker.id}
+                coordinate={marker}
+                image={marker.image}
+              />
+        ))}
+          </MapView>
+        </View>
+        <View
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}
+        >
           <Holder wide transparent>
             <ListItem
               wide
