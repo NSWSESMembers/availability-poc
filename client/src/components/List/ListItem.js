@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-
 const ListItem = ({
   title,
   bold,
@@ -13,6 +12,7 @@ const ListItem = ({
   wide,
   supertitle,
   subtitle,
+  detail,
   icon,
   onPress,
 }) => {
@@ -27,19 +27,26 @@ const ListItem = ({
       <View style={containerStyles}>
         <View style={styles.textContainer}>
           {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
-          {!bold ?
+          {!bold ? (
             <Text style={styles.titleText}>{title}</Text>
-        : <Text style={styles.titleTextBold}>{title}</Text>
-        }
-          {subtitle &&
-          <Text style={styles.subtitleText}>
-            { (subtitleEllipsis && (subtitle).length > 80) ?
-            (`${(subtitle).substring(0, 80 - 3)}...`) :
-            subtitle }
-          </Text>}
+          ) : (
+            <Text style={styles.titleTextBold}>{title}</Text>
+          )}
+          {subtitle && (
+            <Text style={styles.subtitleText}>
+              {subtitleEllipsis && subtitle.length > 80
+                ? `${subtitle.substring(0, 80 - 3)}...`
+                : subtitle}
+            </Text>
+          )}
         </View>
         {icon && <Icon style={styles.icon} name={icon} size={30} />}
       </View>
+      {detail && (
+        <View style={containerStyles}>
+          <Text style={styles.detailText}>{detail}</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -51,6 +58,7 @@ ListItem.propTypes = {
   wide: PropTypes.bool,
   subtitle: PropTypes.string,
   supertitle: PropTypes.string,
+  detail: PropTypes.string,
   icon: PropTypes.string,
   onPress: PropTypes.func,
 };

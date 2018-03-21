@@ -1,56 +1,48 @@
 import React, { Component } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import selectSchedules from '../../selectors/schedules';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { ButtonNavBar } from '../../components/Button';
-import { Calendar, Week } from '../../components/Calendar';
-import { Center, Container, Holder } from '../../components/Container';
-import { Progress } from '../../components/Progress';
-import { SeparatorClear } from '../../components/Separator';
+import { scheduleLabel } from '../../selectors/schedules';
 
-import { setSelectedDate, startWeekChange } from '../../state/availability.actions';
+import { Center, Container } from '../../components/Container';
+import { ListItem } from '../../components/List';
+import { Progress } from '../../components/Progress';
+
+import { setSelectedSchedule } from '../../state/availability.actions';
 
 class Index extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Availability',
+  static navigationOptions = () => ({
+    title: 'Open Requests',
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
-    headerRight: <ButtonNavBar onPress={() => navigation.navigate('Edit')} icon="plus" />,
+    tabBarLabel: 'Availability',
   });
 
-  onChangeDate = (dt) => {
-    this.props.dispatch(setSelectedDate(dt.unix()));
+  onPressInfo = (item) => {
+    this.props.dispatch(
+      setSelectedSchedule({
+        id: item.id,
+        name: item.name,
+        details: item.details,
+        startTime: item.startTime,
+        endTime: item.endTime,
+      }),
+    );
+    this.props.navigation.navigate('Detail', { id: item.id });
   };
 
-  onPressItem = (timeSegment) => {
-    this.props.navigation.navigate('Edit', { timeSegment });
-  };
-
-  onScrollEnd = (e) => {
-    this.props.dispatch(startWeekChange());
-    const { layoutMeasurement, contentOffset } = e.nativeEvent;
-    const activeIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
-
-    let dt;
-    if (activeIndex === -1) {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(-1, 'weeks')
-        .startOf('isoWeek');
-    } else {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(1, 'weeks')
-        .startOf('isoWeek');
-    }
-    this.props.dispatch(setSelectedDate(dt.unix()));
-  };
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.name}
+      subtitle={scheduleLabel(item.startTime, item.endTime)}
+      onPress={() => this.onPressInfo(item)}
+      icon="calendar"
+    />
+  );
 
   render() {
     const { loading, user } = this.props;
@@ -74,119 +66,56 @@ class Index extends Component {
       );
     }
 
-    // do any of the groups have schedules?
-    // expands to check date range of requests
-    if (user.schedules.length === 0) {
-      return (
-        <Container>
-          <Center>
-            <Text>None of the groups you belong to have any open requests.</Text>
-          </Center>
-        </Container>
-      );
-    }
-
-    const momentDate = moment.unix(this.props.selectedDate);
-
-    // get start of week unix timestamp
-    const startTime = momentDate
-      .clone()
-      .isoWeekday(1)
-      .startOf('isoweek')
-      .unix();
-
-    const endTime = momentDate
-      .clone()
-      .isoWeekday(1)
-      .endOf('isoweek')
-      .unix();
-
-    const filteredItems = selectSchedules(user.schedules, { startTime, endTime });
-
     return (
       <Container>
-        <Holder margin>
-          <ScrollView
-            horizontal
-            onScrollEndDrag={this.onScrollEnd}
-            contentContainerStyle={{ flexGrow: 1 }}
-          >
-            <Week
-              onChangeDate={this.onChangeDate}
-              selectedDate={moment.unix(this.props.selectedDate)}
-            />
-          </ScrollView>
-        </Holder>
-        <SeparatorClear />
-        {this.props.isChangingWeek && <Progress />}
-        <Calendar items={filteredItems} onPressItem={this.onPressItem} />
+        <FlatList
+          data={user.schedules}
+          ListHeaderComponent={() =>
+            (!user.schedules.length ? (
+              <Center>
+                <Text>None of the groups you belong to have any open requests.</Text>
+              </Center>
+            ) : null)
+          }
+          keyExtractor={item => item.id}
+          renderItem={this.renderItem}
+          refreshing={this.props.networkStatus === 4}
+        />
       </Container>
     );
   }
 }
 
 Index.propTypes = {
-  navigation: PropTypes.shape({
-    goBack: PropTypes.func,
-    navigate: PropTypes.func,
-    setParams: PropTypes.func,
-  }),
   dispatch: PropTypes.func.isRequired,
-  selectedDate: PropTypes.number.isRequired,
-  isChangingWeek: PropTypes.bool,
   loading: PropTypes.bool,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
+  networkStatus: PropTypes.number,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
-    organisation: PropTypes.shape({
-      groups: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          name: PropTypes.string.isRequired,
-          tags: PropTypes.arrayOf(
-            PropTypes.shape({
+    schedules: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        details: PropTypes.string.isRequired,
+        startTime: PropTypes.number.isRequired,
+        endTime: PropTypes.number.isRequired,
+        timeSegments: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            status: PropTypes.string.isRequired,
+            startTime: PropTypes.number.isRequired,
+            endTime: PropTypes.number.isRequired,
+            user: PropTypes.shape({
               id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
             }),
-          ),
-          users: PropTypes.arrayOf(
-            PropTypes.shape({
-              id: PropTypes.number.isRequired,
-              username: PropTypes.string.isRequired,
-            }),
-          ),
-          schedules: PropTypes.arrayOf(
-            PropTypes.shape({
-              id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
-              details: PropTypes.string.isRequired,
-              startTime: PropTypes.number.isRequired,
-              endTime: PropTypes.number.isRequired,
-              timeSegments: PropTypes.arrayOf(
-                PropTypes.shape({
-                  id: PropTypes.number.isRequired,
-                  status: PropTypes.number.isRequired,
-                  startTime: PropTypes.number.isRequired,
-                  endTime: PropTypes.number.isRequired,
-                  user: PropTypes.arrayOf(
-                    PropTypes.shape({
-                      id: PropTypes.number.isRequired,
-                    }),
-                  ),
-                }),
-              ),
-            }),
-          ),
-          events: PropTypes.arrayOf(
-            PropTypes.shape({
-              id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
-              details: PropTypes.string.isRequired,
-            }),
-          ),
-        }),
-      ),
-    }),
+          }),
+        ),
+      }),
+    ),
   }),
 };
 
@@ -200,11 +129,8 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-const mapStateToProps = ({ auth, availability }) => ({
+const mapStateToProps = ({ auth }) => ({
   auth,
-  selectedDate: availability.selectedDate,
-  isChangingWeek: availability.isChangingWeek,
-  items: availability.items,
 });
 
 export default compose(connect(mapStateToProps), userQuery)(Index);

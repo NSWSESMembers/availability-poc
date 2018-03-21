@@ -18,7 +18,6 @@ const CalendarRow = ({ item, onPressItem }) => {
   if (item.status === 'Unavailable - unless urgent') {
     buttonStyles.push({ backgroundColor: Colors.bgBtnUrgent });
   }
-
   return (
     <View style={styles.row}>
       <Timeline startDateTime={item.startTime} endDateTime={item.endTime} />

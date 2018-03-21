@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   empty: {
     backgroundColor: Colors.bgWhite,
-    marginTop: 20,
+    marginTop: 8,
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     marginBottom: 2,
+    fontSize: 12,
   },
   dayButton,
   dayButtonSelected: {

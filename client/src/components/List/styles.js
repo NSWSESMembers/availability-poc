@@ -35,6 +35,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flexShrink: 1,
   },
+  iconContainer: {
+    flexDirection: 'row',
+  },
   supertitleText: {
     textAlignVertical: 'top',
     includeFontPadding: false,
@@ -64,6 +67,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     alignSelf: 'center',
+  },
+  iconHolder: {
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
+  detailText: {
+    fontStyle: 'italic',
   },
 });
 

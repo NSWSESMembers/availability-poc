@@ -21,6 +21,10 @@ const availability = (state = initialState, action) => {
       return Object.assign({}, state, {
         selectedRequests: action.requests,
       });
+    case 'SET_SELECTED_SCHEDULE':
+      return Object.assign({}, state, {
+        selectedSchedule: action.schedule,
+      });
     case 'START_WEEK_CHANGE':
       return Object.assign({}, state, {
         isChangingWeek: true,
