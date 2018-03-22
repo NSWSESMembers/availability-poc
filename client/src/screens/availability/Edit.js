@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import _ from 'lodash';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import {
@@ -12,7 +11,6 @@ import {
   REMOVE_TIME_SEGMENT_MUTATION,
   UPDATE_TIME_SEGMENT_MUTATION,
 } from '../../graphql/time-segment.mutation';
-import SCHEDULE_QUERY from '../../graphql/schedule.query';
 
 import { Alert } from '../../components/Alert';
 import ButtonRowPicker from '../../components/ButtonRowPicker';
@@ -22,12 +20,11 @@ import { DatePicker } from '../../components/Calendar';
 import { Container, Holder } from '../../components/Container';
 import { Separator } from '../../components/Separator';
 
-import { setSelectedRequests } from '../../state/availability.actions';
-
 class Edit extends Component {
   static navigationOptions = () => ({
-    title: 'Availability',
+    title: 'Edit Availability',
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
+    tabBarLabel: 'Availability',
   });
 
   constructor(props) {
@@ -36,19 +33,7 @@ class Edit extends Component {
     const dt = moment.unix(props.selectedDate).clone();
 
     if (props.navigation.state.params && props.navigation.state.params.timeSegment) {
-      const {
-        scheduleId,
-        scheduleName,
-        status,
-        startTime,
-        endTime,
-        id,
-      } = props.navigation.state.params.timeSegment;
-
-      // set selectedRequests
-      this.props.dispatch(
-        setSelectedRequests([{ label: scheduleName, value: scheduleId.toString() }]),
-      );
+      const { status, startTime, endTime, id } = props.navigation.state.params.timeSegment;
 
       // initialize other state
       this.state = {
@@ -68,25 +53,13 @@ class Edit extends Component {
       };
     }
   }
-  // scheduleId, status, startTime, endTime
-  // TODO - add error handling
   handleSave = () => {
-    if (this.props.selectedRequests.length === 0) {
-      this.setState({
-        status: 'Availability Error',
-        errorMessage: 'You must select at least 1 request.',
-      });
-      this.popRef.show();
-      return;
-    }
     if (this.state.id === 0) {
-      _.forEach(this.props.selectedRequests, (request) => {
-        this.props.createTimeSegment({
-          scheduleId: parseInt(request.value, 10),
-          status: this.state.availibilityStatus,
-          startTime: moment(this.state.startTime).unix(),
-          endTime: moment(this.state.endTime).unix(),
-        });
+      this.props.createTimeSegment({
+        scheduleId: this.props.selectedSchedule.id,
+        status: this.state.availibilityStatus,
+        startTime: moment(this.state.startTime).unix(),
+        endTime: moment(this.state.endTime).unix(),
       });
     } else {
       this.props.updateTimeSegment({
@@ -96,13 +69,11 @@ class Edit extends Component {
         endTime: moment(this.state.endTime).unix(),
       });
     }
-    this.props.dispatch(setSelectedRequests([]));
     this.props.navigation.goBack();
   };
 
   handleRemove = () => {
     this.props.removeTimeSegment({ segmentId: parseInt(this.state.id, 10) });
-    this.props.dispatch(setSelectedRequests([]));
     this.props.navigation.goBack();
   };
 
@@ -141,24 +112,10 @@ class Edit extends Component {
   };
 
   render() {
-    const requestDetail =
-      this.props.selectedRequests.length > 0
-        ? this.props.selectedRequests.map(elem => elem.label).join(', ')
-        : '-- none selected --';
-
     return (
       <Container>
         <Holder>
-          {this.state.id !== 0 ? (
-            <ButtonRow title="Request" showIcon description={requestDetail} />
-          ) : (
-            <ButtonRow
-              title="Requests"
-              showIcon
-              description={requestDetail}
-              onPress={this.handleRequests}
-            />
-          )}
+          <ButtonRow title="Request" showIcon description={this.props.selectedSchedule.name} />
         </Holder>
         <Holder>
           <DatePicker
@@ -231,14 +188,14 @@ Edit.propTypes = {
       params: PropTypes.object,
     }),
   }),
-  selectedRequests: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired,
-    }),
-  ),
-  dispatch: PropTypes.func.isRequired,
   selectedDate: PropTypes.number.isRequired,
+  selectedSchedule: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
+  }),
   createTimeSegment: PropTypes.func.isRequired,
   removeTimeSegment: PropTypes.func.isRequired,
   updateTimeSegment: PropTypes.func.isRequired,
@@ -252,10 +209,6 @@ const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
         refetchQueries: [
           {
             query: CURRENT_USER_QUERY,
-          },
-          {
-            query: SCHEDULE_QUERY,
-            variables: { id: scheduleId },
           },
         ],
       }),
@@ -293,6 +246,7 @@ const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
 const mapStateToProps = state => ({
   selectedRequests: state.availability.selectedRequests,
   selectedDate: state.availability.selectedDate,
+  selectedSchedule: state.availability.selectedSchedule,
   availibilityStatus: state.availability.availibilityStatus,
   availibilityComment: state.availability.availibilityComment,
 });

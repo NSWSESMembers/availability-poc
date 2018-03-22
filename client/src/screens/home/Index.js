@@ -4,14 +4,17 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 import { FlatList, Text } from 'react-native';
-import moment from 'moment';
 import { goToEvent, goToRequest } from '../../state/navigation.actions';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
+import { scheduleLabel } from '../../selectors/schedules';
+
 import { Center, Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
+
+import { setSelectedSchedule } from '../../state/availability.actions';
 
 const EventItem = ({ event, dispatch }) => (
   <ListItem
@@ -23,6 +26,7 @@ const EventItem = ({ event, dispatch }) => (
     onPress={() => dispatch(goToEvent(event.id))}
   />
 );
+
 EventItem.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -30,24 +34,35 @@ EventItem.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-const ScheduleItem = ({ schedule, dispatch }) => {
-  let subtitle = 'Ongoing';
-  if (schedule.startTime !== 0) {
-    const start = moment.unix(schedule.startTime).format('YYYY-MM-DD');
-    const end = moment.unix(schedule.endTime).format('YYYY-MM-DD');
-    subtitle = `${start} to ${end}`;
-  }
+class ScheduleItem extends Component {
+  onPress = (schedule) => {
+    this.props.dispatch(
+      setSelectedSchedule({
+        id: schedule.id,
+        name: schedule.name,
+        details: schedule.details,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+      }),
+    );
 
-  return (
-    <ListItem
-      title={schedule.name}
-      bold
-      subtitle={subtitle}
-      icon="calendar"
-      onPress={() => dispatch(goToRequest(schedule.id))}
-    />
-  );
-};
+    this.props.dispatch(goToRequest(schedule.id));
+  };
+
+  render() {
+    const { schedule } = this.props;
+    return (
+      <ListItem
+        title={schedule.name}
+        bold
+        subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
+        icon="calendar"
+        onPress={() => this.onPress(schedule)}
+      />
+    );
+  }
+}
+
 ScheduleItem.propTypes = {
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -114,7 +129,8 @@ class Home extends Component {
               <Center>
                 <Text>There is nothing interesting happening right now.</Text>
               </Center>
-            ) : null)}
+            ) : null)
+          }
           keyExtractor={item => `${item.type}-${item.id}`}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}

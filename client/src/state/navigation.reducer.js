@@ -23,7 +23,7 @@ const navigation = (state = initialNavState, action) => {
       // reset to initial state - re-visit later
       customAction = {
         type: 'Navigation/NAVIGATE',
-        routeName: 'Availability',
+        routeName: 'Detail',
         params: {
           id: action.id,
         },

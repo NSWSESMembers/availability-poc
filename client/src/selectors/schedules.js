@@ -1,4 +1,6 @@
-export default (schedules, { startTime, endTime }) => {
+import moment from 'moment';
+
+export const selectSchedules = (schedules, { startTime, endTime }) => {
   const filteredItems = [];
   schedules.map(schedule =>
     schedule.timeSegments.map((timeSegment) => {
@@ -21,4 +23,12 @@ export default (schedules, { startTime, endTime }) => {
   return filteredItems.sort((a, b) => (a.startTime > b.startTime ? 1 : -1));
 };
 
-// need a better way to do this other than map - e.g. reduce multidimension array ?
+export const scheduleLabel = (startTime, endTime) => {
+  let subtitle = 'Ongoing';
+  if (startTime !== 0) {
+    const start = moment.unix(startTime).format('YYYY-MM-DD');
+    const end = moment.unix(endTime).format('YYYY-MM-DD');
+    subtitle = `${start} to ${end}`;
+  }
+  return subtitle;
+};
