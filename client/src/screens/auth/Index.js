@@ -43,7 +43,7 @@ class Index extends Component {
           <Icon name="bullhorn" size={90} color="#FFF" />
           <Text style={{ fontSize: 45, color: '#FFF' }}>Callout</Text>
           <Text style={{ fontSize: 15, color: '#FFF' }}>
-          Version {DeviceInfo.typeof ? DeviceInfo.getReadableVersion() : 'NA'} Revision {this.state.codePushHash}
+          Version {DeviceInfo.typeof === undefined ? DeviceInfo.getReadableVersion() : 'NA'} Revision {this.state.codePushHash}
           </Text>
         </Center>
         <Footer>
