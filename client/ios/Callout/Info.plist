@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BugsnagAPIKey</key>
+	<string>08136489878ec2af26c61e6dd7acdd98</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -21,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>CodePushDeploymentKey</key>
 	<string>RI6UfCKevlNt4DsfOcrdpRuADRwvae9e3d88-2347-4e09-a02a-76e4d3554374</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -77,7 +79,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-  <key>BugsnagAPIKey</key>
-  <string>08136489878ec2af26c61e6dd7acdd98</string>
 </dict>
 </plist>
