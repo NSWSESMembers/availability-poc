@@ -83,7 +83,7 @@ class Burger extends Component {
   }
 
   about = () => {
-    const deviceInfoAvailable = DeviceInfo.typeof;
+    const deviceInfoAvailable = DeviceInfo.typeof === undefined;
 
     codePush.getCurrentPackage().then((result) => {
       Alert.alert(
