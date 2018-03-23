@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View, Alert } from 'react-native';
 
 import EVENT_QUERY from '../../graphql/event.query';
 
@@ -103,6 +103,7 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
                   icon="user"
+                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
@@ -125,6 +126,7 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
                   icon="user"
+                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
@@ -147,6 +149,7 @@ class EventUsers extends Component {
                   title={response.item.user.displayName}
                   subtitle={response.item.detail}
                   icon="user"
+                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
               refreshing={this.props.networkStatus === 4}
