@@ -158,12 +158,10 @@ class EventDetail extends Component {
 
   geoWatch = null;
 
-  editResponse = (eventResponse) => {
+  editResponse = () => {
     const { navigate } = this.props.navigation;
-    navigate('EventResponseEdit', {
-      eventResponse,
+    navigate('EventResponse', {
       eventId: this.props.event.id,
-      eventLocations: this.props.event.eventLocations,
     });
   };
 
@@ -288,9 +286,9 @@ class EventDetail extends Component {
               wide
               bold
               title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
-              subtitle={myStatus ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
+              subtitle={myStatus && myStatus.destination ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
               icon="location-arrow"
-              onPress={() => this.editResponse(myStatus)}
+              onPress={() => this.editResponse()}
             />
             <ListItem
               wide
