@@ -257,7 +257,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return timesegment.getUser();
       },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, status, startTime, endTime } = args.timeSegment;
+        const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
         return getAuthenticatedUser(ctx)
           .then(user =>
             Schedule.findById(scheduleId).then((schedule) => {
@@ -269,7 +269,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
                 status,
                 startTime,
                 endTime,
-                user,
+                user: userId === undefined ? user : { id: userId },
               });
             }),
           );

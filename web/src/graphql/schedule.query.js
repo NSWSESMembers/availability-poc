@@ -15,6 +15,7 @@ const SCHEDULE_QUERY = gql`
         }
       }
       timeSegments {
+        id
         status
         startTime
         endTime

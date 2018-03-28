@@ -23,3 +23,13 @@ export const peopleCount = (timeSegments, { status = 'Available', startTime, end
   });
   return people.length;
 };
+
+export const searchTimeSegments = (timeSegments, { status, startTime, endTime, userId }) =>
+  timeSegments.filter(
+    timeSegment =>
+      (timeSegment.startTime >= startTime &&
+      timeSegment.startTime < endTime &&
+      timeSegment.status === status &&
+      timeSegment.user.id === userId),
+  );
+

@@ -5,3 +5,12 @@
     opacity: 1;
   }
 }
+
+.semi-opaque {
+  opacity: 0.35;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+

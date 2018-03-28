@@ -45,6 +45,7 @@ export const Schema = [
     status: String!
     startTime: Int!
     endTime: Int!
+    userId: Int
   }
 
   input updateTimeSegmentInput {
