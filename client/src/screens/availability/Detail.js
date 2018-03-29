@@ -14,6 +14,7 @@ import { setSelectedDate, startWeekChange } from '../../state/availability.actio
 import { ButtonNavBar } from '../../components/Button';
 import { Calendar, Week } from '../../components/Calendar';
 import { Center, Container, Holder } from '../../components/Container';
+import { DateRange } from '../../components/DateTime';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
@@ -103,6 +104,11 @@ class Detail extends Component {
 
     return (
       <Container>
+        {schedule.startTime > 0 && (
+          <Holder marginTop paddingVertical>
+            <DateRange startTime={schedule.startTime} endTime={schedule.endTime} />
+          </Holder>
+        )}
         <ListItem
           title={schedule.name}
           subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
