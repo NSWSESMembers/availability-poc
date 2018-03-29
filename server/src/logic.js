@@ -346,12 +346,8 @@ export const getHandlers = ({ models, creators: Creators }) => {
                   if (!destination) {
                     return Promise.reject(Error('Unknown destination passed'));
                   }
-
-
                   updateArgs.eventlocationId = destination[0].id;
-
                   delete updateArgs.destination;
-
                   if (result.length > 0) {
                     return result[0].update(updateArgs);
                   }

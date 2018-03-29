@@ -73,12 +73,6 @@ const styles = extendAppStyleSheet({
     textAlign: 'center',
     padding: 10,
   },
-  /*
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  */
   buttonContainerOutter: {
     flex: 0.3,
   },
@@ -171,11 +165,11 @@ class EventResponse extends Component {
     });
   }
 
-handleETAClose = () => {
-  this.setState({
-    etaModal: false,
-  });
-}
+  handleETAClose = () => {
+    this.setState({
+      etaModal: false,
+    });
+  }
 
 
   handleDestinationClose = () => {
