@@ -40,6 +40,23 @@ const styles = StyleSheet.create({
   buttonRowDescription: {
     paddingBottom: 5,
   },
+  buttonIconContainer: {
+    backgroundColor: 'green',
+    alignItems: 'center',
+    minHeight: 150,
+    minWidth: 150,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    paddingRight: 10,
+    margin: 5,
+    flexGrow: 1,
+  },
+  buttonIconText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: 18,
+  },
 });
 
 export default styles;

@@ -70,7 +70,9 @@ class Burger extends Component {
 
   showEventResponse = () => {
     const { navigate } = this.props.navigation;
-    navigate('EventResponse');
+    navigate('EventResponse', {
+      eventId: 1,
+    });
   }
 
   showUserProfile = () => {

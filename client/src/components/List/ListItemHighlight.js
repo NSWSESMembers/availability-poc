@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableHighlight, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -23,8 +23,9 @@ const ListItem = ({
   }
 
   return (
-    <TouchableOpacity onPress={() => onPress()}>
-      {title && (
+    <TouchableHighlight underlayColor="transparent" onPress={() => onPress()}>
+      <View>
+        {title && (
         <View style={containerStyles}>
           <View style={styles.textContainer}>
             {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
@@ -44,12 +45,13 @@ const ListItem = ({
           {icon && <Icon style={styles.icon} name={icon} size={30} />}
         </View>
       )}
-      {detail && (
+        {detail && (
         <View style={containerStyles}>
           <Text style={styles.detailText}>{detail}</Text>
         </View>
       )}
-    </TouchableOpacity>
+      </View>
+    </TouchableHighlight>
   );
 };
 

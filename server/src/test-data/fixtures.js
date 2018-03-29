@@ -253,7 +253,7 @@ export const EVENTS = [
       },
       {
         name: 'scene',
-        detail: 'scene',
+        detail: '-34.6624983, 150.6498819',
         icon: 'scene',
         locationLatitude: -34.6624983,
         locationLongitude: 150.6498819,
@@ -316,7 +316,7 @@ export const EVENTS = [
       },
       {
         name: 'scene',
-        detail: 'scene',
+        detail: 'Princes Highway, Gerringong',
         icon: 'scene',
         locationLatitude: -34.7297649,
         locationLongitude: 150.8249098,
@@ -386,7 +386,7 @@ export const EVENTS = [
       },
       {
         name: 'scene',
-        detail: 'scene',
+        detail: '12 WEBB STREET, NORTH PARRAMATTA NSW 2151',
         icon: 'scene',
         locationLatitude: -33.8031162,
         locationLongitude: 151.0169367,
