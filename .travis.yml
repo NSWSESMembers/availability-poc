@@ -1,6 +1,11 @@
 language: node_js
 node_js: 6
 cache: yarn
+
+branches:
+  only:
+    - master
+
 env:
   - COMPONENT=client MODE=lint
   - COMPONENT=server MODE=lint
