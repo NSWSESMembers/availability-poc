@@ -102,8 +102,8 @@ class EventResponse extends Component {
 
   state = {
     status: '',
-    destination: '',
-    eta: '',
+    destination: null,
+    eta: null,
     destinationsModal: false,
     etaModal: false,
   }
@@ -114,12 +114,13 @@ class EventResponse extends Component {
   };
 
   submitEventResponse = () => {
-    const dst = (this.state.destination !== '' ? { destination: { id: this.state.destination } } : {});
-    const eta = moment().add(this.state.eta, 'minutes').unix();
+    const dst = (this.state.destination !== null ?
+      { destination: { id: this.state.destination } } : null);
+    const eta = this.state.eta !== null ? moment().add(this.state.eta, 'minutes').unix() : 0;
     this.props
       .setEventResponseQuery({
         id: this.props.event.id,
-        ...dst,
+        destination: (this.state.destination !== null ? { id: this.state.destination } : null),
         eta,
         detail: 'place holder',
         status: this.state.status,
@@ -134,7 +135,7 @@ class EventResponse extends Component {
 
   handleResponse = (status) => {
     this.setState({
-      status,
+      status: status !== '' ? status : null,
       destinationsModal: true,
     });
   }
@@ -148,7 +149,7 @@ class EventResponse extends Component {
   }
   handleETAChange = (answer) => {
     this.setState({
-      eta: answer,
+      eta: answer !== '' ? answer : null,
     });
   }
 
