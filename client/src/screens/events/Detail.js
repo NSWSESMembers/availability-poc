@@ -230,6 +230,12 @@ class EventDetail extends Component {
     });
     const summaryByDestinationUsersString = summaryByDestinationUsersArray.join(', ');
 
+    const userSubtitleArray = [];
+    userSubtitleArray.push(myStatus && myStatus.destination ? `Destination ${myStatus.destination.name.toUpperCase()}` : 'No destination set');
+    userSubtitleArray.push(myStatus && myStatus.eta !== 0 ? `ETA ${moment.unix(myStatus.eta).fromNow()}` : 'ETA unknown');
+    const userSubtitleString = userSubtitleArray.join(', ');
+
+
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
@@ -288,7 +294,7 @@ class EventDetail extends Component {
               wide
               bold
               title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
-              subtitle={myStatus && myStatus.destination ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment.unix(myStatus.eta).fromNow()}`) : 'No destination set'}
+              subtitle={userSubtitleString}
               icon="location-arrow"
               onPress={() => this.editResponse()}
             />
