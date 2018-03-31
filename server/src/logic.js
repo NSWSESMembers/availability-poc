@@ -340,27 +340,39 @@ export const getHandlers = ({ models, creators: Creators }) => {
           .then((result) => {
             const updateArgs = { ...args.response };
             delete updateArgs.id;
-            if (updateArgs.destination) {
-              return event.getEventlocations({ where: { id: updateArgs.destination.id } })
-                .then((destination) => {
-                  if (!destination) {
-                    return Promise.reject(Error('Unknown destination passed'));
-                  }
-                  updateArgs.eventlocationId = destination[0].id;
-                  delete updateArgs.destination;
-                  if (result.length > 0) {
-                    return result[0].update(updateArgs);
-                  }
-                  return Creators.eventResponse({
-                    event,
-                    user,
-                    destination: destination[0],
-                    ...updateArgs,
+            if (typeof (updateArgs.destination) !== 'undefined') { // null is truthy so we need this
+              if (updateArgs.destination !== null) {
+                return event.getEventlocations({ where: { id: updateArgs.destination.id } })
+                  .then((destination) => {
+                    if (!destination) {
+                      return Promise.reject(Error('Unknown destination passed'));
+                    }
+                    updateArgs.eventlocationId = destination[0].id;
+                    delete updateArgs.destination;
+                    if (result.length > 0) {
+                      return result[0].update(updateArgs);
+                    }
+                    return Creators.eventResponse({
+                      event,
+                      user,
+                      destination: destination[0],
+                      ...updateArgs,
+                    });
                   });
-                });
+              }
+              // destination passed is null
+              if (result.length) {
+                updateArgs.eventlocationId = null;
+                return result[0].update(updateArgs);
+              }
+              return Creators.eventResponse({
+                event,
+                user,
+                ...updateArgs,
+              });
             }
+            // no destination passed
             if (result.length) {
-              updateArgs.eventlocationId = null;
               return result[0].update(updateArgs);
             }
             return Creators.eventResponse({
