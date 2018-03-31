@@ -133,7 +133,7 @@ class EventDetail extends Component {
           },
           { enableHighAccuracy: true, maximumAge: 1000 },
         );
-      } else if (myStatus.status.toLowerCase() !== 'responding' && this.geoWatch !== null) {
+      } else if (myStatus.status.toLowerCase() === 'unavailable' && this.geoWatch !== null) {
         navigator.geolocation.clearWatch(this.geoWatch);
         this.geoWatch = null;
       }
