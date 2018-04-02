@@ -65,7 +65,10 @@ jobs:
     env:
       COMPONENT=client PLATFORM=ios
     deploy:
+      provider: script
       script: bash ../scripts/travis-code-push.sh
+      on:
+        branch: master
   - stage: deploy clients
     language: node_js
     node_js: 6
@@ -75,4 +78,7 @@ jobs:
     env:
       COMPONENT=client PLATFORM=android
     deploy:
+      provider: script
       script: bash ../scripts/travis-code-push.sh
+      on:
+        branch: master
