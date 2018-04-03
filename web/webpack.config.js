@@ -1,6 +1,14 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv');
+
+
+const config = {
+}
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -12,13 +20,61 @@ if (process.env.NODE_ENV === 'test') {
 
 module.exports = (env) => {
   const isProduction = env === 'production';
-  const CSSExtract = new ExtractTextPlugin('styles.css');
+  const CSSExtract = new ExtractTextPlugin('styles.[contenthash].css');
 
   return {
-    entry: ['babel-polyfill', './src/app.js'],
+    entry: {
+      main: ['babel-polyfill', './src/app.js'],
+      vendor: [
+        'babel-polyfill',
+        'apollo-cache-inmemory',
+        'apollo-client',
+        'apollo-link',
+        'apollo-link-error',
+        'apollo-link-http',
+        'graphql',
+        'graphql-tag',
+        'material-ui',
+        'material-ui-icons',
+        'moment',
+        'numeral',
+        'prop-types',
+        'react',
+        'react-addons-shallow-compare',
+        'react-apollo',
+        'react-dom',
+        'react-modal',
+        'react-redux',
+        'react-router-dom',
+        'recompose',
+        'redux',
+        'redux-persist',
+        'redux-thunk',
+        'uuid',
+        'validator',
+      ],
+    },
+    plugins: [
+      CSSExtract,
+      new CleanWebpackPlugin(['dist']),
+      new HtmlWebpackPlugin({
+        template: 'template.html',
+      }),
+      new webpack.HashedModuleIdsPlugin(),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor'
+      }),
+      //new webpack.optimize.CommonsChunkPlugin({
+      //  name: 'manifest'
+      //}),
+      // dump all files in static directly into the build root
+      new CopyWebpackPlugin([
+        { from: 'static', to: '.', },
+      ]),
+    ],
     output: {
-      path: path.join(__dirname, 'public', 'dist'),
-      filename: 'bundle.js',
+      filename: '[name].[chunkhash].js',
+      path: path.resolve(__dirname, 'dist')
     },
     module: {
       rules: [
@@ -46,14 +102,24 @@ module.exports = (env) => {
             ],
           }),
         },
+        {
+          test: /\.(png|svg|jpg|gif)$/,
+          use: [
+            'file-loader'
+          ]
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/,
+          use: [
+            'file-loader'
+          ]
+        },
       ],
     },
-    plugins: [CSSExtract],
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     devServer: {
-      contentBase: path.join(__dirname, 'public'),
+      //contentBase: path.join(__dirname, 'dist'),
       historyApiFallback: true,
-      publicPath: '/dist/',
       port: 5000,
     },
     stats: {
