@@ -166,7 +166,7 @@ export const Schema = [
     event: Event!
     user: User!
     status: String!
-    detail: String!
+    detail: String
     locationLatitude: Float
     locationLongitude: Float
     locationTime: Int

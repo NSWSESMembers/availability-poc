@@ -10,7 +10,7 @@ import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
-import { ListModal, NumberInputModal } from '../../components/Modal';
+import { ListModal, TextInputModal, NumberInputModal } from '../../components/Modal';
 import { Paper } from '../../components/Paper';
 import { ButtonIcon, ButtonNavBar } from '../../components/Button';
 
@@ -101,11 +101,13 @@ class EventResponse extends Component {
   });
 
   state = {
-    status: '',
+    status: null,
     destination: null,
     eta: null,
+    detail: null,
     destinationsModal: false,
     etaModal: false,
+    detailModal: false,
   }
 
   close = () => {
@@ -122,7 +124,7 @@ class EventResponse extends Component {
         id: this.props.event.id,
         destination: dst,
         eta,
-        detail: 'place holder',
+        detail: this.state.detail,
         status: this.state.status,
       })
       .then(() => {
@@ -156,7 +158,8 @@ class EventResponse extends Component {
   handleETA = () => {
     this.setState({
       etaModal: false,
-    }, () => this.submitEventResponse());
+      detailModal: true,
+    });
   }
 
   handleETABack = () => {
@@ -167,6 +170,31 @@ class EventResponse extends Component {
   }
 
   handleETAClose = () => {
+    this.setState({
+      etaModal: false,
+    });
+  }
+
+  handleDetailChange = (answer) => {
+    this.setState({
+      detail: answer !== '' ? answer : null,
+    });
+  }
+
+  handleDetail = () => {
+    this.setState({
+      detailModal: false,
+    }, this.submitEventResponse());
+  }
+
+  handleDetailBack = () => {
+    this.setState({
+      detailModal: false,
+      etaModal: true,
+    });
+  }
+
+  handleDetailClose = () => {
     this.setState({
       etaModal: false,
     });
@@ -250,6 +278,13 @@ class EventResponse extends Component {
           onChangeText={this.handleETAChange}
           onSave={this.handleETA}
         />
+        <TextInputModal
+          visible={this.state.detailModal}
+          closeModal={this.handleDetailClose}
+          backModal={this.handleDetailBack}
+          onChangeText={this.handleDetailChange}
+          onSave={this.handleDetail}
+        />
       </Container>
     );
   }
@@ -284,7 +319,7 @@ EventResponse.propTypes = {
           displayName: PropTypes.string.isRequired,
         }),
         status: PropTypes.string.isRequired,
-        detail: PropTypes.string.isRequired,
+        detail: PropTypes.string,
       }),
     ),
   }),
