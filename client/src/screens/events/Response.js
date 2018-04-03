@@ -115,7 +115,7 @@ class EventResponse extends Component {
 
   submitEventResponse = () => {
     const dst = (this.state.destination !== null ?
-      { destination: { id: this.state.destination } } : null);
+      { id: this.state.destination } : null);
     const eta = this.state.eta !== null ? moment().add(this.state.eta, 'minutes').unix() : 0;
     this.props
       .setEventResponseQuery({
