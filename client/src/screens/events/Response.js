@@ -103,6 +103,7 @@ class EventResponse extends Component {
   state = {
     status: null,
     destination: null,
+    destinationName: null,
     eta: null,
     detail: null,
     destinationsModal: false,
@@ -145,6 +146,7 @@ class EventResponse extends Component {
   handleDestination = (answer) => {
     this.setState({
       destination: answer.key,
+      destinationName: answer.label,
       destinationsModal: false,
       etaModal: true,
     });
@@ -262,6 +264,7 @@ class EventResponse extends Component {
           <Paper text={event.details} />
         </ScrollView>
         <ListModal
+          title="Select Your Destination"
           visible={this.state.destinationsModal}
           closeModal={this.handleDestinationClose}
           backModal={this.handleDestinationClose}
@@ -272,6 +275,8 @@ class EventResponse extends Component {
           }))}
         />
         <NumberInputModal
+          title="Whats Your ETA?"
+          placeHolder={`Number of minutes to ${this.state.destinationName}`}
           visible={this.state.etaModal}
           closeModal={this.handleETAClose}
           backModal={this.handleETABack}
