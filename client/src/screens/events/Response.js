@@ -120,7 +120,7 @@ class EventResponse extends Component {
     this.props
       .setEventResponseQuery({
         id: this.props.event.id,
-        destination: (this.state.destination !== null ? { id: this.state.destination } : null),
+        destination: dst,
         eta,
         detail: 'place holder',
         status: this.state.status,
