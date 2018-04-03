@@ -184,7 +184,7 @@ class EventResponse extends Component {
   handleDetail = () => {
     this.setState({
       detailModal: false,
-    }, () => this.submitEventResponse());
+    }, this.submitEventResponse());
   }
 
   handleDetailBack = () => {
