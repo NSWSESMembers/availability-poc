@@ -66,6 +66,7 @@ jobs:
       COMPONENT=client PLATFORM=ios
     deploy:
       provider: script
+      skip_cleanup: true
       script: bash ../scripts/travis-code-push.sh
       on:
         branch: master
@@ -79,6 +80,7 @@ jobs:
       COMPONENT=client PLATFORM=android
     deploy:
       provider: script
+      skip_cleanup: true
       script: bash ../scripts/travis-code-push.sh
       on:
         branch: master
