@@ -6,7 +6,7 @@ import { DateSelect } from './';
 
 import styles from './styles';
 
-const DateRange = ({ timeSegments, startTime, endTime }) => {
+const DateRange = ({ timeSegments, startTime, endTime, selectedDays, onSelect }) => {
   const startDay = moment.unix(startTime).startOf('day');
   const endDay = moment.unix(endTime).endOf('day');
 
@@ -14,74 +14,59 @@ const DateRange = ({ timeSegments, startTime, endTime }) => {
   const endOfWeek = endDay.endOf('isoWeek');
   const difference = endOfWeek.diff(startOfWeek, 'days') + 1;
 
-  /*
   const table = [];
-  const rows = [];
-  for (let i = 0; i < difference; i += 7) {
+  let rows = [];
+  for (let i = 0; i < difference; i += 1) {
+    const day = startOfWeek.add(i === 0 ? 0 : 1, 'days').unix();
+    const dayUnix = 24 * 60 * 60;
+    let endOfDay = parseInt(day, 0) + dayUnix;
+    endOfDay = endDay - 1;
+
+    let availType = 'NotSpecified';
+    if (day < startTime || day > endTime) {
+      availType = 'OutOfRange';
+    } else {
+      const results = timeSegments.filter(
+        timeSegment => timeSegment.startTime >= day && timeSegment.endTime <= endOfDay,
+      );
+
+      if (results.length > 0) {
+        availType = results[0].status;
+        console.log(availType);
+      }
+    }
+
     rows.push(
       <DateSelect
-        style={styles.day}
-        key={i + 0}
-        date={startOfWeek.add(i === 0 ? 0 : 1, 'days').unix()}
+        key={`${i}column`}
+        availType={availType}
+        date={day}
+        onSelect={onSelect}
+        select={selectedDays.indexOf(day) !== -1}
       />,
     );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 1} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 2} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 3} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 4} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 5} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    rows.push(
-      <DateSelect style={styles.day} key={i + 6} date={startOfWeek.add(1, 'days').unix()} />,
-    );
-    table.push(
-      <View key={`${i}row`} style={styles.week}>
-        {rows}
-      </View>,
-    );
-  }
-  */
 
-  return (
-    <View style={{ flexDirection: 'column' }}>
-      <View style={styles.week}>
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(0, 'days').unix()} />
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="Available" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="Unavailable" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="Urgent" date={startOfWeek.add(1, 'days').unix()} />
-      </View>
-      <View style={styles.week}>
-        <DateSelect date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(1, 'days').unix()} />
-        <DateSelect availType="OutOfRange" date={startOfWeek.add(1, 'days').unix()} />
-      </View>
-    </View>
-  );
+    if ((i + 1) % 7 === 0) {
+      table.push(
+        <View key={`${i}row`} style={styles.week}>
+          {rows}
+        </View>,
+      );
+      rows = [];
+    }
+  }
+  return <View style={{ flexDirection: 'column' }}>{table}</View>;
 };
 
 DateRange.propTypes = {
-  timeSegments: PropTypes.shape({
-    startTime: PropTypes.number.isRequired,
-    endTime: PropTypes.number.isRequired,
-    id: PropTypes.number.isRequired,
-    status: PropTypes.string.isRequired,
-  }),
+  timeSegments: PropTypes.arrayOf(
+    PropTypes.shape({
+      startTime: PropTypes.number.isRequired,
+      endTime: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+    }),
+  ),
   startTime: PropTypes.number.isRequired,
   endTime: PropTypes.number.isRequired,
 };

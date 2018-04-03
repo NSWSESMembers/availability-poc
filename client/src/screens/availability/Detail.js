@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
@@ -9,10 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 import { selectSchedules, scheduleLabel } from '../../selectors/schedules';
-import { setSelectedDate, startWeekChange } from '../../state/availability.actions';
 
 import { ButtonNavBar } from '../../components/Button';
-import { Calendar, Week } from '../../components/Calendar';
 import { Center, Container, Holder } from '../../components/Container';
 import { DateRange } from '../../components/DateTime';
 import { ListItem } from '../../components/List';
@@ -27,6 +25,7 @@ class Detail extends Component {
   });
 
   state = {
+    selectedDays: [],
     showInfo: false,
   };
 
@@ -34,32 +33,16 @@ class Detail extends Component {
     this.setState({ showInfo: !this.state.showInfo });
   };
 
-  onChangeDate = (dt) => {
-    this.props.dispatch(setSelectedDate(dt.unix()));
-  };
-
-  onPressItem = (timeSegment) => {
-    this.props.navigation.navigate('Edit', { timeSegment });
-  };
-
-  onScrollEnd = (e) => {
-    this.props.dispatch(startWeekChange());
-    const { layoutMeasurement, contentOffset } = e.nativeEvent;
-    const activeIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
-
-    let dt;
-    if (activeIndex === -1) {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(-1, 'weeks')
-        .startOf('isoWeek');
+  onSelectDay = (date) => {
+    let newArray = this.state.selectedDays.slice();
+    if (newArray.indexOf(date) !== -1) {
+      // remove
+      newArray = newArray.filter(d => d !== date);
     } else {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(1, 'weeks')
-        .startOf('isoWeek');
+      // add
+      newArray.push(date);
     }
-    this.props.dispatch(setSelectedDate(dt.unix()));
+    this.setState({ selectedDays: newArray });
   };
 
   render() {
@@ -104,11 +87,6 @@ class Detail extends Component {
 
     return (
       <Container>
-        {schedule.startTime > 0 && (
-          <Holder marginTop paddingVertical>
-            <DateRange startTime={schedule.startTime} endTime={schedule.endTime} />
-          </Holder>
-        )}
         <ListItem
           title={schedule.name}
           subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
@@ -117,20 +95,17 @@ class Detail extends Component {
           detail={this.state.showInfo ? schedule.details : undefined}
           wide
         />
-        <Holder marginTop paddingVertical>
-          <ScrollView
-            horizontal
-            onScrollEndDrag={this.onScrollEnd}
-            contentContainerStyle={{ flexGrow: 1 }}
-          >
-            <Week
-              onChangeDate={this.onChangeDate}
-              selectedDate={moment.unix(this.props.selectedDate)}
+        {schedule.startTime > 0 && (
+          <Holder marginTop paddingVertical>
+            <DateRange
+              startTime={schedule.startTime}
+              endTime={schedule.endTime}
+              onSelect={this.onSelectDay}
+              selectedDays={this.state.selectedDays}
+              timeSegments={filteredItems}
             />
-          </ScrollView>
-        </Holder>
-        {this.props.isChangingWeek && <Progress />}
-        <Calendar items={filteredItems} onPressItem={this.onPressItem} />
+          </Holder>
+        )}
       </Container>
     );
   }
@@ -149,6 +124,9 @@ Detail.propTypes = {
     }),
   }),
   selectedDate: PropTypes.number.isRequired,
+  selectedDays: PropTypes.arrayOf({
+    day: PropTypes.string.isRequired,
+  }),
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,

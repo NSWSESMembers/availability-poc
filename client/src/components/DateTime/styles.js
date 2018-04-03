@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
     ...day,
     backgroundColor: 'orange',
   },
+  daySelect: {
+    ...day,
+    borderColor: 'teal',
+  },
   dayLabel: {},
   dayLabelOutOfRange: {
     color: '#AAA',
@@ -46,6 +50,10 @@ const styles = StyleSheet.create({
   },
   dayLabelUrgent: {
     fontWeight: 'bold',
+  },
+  dayLabelSelect: {
+    fontWeight: 'bold',
+    color: 'teal',
   },
 });
 
