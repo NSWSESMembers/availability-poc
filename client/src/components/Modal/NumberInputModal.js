@@ -5,7 +5,15 @@ import { View, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, TextInpu
 
 import styles from './styles';
 
-const NumberInputModal = ({ closeModal, backModal, onChangeText, visible, onSave }) => (
+const NumberInputModal = ({
+  title,
+  placeHolder,
+  closeModal,
+  backModal,
+  onChangeText,
+  visible,
+  onSave,
+}) => (
   <View>
     <Modal
       transparent
@@ -20,7 +28,7 @@ const NumberInputModal = ({ closeModal, backModal, onChangeText, visible, onSave
           <View style={styles.headerContainer}>
             <TouchableOpacity>
               <View style={styles.headerStyle}>
-                <Text style={styles.headerTextStyle}>Whats Your ETA</Text>
+                <Text style={styles.headerTextStyle}>{title}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -30,7 +38,7 @@ const NumberInputModal = ({ closeModal, backModal, onChangeText, visible, onSave
                 <TextInput
                   style={styles.etaInput}
                   keyboardType="numeric"
-                  placeholder="Number of minutes to destination"
+                  placeholder={placeHolder}
                   maxLength={10}
                   onChangeText={onChangeText}
                 />
@@ -38,14 +46,14 @@ const NumberInputModal = ({ closeModal, backModal, onChangeText, visible, onSave
             </View>
           </View>
           <View style={styles.nextContainer}>
-            <TouchableOpacity onPress={onSave}>
+            <TouchableOpacity onPress={() => onSave}>
               <View style={styles.nextStyle}>
                 <Text style={styles.nextTextStyle}>Next</Text>
               </View>
             </TouchableOpacity>
           </View>
           <View style={styles.cancelContainer}>
-            <TouchableOpacity onPress={backModal}>
+            <TouchableOpacity onPress={() => backModal}>
               <View style={styles.cancelStyle}>
                 <Text style={styles.cancelTextStyle}>Back</Text>
               </View>
@@ -58,6 +66,8 @@ const NumberInputModal = ({ closeModal, backModal, onChangeText, visible, onSave
 );
 
 NumberInputModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  placeHolder: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   backModal: PropTypes.func.isRequired,

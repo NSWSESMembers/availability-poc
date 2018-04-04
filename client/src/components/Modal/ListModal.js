@@ -37,7 +37,7 @@ class ListModal extends Component {
           <View style={styles.headerContainer}>
             <TouchableOpacity>
               <View style={styles.headerStyle}>
-                <Text style={styles.headerTextStyle}>Select Your Destination</Text>
+                <Text style={styles.headerTextStyle}>{this.props.title}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -76,6 +76,7 @@ class ListModal extends Component {
   }
 }
 ListModal.propTypes = {
+  title: PropTypes.string.isRequired,
   data: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   closeModal: PropTypes.func.isRequired,
   backModal: PropTypes.func.isRequired,
