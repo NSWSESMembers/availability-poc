@@ -29,8 +29,8 @@ const createUsers = (Creators, organisation) => {
 const createGroup = (Creators, organisation, group, userObjects) => {
   // gather the created user objects we want to add to this group
   const users = group.users.map(username => userObjects[username]);
-  const { name } = group;
-  return Creators.group({ organisation, name, users });
+  const { name, icon } = group;
+  return Creators.group({ organisation, name, icon, users });
 };
 
 const createGroups = (Creators, organisation, users) => {

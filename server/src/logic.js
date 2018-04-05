@@ -82,7 +82,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         if (args.id) {
           return user.getGroups({ where: { id: args.id } });
         }
-        return user.getGroups();
+        return user.getGroups({ order: [['id', 'DESC']] });
       },
       events(user) {
         return user.getGroups()
@@ -404,15 +404,18 @@ export const getHandlers = ({ models, creators: Creators }) => {
           return org.getGroups({ where: { Id: args.id } });
         }
         if (args.filter) {
-          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } } });
+          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
         }
-        return org.getGroups();
+        return org.getGroups({ order: [['id', 'DESC']] });
       },
       users(org) {
         // TODO: think about who we show the complete organisation user list to
         return org.getUsers();
       },
-      tags(org) {
+      tags(org, args) {
+        if (args.filter) {
+          return org.getTags({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
+        }
         return org.getTags();
       },
       capabilities(org) {
@@ -431,10 +434,16 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return group.getEvents();
       },
       createGroup(_, args, ctx) {
-        const { name } = args.group;
+        const { name, tags, icon } = args.group;
         return getAuthenticatedUser(ctx)
           .then(user => Organisation.findById(user.organisationId)
-            .then(organisation => Creators.group({ name, users: [user], organisation })),
+            .then(organisation => Creators.group({
+              name,
+              icon,
+              tags,
+              users: [user],
+              organisation,
+            })),
           );
       },
       addUserToGroup(_, args, ctx) {

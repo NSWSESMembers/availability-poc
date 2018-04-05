@@ -1,34 +1,20 @@
 import React, { Component } from 'react';
+import GridView from 'react-native-super-grid';
 
 import PropTypes from 'prop-types';
-import { View, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, ScrollView } from 'react-native';
-import Icon from '../Icon';
+import { View,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Text,
+} from 'react-native';
+import Icon from '../../components/Icon';
 import styles from './styles';
 
 let componentIndex = 0;
 
-class ListModal extends Component {
-  renderOption(option, isLastItem) {
-    const icon = option.icon &&
-    <Icon style={styles.optionIconStyle} size={24} name={option.icon} />;
-    return (
-      <TouchableOpacity key={option.key} onPress={() => this.props.onChange(option)}>
-        <View style={[styles.optionStyle, isLastItem &&
-            { borderBottomWidth: 0 }]}
-        >
-          {icon}
-          <Text style={styles.optionTextStyle}>{option.label}</Text>
-        </View>
-      </TouchableOpacity>);
-  }
-
+class IconModal extends Component {
   renderOptionList() {
-    const options = this.props.data.map(
-      (item, index) => this.renderOption(
-        item, index === this.props.data.length - 1,
-      ),
-    );
-
     componentIndex += 1;
 
     return (
@@ -45,11 +31,19 @@ class ListModal extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.optionContainer}>
-            <ScrollView>
-              <View style={{ paddingHorizontal: 10 }}>
-                {options}
-              </View>
-            </ScrollView>
+            <GridView
+              itemDimension={45}
+              items={this.props.data}
+              renderItem={item => (
+                <TouchableOpacity onPress={() => this.props.onChange(item)}>
+                  <View style={this.props.Selected === item.icon ?
+                    styles.itemContainerSelected : styles.itemContainer}
+                  >
+                    <Icon size={30} name={item.icon} />
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
           </View>
           <View style={styles.cancelContainer}>
             <TouchableOpacity onPress={this.props.backModal}>
@@ -78,13 +72,14 @@ class ListModal extends Component {
     );
   }
 }
-ListModal.propTypes = {
+IconModal.propTypes = {
   title: PropTypes.string.isRequired,
   data: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+  Selected: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
   backModal: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
 };
 
-export default ListModal;
+export default IconModal;

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Alert,
-  Button,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,99 +10,104 @@ import {
 import { graphql, compose } from 'react-apollo';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Container } from '../../components/Container';
+import { Button } from '../../components/Button';
+import { Progress } from '../../components/Progress';
 
-import { extendAppStyleSheet } from '../style-sheet';
+import IconModal from './IconModal';
+import TagModal from './TagModal';
+import groupIcons from '../../fixtures/icons';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import CREATE_GROUP_MUTATION from '../../graphql/create-group.mutation';
+import ORGANISATION_TAGS from '../../graphql/organisation-tags.query';
+import Icon from '../../components/Icon';
+import styles from './styles';
 
 const goToNewGroup = () => NavigationActions.back();
 
-const styles = extendAppStyleSheet({
-  detailsContainer: {
-    padding: 20,
-    flexDirection: 'row',
-  },
-  imageContainer: {
-    paddingRight: 20,
-    alignItems: 'center',
-  },
-  inputContainer: {
-    flexDirection: 'column',
-    flex: 1,
-  },
-  inputBorder: {
-    borderColor: '#dbdbdb',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    paddingVertical: 8,
-  },
-  inputInstructions: {
-    paddingTop: 6,
-    color: '#777',
-    fontSize: 12,
-  },
-  groupImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-  },
-  selected: {
-    flexDirection: 'row',
-  },
-  navIcon: {
-    color: 'blue',
-    fontSize: 18,
-    paddingTop: 2,
-  },
-  participants: {
-    paddingHorizontal: 20,
-    paddingVertical: 6,
-    backgroundColor: '#dbdbdb',
-    color: '#777',
-  },
-});
-
 class NewGroup extends Component {
-  static navigationOptions = ({ navigation }) => {
-    const { state } = navigation;
-    const isReady = state.params && state.params.mode === 'ready';
-    return {
-      title: 'New Group',
-      tabBarLabel: 'Groups',
-      tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
-      headerRight: (
-        isReady ? <Button
-          title="Create"
-          onPress={state.params.create}
-        /> : undefined
-      ),
-    };
-  };
+  static navigationOptions = () => ({
+    title: 'New Group',
+    tabBarLabel: 'Groups',
+    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
+  });
 
   state = {
     name: '',
-  }
-
-  componentDidMount() {
-    this.refreshNavigation(this.state.name);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.name !== this.state.name) {
-      this.refreshNavigation(nextState.name);
-    }
+    icon: 'fa-group',
+    tags: [],
+    iconModal: false,
+    tagsModal: false,
+    filterString: '',
+    typingTimeout: 0,
   }
 
   pop = () => {
     this.props.navigation.goBack();
   }
 
+  pickIcon = () => {
+    this.setState({
+      iconModal: true,
+    });
+  }
+
+  pickTags = () => {
+    this.setState({
+      tagsModal: true,
+    });
+  }
+
+  handleIconBack = () => {
+    this.setState({
+      iconModal: false,
+    });
+  }
+
+  handleIconChange = (answer) => {
+    this.setState({
+      iconModal: false,
+      icon: answer.icon,
+    });
+  }
+
+handleTagChange = (changedTag) => {
+  const newTags = [...this.state.tags];
+  const index = newTags.findIndex(el => el.label === changedTag.label);
+  newTags[index] = { ...newTags[index], checked: !newTags[index].checked };
+  this.setState({ tags: newTags });
+}
+
+handleTagBack = (tags) => {
+  this.setState({
+    tagsModal: false,
+    tags,
+  });
+}
+
+searchTagOnPress = (text) => {
+  if (this.state.typingTimeout) {
+    clearTimeout(this.state.typingTimeout);
+  }
+
+  this.setState({
+    filterString: text,
+    typingTimeout: setTimeout(() => {
+      this.applyTagSearchFilter();
+    }, 500),
+  });
+}
+
+applyTagSearchFilter = () => {
+  this.props.refetch({ filter: this.state.filterString });
+}
+
   create = () => {
     const { createGroup } = this.props;
-
     createGroup({
       name: this.state.name,
+      icon: this.state.icon,
+      tags: this.state.tags.map(tag => ({ id: tag })),
     }).then((res) => {
       this.props.navigation.dispatch(goToNewGroup(res.data.createGroup));
     }).catch((error) => {
@@ -118,46 +121,88 @@ class NewGroup extends Component {
     });
   }
 
-  refreshNavigation(ready) {
-    const { navigation } = this.props;
-    navigation.setParams({
-      mode: ready ? 'ready' : undefined,
-      create: this.create,
-    });
-  }
-
   render() {
+    const { user, loading } = this.props;
+
+    if (!user) {
+      return (
+        <Container>
+          <Progress />
+        </Container>
+      );
+    }
+
     return (
-      <View style={styles.container}>
+      <Container>
         <View style={styles.detailsContainer}>
-          <TouchableOpacity style={styles.imageContainer}>
-            <Image
-              style={styles.groupImage}
-              source={{ uri: 'https://facebook.github.io/react/img/logo_og.png' }}
-            />
-            <Text>edit</Text>
+          <TouchableOpacity style={styles.imageContainer} onPress={this.pickIcon}>
+            <View style={styles.itemContainer}>
+              <Icon size={30} name={this.state.icon} />
+            </View>
           </TouchableOpacity>
           <View style={styles.inputContainer}>
             <View style={styles.inputBorder}>
               <TextInput
                 autoFocus
                 onChangeText={name => this.setState({ name })}
-                placeholder="Group Subject"
+                placeholder="Group Name"
                 style={styles.input}
               />
             </View>
             <Text style={styles.inputInstructions}>
-              {'Please provide a group subject and optional group icon'}
+              {'Please provide a group name and optional group icon'}
             </Text>
           </View>
         </View>
-      </View>
+        <Button
+          style={styles.saveButton}
+          text="Group Tags"
+          onPress={this.pickTags}
+        />
+        <Text />
+        <Text />
+        <Button
+          disabled={this.state.name === ''}
+          text="Create Group"
+          onPress={this.create}
+        />
+        <IconModal
+          title="Select Your Group Icon"
+          visible={this.state.iconModal}
+          closeModal={this.handleIconBack}
+          backModal={this.handleIconBack}
+          onChange={this.handleIconChange}
+          Selected={this.state.icon}
+          data={groupIcons}
+        />
+        <TagModal
+          visible={this.state.tagsModal}
+          closeModal={this.handleTagBack}
+          onSearch={text => this.searchTagOnPress(text)}
+          isLoading={loading}
+          backModal={tags => this.handleTagBack(tags)}
+          dataIn={user && user.organisation.tags}
+        />
+      </Container>
     );
   }
 }
 
 NewGroup.propTypes = {
   createGroup: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  refetch: PropTypes.func,
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    organisation: PropTypes.shape({
+      tags: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+        }),
+      ),
+    }),
+  }),
   navigation: PropTypes.shape({
     dispatch: PropTypes.func,
     goBack: PropTypes.func,
@@ -168,11 +213,22 @@ NewGroup.propTypes = {
   }),
 };
 
+const tagsQuery = graphql(ORGANISATION_TAGS, {
+  options: () => ({
+    variables: {
+      filter: '',
+    },
+  }),
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
+    loading, networkStatus, refetch, user,
+  }),
+});
+
 const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
   props: ({ mutate }) => ({
-    createGroup: ({ name }) =>
+    createGroup: ({ name, tags, icon }) =>
       mutate({
-        variables: { group: { name } },
+        variables: { group: { name, tags, icon } },
         update: (store, { data: { createGroup } }) => {
           // Read the data from our cache for this query.
           const data = store.readQuery({
@@ -198,5 +254,6 @@ const mapStateToProps = ({ auth }) => ({
 
 export default compose(
   connect(mapStateToProps),
+  tagsQuery,
   createGroupMutation,
 )(NewGroup);
