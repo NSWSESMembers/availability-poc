@@ -284,6 +284,8 @@ class EventResponse extends Component {
           onSave={this.handleETA}
         />
         <TextInputModal
+          title="Availability Comments"
+          placeHolder="Comments..."
           visible={this.state.detailModal}
           closeModal={this.handleDetailClose}
           backModal={this.handleDetailBack}
