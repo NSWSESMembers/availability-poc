@@ -46,14 +46,14 @@ const NumberInputModal = ({
             </View>
           </View>
           <View style={styles.nextContainer}>
-            <TouchableOpacity onPress={() => onSave}>
+            <TouchableOpacity onPress={onSave}>
               <View style={styles.nextStyle}>
                 <Text style={styles.nextTextStyle}>Next</Text>
               </View>
             </TouchableOpacity>
           </View>
           <View style={styles.cancelContainer}>
-            <TouchableOpacity onPress={() => backModal}>
+            <TouchableOpacity onPress={backModal}>
               <View style={styles.cancelStyle}>
                 <Text style={styles.cancelTextStyle}>Back</Text>
               </View>
