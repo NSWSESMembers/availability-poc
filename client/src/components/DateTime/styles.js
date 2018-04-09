@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../themes/Colors';
 
 const day = {
   alignSelf: 'stretch',
@@ -38,6 +39,11 @@ const styles = StyleSheet.create({
     ...day,
     borderColor: 'teal',
   },
+  dayEdit: {
+    ...day,
+    backgroundColor: Colors.bgMain,
+    borderColor: Colors.bgMain,
+  },
   dayLabel: {},
   dayLabelOutOfRange: {
     color: '#AAA',
@@ -55,6 +61,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'teal',
   },
+  dayLabelEdit: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  dayIcon: {},
 });
 
 export default styles;

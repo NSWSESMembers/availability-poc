@@ -12,6 +12,11 @@ const styles = StyleSheet.create({
     color: Colors.txtWhite,
     textAlign: 'center',
   },
+  textStyleBox: {
+    fontSize: 20,
+    color: Colors.txtDark,
+    textAlign: 'center',
+  },
   buttonStyle: {
     padding: 10,
     backgroundColor: Colors.bgBtn,
@@ -21,6 +26,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: Colors.bgBtnSecondary,
     width: '100%',
+  },
+  buttonStyleBox: {
+    padding: 10,
+    backgroundColor: Colors.bgWhite,
+    borderWidth: 1,
   },
   buttonNavBarIcon: {
     marginRight: 10,

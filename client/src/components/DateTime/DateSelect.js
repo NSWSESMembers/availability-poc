@@ -9,60 +9,87 @@ import styles from './styles';
 const DateSelect = ({
   date,
   select = false,
+  edit = false,
+  fade = false,
   onSelect,
+  onEdit,
   availType = 'NotSpecified',
-  availLength = 'Full',
 }) => {
   let dayStyles = [styles.day];
   let dayLabelStyles = [styles.dayLabel];
+  const dayIconStyles = [styles.dayIcon];
 
   if (availType === 'OutOfRange') {
-    dayStyles = styles.dayOutOfRange;
-    dayLabelStyles = styles.dayLabelOutOfRange;
+    dayStyles = [styles.dayOutOfRange];
+    dayLabelStyles = [styles.dayLabelOutOfRange];
   }
 
   if (availType === 'Available') {
-    dayStyles = styles.dayAvailable;
-    dayLabelStyles = styles.dayLabelAvailable;
+    dayStyles = [styles.dayAvailable];
+    dayLabelStyles = [styles.dayLabelAvailable];
   }
 
   if (availType === 'Unavailable') {
-    dayStyles = styles.dayUnavailable;
-    dayLabelStyles = styles.dayLabelUnavailable;
+    dayStyles = [styles.dayUnavailable];
+    dayLabelStyles = [styles.dayLabelUnavailable];
   }
 
-  if (availType === 'Unavailable - unless urgent') {
-    dayStyles = styles.dayUrgent;
-    dayLabelStyles = styles.dayLabelUrgent;
+  if (availType === 'Urgent') {
+    dayStyles = [styles.dayUrgent];
+    dayLabelStyles = [styles.dayLabelUrgent];
   }
 
   if (select && availType === 'NotSpecified') {
-    dayStyles = styles.daySelect;
-    dayLabelStyles = styles.dayLabelSelect;
+    dayStyles = [styles.daySelect];
+    dayLabelStyles = [styles.dayLabelSelect];
+  }
+
+  if (edit) {
+    dayStyles = [styles.dayEdit];
+    dayLabelStyles = [styles.dayLabelEdit];
+  }
+
+  if (fade) {
+    dayStyles.push({ backgroundColor: 'transparent', borderColor: '#AAA' });
+    dayLabelStyles.push({ color: '#AAA' });
+    dayIconStyles.push({ color: '#AAA' });
   }
 
   if (availType === 'OutOfRange') {
     return (
       <View style={dayStyles}>
         <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
-        {availType === 'OutOfRange' && <Icon size={18} name="check-circle" color="white" />}
-        {availType === 'Available' && <Icon size={18} name="check-circle" />}
-        {availType === 'Unavailable' && <Icon size={18} name="times-circle" />}
-        {availType === 'Unavailable - unless urgent' && (
-          <Icon size={18} name="exclamation-circle" />
-        )}
-        {availType === 'NotSpecified' && <Icon size={18} name="check-circle" color="white" />}
+        <Icon size={18} name="check-circle" color="white" />
       </View>
     );
   }
+
+  if (availType === 'NotSpecified') {
+    return (
+      <TouchableOpacity style={dayStyles} onPress={() => onSelect(date)}>
+        <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
+        <Icon size={18} name="check-circle" color="white" />
+      </TouchableOpacity>
+    );
+  }
+
+  if (edit) {
+    return (
+      <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
+        <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
+        {availType === 'Available' && <Icon size={18} name="check-circle" color="white" />}
+        {availType === 'Unavailable' && <Icon size={18} name="times-circle" color="white" />}
+        {availType === 'Urgent' && <Icon size={18} name="exclamation-circle" color="white" />}
+      </TouchableOpacity>
+    );
+  }
+
   return (
-    <TouchableOpacity style={dayStyles} onPress={() => onSelect(date)}>
+    <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
       <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
-      {availType === 'OutOfRange' && <Icon size={18} name="check-circle" color="white" />}
-      {availType === 'Available' && <Icon size={18} name="check-circle" />}
-      {availType === 'Unavailable' && <Icon size={18} name="times-circle" />}
-      {availType === 'Unavailable - unless urgent' && <Icon size={18} name="exclamation-circle" />}
-      {availType === 'NotSpecified' && <Icon size={18} name="check-circle" color="white" />}
+      {availType === 'Available' && <Icon size={18} name="check-circle" style={dayIconStyles} />}
+      {availType === 'Unavailable' && <Icon size={18} name="times-circle" style={dayIconStyles} />}
+      {availType === 'Urgent' && <Icon size={18} name="exclamation-circle" style={dayIconStyles} />}
     </TouchableOpacity>
   );
 };
@@ -70,9 +97,11 @@ const DateSelect = ({
 DateSelect.propTypes = {
   date: PropTypes.number.isRequired,
   select: PropTypes.bool,
+  edit: PropTypes.bool,
+  fade: PropTypes.bool,
   onSelect: PropTypes.func,
+  onEdit: PropTypes.func,
   availType: PropTypes.string,
-  availLength: PropTypes.string,
 };
 
 export default DateSelect;
