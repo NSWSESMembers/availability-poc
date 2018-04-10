@@ -5,7 +5,15 @@ import { View, Modal, TouchableOpacity, TouchableWithoutFeedback, Text, TextInpu
 
 import styles from './styles';
 
-const TextInputModal = ({ closeModal, backModal, onChangeText, visible, onSave }) => (
+const TextInputModal = ({
+  title,
+  placeHolder,
+  closeModal,
+  backModal,
+  onChangeText,
+  visible,
+  onSave,
+}) => (
   <View>
     <Modal
       transparent
@@ -13,14 +21,12 @@ const TextInputModal = ({ closeModal, backModal, onChangeText, visible, onSave }
       onRequestClose={closeModal}
       animationType="fade"
     >
-      <TouchableWithoutFeedback
-        onPress={() => closeModal}
-      >
+      <TouchableWithoutFeedback onPress={() => closeModal}>
         <View style={styles.overlayStyle}>
           <View style={styles.headerContainer}>
             <TouchableOpacity>
               <View style={styles.headerStyle}>
-                <Text style={styles.headerTextStyle}>Availability Comments</Text>
+                <Text style={styles.headerTextStyle}>{title}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -29,7 +35,7 @@ const TextInputModal = ({ closeModal, backModal, onChangeText, visible, onSave }
               <View style={{ paddingHorizontal: 10 }}>
                 <TextInput
                   style={styles.etaInput}
-                  placeholder="Notes.."
+                  placeholder={placeHolder}
                   onChangeText={onChangeText}
                 />
               </View>
@@ -56,6 +62,8 @@ const TextInputModal = ({ closeModal, backModal, onChangeText, visible, onSave }
 );
 
 TextInputModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  placeHolder: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   backModal: PropTypes.func.isRequired,
