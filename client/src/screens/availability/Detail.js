@@ -18,7 +18,7 @@ import { selectSchedules } from '../../selectors/schedules';
 
 import { Button, ButtonBox, ButtonNavBar } from '../../components/Button';
 import { Center, Container, Holder } from '../../components/Container';
-import { DateRange } from '../../components/DateTime';
+import { DateRange, TimeSelect } from '../../components/DateTime';
 import { Progress } from '../../components/Progress';
 
 class Detail extends Component {
@@ -38,6 +38,7 @@ class Detail extends Component {
     editDay: 0,
     selectedDays: [],
     selectedType: '',
+    selectionSegments: [{ startTime: 0, endTime: 86400, label: 'All Day' }, { startTime: 25200, endTime: 50400, label: 'Day Only' }],
     showInfo: false,
   };
 
@@ -136,13 +137,11 @@ class Detail extends Component {
     if (results.length > 0) {
       this.setState({ selectedType: results[0].status });
     }
-    // const selectedSegments = schedule.TimeSegments.filter(segment => segment.startTime === date);
 
-    // console.log(selectedSegments);
     if (date === this.state.editDay) {
-      this.setState({ editDay: 0 });
+      this.setState({ editDay: 0, selectedDays: [] });
     } else {
-      this.setState({ editDay: date });
+      this.setState({ editDay: date, selectedDays: [] });
     }
   };
 
@@ -230,10 +229,13 @@ class Detail extends Component {
             {this.state.editDay !== 0 && (
               <Holder marginTop paddingVertical>
                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                  <Text>{moment.unix(this.state.editDay).format('LL')}</Text>
+                  <Text>Editing {moment.unix(this.state.editDay).format('LL')}</Text>
                 </View>
               </Holder>
             )}
+            <Holder marginTop paddingVertical>
+              <TimeSelect selectionSegments={this.state.selectionSegments} />
+            </Holder>
             <Holder marginTop paddingVertical>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <ButtonBox

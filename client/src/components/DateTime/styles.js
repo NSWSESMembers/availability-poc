@@ -5,7 +5,7 @@ const day = {
   alignSelf: 'stretch',
   flex: 1,
   alignItems: 'center',
-  padding: 10,
+  padding: 5,
   borderWidth: 1,
   margin: 2,
 };

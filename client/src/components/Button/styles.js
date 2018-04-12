@@ -13,8 +13,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   textStyleBox: {
-    fontSize: 20,
-    color: Colors.txtDark,
     textAlign: 'center',
   },
   buttonStyle: {

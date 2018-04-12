@@ -43,12 +43,12 @@ const DateSelect = ({
     dayStyles = [styles.daySelect];
     dayLabelStyles = [styles.dayLabelSelect];
   }
-
+  /*
   if (edit) {
     dayStyles = [styles.dayEdit];
     dayLabelStyles = [styles.dayLabelEdit];
   }
-
+*/
   if (fade) {
     dayStyles.push({ backgroundColor: 'transparent', borderColor: '#AAA' });
     dayLabelStyles.push({ color: '#AAA' });
@@ -58,6 +58,7 @@ const DateSelect = ({
   if (availType === 'OutOfRange') {
     return (
       <View style={dayStyles}>
+        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
         <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
         <Icon size={18} name="check-circle" color="white" />
       </View>
@@ -67,6 +68,7 @@ const DateSelect = ({
   if (availType === 'NotSpecified') {
     return (
       <TouchableOpacity style={dayStyles} onPress={() => onSelect(date)}>
+        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
         <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
         <Icon size={18} name="check-circle" color="white" />
       </TouchableOpacity>
@@ -76,6 +78,7 @@ const DateSelect = ({
   if (edit) {
     return (
       <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
+        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
         <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
         {availType === 'Available' && <Icon size={18} name="check-circle" color="white" />}
         {availType === 'Unavailable' && <Icon size={18} name="times-circle" color="white" />}
@@ -86,6 +89,7 @@ const DateSelect = ({
 
   return (
     <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
+      <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
       <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
       {availType === 'Available' && <Icon size={18} name="check-circle" style={dayIconStyles} />}
       {availType === 'Unavailable' && <Icon size={18} name="times-circle" style={dayIconStyles} />}

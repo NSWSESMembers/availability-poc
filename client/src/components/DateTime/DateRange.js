@@ -77,11 +77,7 @@ DateRange.propTypes = {
       status: PropTypes.string.isRequired,
     }),
   ),
-  selectedDays: PropTypes.arrayOf(
-    PropTypes.shape({
-      day: PropTypes.number.isRequired,
-    }),
-  ),
+  selectedDays: PropTypes.arrayOf(PropTypes.number),
   editDay: PropTypes.number.isRequired,
   startTime: PropTypes.number.isRequired,
   endTime: PropTypes.number.isRequired,
