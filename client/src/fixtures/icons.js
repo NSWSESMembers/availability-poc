@@ -1,23 +1,15 @@
 const groupIcons = [
   {
-    icon: 'fa-group',
-    key: 'Group',
-  },
-  {
     icon: 'fa-user',
     key: 'User',
   },
   {
+    icon: 'fa-group',
+    key: 'Group',
+  },
+  {
     icon: 'fa-globe',
     key: 'User',
-  },
-  {
-    icon: 'fa-check',
-    key: 'Checkmark',
-  },
-  {
-    icon: 'fa-remove',
-    key: 'Cross',
   },
   {
     icon: 'fa-home',
@@ -28,28 +20,48 @@ const groupIcons = [
     key: 'Map Marker',
   },
   {
-    icon: 'fa-truck',
-    key: 'Medium/Heavy Vehicle',
+    icon: 'fa-check',
+    key: 'Checkmark',
+  },
+  {
+    icon: 'fa-remove',
+    key: 'Cross',
+  },
+  {
+    icon: 'mci-asterisk',
+    key: 'Asterisk',
+  },
+  {
+    icon: 'mci-alert',
+    key: 'Alert',
+  },
+  {
+    icon: 'mci-bell-ring',
+    key: 'Bell',
   },
   {
     icon: 'fa-automobile',
-    key: 'Personal/Light Vehicle',
+    key: 'RCR',
   },
   {
-    icon: 'fa-fire',
-    key: 'Fire',
-  },
-  {
-    icon: 'fa-tree',
-    key: 'Tree',
+    icon: 'fnd-mountains',
+    key: 'Vertical Rescue',
   },
   {
     icon: 'fa-heartbeat',
     key: 'Medical',
   },
   {
+    icon: 'mci-swim',
+    key: 'Flood Rescue',
+  },
+  {
     icon: 'mci-waves',
     key: 'Flood',
+  },
+  {
+    icon: 'fa-tree',
+    key: 'Tree',
   },
   {
     icon: 'mci-weather-lightning',
@@ -64,28 +76,49 @@ const groupIcons = [
     key: 'Search/Recon',
   },
   {
+    icon: 'fa-ship',
+    key: 'Marine',
+  },
+  {
     icon: 'mci-radio-handheld',
     key: 'Communications',
   },
   {
     icon: 'fnd-megaphone',
-    key: 'Public Address',
+    key: 'Public Information',
   },
   {
     icon: 'mci-map',
     key: 'Mapping/Planning',
   },
   {
-    icon: 'fnd-mountains',
-    key: 'Vertical Rescue',
-  },
-  {
-    icon: 'fa-ship',
-    key: 'Marine',
-  },
-  {
     icon: 'oi-law',
     key: 'Police',
   },
+  {
+    icon: 'fa-fire',
+    key: 'Fire',
+  },
+  {
+    icon: 'mci-medical-bag',
+    key: 'Ambulance',
+  },
+  {
+    icon: 'mci-car-pickup',
+    key: 'Light Vehicle',
+  },
+  {
+    icon: 'fa-truck',
+    key: 'Medium/Heavy Vehicle',
+  },
+  {
+    icon: 'mci-airplane',
+    key: 'Plane',
+  },
+  {
+    icon: 'fa-truck',
+    key: 'Helicopter',
+  },
 ];
+
 export default groupIcons;
