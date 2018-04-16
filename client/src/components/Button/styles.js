@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
   },
   textStyleBox: {
     textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  subtextStyleBox: {
+    textAlign: 'center',
   },
   buttonStyle: {
     padding: 10,

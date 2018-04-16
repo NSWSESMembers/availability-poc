@@ -6,15 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
-const DateSelect = ({
-  date,
-  select = false,
-  edit = false,
-  fade = false,
-  onSelect,
-  onEdit,
-  availType = 'NotSpecified',
-}) => {
+const DateSelect = ({ day, select = false, onSelect, availType = 'NotSpecified' }) => {
   let dayStyles = [styles.day];
   let dayLabelStyles = [styles.dayLabel];
   const dayIconStyles = [styles.dayIcon];
@@ -39,27 +31,16 @@ const DateSelect = ({
     dayLabelStyles = [styles.dayLabelUrgent];
   }
 
-  if (select && availType === 'NotSpecified') {
+  if (select) {
     dayStyles = [styles.daySelect];
     dayLabelStyles = [styles.dayLabelSelect];
-  }
-  /*
-  if (edit) {
-    dayStyles = [styles.dayEdit];
-    dayLabelStyles = [styles.dayLabelEdit];
-  }
-*/
-  if (fade) {
-    dayStyles.push({ backgroundColor: 'transparent', borderColor: '#AAA' });
-    dayLabelStyles.push({ color: '#AAA' });
-    dayIconStyles.push({ color: '#AAA' });
   }
 
   if (availType === 'OutOfRange') {
     return (
       <View style={dayStyles}>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
+        <Text style={dayLabelStyles}>{moment.unix(day).format('dd')}</Text>
+        <Text style={dayLabelStyles}>{moment.unix(day).format('DD')}</Text>
         <Icon size={18} name="check-circle" color="white" />
       </View>
     );
@@ -67,30 +48,18 @@ const DateSelect = ({
 
   if (availType === 'NotSpecified') {
     return (
-      <TouchableOpacity style={dayStyles} onPress={() => onSelect(date)}>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
+      <TouchableOpacity style={dayStyles} onPress={() => onSelect(day)}>
+        <Text style={dayLabelStyles}>{moment.unix(day).format('dd')}</Text>
+        <Text style={dayLabelStyles}>{moment.unix(day).format('DD')}</Text>
         <Icon size={18} name="check-circle" color="white" />
       </TouchableOpacity>
     );
   }
 
-  if (edit) {
-    return (
-      <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
-        <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
-        {availType === 'Available' && <Icon size={18} name="check-circle" color="white" />}
-        {availType === 'Unavailable' && <Icon size={18} name="times-circle" color="white" />}
-        {availType === 'Urgent' && <Icon size={18} name="exclamation-circle" color="white" />}
-      </TouchableOpacity>
-    );
-  }
-
   return (
-    <TouchableOpacity style={dayStyles} onPress={() => onEdit(date)}>
-      <Text style={dayLabelStyles}>{moment.unix(date).format('dd')}</Text>
-      <Text style={dayLabelStyles}>{moment.unix(date).format('DD')}</Text>
+    <TouchableOpacity style={dayStyles} onPress={() => onSelect(day)}>
+      <Text style={dayLabelStyles}>{moment.unix(day).format('dd')}</Text>
+      <Text style={dayLabelStyles}>{moment.unix(day).format('DD')}</Text>
       {availType === 'Available' && <Icon size={18} name="check-circle" style={dayIconStyles} />}
       {availType === 'Unavailable' && <Icon size={18} name="times-circle" style={dayIconStyles} />}
       {availType === 'Urgent' && <Icon size={18} name="exclamation-circle" style={dayIconStyles} />}
@@ -99,12 +68,9 @@ const DateSelect = ({
 };
 
 DateSelect.propTypes = {
-  date: PropTypes.number.isRequired,
+  day: PropTypes.number.isRequired,
   select: PropTypes.bool,
-  edit: PropTypes.bool,
-  fade: PropTypes.bool,
   onSelect: PropTypes.func,
-  onEdit: PropTypes.func,
   availType: PropTypes.string,
 };
 

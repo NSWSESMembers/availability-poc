@@ -6,15 +6,7 @@ import { DateSelect } from './';
 
 import styles from './styles';
 
-const DateRange = ({
-  timeSegments,
-  startTime,
-  endTime,
-  selectedDays,
-  editDay,
-  onSelect,
-  onEdit,
-}) => {
+const DateRange = ({ timeSegments, startTime, endTime, selectedDays, onSelect }) => {
   const startDay = moment.unix(startTime).startOf('day');
   const endDay = moment.unix(endTime).endOf('day');
 
@@ -27,17 +19,15 @@ const DateRange = ({
   for (let i = 0; i < difference; i += 1) {
     const day = startOfWeek.add(i === 0 ? 0 : 1, 'days').unix();
     const dayUnix = 24 * 60 * 60;
-    let endOfDay = parseInt(day, 0) + dayUnix;
-    endOfDay -= 1;
+    const endOfDay = parseInt(day, 0) + dayUnix;
 
     let availType = 'NotSpecified';
     if (day < startTime || day > endTime) {
       availType = 'OutOfRange';
     } else {
       const results = timeSegments.filter(
-        timeSegment => timeSegment.startTime >= day && timeSegment.endTime <= endOfDay,
+        timeSegment => day <= timeSegment.startTime && endOfDay >= timeSegment.endTime,
       );
-
       if (results.length > 0) {
         availType = results[0].status;
       }
@@ -47,12 +37,9 @@ const DateRange = ({
       <DateSelect
         key={`${i}column`}
         availType={availType}
-        date={day}
+        day={day}
         onSelect={onSelect}
-        onEdit={onEdit}
         select={selectedDays.indexOf(day) !== -1}
-        edit={day === editDay}
-        fade={editDay > 0 && day !== editDay}
       />,
     );
 
@@ -78,11 +65,9 @@ DateRange.propTypes = {
     }),
   ),
   selectedDays: PropTypes.arrayOf(PropTypes.number),
-  editDay: PropTypes.number.isRequired,
   startTime: PropTypes.number.isRequired,
   endTime: PropTypes.number.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
 };
 
 export default DateRange;

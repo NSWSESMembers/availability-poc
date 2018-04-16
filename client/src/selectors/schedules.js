@@ -1,5 +1,30 @@
 import moment from 'moment';
 
+export const isSelectorDisabled = (selectionSegments, status, startTime, endTime) => {
+  let disabled = false;
+
+  if (status !== '') return disabled;
+
+  const activeSegments = selectionSegments.filter((segment) => {
+    if (segment.status !== '') {
+      return segment;
+    }
+    return false;
+  });
+
+  if (activeSegments.length === 0) return disabled;
+
+  activeSegments.forEach((segment) => {
+    if (startTime < segment.startTime && endTime > segment.startTime) disabled = true;
+    if (startTime < segment.endTime && endTime > segment.endTime) disabled = true;
+    if (startTime > segment.startTime && endTime < segment.endTime) disabled = true;
+    if (startTime === segment.startTime && endTime <= segment.endTime) disabled = true;
+    if (startTime >= segment.startTime && endTime === segment.endTime) disabled = true;
+  });
+
+  return disabled;
+};
+
 export const selectSchedules = (schedules, { startTime, endTime }) => {
   const filteredItems = [];
   schedules.map(schedule =>
@@ -21,6 +46,19 @@ export const selectSchedules = (schedules, { startTime, endTime }) => {
       return undefined;
     }));
   return filteredItems.sort((a, b) => (a.startTime > b.startTime ? 1 : -1));
+};
+
+export const selectColor = (status) => {
+  switch (status) {
+    case 'Available':
+      return 'green';
+    case 'Unavailable':
+      return 'red';
+    case 'Urgent':
+      return 'orange';
+    default:
+      return 'white';
+  }
 };
 
 export const scheduleLabel = (startTime, endTime) => {

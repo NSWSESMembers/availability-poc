@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
   daySelect: {
     ...day,
-    borderColor: 'teal',
+    borderColor: Colors.bdMain,
   },
   dayEdit: {
     ...day,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   dayLabelSelect: {
     fontWeight: 'bold',
-    color: 'teal',
+    color: Colors.bdMain,
   },
   dayLabelEdit: {
     fontWeight: 'bold',

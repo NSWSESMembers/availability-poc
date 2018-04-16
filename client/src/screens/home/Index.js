@@ -14,8 +14,6 @@ import { Center, Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
-import { setSelectedSchedule } from '../../state/availability.actions';
-
 const EventItem = ({ event, dispatch }) => (
   <ListItem
     title={event.name}
@@ -36,17 +34,7 @@ EventItem.propTypes = {
 
 class ScheduleItem extends Component {
   onPress = (schedule) => {
-    this.props.dispatch(
-      setSelectedSchedule({
-        id: schedule.id,
-        name: schedule.name,
-        details: schedule.details,
-        startTime: schedule.startTime,
-        endTime: schedule.endTime,
-      }),
-    );
-
-    this.props.dispatch(goToRequest(schedule.id));
+    this.props.dispatch(goToRequest(schedule.id, schedule.name));
   };
 
   render() {

@@ -13,8 +13,6 @@ import { Center, Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
-import { setSelectedSchedule } from '../../state/availability.actions';
-
 class Index extends Component {
   static navigationOptions = () => ({
     title: 'Open Requests',
@@ -23,16 +21,7 @@ class Index extends Component {
   });
 
   onPressInfo = (item) => {
-    this.props.dispatch(
-      setSelectedSchedule({
-        id: item.id,
-        name: item.name,
-        details: item.details,
-        startTime: item.startTime,
-        endTime: item.endTime,
-      }),
-    );
-    this.props.navigation.navigate('Detail', { id: item.id });
+    this.props.navigation.navigate('Detail', { id: item.id, title: item.name });
   };
 
   renderItem = ({ item }) => (
@@ -87,7 +76,6 @@ class Index extends Component {
 }
 
 Index.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,

@@ -5,7 +5,8 @@ export const goToEvent = id => ({
   id,
 });
 
-export const goToRequest = id => ({
+export const goToRequest = (id, title) => ({
   type: GO_TO_REQUEST,
   id,
+  title,
 });
