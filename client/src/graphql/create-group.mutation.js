@@ -7,6 +7,7 @@ export default gql`
     createGroup(group: $group) {
       id
       name
+      icon
       tags {
          name
          id

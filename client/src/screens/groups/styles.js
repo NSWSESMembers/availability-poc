@@ -6,6 +6,48 @@ const FONT_SIZE = 16;
 const HIGHLIGHT_COLOR = 'rgba(0,118,255,0.9)';
 
 const styles = StyleSheet.create({
+  detailsContainer: {
+    padding: 20,
+    flexDirection: 'row',
+  },
+  imageContainer: {
+    paddingRight: 20,
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'column',
+    flex: 1,
+  },
+  input: {
+    fontSize: 12,
+  },
+  inputBorder: {
+    borderColor: '#dbdbdb',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    paddingVertical: 1,
+  },
+  inputInstructions: {
+    paddingTop: 6,
+    color: '#777',
+    fontSize: 12,
+  },
+  groupImage: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+  },
+  selected: {
+    flexDirection: 'row',
+  },
+  saveButton: {
+    padding: 20,
+  },
+  navIcon: {
+    color: 'blue',
+    fontSize: 18,
+    paddingTop: 2,
+  },
   container: {
     position: 'absolute',
     left: 0,
@@ -22,13 +64,45 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
 
+  searchContainer: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: BORDER_RADIUS,
+    borderTopRightRadius: BORDER_RADIUS,
+    marginTop: 8,
+    alignSelf: 'stretch',
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: PADDING,
+  },
+
+  searchbar: {
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+  },
+
   optionContainer: {
     borderRadius: BORDER_RADIUS,
+    justifyContent: 'center',
     flexShrink: 1,
-    marginTop: 8,
     marginBottom: 8,
+    marginTop: 8,
+    height: '50%',
     padding: PADDING,
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.9)',
+  },
+
+  optionContainerTags: {
+    borderBottomLeftRadius: BORDER_RADIUS,
+    borderBottomRightRadius: BORDER_RADIUS,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    justifyContent: 'center',
+    flexShrink: 1,
+    marginBottom: 8,
+    height: '50%',
+    padding: PADDING,
+    backgroundColor: 'rgba(255,255,255,0.9)',
   },
 
   cancelContainer: {
@@ -124,6 +198,24 @@ const styles = StyleSheet.create({
   sectionTextStyle: {
     textAlign: 'center',
     fontSize: FONT_SIZE,
+  },
+  itemContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 5,
+    padding: 5,
+    height: 45,
+    width: 45,
+  },
+  itemContainerSelected: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8b8378',
+    borderRadius: 5,
+    padding: 5,
+    height: 45,
+    width: 45,
   },
 });
 

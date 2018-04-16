@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FlatList, Button, Text, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { connect } from 'react-redux';
 
 import { extendAppStyleSheet } from '../style-sheet';
@@ -11,7 +12,6 @@ import { ButtonNavBar } from '../../components/Button';
 import { ListItem } from '../../components/List';
 import { Container, Holder } from '../../components/Container';
 import { Progress } from '../../components/Progress';
-
 
 const styles = extendAppStyleSheet({
   header: {
@@ -37,7 +37,7 @@ class Group extends Component {
   }
 
   render() {
-    const { name } = this.props.group;
+    const { name, icon } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
 
     return (
@@ -45,7 +45,7 @@ class Group extends Component {
         title={name}
         bold
         subtitle={tags !== '' ? tags : 'No Tags'}
-        icon="group"
+        icon={icon}
         onPress={this.goToGroup}
       />
     );
@@ -57,6 +57,7 @@ Group.propTypes = {
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    icon: PropTypes.string,
     tags: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
@@ -153,6 +154,7 @@ Groups.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        icon: PropTypes.string,
         tags: PropTypes.arrayOf(
           PropTypes.shape({
             id: PropTypes.number,

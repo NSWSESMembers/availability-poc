@@ -31,6 +31,8 @@ export const TAGS = [
   'Tag1',
   'Tag2',
   'Tag3',
+  'Tag4',
+  'Tag5',
 ];
 
 export const USERS = [
@@ -137,6 +139,7 @@ export const USERS = [
 export const GROUPS = [
   {
     name: 'Kiama',
+    icon: 'fa-ship',
     users: [
       'test',
       'kiama1',
@@ -151,6 +154,7 @@ export const GROUPS = [
   },
   {
     name: 'Parramatta',
+    icon: 'group',
     users: [
       'test',
       'parramatta1',
@@ -162,6 +166,7 @@ export const GROUPS = [
   },
   {
     name: DEFAULT_GROUP,
+    icon: 'globe',
     users: [
       'test',
       'kiama1',

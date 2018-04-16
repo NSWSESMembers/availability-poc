@@ -11,6 +11,7 @@ export default gql`
         name
          groups {
             name
+            icon
             id
             tags {
               name
