@@ -250,6 +250,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
             });
           });
       },
+      messages(event) {
+        return event.getMessages();
+      },
     },
 
     timeSegment: {
@@ -382,6 +385,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
             });
           }));
       },
+      messages(event) {
+        return event.getMessages();
+      },
     },
 
     eventResponse: {
@@ -480,6 +486,26 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       tags(group) {
         return group.getTags();
+      },
+      messages(event) {
+        return event.getMessages();
+      },
+    },
+    message: {
+      user(message) {
+        return message.getUser();
+      },
+      createMessage(_, args, ctx) {
+        const { text, eventId, scheduleId, groupId } = args.message;
+        return getAuthenticatedUser(ctx).then(user =>
+          Creators.message({
+            text,
+            eventId,
+            scheduleId,
+            groupId,
+            user,
+          }),
+        );
       },
     },
   };

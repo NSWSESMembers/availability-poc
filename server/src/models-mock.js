@@ -79,6 +79,31 @@ export const defineModels = () => {
     locationLongitude: '123.456789',
   });
 
+  const MessageModel = db.define('message', {
+    text: 'test message',
+    edited: false,
+  });
+
+  // UserModel has many messages
+  // messages belong to a UserModel
+  UserModel.hasMany(MessageModel);
+  MessageModel.belongsTo(UserModel);
+
+  // GroupModel has many messages
+  // message belongs to a GroupModel
+  GroupModel.hasMany(MessageModel);
+  MessageModel.belongsTo(GroupModel);
+
+  // EventModel has many messages
+  // message belongs to a EventModel
+  EventModel.hasMany(MessageModel);
+  MessageModel.belongsTo(EventModel);
+
+  // ScheduleModel has many messages
+  // ScheduleModel belongs to a event
+  ScheduleModel.hasMany(MessageModel);
+  MessageModel.belongsTo(ScheduleModel);
+
   // users <-> groups (many-to-many)
   UserModel.belongsToMany(GroupModel, { through: 'group_user' });
   GroupModel.belongsToMany(UserModel, { through: 'group_user' });
@@ -151,6 +176,7 @@ export const defineModels = () => {
     Tag: db.models.tag,
     Device: db.models.device,
     Event: db.models.event,
+    Message: db.models.message,
     EventResponse: db.models.eventresponse,
     EventLocation: db.models.eventlocation,
     Schedule: db.models.schedule,
