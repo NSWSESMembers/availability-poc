@@ -3,103 +3,21 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { View, Alert, ScrollView } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
 import { ListModal, TextInputModal, NumberInputModal } from '../../components/Modal';
 import { Paper } from '../../components/Paper';
-import { ButtonIcon, ButtonNavBar } from '../../components/Button';
+import { ButtonIcon } from '../../components/Button';
+import styles from './styles';
 
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-const styles = extendAppStyleSheet({
-  responseContainer: {
-    paddingTop: 20,
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'column',
-  },
-  responseText: {
-    flex: 0.5,
-  },
-  buttonContainerTopRow: {
-    flex: 0.5,
-    flexDirection: 'row',
-  },
-  buttonContainerBottomRow: {
-    flex: 0.5,
-    flexDirection: 'row',
-  },
-  responseButtonGreen: {
-    backgroundColor: 'green',
-    alignItems: 'center',
-    height: 150,
-    justifyContent: 'center',
-  },
-  responseButtonRed: {
-    backgroundColor: '#990000',
-    alignItems: 'center',
-    height: 150,
-    justifyContent: 'center',
-  },
-  responseButtonYellow: {
-    backgroundColor: '#f46a00',
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  responseButtonGrey: {
-    backgroundColor: '#808080',
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  responseButtonText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: 'white',
-    fontSize: 24,
-  },
-  header: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
-  detail: {
-    textAlign: 'center',
-    padding: 10,
-  },
-  buttonContainerOutter: {
-    flex: 0.3,
-  },
-  touchable: {
-    width: '50%',
-  },
-  touchablefull: {
-    width: '100%',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 5,
-    marginLeft: 5,
-    marginRight: 5,
-    flexWrap: 'wrap',
-  },
-});
 
-class EventResponse extends Component {
-  static navigationOptions = () => ({
-    title: 'Event Response',
-    tabBarLabel: 'Events',
-    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
-    headerRight: <ButtonNavBar onPress={() => console.log('call soc')} icon="phone" />,
-  });
-
+class SetResponse extends Component {
   state = {
     status: null,
     destination: null,
@@ -110,11 +28,6 @@ class EventResponse extends Component {
     etaModal: false,
     detailModal: false,
   }
-
-  close = () => {
-    const { goBack } = this.props.navigation;
-    goBack();
-  };
 
   submitEventResponse = () => {
     const dst = (this.state.destination !== null ?
@@ -129,7 +42,7 @@ class EventResponse extends Component {
         status: this.state.status,
       })
       .then(() => {
-        this.props.navigation.goBack();
+        this.props.onClose();
       })
       .catch((error) => {
         Alert.alert('Error updating response', error.message, [{ text: 'OK', onPress: () => {} }]);
@@ -216,7 +129,7 @@ class EventResponse extends Component {
   };
 
   handleIgnore = () => {
-    this.props.navigation.goBack();
+    this.props.onClose();
   };
 
   render() {
@@ -297,12 +210,11 @@ class EventResponse extends Component {
   }
 }
 
-EventResponse.propTypes = {
+SetResponse.propTypes = {
   setEventResponseQuery: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-    goBack: PropTypes.func,
-  }),
+  // eslint-disable-next-line react/no-unused-prop-types
+  eventId: PropTypes.number.isRequired,
+  onClose: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   event: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -334,7 +246,7 @@ EventResponse.propTypes = {
 
 const eventQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.eventId } }),
+  options: ({ eventId }) => ({ variables: { eventId } }),
   props: ({ data: { loading, event, refetch } }) => ({
     loading,
     event,
@@ -372,5 +284,5 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 export default compose(connect(mapStateToProps), userQuery, eventQuery, setEventResponse)(
-  EventResponse,
+  SetResponse,
 );
