@@ -3,7 +3,6 @@ import {
   SET_SELECTED_REQUESTS,
   SET_SELECTED_SCHEDULE,
   START_WEEK_CHANGE,
-  SET_SCHEDULE_SHOW_INFO,
 } from '../state/constants';
 
 export const setSelectedDate = date => ({
@@ -23,9 +22,4 @@ export const setSelectedRequests = requests => ({
 
 export const startWeekChange = () => ({
   type: START_WEEK_CHANGE,
-});
-
-export const setScheduleShowInfo = flag => ({
-  type: SET_SCHEDULE_SHOW_INFO,
-  flag,
 });
