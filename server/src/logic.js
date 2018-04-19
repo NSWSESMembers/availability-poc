@@ -404,9 +404,9 @@ export const getHandlers = ({ models, creators: Creators }) => {
           return org.getGroups({ where: { Id: args.id } });
         }
         if (args.filter) {
-          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
+          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'ASC']] });
         }
-        return org.getGroups({ order: [['id', 'DESC']] });
+        return org.getGroups({ order: [['id', 'ASC']] });
       },
       users(org) {
         // TODO: think about who we show the complete organisation user list to
@@ -414,7 +414,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       tags(org, args) {
         if (args.filter) {
-          return org.getTags({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
+          return org.getTags({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'ASC']] });
         }
         return org.getTags();
       },
