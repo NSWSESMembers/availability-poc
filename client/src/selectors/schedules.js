@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import Colors from '../themes/Colors';
+
 export const isSelectorDisabled = (selectionSegments, status, startTime, endTime) => {
   let disabled = false;
 
@@ -51,13 +53,13 @@ export const selectSchedules = (schedules, { startTime, endTime }) => {
 export const selectColor = (status) => {
   switch (status) {
     case 'Available':
-      return 'green';
+      return Colors.bgBtnAvailable;
     case 'Unavailable':
-      return 'red';
+      return Colors.bgBtnUnavailable;
     case 'Urgent':
-      return 'orange';
+      return Colors.bgBtnUrgent;
     default:
-      return 'white';
+      return Colors.bgWhite;
   }
 };
 

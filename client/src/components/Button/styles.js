@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
   subtextStyleBox: {
     textAlign: 'center',
   },
+  iconStyleBox: {
+    textAlign: 'center',
+  },
   buttonStyle: {
     padding: 10,
     backgroundColor: Colors.bgBtn,

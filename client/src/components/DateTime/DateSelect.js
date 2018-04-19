@@ -4,29 +4,31 @@ import PropTypes from 'prop-types';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { NOT_SPECIFIED, AVAILABLE, UNAVAILABLE, URGENT, OUT_OF_RANGE } from '../../constants';
+
 import styles from './styles';
 
-const DateSelect = ({ day, select = false, onSelect, availType = 'NotSpecified' }) => {
+const DateSelect = ({ day, select = false, onSelect, availType = NOT_SPECIFIED }) => {
   let dayStyles = [styles.day];
   let dayLabelStyles = [styles.dayLabel];
-  const dayIconStyles = [styles.dayIcon];
+  let dayIconStyles = [styles.dayIcon];
 
-  if (availType === 'OutOfRange') {
+  if (availType === OUT_OF_RANGE) {
     dayStyles = [styles.dayOutOfRange];
     dayLabelStyles = [styles.dayLabelOutOfRange];
   }
 
-  if (availType === 'Available') {
+  if (availType === AVAILABLE) {
     dayStyles = [styles.dayAvailable];
     dayLabelStyles = [styles.dayLabelAvailable];
   }
 
-  if (availType === 'Unavailable') {
+  if (availType === UNAVAILABLE) {
     dayStyles = [styles.dayUnavailable];
     dayLabelStyles = [styles.dayLabelUnavailable];
   }
 
-  if (availType === 'Urgent') {
+  if (availType === URGENT) {
     dayStyles = [styles.dayUrgent];
     dayLabelStyles = [styles.dayLabelUrgent];
   }
@@ -34,9 +36,10 @@ const DateSelect = ({ day, select = false, onSelect, availType = 'NotSpecified' 
   if (select) {
     dayStyles = [styles.daySelect];
     dayLabelStyles = [styles.dayLabelSelect];
+    dayIconStyles = [styles.dayIconSelect];
   }
 
-  if (availType === 'OutOfRange') {
+  if (availType === OUT_OF_RANGE) {
     return (
       <View style={dayStyles}>
         <Text style={dayLabelStyles}>{moment.unix(day).format('dd')}</Text>
@@ -60,9 +63,9 @@ const DateSelect = ({ day, select = false, onSelect, availType = 'NotSpecified' 
     <TouchableOpacity style={dayStyles} onPress={() => onSelect(day)}>
       <Text style={dayLabelStyles}>{moment.unix(day).format('dd')}</Text>
       <Text style={dayLabelStyles}>{moment.unix(day).format('DD')}</Text>
-      {availType === 'Available' && <Icon size={18} name="check-circle" style={dayIconStyles} />}
-      {availType === 'Unavailable' && <Icon size={18} name="times-circle" style={dayIconStyles} />}
-      {availType === 'Urgent' && <Icon size={18} name="exclamation-circle" style={dayIconStyles} />}
+      {availType === AVAILABLE && <Icon size={18} name="check-circle" style={dayIconStyles} />}
+      {availType === UNAVAILABLE && <Icon size={18} name="times-circle" style={dayIconStyles} />}
+      {availType === URGENT && <Icon size={18} name="exclamation-circle" style={dayIconStyles} />}
     </TouchableOpacity>
   );
 };

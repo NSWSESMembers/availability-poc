@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+
 import { View } from 'react-native';
 import { DateSelect } from './';
+import { NOT_SPECIFIED, AVAILABLE, OUT_OF_RANGE } from '../../constants';
 
 import styles from './styles';
 
@@ -21,15 +23,21 @@ const DateRange = ({ timeSegments, startTime, endTime, selectedDays, onSelect })
     const dayUnix = 24 * 60 * 60;
     const endOfDay = parseInt(day, 0) + dayUnix;
 
-    let availType = 'NotSpecified';
+    let availType = NOT_SPECIFIED;
     if (day < startTime || day > endTime) {
-      availType = 'OutOfRange';
+      availType = OUT_OF_RANGE;
     } else {
       const results = timeSegments.filter(
         timeSegment => day <= timeSegment.startTime && endOfDay >= timeSegment.endTime,
       );
       if (results.length > 0) {
-        availType = results[0].status;
+        // check for availability first
+        const availableResults = results.filter(segment => segment.status === AVAILABLE);
+        if (availableResults.length > 0) {
+          availType = availableResults[0].status;
+        } else {
+          availType = results[0].status;
+        }
       }
     }
 

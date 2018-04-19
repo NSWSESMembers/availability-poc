@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import { SET_SCHEDULE_SHOW_INFO } from '../state/constants';
+
 const initialMoment = moment()
   .startOf('day')
   .unix();
@@ -8,6 +10,7 @@ const initialState = {
   selectedDate: initialMoment,
   isChangingWeek: false,
   selectedRequests: [],
+  scheduleShowInfo: false,
 };
 
 const availability = (state = initialState, action) => {
@@ -28,6 +31,10 @@ const availability = (state = initialState, action) => {
     case 'START_WEEK_CHANGE':
       return Object.assign({}, state, {
         isChangingWeek: true,
+      });
+    case SET_SCHEDULE_SHOW_INFO:
+      return Object.assign({}, state, {
+        scheduleShowInfo: action.flag,
       });
     default:
       return state;

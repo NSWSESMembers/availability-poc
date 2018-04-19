@@ -7,13 +7,15 @@ import { isSelectorDisabled, selectColor } from '../../selectors/schedules';
 
 import { ButtonBox } from '../Button';
 
+import styles from './styles';
+
 const TimeSelect = ({ selectionSegments, onPress }) => {
   const start = moment()
     .startOf('day')
     .unix();
 
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+    <View style={styles.timeSelectContainer}>
       {selectionSegments.map(segment => (
         <View key={`${segment.startTime}-${segment.endTime}`} style={{ marginBottom: 5 }}>
           <ButtonBox

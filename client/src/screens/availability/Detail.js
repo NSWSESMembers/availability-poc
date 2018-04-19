@@ -13,12 +13,17 @@ import {
   REMOVE_TIME_SEGMENT_MUTATION,
 } from '../../graphql/time-segment.mutation';
 
+import { AVAILABLE, UNAVAILABLE, URGENT } from '../../constants';
+
 import { selectSchedules } from '../../selectors/schedules';
+
+import Colors from '../../themes/Colors';
 
 import { Button, ButtonNavBar } from '../../components/Button';
 import { Center, Container, Holder } from '../../components/Container';
 import { DateRange, TimeSelect } from '../../components/DateTime';
 import { Progress } from '../../components/Progress';
+import { Message } from '../../components/Text';
 
 const defaultSegmentState = [
   { startTime: 0, endTime: 86400, label: 'All Day', status: '' },
@@ -29,7 +34,7 @@ const defaultSegmentState = [
 
 class Detail extends Component {
   static navigationOptions = ({ navigation }) => ({
-    headerRight: <ButtonNavBar onPress={() => navigation.navigate('Edit')} icon="info" />,
+    headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="info" />,
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
     tabBarLabel: 'Availability',
     title: `${navigation.state.params.title}`,
@@ -40,6 +45,12 @@ class Detail extends Component {
     selectionSegments: defaultSegmentState,
     showInfo: false,
   };
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      handleThis: this.onShowInfo,
+    });
+  }
 
   onPressEdit = () => {
     const schedule = this.getSchedule();
@@ -133,23 +144,29 @@ class Detail extends Component {
     }
   };
 
-  getSchedule = () =>
-    this.props.user.schedules.filter(x => x.id === this.props.navigation.state.params.id)[0];
+  onShowInfo = () => {
+    this.setState({
+      showInfo: !this.state.showInfo,
+    });
+  };
 
   getNextSegment = (segment) => {
     switch (segment) {
       case '':
-        return 'Available';
-      case 'Available':
-        return 'Unavailable';
-      case 'Unavailable':
-        return 'Urgent';
-      case 'Urgent':
+        return AVAILABLE;
+      case AVAILABLE:
+        return UNAVAILABLE;
+      case UNAVAILABLE:
+        return URGENT;
+      case URGENT:
         return '';
       default:
         return '';
     }
   };
+
+  getSchedule = () =>
+    this.props.user.schedules.filter(x => x.id === this.props.navigation.state.params.id)[0];
 
   getSelectionSegments = day => this.getTimeSegments(day);
 
@@ -209,28 +226,37 @@ class Detail extends Component {
     return (
       <Container>
         {schedule.startTime > 0 && (
-          <Holder marginTop paddingVertical>
-            <DateRange
-              startTime={schedule.startTime}
-              endTime={schedule.endTime}
-              onSelect={this.onSelectDay}
-              selectedDays={this.state.selectedDays}
-              timeSegments={filteredItems}
-            />
-          </Holder>
+          <View>
+            <Holder marginTop paddingVertical>
+              <Message>
+                {moment.unix(schedule.startTime).format('ll')} -{' '}
+                {moment.unix(schedule.endTime).format('ll')}
+              </Message>
+            </Holder>
+            {this.state.showInfo && (
+              <Holder marginTop paddingVertical>
+                <Message>{schedule.details}</Message>
+              </Holder>
+            )}
+            <Holder marginTop paddingVertical>
+              <DateRange
+                startTime={schedule.startTime}
+                endTime={schedule.endTime}
+                onSelect={this.onSelectDay}
+                selectedDays={this.state.selectedDays}
+                timeSegments={filteredItems}
+              />
+            </Holder>
+          </View>
         )}
         {this.state.selectedDays.length === 0 ? (
           <Holder marginTop paddingVertical>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <Text>Tap days to edit.</Text>
-            </View>
+            <Message>Tap multiple days to add/edit</Message>
           </Holder>
         ) : (
           <View>
             <Holder marginTop paddingVertical>
-              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text>Select {this.state.selectedDays.length}</Text>
-              </View>
+              <Message>{this.state.selectedDays.length} day(s) selected</Message>
             </Holder>
             <Holder marginTop paddingVertical>
               <TimeSelect
@@ -238,8 +264,26 @@ class Detail extends Component {
                 onPress={this.onPressSegment}
               />
             </Holder>
-            <Holder paddingVertical marginTop transparent>
-              <Button text="Save Availability" onPress={this.onPressEdit} type="secondary" />
+            <Holder marginTop paddingVertical>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnUnavailable} /> Unavailable
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnUrgent} /> Urgent
+                </Text>
+              </View>
+            </Holder>
+            <Holder marginTop transparent>
+              <Button text="Save Availability" onPress={this.onPressEdit} />
             </Holder>
           </View>
         )}

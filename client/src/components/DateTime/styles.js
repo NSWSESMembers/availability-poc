@@ -21,19 +21,19 @@ const styles = StyleSheet.create({
   },
   dayOutOfRange: {
     ...day,
-    borderColor: '#AAA',
+    borderColor: Colors.bgOutOfRange,
   },
   dayAvailable: {
     ...day,
-    backgroundColor: 'lightgreen',
+    backgroundColor: Colors.bgBtnAvailable,
   },
   dayUnavailable: {
     ...day,
-    backgroundColor: 'red',
+    backgroundColor: Colors.bgBtnUnavailable,
   },
   dayUrgent: {
     ...day,
-    backgroundColor: 'orange',
+    backgroundColor: Colors.bgBtnUrgent,
   },
   daySelect: {
     ...day,
@@ -46,16 +46,19 @@ const styles = StyleSheet.create({
   },
   dayLabel: {},
   dayLabelOutOfRange: {
-    color: '#AAA',
+    color: Colors.bgOutOfRange,
   },
   dayLabelAvailable: {
     fontWeight: 'bold',
+    color: Colors.bgWhite,
   },
   dayLabelUnavailable: {
     fontWeight: 'bold',
+    color: Colors.bgWhite,
   },
   dayLabelUrgent: {
     fontWeight: 'bold',
+    color: Colors.bgWhite,
   },
   dayLabelSelect: {
     fontWeight: 'bold',
@@ -63,9 +66,19 @@ const styles = StyleSheet.create({
   },
   dayLabelEdit: {
     fontWeight: 'bold',
-    color: 'white',
+    color: Colors.bgWhite,
   },
-  dayIcon: {},
+  dayIcon: {
+    color: Colors.bgWhite,
+  },
+  dayIconSelect: {
+    color: Colors.bdMain,
+  },
+  timeSelectContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+  },
 });
 
 export default styles;
