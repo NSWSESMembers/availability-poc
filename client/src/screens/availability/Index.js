@@ -80,6 +80,7 @@ class Index extends Component {
           keyExtractor={item => item.id}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
+          onRefresh={() => this.props.refetch()}
         />
       </Container>
     );
@@ -93,6 +94,7 @@ Index.propTypes = {
     navigate: PropTypes.func,
   }),
   networkStatus: PropTypes.number,
+  refetch: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,

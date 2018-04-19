@@ -134,6 +134,7 @@ class Home extends Component {
           keyExtractor={item => `${item.type}-${item.id}`}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
+          onRefresh={() => this.props.refetch()}
         />
       </Container>
     );
@@ -154,6 +155,7 @@ Home.propTypes = {
   dispatch: PropTypes.func,
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
+  refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
