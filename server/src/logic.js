@@ -82,7 +82,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         if (args.id) {
           return user.getGroups({ where: { id: args.id } });
         }
-        return user.getGroups({ order: [['id', 'DESC']] });
+        return user.getGroups({ order: [['id', 'ASC']] });
       },
       events(user) {
         return user.getGroups()
