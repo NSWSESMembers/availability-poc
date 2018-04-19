@@ -2,7 +2,7 @@ import { StackNavigator } from 'react-navigation';
 
 import Events from './Events';
 import Event from './Detail';
-import EventResponse from '../events/Response';
+import EditResponse from './EditResponse';
 import EventUsers from './EventUsers';
 import NavOptions from '../../config/NavOptions';
 
@@ -14,8 +14,8 @@ const StackEvents = StackNavigator(
     Event: {
       screen: Event,
     },
-    EventResponse: {
-      screen: EventResponse,
+    EditResponse: {
+      screen: EditResponse,
     },
     EventUsers: {
       screen: EventUsers,
