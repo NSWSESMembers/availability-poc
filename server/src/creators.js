@@ -52,23 +52,14 @@ export const getCreators = (models) => {
       locationLongitude,
     }),
 
-    tag: ({ name, organisation, user, group }) => {
-      if (!user || !user.id) {
-        return Promise.reject(Error('Must pass user'));
-      }
-      if (!group || !group.id) {
-        return Promise.reject(Error('Must pass group'));
-      }
+    tag: ({ name, organisation }) => {
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
       }
       return Tag.create({
         name,
         organisationId: organisation.id,
-      }).then(tag => Promise.all([
-        tag.addUser(user),
-        tag.addGroup(group),
-      ]).then(() => tag));
+      });
     },
 
     capability: ({ name, organisation, user }) => {
