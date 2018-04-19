@@ -80,6 +80,10 @@ class Home extends Component {
     tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
   };
 
+  onRefresh = () => {
+    this.props.refetch();
+  };
+
   renderItem = ({ item }) => {
     if (item.type === 'event') {
       return <EventItem event={item.event} dispatch={this.props.dispatch} />;
@@ -134,7 +138,7 @@ class Home extends Component {
           keyExtractor={item => `${item.type}-${item.id}`}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
-          onRefresh={() => this.props.refetch()}
+          onRefresh={this.onRefresh}
         />
       </Container>
     );

@@ -35,6 +35,10 @@ class Index extends Component {
     this.props.navigation.navigate('Detail', { id: item.id });
   };
 
+  onRefresh = () => {
+    this.props.refetch();
+  }
+
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
@@ -80,7 +84,7 @@ class Index extends Component {
           keyExtractor={item => item.id}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
-          onRefresh={() => this.props.refetch()}
+          onRefresh={this.onRefresh}
         />
       </Container>
     );
