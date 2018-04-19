@@ -11,6 +11,7 @@ export default gql`
         id
          groups(filter: $filter,id: $groupId) {
             name
+            icon
             id
             tags {
               name

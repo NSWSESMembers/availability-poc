@@ -29,4 +29,21 @@ export default () => ({
   tooltip: {
     textAlign: 'center',
   },
+  icon: {
+    padding: 0,
+    marginRight: 3,
+    color: 'green',
+  },
+  marginAV: {
+    margin: 5,
+    color: 'green',
+  },
+  marginUN: {
+    margin: 5,
+    color: 'red',
+  },
+  marginUR: {
+    margin: 5,
+    color: 'purple',
+  },
 });

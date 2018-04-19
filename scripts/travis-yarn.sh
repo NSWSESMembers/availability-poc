@@ -1,12 +1,6 @@
 #!/bin/sh
 
-echo "Changing to $COMPONENT..."
-cd "$COMPONENT"
-
-echo "Installing dependencies for $COMPONENT..."
-yarn
-
-if test "$COMPONENT" == "server" -a "$MODE" == "test-integration"
+if test "$COMPONENT" == "server" -a "$CMD" == "test-integration"
 then
   echo "Building server..."
   yarn run build
@@ -19,8 +13,8 @@ then
   sleep 10
 fi
 
-echo "Running $MODE on $COMPONENT..."
-yarn "$MODE"
+echo "Running $CMD on $COMPONENT..."
+yarn "$CMD"
 result=$?
 
 if test ! -z "$pid"

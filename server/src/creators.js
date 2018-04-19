@@ -97,7 +97,7 @@ export const getCreators = (models) => {
       });
     },
 
-    group: ({ organisation, name, users }) => {
+    group: ({ organisation, name, icon, tags, users }) => {
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
       }
@@ -106,10 +106,14 @@ export const getCreators = (models) => {
       }
       return Group.create({
         name,
+        icon: icon || 'group',
         organisationId: organisation.id,
-      }).then(
-        group => group.addUsers(users)
-          .then(() => group));
+      }).then(group => Promise.all([
+        group.addUsers(users),
+        tags && tags.map(
+          t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group)),
+        ),
+      ]).then(() => group));
     },
 
     user: ({ id, username, password, email, displayName, version, organisation }) => {

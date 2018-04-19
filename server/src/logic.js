@@ -82,7 +82,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         if (args.id) {
           return user.getGroups({ where: { id: args.id } });
         }
-        return user.getGroups();
+        return user.getGroups({ order: [['id', 'DESC']] });
       },
       events(user) {
         return user.getGroups()
@@ -257,7 +257,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return timesegment.getUser();
       },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, status, startTime, endTime } = args.timeSegment;
+        const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
         return getAuthenticatedUser(ctx)
           .then(user =>
             Schedule.findById(scheduleId).then((schedule) => {
@@ -269,7 +269,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
                 status,
                 startTime,
                 endTime,
-                user,
+                user: userId === undefined ? user : { id: userId },
               });
             }),
           );
@@ -340,26 +340,46 @@ export const getHandlers = ({ models, creators: Creators }) => {
           .then((result) => {
             const updateArgs = { ...args.response };
             delete updateArgs.id;
-            if (updateArgs.destination) {
-              return event.getEventlocations({ where: { id: updateArgs.destination.id } })
-                .then((destination) => {
-                  if (!destination) {
-                    return Promise.reject(Error('Unknown destination passed'));
-                  }
-                  delete updateArgs.destination;
-                  updateArgs.eventlocationId = destination[0].id;
-                  if (result.length > 0) {
-                    return result[0].update(updateArgs);
-                  }
-                  return Creators.eventResponse({
-                    event,
-                    user,
-                    destination: destination[0],
-                    ...updateArgs,
+            if (typeof (updateArgs.destination) !== 'undefined') { // null is truthy so we need this
+              if (updateArgs.destination !== null) {
+                return event.getEventlocations({ where: { id: updateArgs.destination.id } })
+                  .then((destination) => {
+                    if (!destination) {
+                      return Promise.reject(Error('Unknown destination passed'));
+                    }
+                    updateArgs.eventlocationId = destination[0].id;
+                    delete updateArgs.destination;
+                    if (result.length > 0) {
+                      return result[0].update(updateArgs);
+                    }
+                    return Creators.eventResponse({
+                      event,
+                      user,
+                      destination: destination[0],
+                      ...updateArgs,
+                    });
                   });
-                });
+              }
+              // destination passed is null
+              if (result.length) {
+                updateArgs.eventlocationId = null;
+                return result[0].update(updateArgs);
+              }
+              return Creators.eventResponse({
+                event,
+                user,
+                ...updateArgs,
+              });
             }
-            return result[0].update(updateArgs);
+            // no destination passed
+            if (result.length) {
+              return result[0].update(updateArgs);
+            }
+            return Creators.eventResponse({
+              event,
+              user,
+              ...updateArgs,
+            });
           }));
       },
     },
@@ -384,15 +404,18 @@ export const getHandlers = ({ models, creators: Creators }) => {
           return org.getGroups({ where: { Id: args.id } });
         }
         if (args.filter) {
-          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } } });
+          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
         }
-        return org.getGroups();
+        return org.getGroups({ order: [['id', 'DESC']] });
       },
       users(org) {
         // TODO: think about who we show the complete organisation user list to
         return org.getUsers();
       },
-      tags(org) {
+      tags(org, args) {
+        if (args.filter) {
+          return org.getTags({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'DESC']] });
+        }
         return org.getTags();
       },
       capabilities(org) {
@@ -411,10 +434,16 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return group.getEvents();
       },
       createGroup(_, args, ctx) {
-        const { name } = args.group;
+        const { name, tags, icon } = args.group;
         return getAuthenticatedUser(ctx)
           .then(user => Organisation.findById(user.organisationId)
-            .then(organisation => Creators.group({ name, users: [user], organisation })),
+            .then(organisation => Creators.group({
+              name,
+              icon,
+              tags,
+              users: [user],
+              organisation,
+            })),
           );
       },
       addUserToGroup(_, args, ctx) {

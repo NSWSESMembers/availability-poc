@@ -15,8 +15,15 @@ export const Schema = [
     token: String!
   }
 
+  input TagInput {
+    id: Int!
+    name: String
+  }
+
   input CreateGroupInput {
     name: String!
+    tags: [TagInput]
+    icon: String
   }
 
   input LoginInput {
@@ -45,6 +52,7 @@ export const Schema = [
     status: String!
     startTime: Int!
     endTime: Int!
+    userId: Int
   }
 
   input updateTimeSegmentInput {
@@ -100,13 +108,14 @@ export const Schema = [
     name: String!
     users: [User]!
     groups(id: Int,filter: String): [Group]!
-    tags: [Tag]!
+    tags(filter: String): [Tag]!
     capabilities: [Capability]!
   }
 
   type Group {
     id: Int! # unique id for the group
     name: String # name of the group
+    icon: String # icon
     users: [User]! # users in the group
     schedules: [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
@@ -165,7 +174,7 @@ export const Schema = [
     event: Event!
     user: User!
     status: String!
-    detail: String!
+    detail: String
     locationLatitude: Float
     locationLongitude: Float
     locationTime: Int

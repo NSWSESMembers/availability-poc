@@ -9,6 +9,7 @@ export const defineModels = (db) => {
 
   const GroupModel = db.define('group', {
     name: { type: Sequelize.STRING },
+    icon: { type: Sequelize.STRING },
   });
 
   const UserModel = db.define('user', {

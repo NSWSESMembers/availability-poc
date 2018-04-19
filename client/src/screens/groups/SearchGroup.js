@@ -28,7 +28,7 @@ class Group extends Component {
   }
 
   render() {
-    const { name } = this.props.group;
+    const { name, icon } = this.props.group;
     const tags = this.props.group.tags.map(elem => `#${elem.name}`).join(',');
     this.state = {
       memberAlready: _.some(this.props.myGroups, g => g.id === this.props.group.id),
@@ -38,7 +38,7 @@ class Group extends Component {
         title={name}
         bold
         subtitle={tags !== '' ? tags : 'No Tags'}
-        icon="group"
+        icon={icon}
         onPress={this.goToGroup}
       />
     );
@@ -58,6 +58,7 @@ Group.propTypes = {
   group: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    icon: PropTypes.string,
     tags: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
@@ -157,6 +158,7 @@ SearchGroups.propTypes = {
         PropTypes.shape({
           id: PropTypes.number.isRequired,
           name: PropTypes.string.isRequired,
+          icon: PropTypes.string,
           tags: PropTypes.arrayOf(
             PropTypes.shape({
               id: PropTypes.number.isRequired,
@@ -170,6 +172,7 @@ SearchGroups.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        icon: PropTypes.string,
       }),
     ),
   }),

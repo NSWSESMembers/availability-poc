@@ -15,7 +15,7 @@ import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutati
 import markers from '../../assets/images/map/markers';
 import { UserMarker } from '../../components/MapMarker/';
 import { Container, Holder } from '../../components/Container';
-import { ListItem } from '../../components/List';
+import { ListItemHighlight } from '../../components/List';
 
 import { Progress } from '../../components/Progress';
 
@@ -133,7 +133,7 @@ class EventDetail extends Component {
           },
           { enableHighAccuracy: true, maximumAge: 1000 },
         );
-      } else if (myStatus.status.toLowerCase() !== 'responding' && this.geoWatch !== null) {
+      } else if (myStatus.status.toLowerCase() === 'unavailable' && this.geoWatch !== null) {
         navigator.geolocation.clearWatch(this.geoWatch);
         this.geoWatch = null;
       }
@@ -158,12 +158,10 @@ class EventDetail extends Component {
 
   geoWatch = null;
 
-  editResponse = (eventResponse) => {
+  editResponse = () => {
     const { navigate } = this.props.navigation;
-    navigate('EventResponseEdit', {
-      eventResponse,
+    navigate('EventResponse', {
       eventId: this.props.event.id,
-      eventLocations: this.props.event.eventLocations,
     });
   };
 
@@ -232,12 +230,20 @@ class EventDetail extends Component {
     });
     const summaryByDestinationUsersString = summaryByDestinationUsersArray.join(', ');
 
+    const userSubtitleArray = [];
+    userSubtitleArray.push(myStatus && myStatus.destination ? `Destination ${myStatus.destination.name.toUpperCase()}` : 'No destination set');
+    userSubtitleArray.push(myStatus && myStatus.eta !== 0 ? `ETA ${moment.unix(myStatus.eta).fromNow()}` : 'ETA unknown');
+    const userSubtitleString = userSubtitleArray.join(', ');
+
+
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, ...StyleSheet.absoluteFillObject }}>
-          <View>
+          <View
+            style={{ top: 6 }}
+          >
             <Holder wide transparent>
-              <ListItem
+              <ListItemHighlight
                 wide
                 title={event.name}
                 bold
@@ -284,15 +290,15 @@ class EventDetail extends Component {
           style={{ position: 'absolute', bottom: 6, left: 0, right: 0 }}
         >
           <Holder wide transparent>
-            <ListItem
+            <ListItemHighlight
               wide
               bold
               title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
-              subtitle={myStatus ? (`Destination ${myStatus.destination.name.toUpperCase()}, ETA ${moment(myStatus.destination.eta).fromNow()}`) : 'No destination set'}
+              subtitle={userSubtitleString}
               icon="location-arrow"
-              onPress={() => this.editResponse(myStatus)}
+              onPress={() => this.editResponse()}
             />
-            <ListItem
+            <ListItemHighlight
               wide
               bold
               title={`${attendingUsers.length} people are attending`}
@@ -337,7 +343,8 @@ EventDetail.propTypes = {
           displayName: PropTypes.string.isRequired,
         }),
         status: PropTypes.string.isRequired,
-        detail: PropTypes.string.isRequired,
+        detail: PropTypes.string,
+        eta: PropTypes.float,
       }),
     ),
   }),
