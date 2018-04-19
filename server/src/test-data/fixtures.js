@@ -28,11 +28,17 @@ export const CAPABILITIES = [
 ];
 
 export const TAGS = [
-  'Tag1',
-  'Tag2',
-  'Tag3',
-  'Tag4',
-  'Tag5',
+  'NSW',
+  'SWR',
+  'ISR',
+  'SSR',
+  'KMA',
+  'PAR',
+  'HLS',
+  'WOL',
+  'AUB',
+  'HAW',
+  'HOL',
 ];
 
 export const USERS = [
@@ -151,6 +157,10 @@ export const GROUPS = [
       'kiama7',
       'kiama8',
     ],
+    tags: [
+      'ISR',
+      'KMA',
+    ],
   },
   {
     name: 'Parramatta',
@@ -162,6 +172,10 @@ export const GROUPS = [
       'parramatta3',
       'parramatta4',
       'parramatta5',
+    ],
+    tags: [
+      'SWR',
+      'PAR',
     ],
   },
   {
@@ -182,6 +196,9 @@ export const GROUPS = [
       'parramatta3',
       'parramatta4',
       'parramatta5',
+    ],
+    tags: [
+      'NSW',
     ],
   },
 ];

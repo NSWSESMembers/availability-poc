@@ -1,5 +1,5 @@
 import {
-  ORG_NAME, CAPABILITIES, TAGS, USERS, GROUPS, SCHEDULES, EVENTS, DEFAULT_USERNAME, DEFAULT_GROUP,
+  ORG_NAME, CAPABILITIES, TAGS, USERS, GROUPS, SCHEDULES, EVENTS, DEFAULT_USERNAME,
 } from './fixtures';
 import { DEFAULT_DEVICE_UUID } from '../config';
 
@@ -26,31 +26,32 @@ const createUsers = (Creators, organisation) => {
   ).then(() => results);
 };
 
-const createGroup = (Creators, organisation, group, userObjects) => {
+const createGroup = (Creators, organisation, group, userObjects, allTags) => {
   // gather the created user objects we want to add to this group
   const users = group.users.map(username => userObjects[username]);
-  const { name, icon } = group;
-  return Creators.group({ organisation, name, icon, users });
+  const { name, icon, tags } = group;
+  const neededTags = tags.map(t => allTags[t] && { id: allTags[t].id });
+  return Creators.group({ organisation, name, icon, users, tags: neededTags });
 };
 
-const createGroups = (Creators, organisation, users) => {
+const createGroups = (Creators, organisation, users, tags) => {
   // create the groups from GROUPS above
   const results = {};
   return Promise.all(
     GROUPS.map(
-      group => createGroup(Creators, organisation, group, users)
+      group => createGroup(Creators, organisation, group, users, tags)
         .then((g) => { results[g.name] = g; }),
     ),
   ).then(() => results);
 };
 
-const createTags = (Creators, organisation, user, group) => {
+const createTags = (Creators, organisation) => {
   // create the tags and then return the created objects in a dict keyed by their name
   // For now we assign all tags to the single provided user and group
   const results = {};
   return Promise.all(
     TAGS.map(
-      t => Creators.tag({ name: t, organisation, user, group })
+      t => Creators.tag({ name: t, organisation })
         .then((tag) => {
           results[tag.name] = tag;
         }),
@@ -164,11 +165,10 @@ export const loadTestData = Creators =>
   Creators.organisation({
     name: ORG_NAME,
   }).then(async (org) => {
+    const tags = await createTags(Creators, org);
     const users = await createUsers(Creators, org);
-    const groups = await createGroups(Creators, org, users);
+    const groups = await createGroups(Creators, org, users, tags);
     const testUser = users[DEFAULT_USERNAME];
-    const testGroup = groups[DEFAULT_GROUP];
-    await createTags(Creators, org, testUser, testGroup);
     await createCapabilities(Creators, org, testUser);
     await createSchedules(Creators, groups, users);
     await createEvents(Creators, groups, users);
