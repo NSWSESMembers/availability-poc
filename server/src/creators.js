@@ -89,7 +89,6 @@ export const getCreators = (models) => {
     },
 
     group: ({ organisation, name, icon, tags, users }) => {
-      console.log('tag', tags);
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
       }
