@@ -104,7 +104,7 @@ export const getCreators = (models) => {
         tags && tags.map(
           t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group)),
         ),
-      ]).then(() => group));
+      ]).then(() => Group.findById(group.id)));
     },
 
     user: ({ id, username, password, email, displayName, version, organisation }) => {
