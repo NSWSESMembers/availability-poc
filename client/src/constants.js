@@ -1,4 +1,5 @@
 // availability constants
+export const EMPTY = '';
 export const OUT_OF_RANGE = 'OutOfRange';
 export const AVAILABLE = 'Available';
 export const UNAVAILABLE = 'Unavailable';

@@ -13,7 +13,7 @@ import {
   REMOVE_TIME_SEGMENT_MUTATION,
 } from '../../graphql/time-segment.mutation';
 
-import { AVAILABLE, UNAVAILABLE, URGENT } from '../../constants';
+import { EMPTY, AVAILABLE, UNAVAILABLE, URGENT } from '../../constants';
 
 import { selectSchedules } from '../../selectors/schedules';
 
@@ -152,16 +152,16 @@ class Detail extends Component {
 
   getNextSegment = (segment) => {
     switch (segment) {
-      case '':
+      case EMPTY:
         return AVAILABLE;
       case AVAILABLE:
         return UNAVAILABLE;
       case UNAVAILABLE:
         return URGENT;
       case URGENT:
-        return '';
+        return EMPTY;
       default:
-        return '';
+        return EMPTY;
     }
   };
 

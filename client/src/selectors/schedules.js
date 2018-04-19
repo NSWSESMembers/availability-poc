@@ -51,16 +51,16 @@ export const selectSchedules = (schedules, { startTime, endTime }) => {
 };
 
 export const selectColor = (status) => {
-  switch (status) {
-    case 'Available':
-      return Colors.bgBtnAvailable;
-    case 'Unavailable':
-      return Colors.bgBtnUnavailable;
-    case 'Urgent':
-      return Colors.bgBtnUrgent;
-    default:
-      return Colors.bgWhite;
+  const colors = {
+    Available: Colors.bgBtnAvailable,
+    Unavailable: Colors.bgBtnUnavailable,
+    Urgent: Colors.bgBtnUrgent,
+  };
+  const color = colors[status];
+  if (typeof colors === 'undefined') {
+    return Colors.bgWhite;
   }
+  return color;
 };
 
 export const scheduleLabel = (startTime, endTime) => {
