@@ -144,6 +144,29 @@ export const USERS = [
 
 export const GROUPS = [
   {
+    name: DEFAULT_GROUP,
+    icon: 'globe',
+    users: [
+      'test',
+      'kiama1',
+      'kiama2',
+      'kiama3',
+      'kiama4',
+      'kiama5',
+      'kiama6',
+      'kiama7',
+      'kiama8',
+      'parramatta1',
+      'parramatta2',
+      'parramatta3',
+      'parramatta4',
+      'parramatta5',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
+  {
     name: 'Kiama',
     icon: 'fa-ship',
     users: [
@@ -176,29 +199,6 @@ export const GROUPS = [
     tags: [
       'SWR',
       'PAR',
-    ],
-  },
-  {
-    name: DEFAULT_GROUP,
-    icon: 'globe',
-    users: [
-      'test',
-      'kiama1',
-      'kiama2',
-      'kiama3',
-      'kiama4',
-      'kiama5',
-      'kiama6',
-      'kiama7',
-      'kiama8',
-      'parramatta1',
-      'parramatta2',
-      'parramatta3',
-      'parramatta4',
-      'parramatta5',
-    ],
-    tags: [
-      'NSW',
     ],
   },
 ];
