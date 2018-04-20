@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
@@ -8,61 +8,198 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { selectSchedules, scheduleLabel } from '../../selectors/schedules';
-import { setSelectedDate, startWeekChange } from '../../state/availability.actions';
+import {
+  CREATE_TIME_SEGMENT_MUTATION,
+  REMOVE_TIME_SEGMENT_MUTATION,
+} from '../../graphql/time-segment.mutation';
 
-import { ButtonNavBar } from '../../components/Button';
-import { Calendar, Week } from '../../components/Calendar';
+import { EMPTY, AVAILABLE, UNAVAILABLE, URGENT } from '../../constants';
+
+import { selectSchedules } from '../../selectors/schedules';
+
+import Colors from '../../themes/Colors';
+
+import { Button, ButtonNavBar } from '../../components/Button';
 import { Center, Container, Holder } from '../../components/Container';
-import { ListItem } from '../../components/List';
+import { DateRange, TimeSelect } from '../../components/DateTime';
 import { Progress } from '../../components/Progress';
+import { Message } from '../../components/Text';
+
+const defaultSegmentState = [
+  { startTime: 0, endTime: 86400, label: 'All Day', status: '' },
+  { startTime: 32400, endTime: 61200, label: 'Day Only', status: '' },
+  { startTime: 0, endTime: 32400, label: 'Out of Hours', status: '' },
+  { startTime: 61200, endTime: 86400, label: 'Out of Hours', status: '' },
+];
 
 class Detail extends Component {
   static navigationOptions = ({ navigation }) => ({
-    headerRight: <ButtonNavBar onPress={() => navigation.navigate('Edit')} icon="plus" />,
+    headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="info" />,
     tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
     tabBarLabel: 'Availability',
-    title: 'Request Detail',
+    title: `${navigation.state.params.title}`,
   });
 
   state = {
+    selectedDays: [],
+    selectionSegments: defaultSegmentState,
     showInfo: false,
+  };
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      handleThis: this.onShowInfo,
+    });
+  }
+
+  onPressEdit = () => {
+    const schedule = this.getSchedule();
+    // clear existing timeSegments in selected days
+    this.state.selectedDays.forEach((day) => {
+      const timeSegments = this.getTimeSegments(day);
+      timeSegments.forEach((timeSegment) => {
+        this.props.removeTimeSegment({
+          segmentId: timeSegment.id,
+        });
+      });
+    });
+
+    // add items
+    this.state.selectedDays.forEach((day) => {
+      this.state.selectionSegments.forEach((segment) => {
+        if (segment.status !== '') {
+          this.props.createTimeSegment({
+            scheduleId: schedule.id,
+            status: segment.status,
+            startTime: day + segment.startTime,
+            endTime: day + segment.endTime,
+          });
+        }
+      });
+    });
+    // reset selected days
+    this.setState({ selectedDays: [], selectionSegments: defaultSegmentState });
   };
 
   onPressInfo = () => {
     this.setState({ showInfo: !this.state.showInfo });
   };
 
-  onChangeDate = (dt) => {
-    this.props.dispatch(setSelectedDate(dt.unix()));
+  onPressSegment = (updateSegment) => {
+    // update state
+    const updatedSegments = this.state.selectionSegments.map((segment) => {
+      if (
+        segment.startTime === updateSegment.startTime &&
+        segment.endTime === updateSegment.endTime
+      ) {
+        return { ...segment, status: this.getNextSegment(segment.status) };
+      }
+      return segment;
+    });
+
+    this.setState({ selectionSegments: updatedSegments });
   };
 
-  onPressItem = (timeSegment) => {
-    this.props.navigation.navigate('Edit', { timeSegment });
-  };
+  onSelectDay = (day) => {
+    let newArray = this.state.selectedDays.slice();
+    if (newArray.indexOf(day) !== -1) {
+      // remove
+      newArray = newArray.filter(d => d !== day);
 
-  onScrollEnd = (e) => {
-    this.props.dispatch(startWeekChange());
-    const { layoutMeasurement, contentOffset } = e.nativeEvent;
-    const activeIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
-
-    let dt;
-    if (activeIndex === -1) {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(-1, 'weeks')
-        .startOf('isoWeek');
+      // reset state if all elements unselected
+      if (newArray.length === 0) {
+        this.setState({ selectedDays: newArray, selectionSegments: defaultSegmentState });
+      } else {
+        this.setState({ selectedDays: newArray });
+      }
     } else {
-      dt = moment
-        .unix(this.props.selectedDate)
-        .add(1, 'weeks')
-        .startOf('isoWeek');
+      // add
+      newArray.push(day);
+
+      if (newArray.length === 1) {
+        const segments = this.getTimeSegments(day);
+
+        if (segments.length > 0) {
+          const updatedSegments = this.state.selectionSegments.map((selectionSegment) => {
+            const select = segments.filter(
+              segment =>
+                segment.startTime === selectionSegment.startTime + day &&
+                segment.endTime === selectionSegment.endTime + day,
+            );
+
+            if (select.length > 0) {
+              return { ...selectionSegment, status: select[0].status };
+            }
+
+            return selectionSegment;
+          });
+
+          this.setState({ selectedDays: newArray, selectionSegments: updatedSegments });
+        } else {
+          this.setState({ selectedDays: newArray });
+        }
+      } else {
+        this.setState({ selectedDays: newArray });
+      }
     }
-    this.props.dispatch(setSelectedDate(dt.unix()));
+  };
+
+  onShowInfo = () => {
+    this.setState({
+      showInfo: !this.state.showInfo,
+    });
+  };
+
+  getNextSegment = (segment) => {
+    switch (segment) {
+      case EMPTY:
+        return AVAILABLE;
+      case AVAILABLE:
+        return UNAVAILABLE;
+      case UNAVAILABLE:
+        return URGENT;
+      case URGENT:
+        return EMPTY;
+      default:
+        return EMPTY;
+    }
+  };
+
+  getSchedule = () =>
+    this.props.user.schedules.filter(x => x.id === this.props.navigation.state.params.id)[0];
+
+  getSelectionSegments = day => this.getTimeSegments(day);
+
+  getTimeSegments = (day) => {
+    const schedule = this.getSchedule();
+
+    if (day !== undefined) {
+      const dayTime = 60 * 60 * 24;
+      const endOfDay = day + dayTime;
+      const filtered = schedule.timeSegments.filter(
+        x => day <= x.startTime && endOfDay >= x.endTime,
+      );
+      return filtered;
+    }
+    const momentDate = moment.unix(this.props.selectedDate);
+
+    const startTime = momentDate
+      .clone()
+      .isoWeekday(1)
+      .startOf('isoweek')
+      .unix();
+
+    const endTime = momentDate
+      .clone()
+      .isoWeekday(1)
+      .endOf('isoweek')
+      .unix();
+
+    return selectSchedules([schedule], { startTime, endTime });
   };
 
   render() {
-    const { loading, navigation, user } = this.props;
+    const { loading, user } = this.props;
 
     if (loading || !user) {
       return (
@@ -82,57 +219,81 @@ class Detail extends Component {
         </Container>
       );
     }
-    const momentDate = moment.unix(this.props.selectedDate);
 
-    // get start of week unix timestamp
-    const startTime = momentDate
-      .clone()
-      .isoWeekday(1)
-      .startOf('isoweek')
-      .unix();
-
-    const endTime = momentDate
-      .clone()
-      .isoWeekday(1)
-      .endOf('isoweek')
-      .unix();
-
-    const schedule = user.schedules.filter(x => x.id === navigation.state.params.id)[0];
-
-    const filteredItems = selectSchedules([schedule], { startTime, endTime });
+    const schedule = this.getSchedule();
+    const filteredItems = this.getTimeSegments();
 
     return (
       <Container>
-        <ListItem
-          title={schedule.name}
-          subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
-          onPress={() => this.onPressInfo(schedule)}
-          icon={this.state.showInfo ? 'angle-up' : 'angle-down'}
-          detail={this.state.showInfo ? schedule.details : undefined}
-          wide
-        />
-        <Holder marginTop paddingVertical>
-          <ScrollView
-            horizontal
-            onScrollEndDrag={this.onScrollEnd}
-            contentContainerStyle={{ flexGrow: 1 }}
-          >
-            <Week
-              onChangeDate={this.onChangeDate}
-              selectedDate={moment.unix(this.props.selectedDate)}
-            />
-          </ScrollView>
-        </Holder>
-        {this.props.isChangingWeek && <Progress />}
-        <Calendar items={filteredItems} onPressItem={this.onPressItem} />
+        {schedule.startTime > 0 && (
+          <View>
+            <Holder marginTop paddingVertical>
+              <Message>
+                {moment.unix(schedule.startTime).format('ll')} -{' '}
+                {moment.unix(schedule.endTime).format('ll')}
+              </Message>
+            </Holder>
+            {this.state.showInfo && (
+              <Holder marginTop paddingVertical>
+                <Message>{schedule.details}</Message>
+              </Holder>
+            )}
+            <Holder marginTop paddingVertical>
+              <DateRange
+                startTime={schedule.startTime}
+                endTime={schedule.endTime}
+                onSelect={this.onSelectDay}
+                selectedDays={this.state.selectedDays}
+                timeSegments={filteredItems}
+              />
+            </Holder>
+          </View>
+        )}
+        {this.state.selectedDays.length === 0 ? (
+          <Holder marginTop paddingVertical>
+            <Message>Tap multiple days to add/edit</Message>
+          </Holder>
+        ) : (
+          <View>
+            <Holder marginTop paddingVertical>
+              <Message>{this.state.selectedDays.length} day(s) selected</Message>
+            </Holder>
+            <Holder marginTop paddingVertical>
+              <TimeSelect
+                selectionSegments={this.state.selectionSegments}
+                onPress={this.onPressSegment}
+              />
+            </Holder>
+            <Holder marginTop paddingVertical>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnUnavailable} /> Unavailable
+                </Text>
+                <Text style={{ fontSize: 16 }}>
+                  <Icon size={18} name="check-circle" color={Colors.bgBtnUrgent} /> Urgent
+                </Text>
+              </View>
+            </Holder>
+            <Holder marginTop transparent>
+              <Button text="Save Availability" onPress={this.onPressEdit} />
+            </Holder>
+          </View>
+        )}
       </Container>
     );
   }
 }
 
 Detail.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  isChangingWeek: PropTypes.bool,
+  selectedDate: PropTypes.number,
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
@@ -142,7 +303,6 @@ Detail.propTypes = {
       params: PropTypes.object,
     }),
   }),
-  selectedDate: PropTypes.number.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
@@ -167,7 +327,37 @@ Detail.propTypes = {
       }),
     ),
   }),
+  createTimeSegment: PropTypes.func.isRequired,
+  removeTimeSegment: PropTypes.func.isRequired,
 };
+
+const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
+  props: ({ mutate }) => ({
+    createTimeSegment: ({ scheduleId, status, startTime, endTime }) =>
+      mutate({
+        variables: { timeSegment: { scheduleId, status, startTime, endTime } },
+        refetchQueries: [
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
+  props: ({ mutate }) => ({
+    removeTimeSegment: ({ segmentId }) =>
+      mutate({
+        variables: { timeSegment: { segmentId } },
+        refetchQueries: [
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
 
 const userQuery = graphql(CURRENT_USER_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
@@ -182,7 +372,8 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
 const mapStateToProps = ({ auth, availability }) => ({
   auth,
   selectedDate: availability.selectedDate,
-  isChangingWeek: availability.isChangingWeek,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Detail);
+export default compose(connect(mapStateToProps), createTimeSegment, removeTimeSegment, userQuery)(
+  Detail,
+);

@@ -1,3 +1,9 @@
-const distantFuture = 2147483647;
+// availability constants
+export const EMPTY = '';
+export const OUT_OF_RANGE = 'OutOfRange';
+export const AVAILABLE = 'Available';
+export const UNAVAILABLE = 'Unavailable';
+export const URGENT = 'Urgent';
+export const NOT_SPECIFIED = 'NotSpecified';
 
-export default distantFuture;
+export const distantFuture = 2147483647;

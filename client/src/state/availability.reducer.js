@@ -8,6 +8,7 @@ const initialState = {
   selectedDate: initialMoment,
   isChangingWeek: false,
   selectedRequests: [],
+  scheduleShowInfo: false,
 };
 
 const availability = (state = initialState, action) => {

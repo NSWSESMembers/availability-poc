@@ -39,6 +39,10 @@ const styles = StyleSheet.create({
     ...h1,
     color: Colors.txtWhite,
   },
+  messageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;

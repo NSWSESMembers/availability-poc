@@ -26,6 +26,7 @@ const navigation = (state = initialNavState, action) => {
         routeName: 'Detail',
         params: {
           id: action.id,
+          title: action.title,
         },
       };
       nextState = MainScreenNavigator.router.getStateForAction(customAction, initialNavState);
