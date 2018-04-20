@@ -73,7 +73,7 @@ Group.propTypes = {
   }),
 };
 
-class Groups extends Component {
+class Root extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'My Groups',
     tabBarLabel: 'Groups',
@@ -140,7 +140,7 @@ class Groups extends Component {
     );
   }
 }
-Groups.propTypes = {
+Root.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -186,4 +186,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Groups);
+export default compose(connect(mapStateToProps), userQuery)(Root);

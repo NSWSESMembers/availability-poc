@@ -1,15 +1,12 @@
 import { StackNavigator } from 'react-navigation';
 
-import Index from './Index';
-import GroupDetails from './GroupDetails';
-import NewGroup from './NewGroup';
-import SearchGroup from './SearchGroup';
-import NavOptions from '../../config/NavOptions';
+import { Root, GroupDetails, SearchGroup, NewGroup } from '../screens/groups';
+import NavOptions from '../config/NavOptions';
 
-const StackGroups = StackNavigator(
+const GroupsNavigator = StackNavigator(
   {
     Groups: {
-      screen: Index,
+      screen: Root,
     },
     Group: {
       screen: GroupDetails,
@@ -27,4 +24,4 @@ const StackGroups = StackNavigator(
   },
 );
 
-export default StackGroups;
+export default GroupsNavigator;

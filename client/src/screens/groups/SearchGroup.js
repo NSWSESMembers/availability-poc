@@ -68,7 +68,7 @@ Group.propTypes = {
   }),
 };
 
-class SearchGroups extends Component {
+class SearchGroup extends Component {
   static navigationOptions = {
     title: 'Search for Groups',
     tabBarLabel: 'Groups',
@@ -144,7 +144,7 @@ class SearchGroups extends Component {
     );
   }
 }
-SearchGroups.propTypes = {
+SearchGroup.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -196,4 +196,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   groupsQuery,
-)(SearchGroups);
+)(SearchGroup);

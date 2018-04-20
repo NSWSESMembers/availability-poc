@@ -8,7 +8,7 @@ import { Button } from '../../components/Button';
 import { codePushHash } from '../../utils';
 import { Center, Container, Footer, Half, Holder } from '../../components/Container';
 
-class Index extends Component {
+class Home extends Component {
   static navigationOptions = () => ({
     header: null,
   });
@@ -63,10 +63,10 @@ class Index extends Component {
   }
 }
 
-Index.propTypes = {
+Home.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
 };
 
-export default Index;
+export default Home;

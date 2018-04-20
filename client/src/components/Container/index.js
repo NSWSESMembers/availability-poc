@@ -6,3 +6,4 @@ import Holder from './Holder';
 import styles from './styles';
 
 export { Center, Container, Footer, Half, Holder, styles };
+export default Container;

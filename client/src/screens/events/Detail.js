@@ -37,7 +37,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 
-class EventDetail extends Component {
+class Detail extends Component {
   static navigationOptions = {
     title: 'Event Detail',
     tabBarLabel: 'Events',
@@ -177,8 +177,8 @@ class EventDetail extends Component {
     let mapResponseMarkers = [];
     let mapEventLocations = [];
     if (!loading && event) {
-      mapResponseMarkers = EventDetail.makeResponseMarkers(event.responses);
-      mapEventLocations = EventDetail.makeEventLocations(event.eventLocations);
+      mapResponseMarkers = Detail.makeResponseMarkers(event.responses);
+      mapEventLocations = Detail.makeEventLocations(event.eventLocations);
     }
     if (loading) {
       return (
@@ -312,7 +312,7 @@ class EventDetail extends Component {
     );
   }
 }
-EventDetail.propTypes = {
+Detail.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -379,4 +379,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), eventQuery, setEventResponse)(EventDetail);
+export default compose(connect(mapStateToProps), eventQuery, setEventResponse)(Detail);

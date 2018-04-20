@@ -35,7 +35,7 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   }),
 });
 
-class Burger extends Component {
+class Root extends Component {
   static navigationOptions = {
     title: 'More',
     tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
@@ -82,6 +82,8 @@ class Burger extends Component {
 
   logout = () => {
     this.props.dispatch(logout());
+    // we don't need to navigate here because <MainNavigator /> will detect the change to the
+    // `auth` prop and automatically navigate away
   }
 
   about = () => {
@@ -158,7 +160,7 @@ class Burger extends Component {
   }
 }
 
-Burger.propTypes = {
+Root.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
   navigation: PropTypes.shape({
@@ -184,4 +186,4 @@ export default compose(
   userQuery,
   updateUserProfileMutation,
   updateLocationMutation,
-)(Burger);
+)(Root);
