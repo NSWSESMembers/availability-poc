@@ -28,11 +28,17 @@ export const CAPABILITIES = [
 ];
 
 export const TAGS = [
-  'Tag1',
-  'Tag2',
-  'Tag3',
-  'Tag4',
-  'Tag5',
+  'NSW',
+  'SWR',
+  'ISR',
+  'SSR',
+  'KMA',
+  'PAR',
+  'HLS',
+  'WOL',
+  'AUB',
+  'HAW',
+  'HOL',
 ];
 
 export const USERS = [
@@ -138,33 +144,6 @@ export const USERS = [
 
 export const GROUPS = [
   {
-    name: 'Kiama',
-    icon: 'fa-ship',
-    users: [
-      'test',
-      'kiama1',
-      'kiama2',
-      'kiama3',
-      'kiama4',
-      'kiama5',
-      'kiama6',
-      'kiama7',
-      'kiama8',
-    ],
-  },
-  {
-    name: 'Parramatta',
-    icon: 'group',
-    users: [
-      'test',
-      'parramatta1',
-      'parramatta2',
-      'parramatta3',
-      'parramatta4',
-      'parramatta5',
-    ],
-  },
-  {
     name: DEFAULT_GROUP,
     icon: 'globe',
     users: [
@@ -182,6 +161,44 @@ export const GROUPS = [
       'parramatta3',
       'parramatta4',
       'parramatta5',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
+  {
+    name: 'Kiama',
+    icon: 'fa-ship',
+    users: [
+      'test',
+      'kiama1',
+      'kiama2',
+      'kiama3',
+      'kiama4',
+      'kiama5',
+      'kiama6',
+      'kiama7',
+      'kiama8',
+    ],
+    tags: [
+      'ISR',
+      'KMA',
+    ],
+  },
+  {
+    name: 'Parramatta',
+    icon: 'group',
+    users: [
+      'test',
+      'parramatta1',
+      'parramatta2',
+      'parramatta3',
+      'parramatta4',
+      'parramatta5',
+    ],
+    tags: [
+      'SWR',
+      'PAR',
     ],
   },
 ];

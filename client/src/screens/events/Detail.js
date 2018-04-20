@@ -160,7 +160,7 @@ class EventDetail extends Component {
 
   editResponse = () => {
     const { navigate } = this.props.navigation;
-    navigate('EventResponse', {
+    navigate('EditResponse', {
       eventId: this.props.event.id,
     });
   };
