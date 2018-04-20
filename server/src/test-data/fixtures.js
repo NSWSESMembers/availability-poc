@@ -428,8 +428,8 @@ export const EVENTS = [
         user: 'parramatta2',
         status: 'attending',
         destination: 'scene',
-        locationLatitude: -33.8323275,
-        locationLongitude: 151.0063851,
+        locationLatitude: -33.8076804,
+        locationLongitude: 151.0229202,
         locationTime: minFromNow(5),
       },
       {
