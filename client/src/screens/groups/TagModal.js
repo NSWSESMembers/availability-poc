@@ -119,7 +119,7 @@ render() {
           <View style={styles.cancelContainer}>
             <TouchableOpacity onPress={() => this.props.backModal(this.state.checked)}>
               <View style={styles.cancelStyle}>
-                <Text style={styles.cancelTextStyle}>Save & Back</Text>
+                <Text style={styles.cancelTextStyle}>Save</Text>
               </View>
             </TouchableOpacity>
           </View>
