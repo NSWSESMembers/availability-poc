@@ -40,6 +40,7 @@ class NewGroup extends Component {
     tagsModal: false,
     filterString: '',
     typingTimeout: 0,
+    loading: false,
   }
 
   pop = () => {
@@ -104,7 +105,10 @@ applyTagSearchFilter = () => {
 
   create = () => {
     const { createGroup } = this.props;
-    createGroup({
+    this.setState({
+      loading: true,
+    },
+    () => createGroup({
       name: this.state.name,
       icon: this.state.icon,
       tags: this.state.tags.map(tag => ({ id: tag })),
@@ -115,16 +119,23 @@ applyTagSearchFilter = () => {
         'Error Creating New Group',
         error.message,
         [
-          { text: 'OK', onPress: () => {} },
+          {
+            text: 'OK',
+            onPress: () => {
+              this.setState({
+                loading: false,
+              });
+            },
+          },
         ],
       );
-    });
+    }));
   }
 
   render() {
     const { user, loading } = this.props;
 
-    if (!user) {
+    if (!user || this.state.loading) {
       return (
         <Container>
           <Progress />
