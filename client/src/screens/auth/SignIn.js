@@ -53,6 +53,8 @@ class SignIn extends Component {
           token: user.authToken,
         };
         this.props.dispatch(setCurrentUser(ourUser));
+        // we don't need to navigate here because as soon as the auth props are changed
+        // <AuthNavigator /> will navigate for us
       })
       .catch((error) => {
         this.setState({

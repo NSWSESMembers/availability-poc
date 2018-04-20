@@ -3,66 +3,58 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text } from 'react-native';
-import { goToEvent, goToRequest } from '../../state/navigation.actions';
+import { FlatList, Text, Button } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { scheduleLabel } from '../../selectors/schedules';
-
 import { Center, Container } from '../../components/Container';
-import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
+import EventListItem from '../../components/Events/EventListItem';
+import ScheduleListItem from '../../components/Schedules/ScheduleListItem';
 
-const EventItem = ({ event, dispatch }) => (
-  <ListItem
-    title={event.name}
-    bold
-    subtitle={event.details}
-    subtitleEllipsis
-    icon="bullhorn"
-    onPress={() => dispatch(goToEvent(event.id))}
-  />
-);
 
-EventItem.propTypes = {
-  event: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  }),
-  dispatch: PropTypes.func.isRequired,
-};
-
-class ScheduleItem extends Component {
-  onPress = (schedule) => {
-    this.props.dispatch(goToRequest(schedule.id, schedule.name));
-  };
+class _HomeEventListItem extends Component {
+  onPress = () => {
+    const { event, navigation } = this.props;
+    navigation.push('Event', { id: event.id });
+  }
 
   render() {
-    const { schedule } = this.props;
     return (
-      <ListItem
-        title={schedule.name}
-        bold
-        subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
-        icon="calendar"
-        onPress={() => this.onPress(schedule)}
-      />
+      <EventListItem event={this.props.event} onPress={this.onPress} />
     );
   }
 }
-
-ScheduleItem.propTypes = {
-  schedule: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    details: PropTypes.string.isRequired,
-    startTime: PropTypes.number.isRequired,
-    endTime: PropTypes.number.isRequired,
+_HomeEventListItem.propTypes = {
+  event: PropTypes.shape().isRequired,
+  navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
   }),
-  dispatch: PropTypes.func.isRequired,
 };
+const HomeEventListItem = withNavigation(_HomeEventListItem);
 
-class Home extends Component {
+class _HomeScheduleListItem extends Component {
+  onPress = () => {
+    const { schedule: { id, name }, navigation } = this.props;
+    navigation.push('Schedule', { id, title: name });
+  }
+
+  render() {
+    return (
+      <ScheduleListItem schedule={this.props.schedule} onPress={this.onPress} />
+    );
+  }
+}
+_HomeScheduleListItem.propTypes = {
+  schedule: PropTypes.shape().isRequired,
+  navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
+};
+const HomeScheduleListItem = withNavigation(_HomeScheduleListItem);
+
+class Root extends Component {
   static navigationOptions = {
     title: 'Home',
     tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
@@ -74,10 +66,10 @@ class Home extends Component {
 
   renderItem = ({ item }) => {
     if (item.type === 'event') {
-      return <EventItem event={item.event} dispatch={this.props.dispatch} />;
+      return <HomeEventListItem event={item.event} />;
     }
     if (item.type === 'schedule') {
-      return <ScheduleItem schedule={item.schedule} dispatch={this.props.dispatch} />;
+      return <HomeScheduleListItem schedule={item.schedule} />;
     }
     throw Error(`Invalid type: ${item.type}`);
   };
@@ -89,6 +81,7 @@ class Home extends Component {
       return (
         <Container>
           <Progress />
+          <Button title="reload" onPress={() => this.props.refetch()} />
         </Container>
       );
     }
@@ -143,8 +136,7 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-Home.propTypes = {
-  dispatch: PropTypes.func,
+Root.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
@@ -167,4 +159,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Home);
+export default compose(connect(mapStateToProps), userQuery)(Root);

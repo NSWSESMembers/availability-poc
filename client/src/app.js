@@ -8,8 +8,7 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
-import navigation from './state/navigation.reducer';
-import AppWithNavigationState from './navigation';
+import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
 import availability from './state/availability.reducer';
 import local from './state/local.reducer';
@@ -94,12 +93,11 @@ const reduxConfig = {
   key: 'primary',
   debug: __DEV__,
   storage: AsyncStorage,
-  blacklist: ['apollo', 'nav', 'availability'], // don't persist apollo or nav for now
+  blacklist: ['apollo', 'availability'], // never persist these things
 };
 
 const reducers = {
   apollo: client.reducer(),
-  nav: navigation,
   auth,
   local,
   availability,
@@ -116,7 +114,7 @@ persistStore(store);
 
 const App = () => (
   <ApolloProvider store={store} client={client}>
-    <AppWithNavigationState />
+    <RootNavigator />
   </ApolloProvider>
 );
 

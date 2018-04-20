@@ -243,7 +243,7 @@ ScheduleDisplay.propTypes = {
   }),
 };
 
-class Group extends Component {
+class GroupDetails extends Component {
   static navigationOptions = () => ({
     title: 'Group Details',
     tabBarLabel: 'Groups',
@@ -360,7 +360,7 @@ class Group extends Component {
     );
   }
 }
-Group.propTypes = {
+GroupDetails.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
@@ -466,4 +466,4 @@ export default compose(
   groupQuery,
   joinGroupMutation,
   leaveGroupMutation,
-)(Group);
+)(GroupDetails);
