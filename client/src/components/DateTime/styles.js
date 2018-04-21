@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {},
   dayLabelOutOfRange: {
+    textDecorationLine: 'line-through',
     color: Colors.bgOutOfRange,
   },
   dayLabelAvailable: {
