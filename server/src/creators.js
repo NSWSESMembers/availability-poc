@@ -6,7 +6,7 @@ import { DISTANT_FUTURE } from './constants';
 export const getCreators = (models) => {
   const {
     Organisation, Group, User, Capability, Tag, Device, Event,
-    Schedule, TimeSegment, EventResponse, EventLocation,
+    Schedule, TimeSegment, EventResponse, EventLocation, Message,
   } = models;
 
   return {
@@ -185,6 +185,51 @@ export const getCreators = (models) => {
         locationLongitude,
         eventId: event.id,
       });
+    },
+    message: ({ text, user, groupId, eventId, scheduleId }) => {
+      const futs = [];
+
+      if (!user || !user.id) {
+        return Promise.reject(Error('Must pass user'));
+      }
+
+      if (groupId) {
+        futs.push(Group.findById(groupId).then((group) => {
+          if (!group) {
+            return Promise.reject(Error('Must pass valid group ID'));
+          }
+          return group;
+        }));
+      }
+      if (eventId) {
+        futs.push(Event.findById(eventId).then((event) => {
+          if (!event) {
+            return Promise.reject(Error('Must pass valid event ID'));
+          }
+          return event;
+        }));
+      }
+      if (scheduleId) {
+        futs.push(Schedule.findById(scheduleId).then((schedule) => {
+          if (!schedule) {
+            return Promise.reject(Error('Must pass valid schedule ID'));
+          }
+          return schedule;
+        }));
+      }
+
+      if (futs.length !== 1) {
+        return Promise.reject(Error('must pass exactly one of groupId, eventId, scheduleId'));
+      }
+
+      return Promise.all(futs).then(() => Message.create({
+        text,
+        groupId,
+        eventId,
+        scheduleId,
+        userId: user.id,
+        edited: false,
+      }));
     },
   };
 };

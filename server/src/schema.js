@@ -103,6 +103,13 @@ export const Schema = [
     eta: Int
   }
 
+  input CreateMessageInput {
+    text: String
+    eventId: Int
+    scheduleId: Int
+    groupId: Int
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -165,9 +172,17 @@ export const Schema = [
     permalink: String,
     group: Group!
     responses: [EventResponse]!
+    messages: [Message]
     eventLocations: [EventLocation]
     startTime: Int!
     endTime: Int!
+  }
+
+  type Message {
+    id: Int!
+    text: String
+    edited: Boolean
+    user: User!
   }
 
   type EventResponse {
@@ -232,6 +247,7 @@ export const Schema = [
     updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
+    createMessage(message: CreateMessageInput!): Message
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
     updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
     removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean

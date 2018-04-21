@@ -8,6 +8,7 @@ export const getResolvers = (handlers) => {
     organisation: organisationHandler,
     event: eventHandler,
     eventResponse: eventResponseHandler,
+    message: messageHandler,
   } = handlers;
 
   return {
@@ -74,6 +75,9 @@ export const getResolvers = (handlers) => {
       eventLocations(event, args, ctx) {
         return eventHandler.eventLocations(event, args, ctx);
       },
+      messages(group, args, ctx) {
+        return eventHandler.messages(group, args, ctx);
+      },
     },
     EventResponse: {
       user(response, args, ctx) {
@@ -81,6 +85,11 @@ export const getResolvers = (handlers) => {
       },
       destination(response, args, ctx) {
         return eventResponseHandler.destination(response, args, ctx);
+      },
+    },
+    Message: {
+      user(message, args, ctx) {
+        return messageHandler.user(message, args, ctx);
       },
     },
     Organisation: {
@@ -153,6 +162,9 @@ export const getResolvers = (handlers) => {
       },
       setEventResponse(_, args, ctx) {
         return eventHandler.setResponse(args, ctx);
+      },
+      createMessage(_, args, ctx) {
+        return messageHandler.createMessage(_, args, ctx);
       },
     },
   };

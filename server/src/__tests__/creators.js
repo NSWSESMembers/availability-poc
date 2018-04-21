@@ -166,6 +166,44 @@ describe('create user', () => {
   });
 });
 
+describe('create message', () => {
+  const text = 'test message';
+  const eventId = 1;
+  const scheduleId = 1;
+  const groupId = 1;
+  const user = { id: 1 };
+
+  it('rejects due to missing user', async () => {
+    await expect(creators.message({})).rejects.toThrow();
+  });
+
+  it('rejects due to missing event/schedule/group', async () => {
+    await expect(creators.message({ user })).rejects.toThrow();
+  });
+
+  it('rejects due to missing event/schedule/group', async () => {
+    await expect(creators.message({ user })).rejects.toThrow();
+  });
+
+  it('returns a message against event', async () => {
+    const result = await creators.message({ text, user, eventId });
+    expect(result.id).toBeDefined();
+    expect(result.text).toBe(text);
+  });
+
+  it('returns a message against schedule', async () => {
+    const result = await creators.message({ text, user, scheduleId });
+    expect(result.id).toBeDefined();
+    expect(result.text).toBe(text);
+  });
+
+  it('returns a message against group', async () => {
+    const result = await creators.message({ text, user, groupId });
+    expect(result.id).toBeDefined();
+    expect(result.text).toBe(text);
+  });
+});
+
 describe('create timeSegment', () => {
   const status = 'test';
   const startTime = 1514854818;
