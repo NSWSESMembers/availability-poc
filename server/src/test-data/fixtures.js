@@ -5,6 +5,8 @@ const getMonday = () => {
   const now = new Date();
   const day = now.getDay() || 7;
   if (day !== 1) { now.setHours(-24 * (day - 1)); }
+  now.setMinutes(0);
+  now.setSeconds(0);
   return Math.floor(now.getTime() / 1000);
 };
 
