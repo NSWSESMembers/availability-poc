@@ -170,6 +170,7 @@ class Detail extends Component {
 
   getTimeSegments = (day) => {
     const schedule = this.getSchedule();
+
     if (day !== undefined) {
       const dayTime = 60 * 60 * 24;
       const endOfDay = day + dayTime;
