@@ -209,7 +209,7 @@ export const SCHEDULES = [
   {
     name: 'Wagga Wagga OOA',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
-    startTime: MONDAY + (60 * 60 * 24 * 1),
+    startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
     group: 'NSW SES',
     timeSegmentUsers: [
