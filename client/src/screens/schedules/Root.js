@@ -14,7 +14,7 @@ import { Progress } from '../../components/Progress';
 
 class Root extends Component {
   static navigationOptions = () => ({
-    title: 'Open Requests',
+    title: 'My Availability',
   });
 
   onPressInfo = (item) => {
