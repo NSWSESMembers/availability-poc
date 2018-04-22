@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { Text, View, Dimensions, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
@@ -40,8 +39,6 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 class Detail extends Component {
   static navigationOptions = {
     title: 'Event Detail',
-    tabBarLabel: 'Events',
-    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
   static makeEventLocations(eventLocations) {

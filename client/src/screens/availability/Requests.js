@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import SelectMultiple from 'react-native-select-multiple';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
@@ -16,7 +15,6 @@ import { setSelectedRequests } from '../../state/availability.actions';
 class Requests extends Component {
   static navigationOptions = () => ({
     title: 'Requests',
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
   });
 
   onSelectionChange = (selectedRequests) => {

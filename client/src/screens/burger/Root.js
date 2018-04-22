@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Button } from '../../components/Button';
 import { Center } from '../../components/Container';
@@ -38,7 +37,6 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
 class Root extends Component {
   static navigationOptions = {
     title: 'More',
-    tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
   };
 
   updateLocation = () => {

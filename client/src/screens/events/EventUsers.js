@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import { graphql, compose } from 'react-apollo';
 import { FlatList, Text, View, Alert } from 'react-native';
@@ -16,8 +15,6 @@ import { Segment } from '../../components/Segment';
 class EventUsers extends Component {
   static navigationOptions = {
     title: 'User Responses',
-    tabBarLabel: 'Events',
-    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
   };
 
   state = {

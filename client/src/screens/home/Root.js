@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 import { FlatList, Text, Button } from 'react-native';
 import { withNavigation } from 'react-navigation';
@@ -55,11 +54,6 @@ _HomeScheduleListItem.propTypes = {
 const HomeScheduleListItem = withNavigation(_HomeScheduleListItem);
 
 class Root extends Component {
-  static navigationOptions = {
-    title: 'Home',
-    tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
-  };
-
   onRefresh = () => {
     this.props.refetch();
   };

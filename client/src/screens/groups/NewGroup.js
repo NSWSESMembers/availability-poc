@@ -28,8 +28,6 @@ const goToNewGroup = () => NavigationActions.back();
 class NewGroup extends Component {
   static navigationOptions = () => ({
     title: 'New Group',
-    tabBarLabel: 'Groups',
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
   });
 
   state = {

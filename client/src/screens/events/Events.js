@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { ListItem } from '../../components/List';
 import { Holder } from '../../components/Container';
@@ -52,12 +51,6 @@ Event.propTypes = {
 };
 
 class Events extends Component {
-  static navigationOptions = {
-    title: 'My Events',
-    tabBarLabel: 'Events',
-    tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
-  };
-
   onRefresh = () => {
     this.props.refetch();
   }
