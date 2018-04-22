@@ -1,3 +1,5 @@
+import React from 'react';
+import { StatusBar, View } from 'react-native';
 import { SwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainNavigator';
@@ -31,4 +33,13 @@ const RootNavigator = SwitchNavigator(
   },
 );
 
-export default RootNavigator;
+const RootNavigatorWithStatusBar = () => (
+  <View style={{ flex: 1 }}>
+    <StatusBar
+      barStyle="light-content"
+    />
+    <RootNavigator />
+  </View>
+);
+
+export default RootNavigatorWithStatusBar;
