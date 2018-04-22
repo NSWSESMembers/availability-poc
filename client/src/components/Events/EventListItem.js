@@ -8,7 +8,6 @@ import { ListItem } from '../List';
 const EventListItem = ({ event, urgent, onPress }) => (
   <ListItem
     title={event.name}
-    bold
     subtitle={event.details}
     subtitleEllipsis
     icon={urgent ? 'exclamation-triangle' : 'bullhorn'}

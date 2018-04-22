@@ -10,7 +10,6 @@ import { ListItem } from '../List';
 const ScheduleListItem = ({ schedule, onPress }) => (
   <ListItem
     title={schedule.name}
-    bold
     subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
     icon="calendar"
     onPress={onPress}

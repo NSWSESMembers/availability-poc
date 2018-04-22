@@ -7,7 +7,6 @@ import styles from './styles';
 
 const ListItem = ({
   title,
-  bold,
   subtitleEllipsis,
   wide,
   supertitle,
@@ -33,11 +32,7 @@ const ListItem = ({
         <View style={containerStyles}>
           <View style={styles.textContainer}>
             {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
-            {!bold ? (
-              <Text style={styles.titleText}>{title}</Text>
-            ) : (
-              <Text style={styles.titleTextBold}>{title}</Text>
-            )}
+            <Text style={styles.titleTextBold}>{title}</Text>
             {subtitle && (
               <Text style={styles.subtitleText}>
                 {subtitleEllipsis && subtitle.length > 80
@@ -60,7 +55,6 @@ const ListItem = ({
 
 ListItem.propTypes = {
   title: PropTypes.string,
-  bold: PropTypes.bool,
   subtitleEllipsis: PropTypes.bool,
   wide: PropTypes.bool,
   urgent: PropTypes.bool,

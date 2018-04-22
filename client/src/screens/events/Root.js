@@ -9,7 +9,7 @@ import {
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { ListItem } from '../../components/List';
-import { Holder } from '../../components/Container';
+import { Container } from '../../components/Container';
 
 import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
@@ -31,7 +31,6 @@ class Event extends Component {
     return (
       <ListItem
         title={name}
-        bold
         subtitle={details}
         icon="bullhorn"
         onPress={this.goToEvent}
@@ -92,7 +91,7 @@ class Root extends Component {
 
     // render list of events for user
     return (
-      <Holder wide transparent>
+      <Container>
         <FlatList
           data={events}
           keyExtractor={this.keyExtractor}
@@ -100,7 +99,7 @@ class Root extends Component {
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
-      </Holder>
+      </Container>
     );
   }
 }

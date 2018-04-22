@@ -243,7 +243,6 @@ class Detail extends Component {
               <ListItemHighlight
                 wide
                 title={event.name}
-                bold
                 subtitle={event.details}
                 icon="external-link"
                 onPress={() => undefined}
@@ -289,7 +288,6 @@ class Detail extends Component {
           <Holder wide transparent>
             <ListItemHighlight
               wide
-              bold
               title={myStatus ? (`I am ${myStatus.status.toUpperCase()}`) : 'I have not answered'}
               subtitle={userSubtitleString}
               icon="location-arrow"
@@ -297,7 +295,6 @@ class Detail extends Component {
             />
             <ListItemHighlight
               wide
-              bold
               title={`${attendingUsers.length} people are attending`}
               subtitle={summaryByDestinationUsersString}
               icon="group"
