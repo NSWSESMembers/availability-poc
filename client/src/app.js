@@ -15,6 +15,14 @@ import local from './state/local.reducer';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
 
+function noop() {}
+
+if (process.env.NODE_ENV !== 'development') {
+  console.log = noop;
+  console.warn = noop;
+  console.error = noop;
+}
+
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
