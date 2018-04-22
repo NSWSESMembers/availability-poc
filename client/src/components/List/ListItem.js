@@ -15,11 +15,16 @@ const ListItem = ({
   detail,
   icon,
   onPress,
+  urgent,
 }) => {
   const containerStyles = [styles.container];
 
   if (wide) {
     containerStyles.push({ marginLeft: 0, marginRight: 0 });
+  }
+
+  if (urgent) {
+    containerStyles.push({ backgroundColor: '#FFDDDD' });
   }
 
   return (
@@ -58,6 +63,7 @@ ListItem.propTypes = {
   bold: PropTypes.bool,
   subtitleEllipsis: PropTypes.bool,
   wide: PropTypes.bool,
+  urgent: PropTypes.bool,
   subtitle: PropTypes.string,
   supertitle: PropTypes.string,
   detail: PropTypes.string,

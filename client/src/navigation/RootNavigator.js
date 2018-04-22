@@ -2,9 +2,8 @@ import React from 'react';
 import { StatusBar, View } from 'react-native';
 import { SwitchNavigator } from 'react-navigation';
 
-import MainTabNavigator from './MainNavigator';
+import ModalNavigator from './ModalNavigator';
 import AuthStackNavigator from './AuthNavigator';
-import EditResponse from '../screens/events/EditResponse';
 import LoadingScreen from '../screens/auth/Loading';
 
 // the root stack shows no UI - it exists just so we can pop-up modals over 'Main' at the
@@ -16,14 +15,11 @@ const RootNavigator = SwitchNavigator(
     Loading: {
       screen: LoadingScreen,
     },
-    Main: {
-      screen: MainTabNavigator,
+    ModalNavigator: {
+      screen: ModalNavigator,
     },
     Auth: {
       screen: AuthStackNavigator,
-    },
-    Event: {
-      screen: EditResponse,
     },
   },
   {

@@ -33,7 +33,7 @@ class AuthNavigator extends Component {
     const { auth } = this.props;
     if (isLoggedIn(auth)) {
       console.log('User is logged in - navigating to main');
-      this.props.navigation.navigate('Main');
+      this.props.navigation.navigate('ModalNavigator');
     }
   }
 

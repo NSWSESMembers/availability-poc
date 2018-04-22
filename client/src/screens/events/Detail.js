@@ -349,7 +349,7 @@ Detail.propTypes = {
 
 const eventQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.id } }),
+  options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.eventId } }),
   props: ({ data: { loading, event, refetch } }) => ({
     loading,
     event,
