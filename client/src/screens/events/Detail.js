@@ -162,9 +162,9 @@ class Detail extends Component {
     });
   };
 
-  eventUsers = () => {
+  goToResponses = () => {
     const { navigation } = this.props;
-    navigation.push('EventUsers', {
+    navigation.push('EventResponses', {
       eventId: this.props.event.id,
     });
   };
@@ -298,7 +298,7 @@ class Detail extends Component {
               title={`${attendingUsers.length} people are attending`}
               subtitle={summaryByDestinationUsersString}
               icon="group"
-              onPress={this.eventUsers}
+              onPress={this.goToResponses}
             />
           </Holder>
         </View>
