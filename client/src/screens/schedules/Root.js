@@ -12,7 +12,7 @@ import { Center, Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
-class Index extends Component {
+class Root extends Component {
   static navigationOptions = () => ({
     title: 'Open Requests',
   });
@@ -77,7 +77,7 @@ class Index extends Component {
   }
 }
 
-Index.propTypes = {
+Root.propTypes = {
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
@@ -124,4 +124,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Index);
+export default compose(connect(mapStateToProps), userQuery)(Root);

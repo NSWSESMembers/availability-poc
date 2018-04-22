@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
-import availability from './state/availability.reducer';
+import schedules from './state/schedules.reducer';
 import local from './state/local.reducer';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
@@ -93,14 +93,14 @@ const reduxConfig = {
   key: 'primary',
   debug: __DEV__,
   storage: AsyncStorage,
-  blacklist: ['apollo', 'availability'], // never persist these things
+  blacklist: ['apollo', 'schedules'], // never persist these things
 };
 
 const reducers = {
   apollo: client.reducer(),
   auth,
   local,
-  availability,
+  schedules,
 };
 
 store = createStore(

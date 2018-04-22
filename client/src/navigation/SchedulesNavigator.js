@@ -1,9 +1,9 @@
 import { StackNavigator } from 'react-navigation';
 
-import { Root, Detail, Requests } from '../screens/availability';
+import { Root, Detail, Requests } from '../screens/schedules';
 import NavOptions from '../config/NavOptions';
 
-const AvailabilityNavigator = StackNavigator(
+const SchedulesNavigator = StackNavigator(
   {
     Root: {
       screen: Root,
@@ -21,4 +21,4 @@ const AvailabilityNavigator = StackNavigator(
   },
 );
 
-export default AvailabilityNavigator;
+export default SchedulesNavigator;

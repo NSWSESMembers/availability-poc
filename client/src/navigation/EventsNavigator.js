@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import { Events, Detail, EditResponse, EventUsers } from '../screens/events';
 import NavOptions from '../config/NavOptions';
 
-const EventNavigator = StackNavigator(
+const EventsNavigator = StackNavigator(
   {
     Root: {
       screen: Events,
@@ -24,4 +24,4 @@ const EventNavigator = StackNavigator(
   },
 );
 
-export default EventNavigator;
+export default EventsNavigator;
