@@ -42,7 +42,6 @@ class Group extends Component {
     return (
       <ListItem
         title={name}
-        bold
         subtitle={tags !== '' ? tags : 'No Tags'}
         icon={icon}
         onPress={this.goToGroup}
@@ -125,7 +124,7 @@ class Root extends Component {
 
     // render list of groups for user
     return (
-      <Holder wide transparent>
+      <Container>
         <FlatList
           data={user.groups}
           keyExtractor={this.keyExtractor}
@@ -133,7 +132,7 @@ class Root extends Component {
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
-      </Holder>
+      </Container>
     );
   }
 }

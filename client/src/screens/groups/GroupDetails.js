@@ -16,6 +16,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import distantFuture from '../../constants';
+import { Container } from '../../components/Container';
 import { extendAppStyleSheet } from '../style-sheet';
 import SEARCH_GROUP_QUERY from '../../graphql/search-group.query';
 import JOIN_GROUP_MUTATION from '../../graphql/join-group.mutation';
@@ -342,7 +343,7 @@ class GroupDetails extends Component {
     const memberAlready = _.some(group.users, g => g.id === me.id);
 
     return (
-      <View style={styles.container}>
+      <Container>
         <Button
           title={memberAlready ? 'Leave Group' : 'Join Group'}
           onPress={memberAlready ? this.leaveGroup : this.joinGroup}
@@ -354,7 +355,7 @@ class GroupDetails extends Component {
           onRefresh={this.onRefresh}
           refreshing={networkStatus === 4}
         />
-      </View>
+      </Container>
     );
   }
 }

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { graphql, compose } from 'react-apollo';
 import { SearchBar } from 'react-native-elements';
-import { Container, Holder } from '../../components/Container';
+import { Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 
@@ -34,7 +34,6 @@ class Group extends Component {
     return (
       <ListItem
         title={name}
-        bold
         subtitle={tags !== '' ? tags : 'No Tags'}
         icon={icon}
         onPress={this.goToGroup}
@@ -112,7 +111,7 @@ class SearchGroup extends Component {
 
     // render list of groups for user
     return (
-      <Holder wide transparent>
+      <Container>
         <SearchBar
           lightTheme
           onChangeText={text => this.searchOnPress(text)}
@@ -120,21 +119,18 @@ class SearchGroup extends Component {
           placeholder="Search"
         />
         {(loading || !user) ? (
-          <Container>
-            <Progress />
-          </Container>
-      ) : (
-        <FlatList
-          data={user.organisation.groups}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderItem}
-          onRefresh={this.onRefresh}
-          extraData={user} // redraw if this changes
-          refreshing={networkStatus === 4}
-        />
-      )
-    }
-      </Holder>
+          <Progress />
+        ) : (
+          <FlatList
+            data={user.organisation.groups}
+            keyExtractor={this.keyExtractor}
+            renderItem={this.renderItem}
+            onRefresh={this.onRefresh}
+            extraData={user} // redraw if this changes
+            refreshing={networkStatus === 4}
+          />
+        )}
+      </Container>
     );
   }
 }

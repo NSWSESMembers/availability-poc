@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text, View, Alert } from 'react-native';
+import { FlatList, Text, Alert } from 'react-native';
 
 import EVENT_QUERY from '../../graphql/event.query';
 
@@ -85,7 +85,7 @@ class EventUsers extends Component {
           />
         </Holder>
         {this.state.selectedIndex === 0 && (
-          <View style={{ flexDirection: 'row' }}>
+          <Container>
             <FlatList
               data={attendingUsers}
               ListHeaderComponent={() =>
@@ -105,10 +105,10 @@ class EventUsers extends Component {
               )}
               refreshing={this.props.networkStatus === 4}
             />
-          </View>
+          </Container>
         )}
         {this.state.selectedIndex === 1 && (
-          <View style={{ flexDirection: 'row' }}>
+          <Container>
             <FlatList
               data={tentativeUsers}
               ListHeaderComponent={() =>
@@ -128,10 +128,10 @@ class EventUsers extends Component {
               )}
               refreshing={this.props.networkStatus === 4}
             />
-          </View>
+          </Container>
         )}
         {this.state.selectedIndex === 2 && (
-          <View style={{ flexDirection: 'row' }}>
+          <Container>
             <FlatList
               data={unavailableUsers}
               ListHeaderComponent={() =>
@@ -151,7 +151,7 @@ class EventUsers extends Component {
               )}
               refreshing={this.props.networkStatus === 4}
             />
-          </View>
+          </Container>
         )}
       </Container>
     );
