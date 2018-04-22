@@ -11,7 +11,7 @@ const initialState = {
   scheduleShowInfo: false,
 };
 
-const availability = (state = initialState, action) => {
+const schedules = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_SELECTED_DATE':
       return Object.assign({}, state, {
@@ -35,4 +35,4 @@ const availability = (state = initialState, action) => {
   }
 };
 
-export default availability;
+export default schedules;

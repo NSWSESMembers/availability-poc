@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { isLoggedIn } from '../selectors/auth';
 import HomeNavigator from './HomeNavigator';
-import AvailabilityNavigator from './AvailabilityNavigator';
+import SchedulesNavigator from './SchedulesNavigator';
 import GroupsNavigator from './GroupsNavigator';
 import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
@@ -47,8 +47,8 @@ const MainTabNavigator = TabNavigator(
         tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
       },
     },
-    Availability: {
-      screen: AvailabilityNavigator,
+    Schedules: {
+      screen: SchedulesNavigator,
       navigationOptions: {
         tabBarLabel: 'Availability',
         // eslint-disable-next-line react/prop-types

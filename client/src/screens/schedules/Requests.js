@@ -10,7 +10,7 @@ import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
 
-import { setSelectedRequests } from '../../state/availability.actions';
+import { setSelectedRequests } from '../../state/schedules.actions';
 
 class Requests extends Component {
   static navigationOptions = () => ({
@@ -83,9 +83,9 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-const mapStateToProps = ({ auth, availability }) => ({
+const mapStateToProps = ({ auth, schedules }) => ({
   auth,
-  selectedRequests: availability.selectedRequests,
+  selectedRequests: schedules.selectedRequests,
 });
 
 export default compose(connect(mapStateToProps), userQuery)(Requests);

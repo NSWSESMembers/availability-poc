@@ -367,9 +367,9 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-const mapStateToProps = ({ auth, availability }) => ({
+const mapStateToProps = ({ auth, schedules }) => ({
   auth,
-  selectedDate: availability.selectedDate,
+  selectedDate: schedules.selectedDate,
 });
 
 export default compose(connect(mapStateToProps), createTimeSegment, removeTimeSegment, userQuery)(

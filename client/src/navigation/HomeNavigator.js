@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import { Root } from '../screens/home';
 import NavOptions from '../config/NavOptions';
 import EventDetail from '../screens/events/Detail';
-import ScheduleDetail from '../screens/availability/Detail';
+import ScheduleDetail from '../screens/schedules/Detail';
 
 const HomeNavigator = StackNavigator(
   {
