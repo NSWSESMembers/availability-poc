@@ -20,9 +20,9 @@ const TimeSelect = ({ selectionSegments, onPress }) => {
         <View key={`${segment.startTime}-${segment.endTime}`} style={{ marginBottom: 5 }}>
           <ButtonBox
             text={segment.label}
-            subtext={`${moment.unix(start + segment.startTime).format('HH:mm a')} - ${moment
+            subtext={`${moment.unix(start + segment.startTime).format('HH:mm')} - ${moment
               .unix(start + segment.endTime)
-              .format('HH:mm a')}`}
+              .format('HH:mm')}`}
             onPress={() => onPress(segment)}
             selected={segment.status !== ''}
             selectedColor={selectColor(segment.status)}
