@@ -1,6 +1,6 @@
 import { StackNavigator } from 'react-navigation';
 
-import { Root, Detail, EditResponse, EventUsers } from '../screens/events';
+import { Root, Detail, EditResponse, EventResponses } from '../screens/events';
 import NavOptions from '../config/NavOptions';
 
 const EventsNavigator = StackNavigator(
@@ -14,8 +14,8 @@ const EventsNavigator = StackNavigator(
     EventEditResponse: {
       screen: EditResponse,
     },
-    EventUsers: {
-      screen: EventUsers,
+    EventResponses: {
+      screen: EventResponses,
     },
   },
   {

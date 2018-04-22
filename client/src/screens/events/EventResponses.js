@@ -12,9 +12,47 @@ import { ListItem } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { Segment } from '../../components/Segment';
 
-class EventUsers extends Component {
+const ResponseList = ({ responses, networkStatus, description }) => (
+  <Container>
+    <FlatList
+      data={responses}
+      ListHeaderComponent={() =>
+        (!responses.length ? (
+          <Center>
+            <Text>{`There are no ${description} responses yet.`}</Text>
+          </Center>
+        ) : null)}
+      keyExtractor={response => response.user.id}
+      renderItem={response => (
+        <ListItem
+          title={response.item.user.displayName}
+          subtitle={response.item.statusText}
+          icon="user"
+          onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
+        />
+      )}
+      refreshing={networkStatus === 4}
+    />
+  </Container>
+);
+ResponseList.propTypes = {
+  responses: PropTypes.arrayOf(
+    PropTypes.shape({
+      user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        displayName: PropTypes.string.isRequired,
+      }),
+      status: PropTypes.string.isRequired,
+      detail: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  networkStatus: PropTypes.number.isRequired,
+  description: PropTypes.string.isRequired,
+};
+
+class EventResponses extends Component {
   static navigationOptions = {
-    title: 'User Responses',
+    title: 'Event Responses',
   };
 
   state = {
@@ -34,7 +72,7 @@ class EventUsers extends Component {
   };
 
   render() {
-    const { loading, event } = this.props;
+    const { loading, event, networkStatus } = this.props;
 
     if (loading || !event) {
       return (
@@ -47,14 +85,12 @@ class EventUsers extends Component {
     const attendingUsers = [];
     const tentativeUsers = [];
     const unavailableUsers = [];
+
     if (!loading || event) {
       event.responses.forEach((r) => {
         const tempResponse = Object.assign({}, r); // clone r to tempResponse
         if (!tempResponse.detail) delete tempResponse.detail;
         switch (tempResponse.status) {
-          case 'unavailable':
-            unavailableUsers.push(tempResponse);
-            break;
           case 'attending':
             tempResponse.etaText = tempResponse.eta === 0 ? '' : `- ETA ${moment.unix(tempResponse.eta).fromNow()}`;
             tempResponse.statusText = !tempResponse.detail || tempResponse.detail === ''
@@ -69,7 +105,8 @@ class EventUsers extends Component {
               : `${tempResponse.status} ${tempResponse.destination.name} - ${tempResponse.detail} ${tempResponse.etaText}`;
             tentativeUsers.push(tempResponse);
             break;
-          default:
+          default: // unavailable or anything else
+            unavailableUsers.push(tempResponse);
             break;
         }
       });
@@ -85,73 +122,25 @@ class EventUsers extends Component {
           />
         </Holder>
         {this.state.selectedIndex === 0 && (
-          <Container>
-            <FlatList
-              data={attendingUsers}
-              ListHeaderComponent={() =>
-                (!attendingUsers.length ? (
-                  <Center>
-                    <Text>There are no attending users currently.</Text>
-                  </Center>
-                ) : null)}
-              keyExtractor={response => response.user.id}
-              renderItem={response => (
-                <ListItem
-                  title={response.item.user.displayName}
-                  subtitle={response.item.statusText}
-                  iconRight="user"
-                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
-                />
-              )}
-              refreshing={this.props.networkStatus === 4}
-            />
-          </Container>
+          <ResponseList
+            responses={attendingUsers}
+            description="attending"
+            networkStatus={networkStatus}
+          />
         )}
         {this.state.selectedIndex === 1 && (
-          <Container>
-            <FlatList
-              data={tentativeUsers}
-              ListHeaderComponent={() =>
-                (!tentativeUsers.length ? (
-                  <Center>
-                    <Text>There are no tentative users currently.</Text>
-                  </Center>
-                ) : null)}
-              keyExtractor={response => response.user.id}
-              renderItem={response => (
-                <ListItem
-                  title={response.item.user.displayName}
-                  subtitle={response.item.statusText}
-                  iconRight="user"
-                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
-                />
-              )}
-              refreshing={this.props.networkStatus === 4}
-            />
-          </Container>
+          <ResponseList
+            responses={tentativeUsers}
+            description="tentative"
+            networkStatus={networkStatus}
+          />
         )}
         {this.state.selectedIndex === 2 && (
-          <Container>
-            <FlatList
-              data={unavailableUsers}
-              ListHeaderComponent={() =>
-                (!unavailableUsers.length ? (
-                  <Center>
-                    <Text>There are no unavailable users currently.</Text>
-                  </Center>
-                ) : null)}
-              keyExtractor={response => response.user.id}
-              renderItem={response => (
-                <ListItem
-                  title={response.item.user.displayName}
-                  subtitle={response.item.detail}
-                  iconRight="user"
-                  onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
-                />
-              )}
-              refreshing={this.props.networkStatus === 4}
-            />
-          </Container>
+          <ResponseList
+            responses={unavailableUsers}
+            description="unavailable"
+            networkStatus={networkStatus}
+          />
         )}
       </Container>
     );
@@ -166,7 +155,7 @@ const eventQuery = graphql(EVENT_QUERY, {
   }),
 });
 
-EventUsers.propTypes = {
+EventResponses.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
@@ -200,4 +189,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), eventQuery)(EventUsers);
+export default compose(connect(mapStateToProps), eventQuery)(EventResponses);
