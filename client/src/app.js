@@ -17,7 +17,7 @@ import { GRAPHQL_ENDPOINT } from './config';
 
 function noop() {}
 
-if (process.env.NODE_ENV !== 'development') {
+if (!__DEV__) {
   console.log = noop;
   console.warn = noop;
   console.error = noop;
