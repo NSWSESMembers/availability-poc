@@ -514,14 +514,14 @@ export const getHandlers = ({ models, creators: Creators }) => {
         );
       },
       subscribe(topic) {
-        // return pubsub.asyncIterator(topic);
-        withFilter(
-          pubsub.asyncIterator(topic),
-          (payload, args) => {
-            console.log(args);
-            return true;
-          },
-        );
+        return pubsub.asyncIterator(topic);
+        // withFilter(
+        //   pubsub.asyncIterator(topic),
+        //   (payload, args) => {
+        //     console.log(args);
+        //     return true;
+        //   },
+        // );
       },
     },
   };

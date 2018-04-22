@@ -169,7 +169,7 @@ export const getResolvers = (handlers) => {
     },
     Subscription: {
       messageAdded: {
-        subscribe: messageHandler.subscribe('messageAdded'),
+        subscribe: () => messageHandler.subscribe('messageAdded'),
       },
     },
   };
