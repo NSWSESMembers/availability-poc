@@ -334,6 +334,16 @@ const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
     createTimeSegment: ({ scheduleId, status, startTime, endTime }) =>
       mutate({
         variables: { timeSegment: { scheduleId, status, startTime, endTime } },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          createTimeSegment: {
+            __typename: 'TimeSegment',
+            id: -1,
+            status,
+            startTime,
+            endTime,
+          },
+        },
         refetchQueries: [
           {
             query: CURRENT_USER_QUERY,
