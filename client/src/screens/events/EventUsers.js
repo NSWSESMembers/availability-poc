@@ -190,7 +190,7 @@ EventUsers.propTypes = {
           displayName: PropTypes.string.isRequired,
         }),
         status: PropTypes.string.isRequired,
-        detail: PropTypes.string.isRequired,
+        detail: PropTypes.string,
       }),
     ),
   }),
