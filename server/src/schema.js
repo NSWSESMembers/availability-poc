@@ -261,9 +261,14 @@ export const Schema = [
     setEventResponse(response: SetEventResponseInput!): EventResponse
   }
 
+  type Subscription {
+  messageAdded(userId: Int, eventIds: [Int]): Message
+}
+
   schema {
     query: Query,
-    mutation: Mutation
+    mutation: Mutation,
+    subscription: Subscription
   }
 `,
 ];

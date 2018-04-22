@@ -167,6 +167,11 @@ export const getResolvers = (handlers) => {
         return messageHandler.createMessage(_, args, ctx);
       },
     },
+    Subscription: {
+      messageAdded: {
+        subscribe: messageHandler.subscribe('messageAdded'),
+      },
+    },
   };
 };
 

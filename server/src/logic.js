@@ -1,9 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
+import { withFilter } from 'graphql-subscriptions';
 
 import { JWT_SECRET } from './config';
 import { schedulePerms, eventPerms } from './perms';
+
+import { pubsub } from './subscriptions';
 
 // reusable function to check for a user with context
 const getAuthenticatedUser = ctx => ctx.user.then((user) => {
@@ -504,7 +507,20 @@ export const getHandlers = ({ models, creators: Creators }) => {
             scheduleId,
             groupId,
             user,
+          }).then((msg) => {
+            pubsub.publish('messageAdded', { messageAdded: msg });
+            return msg;
           }),
+        );
+      },
+      subscribe(topic) {
+        // return pubsub.asyncIterator(topic);
+        withFilter(
+          pubsub.asyncIterator(topic),
+          (payload, args) => {
+            console.log(args);
+            return true;
+          },
         );
       },
     },
