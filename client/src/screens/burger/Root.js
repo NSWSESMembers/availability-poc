@@ -66,16 +66,9 @@ class Root extends Component {
     );
   }
 
-  showEventResponse = () => {
-    const { navigate } = this.props.navigation;
-    navigate('EventResponse', {
-      eventId: 1,
-    });
-  }
-
   showUserProfile = () => {
-    const { navigate } = this.props.navigation;
-    navigate('Profile');
+    const { navigation } = this.props;
+    navigation.push('Profile');
   }
 
   logout = () => {
@@ -140,9 +133,6 @@ class Root extends Component {
         <Button text="Force Update Location" onPress={this.updateLocation} />
         <Text />
         <Text />
-        <Button text="Test Event Response" onPress={this.showEventResponse} />
-        <Text />
-        <Text />
         <Button text="Check For Updates" onPress={this.checkForUpdate} />
         <Text />
         <Text />
@@ -162,7 +152,7 @@ Root.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired,
   }),
 };
 

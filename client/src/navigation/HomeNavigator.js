@@ -2,19 +2,25 @@ import { StackNavigator } from 'react-navigation';
 
 import { Root } from '../screens/home';
 import NavOptions from '../config/NavOptions';
-import EventDetail from '../screens/events/Detail';
-import ScheduleDetail from '../screens/schedules/Detail';
+import { Detail as EventDetail, EditResponse, EventUsers } from '../screens/events';
+import { Detail as ScheduleDetail } from '../screens/schedules';
 
 const HomeNavigator = StackNavigator(
   {
     Root: {
       screen: Root,
     },
-    Event: {
+    SchedulesDetail: {
+      screen: ScheduleDetail,
+    },
+    EventDetail: {
       screen: EventDetail,
     },
-    Schedule: {
-      screen: ScheduleDetail,
+    EventEditResponse: {
+      screen: EditResponse,
+    },
+    EventUsers: {
+      screen: EventUsers,
     },
   },
   {

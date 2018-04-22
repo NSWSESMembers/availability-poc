@@ -16,7 +16,7 @@ import ScheduleListItem from '../../components/Schedules/ScheduleListItem';
 class _HomeEventListItem extends Component {
   onPress = () => {
     const { event, navigation } = this.props;
-    navigation.push('Event', { id: event.id });
+    navigation.push('EventDetail', { id: event.id });
   }
 
   render() {
@@ -36,7 +36,7 @@ const HomeEventListItem = withNavigation(_HomeEventListItem);
 class _HomeScheduleListItem extends Component {
   onPress = () => {
     const { schedule: { id, name }, navigation } = this.props;
-    navigation.push('Schedule', { id, title: name });
+    navigation.push('SchedulesDetail', { id, title: name });
   }
 
   render() {
@@ -54,6 +54,10 @@ _HomeScheduleListItem.propTypes = {
 const HomeScheduleListItem = withNavigation(_HomeScheduleListItem);
 
 class Root extends Component {
+  static navigationOptions = () => ({
+    title: 'Home',
+  });
+
   onRefresh = () => {
     this.props.refetch();
   };
