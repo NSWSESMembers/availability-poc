@@ -11,7 +11,7 @@ const ScheduleListItem = ({ schedule, onPress }) => (
   <ListItem
     title={schedule.name}
     subtitle={scheduleLabel(schedule.startTime, schedule.endTime)}
-    icon="calendar"
+    iconRight="calendar"
     onPress={onPress}
   />
 );

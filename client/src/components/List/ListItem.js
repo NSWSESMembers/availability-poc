@@ -12,7 +12,8 @@ const ListItem = ({
   supertitle,
   subtitle,
   detail,
-  icon,
+  iconRight,
+  iconLeft,
   onPress,
   urgent,
 }) => {
@@ -30,6 +31,11 @@ const ListItem = ({
     <TouchableOpacity onPress={() => onPress()}>
       {title && (
         <View style={containerStyles}>
+          {iconLeft && (
+            <View style={styles.iconLeftHolder}>
+              <Icon style={styles.icon} name={iconLeft} size={30} />
+            </View>
+          )}
           <View style={styles.textContainer}>
             {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
             <Text style={styles.titleTextBold}>{title}</Text>
@@ -41,7 +47,11 @@ const ListItem = ({
               </Text>
             )}
           </View>
-          {icon && <Icon style={styles.icon} name={icon} size={30} />}
+          {iconRight && (
+            <View style={styles.iconRightHolder}>
+              <Icon style={styles.icon} name={iconRight} size={30} />
+            </View>
+          )}
         </View>
       )}
       {detail && (
@@ -61,7 +71,8 @@ ListItem.propTypes = {
   subtitle: PropTypes.string,
   supertitle: PropTypes.string,
   detail: PropTypes.string,
-  icon: PropTypes.string,
+  iconLeft: PropTypes.string,
+  iconRight: PropTypes.string,
   onPress: PropTypes.func,
 };
 

@@ -1,14 +1,14 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, Text } from 'react-native';
+import { Alert, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
-import { Button } from '../../components/Button';
-import { Center } from '../../components/Container';
+import { Container } from '../../components/Container';
+import { ListItem } from '../../components/List';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
@@ -123,27 +123,61 @@ class Root extends Component {
     }
   };
 
+  renderItem = ({ item }) => (
+    <ListItem
+      bold
+      {...item}
+    />
+  )
+
   render() {
+    const items = [
+      {
+        title: 'User Profile',
+        subtitle: 'Modify your display name and preferences',
+        iconLeft: 'user-circle',
+        onPress: this.showUserProfile,
+      },
+      {
+        title: 'Force location update',
+        subtitle: 'Test the location tracking system',
+        iconLeft: 'compass',
+        onPress: this.updateLocation,
+      },
+      {
+        title: 'Check for updates',
+        subtitle: 'Install a new version of the app, if available',
+        iconLeft: 'download',
+        onPress: this.checkForUpdate,
+      },
+      {
+        title: 'Test Bugsnag',
+        subtitle: 'Submit a mock bug report to Bugsnag',
+        iconLeft: 'bug',
+        onPress: this.crashReport,
+      },
+      {
+        title: 'About',
+        subtitle: 'Display the app version and other details',
+        iconLeft: 'info-circle',
+        onPress: this.about,
+      },
+      {
+        title: 'Logout',
+        subtitle: 'Sign out of this device',
+        iconLeft: 'times-circle',
+        onPress: this.logout,
+      },
+    ];
+
     return (
-      <Center>
-        <Text />
-        <Button text="User Profile" onPress={this.showUserProfile} />
-        <Text />
-        <Text />
-        <Button text="Force Update Location" onPress={this.updateLocation} />
-        <Text />
-        <Text />
-        <Button text="Check For Updates" onPress={this.checkForUpdate} />
-        <Text />
-        <Text />
-        <Button text="Test Bugsnag" onPress={this.crashReport} />
-        <Text />
-        <Text />
-        <Button text="About" onPress={this.about} />
-        <Text />
-        <Text />
-        <Button text="Logout" onPress={this.logout} />
-      </Center>
+      <Container>
+        <FlatList
+          data={items}
+          keyExtractor={item => item.title}
+          renderItem={this.renderItem}
+        />
+      </Container>
     );
   }
 }

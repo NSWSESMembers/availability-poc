@@ -32,7 +32,7 @@ class Event extends Component {
       <ListItem
         title={name}
         subtitle={details}
-        icon="bullhorn"
+        iconRight="bullhorn"
         onPress={this.goToEvent}
       />
     );
