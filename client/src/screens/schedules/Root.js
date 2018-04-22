@@ -30,7 +30,7 @@ class Root extends Component {
       title={item.name}
       subtitle={scheduleLabel(item.startTime, item.endTime)}
       onPress={() => this.onPressInfo(item)}
-      icon="calendar"
+      iconRight="calendar"
     />
   );
 

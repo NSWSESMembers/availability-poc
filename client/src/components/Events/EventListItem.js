@@ -10,7 +10,7 @@ const EventListItem = ({ event, urgent, onPress }) => (
     title={event.name}
     subtitle={event.details}
     subtitleEllipsis
-    icon={urgent ? 'exclamation-triangle' : 'bullhorn'}
+    iconRight={urgent ? 'exclamation-triangle' : 'bullhorn'}
     onPress={onPress}
     urgent={urgent}
   />

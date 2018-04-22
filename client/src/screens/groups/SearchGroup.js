@@ -35,7 +35,7 @@ class Group extends Component {
       <ListItem
         title={name}
         subtitle={tags !== '' ? tags : 'No Tags'}
-        icon={icon}
+        iconRight={icon}
         onPress={this.goToGroup}
       />
     );

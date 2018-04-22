@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexDirection: 'column',
-    flexShrink: 1,
+    flex: 1,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -67,6 +67,20 @@ const styles = StyleSheet.create({
   },
   icon: {
     alignSelf: 'center',
+  },
+  iconLeftHolder: {
+    width: 40,
+    paddingRight: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconRightHolder: {
+    width: 40,
+    paddingLeft: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   iconHolder: {
     paddingLeft: 4,

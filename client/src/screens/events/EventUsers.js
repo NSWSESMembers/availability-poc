@@ -99,7 +99,7 @@ class EventUsers extends Component {
                 <ListItem
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
-                  icon="user"
+                  iconRight="user"
                   onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
@@ -122,7 +122,7 @@ class EventUsers extends Component {
                 <ListItem
                   title={response.item.user.displayName}
                   subtitle={response.item.statusText}
-                  icon="user"
+                  iconRight="user"
                   onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
@@ -145,7 +145,7 @@ class EventUsers extends Component {
                 <ListItem
                   title={response.item.user.displayName}
                   subtitle={response.item.detail}
-                  icon="user"
+                  iconRight="user"
                   onPress={() => Alert.alert('PLACEHOLDER', 'User Contact Details Page')}
                 />
               )}
