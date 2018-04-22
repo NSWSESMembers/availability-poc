@@ -16,7 +16,7 @@ class Loading extends Component {
       this.props.navigation.navigate('Auth');
     } else {
       console.log('Going from loading screen to main because user is logged in');
-      this.props.navigation.navigate('Main');
+      this.props.navigation.navigate('ModalNavigator');
     }
   }
 

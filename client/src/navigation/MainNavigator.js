@@ -88,7 +88,7 @@ class MainNavigator extends Component {
 
   render() {
     return (
-      <MainTabNavigator />
+      <MainTabNavigator screenProps={{ modalNavigation: this.props.navigation }} />
     );
   }
 }

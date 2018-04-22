@@ -16,7 +16,7 @@ import ScheduleListItem from '../../components/Schedules/ScheduleListItem';
 class _HomeEventListItem extends Component {
   onPress = () => {
     const { event, navigation } = this.props;
-    navigation.push('EventDetail', { id: event.id });
+    navigation.push('EventDetail', { eventId: event.id });
   }
 
   render() {
@@ -32,6 +32,26 @@ _HomeEventListItem.propTypes = {
   }),
 };
 const HomeEventListItem = withNavigation(_HomeEventListItem);
+
+class _HomeNewEventListItem extends Component {
+  onPress = () => {
+    const { event, modalNavigation } = this.props;
+    modalNavigation.push('EventNewResponse', { eventId: event.id });
+  }
+
+  render() {
+    return (
+      <EventListItem event={this.props.event} onPress={this.onPress} urgent />
+    );
+  }
+}
+_HomeNewEventListItem.propTypes = {
+  event: PropTypes.shape().isRequired,
+  modalNavigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
+};
+const HomeNewEventListItem = withNavigation(_HomeNewEventListItem);
 
 class _HomeScheduleListItem extends Component {
   onPress = () => {
@@ -66,6 +86,14 @@ class Root extends Component {
     if (item.type === 'event') {
       return <HomeEventListItem event={item.event} />;
     }
+    if (item.type === 'new-event') {
+      return (
+        <HomeNewEventListItem
+          event={item.event}
+          modalNavigation={this.props.screenProps.modalNavigation}
+        />
+      );
+    }
     if (item.type === 'schedule') {
       return <HomeScheduleListItem schedule={item.schedule} />;
     }
@@ -84,15 +112,28 @@ class Root extends Component {
       );
     }
     const items = [];
-    user.events.forEach((e) => {
+    const { events, schedules } = user;
+    const oneEvent = [events[Math.floor(Math.random() * events.length)]];
+
+    // here we create 2 entries for every event to show the difference between new events and
+    // ones the user has already responded to
+    events.forEach((e) => {
       items.push({
         type: 'event',
+        id: e.id,
+        event: e,
+        sortKey: 1,
+      });
+    });
+    oneEvent.forEach((e) => {
+      items.push({
+        type: 'new-event',
         id: e.id,
         event: e,
         sortKey: 0,
       });
     });
-    user.schedules.forEach((s) => {
+    schedules.forEach((s) => {
       items.push({
         type: 'schedule',
         id: s.id,
@@ -138,6 +179,11 @@ Root.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
+  screenProps: PropTypes.shape({
+    modalNavigation: PropTypes.shape({
+      push: PropTypes.func,
+    }),
+  }),
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
