@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FlatList, Button, Text, View } from 'react-native';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { connect } from 'react-redux';
 
@@ -76,14 +75,12 @@ Group.propTypes = {
 class Root extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'My Groups',
-    tabBarLabel: 'Groups',
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
-    headerRight:
-  <View style={{ flexDirection: 'row' }}>
-    <ButtonNavBar onPress={() => navigation.navigate('NewGroup')} icon="plus" />
-    <ButtonNavBar onPress={() => navigation.navigate('SearchGroup')} icon="search" />
-  </View>,
-
+    headerRight: (
+      <View style={{ flexDirection: 'row' }}>
+        <ButtonNavBar onPress={() => navigation.navigate('NewGroup')} icon="plus" />
+        <ButtonNavBar onPress={() => navigation.navigate('SearchGroup')} icon="search" />
+      </View>
+    ),
   });
 
   onRefresh = () => {

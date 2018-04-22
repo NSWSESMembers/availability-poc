@@ -6,7 +6,6 @@ import { graphql, compose } from 'react-apollo';
 import md5 from 'md5';
 import Prompt from 'react-native-prompt';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
@@ -99,8 +98,6 @@ const styles = extendAppStyleSheet({
 class Profile extends Component {
   static navigationOptions = {
     title: 'My Profile',
-    tabBarLabel: 'More',
-    tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
   };
 
   state = {

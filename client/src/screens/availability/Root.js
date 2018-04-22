@@ -3,7 +3,6 @@ import { FlatList, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
@@ -16,8 +15,6 @@ import { Progress } from '../../components/Progress';
 class Index extends Component {
   static navigationOptions = () => ({
     title: 'Open Requests',
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
-    tabBarLabel: 'Availability',
   });
 
   onPressInfo = (item) => {

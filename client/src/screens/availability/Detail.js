@@ -35,8 +35,6 @@ const defaultSegmentState = [
 class Detail extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="info" />,
-    tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
-    tabBarLabel: 'Availability',
     title: `${navigation.state.params.title}`,
   });
 

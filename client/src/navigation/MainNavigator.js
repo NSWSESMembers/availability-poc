@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TabNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { compose } from 'react-apollo';
 import { connect } from 'react-redux';
-
 
 import { isLoggedIn } from '../selectors/auth';
 import HomeNavigator from './HomeNavigator';
@@ -31,11 +31,46 @@ const tabBarConfiguration = {
 // tabs in main screen
 const MainTabNavigator = TabNavigator(
   {
-    Home: { screen: HomeNavigator },
-    Groups: { screen: GroupsNavigator },
-    Availability: { screen: AvailabilityNavigator },
-    Events: { screen: EventsNavigator },
-    More: { screen: BurgerNavigator },
+    Home: {
+      screen: HomeNavigator,
+      navigationOptions: {
+        tabBarLabel: 'Home',
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
+      },
+    },
+    Groups: {
+      screen: GroupsNavigator,
+      navigationOptions: {
+        tabBarLabel: 'Groups',
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ tintColor }) => <Icon size={24} name="group" color={tintColor} />,
+      },
+    },
+    Availability: {
+      screen: AvailabilityNavigator,
+      navigationOptions: {
+        tabBarLabel: 'Availability',
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ tintColor }) => <Icon size={24} name="calendar" color={tintColor} />,
+      },
+    },
+    Events: {
+      screen: EventsNavigator,
+      navigationOptions: {
+        tabBarLabel: 'Events',
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ tintColor }) => <Icon size={26} name="bullhorn" color={tintColor} />,
+      },
+    },
+    More: {
+      screen: BurgerNavigator,
+      navigationOptions: {
+        tabBarLabel: 'More',
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ tintColor }) => <Icon size={28} name="bars" color={tintColor} />,
+      },
+    },
   },
   tabBarConfiguration,
 );

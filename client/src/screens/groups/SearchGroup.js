@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import {
   FlatList,
 } from 'react-native';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { graphql, compose } from 'react-apollo';
@@ -71,10 +69,6 @@ Group.propTypes = {
 class SearchGroup extends Component {
   static navigationOptions = {
     title: 'Search for Groups',
-    tabBarLabel: 'Groups',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon size={24} name="group" color={tintColor} />
-    ),
   };
 
   state = {
