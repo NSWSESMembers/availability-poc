@@ -156,15 +156,15 @@ class Detail extends Component {
   geoWatch = null;
 
   editResponse = () => {
-    const { navigate } = this.props.navigation;
-    navigate('EditResponse', {
+    const { navigation } = this.props;
+    navigation.push('EventEditResponse', {
       eventId: this.props.event.id,
     });
   };
 
   eventUsers = () => {
-    const { navigate } = this.props.navigation;
-    navigate('EventUsers', {
+    const { navigation } = this.props;
+    navigation.push('EventUsers', {
       eventId: this.props.event.id,
     });
   };

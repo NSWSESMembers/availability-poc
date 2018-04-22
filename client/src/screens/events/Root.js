@@ -50,7 +50,11 @@ Event.propTypes = {
   }),
 };
 
-class Events extends Component {
+class Root extends Component {
+  static navigationOptions = {
+    title: 'My Events',
+  };
+
   onRefresh = () => {
     this.props.refetch();
   }
@@ -59,12 +63,7 @@ class Events extends Component {
 
   goToEvent = (event) => {
     const { navigate } = this.props.navigation;
-    navigate('Event', { id: event.id, title: event.name });
-  }
-
-  goToNewEvent = () => {
-    const { navigate } = this.props.navigation;
-    navigate('NewEvent');
+    navigate('EventDetail', { id: event.id, title: event.name });
   }
 
   renderItem = ({ item }) => <Event event={item} goToEvent={this.goToEvent} />;
@@ -105,7 +104,7 @@ class Events extends Component {
     );
   }
 }
-Events.propTypes = {
+Root.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -139,4 +138,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   userQuery,
-)(Events);
+)(Root);

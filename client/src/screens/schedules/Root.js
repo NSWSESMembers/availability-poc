@@ -18,7 +18,7 @@ class Root extends Component {
   });
 
   onPressInfo = (item) => {
-    this.props.navigation.navigate('Detail', { id: item.id, title: item.name });
+    this.props.navigation.push('SchedulesDetail', { id: item.id, title: item.name });
   };
 
   onRefresh = () => {
@@ -80,7 +80,7 @@ class Root extends Component {
 Root.propTypes = {
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func,
+    push: PropTypes.func,
   }),
   networkStatus: PropTypes.number,
   refetch: PropTypes.func.isRequired,

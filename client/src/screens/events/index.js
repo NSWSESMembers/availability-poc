@@ -1,6 +1,6 @@
 import Detail from './Detail';
 import EditResponse from './EditResponse';
-import Events from './Events';
+import Root from './Root';
 import EventUsers from './EventUsers';
 
-export { Detail, EditResponse, Events, EventUsers };
+export { Detail, EditResponse, Root, EventUsers };

@@ -1,17 +1,17 @@
 import { StackNavigator } from 'react-navigation';
 
-import { Events, Detail, EditResponse, EventUsers } from '../screens/events';
+import { Root, Detail, EditResponse, EventUsers } from '../screens/events';
 import NavOptions from '../config/NavOptions';
 
 const EventsNavigator = StackNavigator(
   {
-    Root: {
-      screen: Events,
+    EventRoot: {
+      screen: Root,
     },
-    Detail: {
+    EventDetail: {
       screen: Detail,
     },
-    EditResponse: {
+    EventEditResponse: {
       screen: EditResponse,
     },
     EventUsers: {

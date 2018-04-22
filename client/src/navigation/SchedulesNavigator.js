@@ -1,18 +1,15 @@
 import { StackNavigator } from 'react-navigation';
 
-import { Root, Detail, Requests } from '../screens/schedules';
+import { Root, Detail } from '../screens/schedules';
 import NavOptions from '../config/NavOptions';
 
 const SchedulesNavigator = StackNavigator(
   {
-    Root: {
+    SchedulesRoot: {
       screen: Root,
     },
-    Detail: {
+    SchedulesDetail: {
       screen: Detail,
-    },
-    Requests: {
-      screen: Requests,
     },
   },
   {
