@@ -179,7 +179,7 @@ class Detail extends Component {
       );
       return filtered;
     }
-    const momentDate = moment.unix(this.props.selectedDate);
+    const momentDate = moment.unix(schedule.startTime);
 
     const startTime = momentDate
       .clone()
@@ -291,7 +291,6 @@ class Detail extends Component {
 }
 
 Detail.propTypes = {
-  selectedDate: PropTypes.number,
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
     goBack: PropTypes.func,
@@ -377,9 +376,8 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-const mapStateToProps = ({ auth, schedules }) => ({
+const mapStateToProps = ({ auth }) => ({
   auth,
-  selectedDate: schedules.selectedDate,
 });
 
 export default compose(connect(mapStateToProps), createTimeSegment, removeTimeSegment, userQuery)(

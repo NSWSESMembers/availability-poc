@@ -10,7 +10,6 @@ import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
-import schedules from './state/schedules.reducer';
 import local from './state/local.reducer';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
@@ -19,7 +18,7 @@ console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 
-export const bugsnag = (BugSnagClient.typeof === undefined ? new BugSnagClient() : undefined);
+export const bugsnag = BugSnagClient.typeof === undefined ? new BugSnagClient() : undefined;
 
 // middleware for requests
 networkInterface.use([
@@ -93,14 +92,13 @@ const reduxConfig = {
   key: 'primary',
   debug: __DEV__,
   storage: AsyncStorage,
-  blacklist: ['apollo', 'schedules'], // never persist these things
+  blacklist: ['apollo'], // never persist these things
 };
 
 const reducers = {
   apollo: client.reducer(),
   auth,
   local,
-  schedules,
 };
 
 store = createStore(
