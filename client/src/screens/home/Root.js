@@ -107,7 +107,6 @@ class HomeRoot extends Component {
       return (
         <Container>
           <Progress />
-          <Button title="reload" onPress={() => this.props.refetch()} />
         </Container>
       );
     }
