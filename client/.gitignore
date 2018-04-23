@@ -54,3 +54,7 @@ fastlane/screenshots
 
 # Expo
 .expo/
+
+# code coverage
+coverage/
+

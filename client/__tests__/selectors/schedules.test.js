@@ -1,5 +1,5 @@
 import moment from 'moment';
-import selectTimeSegments from '../../src/selectors/schedules';
+import { selectSchedules } from '../../src/selectors/schedules';
 import schedules from '../fixtures/schedules';
 
 test('should return timeSegments for the week', () => {
@@ -11,7 +11,7 @@ test('should return timeSegments for the week', () => {
     .isoWeekday(1)
     .endOf('isoweek')
     .unix();
-  const result = selectTimeSegments(schedules, { startTime, endTime });
+  const result = selectSchedules(schedules, { startTime, endTime });
   expect(result).toEqual([
     {
       scheduleId: schedules[0].id,
@@ -28,7 +28,7 @@ test('should return timeSegments for the week', () => {
 test('should return all segments', () => {
   const startTime = 0;
   const endTime = 2147483647;
-  const result = selectTimeSegments(schedules, { startTime, endTime });
+  const result = selectSchedules(schedules, { startTime, endTime });
   expect(result).toEqual([
     {
       scheduleId: schedules[0].id,

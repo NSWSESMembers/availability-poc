@@ -28,6 +28,13 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
+    env: COMPONENT=client CMD=test-and-coverage
+    before_install: cd client
+    script: bash ../scripts/travis-yarn.sh
+  - stage: run tests and linters
+    language: node_js
+    node_js: 6
+    cache: yarn
     env: COMPONENT=server CMD=lint
     before_install: cd server
     script: bash ../scripts/travis-yarn.sh
