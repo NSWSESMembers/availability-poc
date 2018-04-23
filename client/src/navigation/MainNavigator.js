@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -12,11 +13,13 @@ import GroupsNavigator from './GroupsNavigator';
 import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
 
+const fontSize = Platform.OS === 'ios' ? 10 : 8;
+
 const tabBarConfiguration = {
   tabBarPosition: 'bottom',
   tabBarOptions: {
     labelStyle: {
-      fontSize: 8,
+      fontSize,
     },
     style: {
       backgroundColor: 'white',
