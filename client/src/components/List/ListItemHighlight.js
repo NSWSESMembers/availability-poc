@@ -15,6 +15,7 @@ const ListItem = ({
   detail,
   icon,
   onPress,
+  selectable,
 }) => {
   const containerStyles = [styles.container];
 
@@ -30,12 +31,12 @@ const ListItem = ({
           <View style={styles.textContainer}>
             {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
             {!bold ? (
-              <Text style={styles.titleText}>{title}</Text>
+              <Text style={styles.titleText} selectable={selectable}>{title}</Text>
             ) : (
-              <Text style={styles.titleTextBold}>{title}</Text>
+              <Text style={styles.titleTextBold} selectable={selectable}>{title}</Text>
             )}
             {subtitle && (
-              <Text style={styles.subtitleText}>
+              <Text style={styles.subtitleText} selectable={selectable}>
                 {subtitleEllipsis && subtitle.length > 80
                   ? `${subtitle.substring(0, 80 - 3)}...`
                   : subtitle}
@@ -65,6 +66,7 @@ ListItem.propTypes = {
   detail: PropTypes.string,
   icon: PropTypes.string,
   onPress: PropTypes.func,
+  selectable: PropTypes.bool,
 };
 
 export default ListItem;
