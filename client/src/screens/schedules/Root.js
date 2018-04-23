@@ -6,10 +6,8 @@ import { graphql, compose } from 'react-apollo';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { scheduleLabel } from '../../selectors/schedules';
-
 import { Center, Container } from '../../components/Container';
-import { ListItem } from '../../components/List';
+import { ScheduleListItem } from '../../components/Schedules';
 import { Progress } from '../../components/Progress';
 
 class Root extends Component {
@@ -26,11 +24,9 @@ class Root extends Component {
   }
 
   renderItem = ({ item }) => (
-    <ListItem
-      title={item.name}
-      subtitle={scheduleLabel(item.startTime, item.endTime)}
+    <ScheduleListItem
+      schedule={item}
       onPress={() => this.onPressInfo(item)}
-      iconRight="calendar"
     />
   );
 

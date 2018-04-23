@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
-import { ListItem } from '../../components/List';
+import { EventListItem } from '../../components/Events';
 import { Container } from '../../components/Container';
 
 import { extendAppStyleSheet } from '../style-sheet';
@@ -27,12 +27,10 @@ class Event extends Component {
   }
 
   render() {
-    const { name, details } = this.props.event;
+    const { event } = this.props;
     return (
-      <ListItem
-        title={name}
-        subtitle={details}
-        iconRight="bullhorn"
+      <EventListItem
+        event={event}
         onPress={this.goToEvent}
       />
     );
@@ -62,7 +60,7 @@ class Root extends Component {
 
   goToEvent = (event) => {
     const { navigate } = this.props.navigation;
-    navigate('EventDetail', { id: event.id, title: event.name });
+    navigate('EventDetail', { eventId: event.id });
   }
 
   renderItem = ({ item }) => <Event event={item} goToEvent={this.goToEvent} />;
