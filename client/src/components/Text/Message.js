@@ -4,14 +4,18 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 
-const TextCustom = ({ children }) => (
-  <View style={styles.messageContainer}>
-    <Text>{children}</Text>
-  </View>
-);
+const Message = ({ children }) => {
+  const messageStyles = [styles.messageContainer];
 
-TextCustom.propTypes = {
+  return (
+    <View style={messageStyles}>
+      <Text style={styles.messageText}>{children}</Text>
+    </View>
+  );
+};
+
+Message.propTypes = {
   children: PropTypes.node,
 };
 
-module.exports = TextCustom;
+export default Message;

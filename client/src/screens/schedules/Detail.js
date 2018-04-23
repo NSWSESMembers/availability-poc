@@ -260,12 +260,12 @@ class Detail extends Component {
           )}
           {this.state.selectedDays.length === 0 ? (
             <Holder marginTop paddingVertical>
-              <Message>Tap multiple days to add/edit</Message>
+              <Message center>Tap multiple days to add/edit</Message>
             </Holder>
           ) : (
             <View>
               <Holder marginTop paddingVertical>
-                <Message>{this.state.selectedDays.length} day(s) selected</Message>
+                <Message>Select time blocks below and tap to cycle between status types.</Message>
               </Holder>
               <Holder marginTop paddingVertical>
                 <TimeSelect
