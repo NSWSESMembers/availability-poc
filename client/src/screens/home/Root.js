@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text, Button } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
