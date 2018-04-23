@@ -246,6 +246,7 @@ class Detail extends Component {
                 subtitle={event.details}
                 icon="external-link"
                 onPress={() => undefined}
+                selectable
               />
             </Holder>
           </View>
