@@ -1,7 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, FlatList } from 'react-native';
+import { Alert, FlatList, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import DeviceInfo from 'react-native-device-info';
@@ -9,6 +9,7 @@ import codePush from 'react-native-code-push';
 
 import { Container } from '../../components/Container';
 import { ListItem } from '../../components/List';
+import { FEEDBACK_URL } from '../../config/urls';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
@@ -149,6 +150,12 @@ class Root extends Component {
         subtitle: 'Install a new version of the app, if available',
         iconLeft: 'download',
         onPress: this.checkForUpdate,
+      },
+      {
+        title: 'Submit feedback',
+        subtitle: 'Please post in the Facebook feedback group',
+        iconLeft: 'comments',
+        onPress: () => Linking.openURL(FEEDBACK_URL),
       },
       {
         title: 'Test Bugsnag',
