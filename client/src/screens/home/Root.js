@@ -113,7 +113,10 @@ class HomeRoot extends Component {
     }
     const items = [];
     const { events, schedules } = user;
-    const oneEvent = [events[Math.floor(Math.random() * events.length)]];
+    const oneEvent = [];
+    if (events.length > 0) {
+      oneEvent.push(events[Math.floor(Math.random() * events.length)]);
+    }
 
     // here we create 2 entries for every event to show the difference between new events and
     // ones the user has already responded to
@@ -144,17 +147,20 @@ class HomeRoot extends Component {
 
     items.sort(i => i.sortKey);
 
+    if (items.length === 0) {
+      return (
+        <Container>
+          <Center>
+            <Text>There is nothing interesting happening right now.</Text>
+          </Center>
+        </Container>
+      );
+    }
+
     return (
       <Container>
         <FlatList
           data={items}
-          ListHeaderComponent={() =>
-            (!items.length ? (
-              <Center>
-                <Text>There is nothing interesting happening right now.</Text>
-              </Center>
-            ) : null)
-          }
           keyExtractor={item => `${item.type}-${item.id}`}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}

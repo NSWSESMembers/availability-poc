@@ -9,7 +9,7 @@ import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import { ButtonNavBar } from '../../components/Button';
 import { ListItem } from '../../components/List';
-import { Container, Holder } from '../../components/Container';
+import { Container, Center } from '../../components/Container';
 import { Progress } from '../../components/Progress';
 
 const styles = extendAppStyleSheet({
@@ -114,11 +114,13 @@ class GroupsRoot extends Component {
 
     if (user && !user.groups.length) {
       return (
-        <Holder wide transparent>
-          <Text onPress={this.onRefresh}>
-            You are not a member of any groups. click to reload
-          </Text>
-        </Holder>
+        <Container>
+          <Center>
+            <Text onPress={this.onRefresh}>
+              You are not a member of any groups. Tap to reload.
+            </Text>
+          </Center>
+        </Container>
       );
     }
 

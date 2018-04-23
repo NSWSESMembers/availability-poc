@@ -9,7 +9,7 @@ import {
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import { EventListItem } from '../../components/Events';
-import { Container } from '../../components/Container';
+import { Container, Center } from '../../components/Container';
 
 import { extendAppStyleSheet } from '../style-sheet';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
@@ -81,9 +81,13 @@ class EventsRoot extends Component {
 
     if (!events.length) {
       return (
-        <View style={styles.container}>
-          <Text style={styles.warning}>You do not have any events.</Text>
-        </View>
+        <Container>
+          <Center>
+            <Text onPress={this.onRefresh}>
+              There are no events to display.
+            </Text>
+          </Center>
+        </Container>
       );
     }
 
