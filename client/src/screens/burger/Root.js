@@ -35,7 +35,7 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   }),
 });
 
-class Root extends Component {
+class BurgerRoot extends Component {
   static navigationOptions = {
     title: 'More',
   };
@@ -189,7 +189,7 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
+BurgerRoot.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
   navigation: PropTypes.shape({
@@ -215,4 +215,4 @@ export default compose(
   userQuery,
   updateUserProfileMutation,
   updateLocationMutation,
-)(Root);
+)(BurgerRoot);

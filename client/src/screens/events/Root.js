@@ -47,7 +47,7 @@ Event.propTypes = {
   }),
 };
 
-class Root extends Component {
+class EventsRoot extends Component {
   static navigationOptions = {
     title: 'My Events',
   };
@@ -101,7 +101,7 @@ class Root extends Component {
     );
   }
 }
-Root.propTypes = {
+EventsRoot.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
@@ -135,4 +135,4 @@ const mapStateToProps = ({ auth }) => ({
 export default compose(
   connect(mapStateToProps),
   userQuery,
-)(Root);
+)(EventsRoot);

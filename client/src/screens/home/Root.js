@@ -73,7 +73,7 @@ _HomeScheduleListItem.propTypes = {
 };
 const HomeScheduleListItem = withNavigation(_HomeScheduleListItem);
 
-class Root extends Component {
+class HomeRoot extends Component {
   static navigationOptions = () => ({
     title: 'Home',
   });
@@ -175,7 +175,7 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-Root.propTypes = {
+HomeRoot.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
   refetch: PropTypes.func,
@@ -203,4 +203,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Root);
+export default compose(connect(mapStateToProps), userQuery)(HomeRoot);
