@@ -27,9 +27,9 @@ import { Message } from '../../components/Text';
 
 const defaultSegmentState = [
   { startTime: 0, endTime: 86400, label: 'All Day', status: '' },
-  { startTime: 32400, endTime: 61200, label: 'Day Only', status: '' },
-  { startTime: 0, endTime: 32400, label: 'Out of Hours', status: '' },
-  { startTime: 61200, endTime: 86400, label: 'Out of Hours', status: '' },
+  { startTime: 32400, endTime: 61200, label: 'Business Hours', status: '' },
+  { startTime: 0, endTime: 32400, label: 'Before Business Hrs', status: '' },
+  { startTime: 61200, endTime: 86400, label: 'After Business Hrs', status: '' },
 ];
 
 class Detail extends Component {
