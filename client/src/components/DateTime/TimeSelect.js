@@ -17,8 +17,9 @@ const TimeSelect = ({ selectionSegments, onPress }) => {
   return (
     <View style={styles.timeSelectContainer}>
       {selectionSegments.map(segment => (
-        <View key={`${segment.startTime}-${segment.endTime}`} style={{ marginBottom: 5 }}>
+        <View key={`${segment.startTime}-${segment.endTime}`} style={styles.timeSelectChild}>
           <ButtonBox
+            key={`${segment.startTime}-${segment.endTime}`}
             text={segment.label}
             subtext={`${moment.unix(start + segment.startTime).format('HH:mm')} - ${moment
               .unix(start + segment.endTime)

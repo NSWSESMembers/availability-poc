@@ -76,9 +76,13 @@ const styles = StyleSheet.create({
     color: Colors.bdMain,
   },
   timeSelectContainer: {
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
     flexWrap: 'wrap',
+  },
+  timeSelectChild: {
+    width: '48%',
+    margin: '1%',
   },
 });
 

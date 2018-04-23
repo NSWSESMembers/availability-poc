@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
@@ -179,15 +179,17 @@ class Detail extends Component {
       );
       return filtered;
     }
-    const momentDate = moment.unix(schedule.startTime);
+    const momentStartDate = moment.unix(schedule.startTime);
 
-    const startTime = momentDate
+    const startTime = momentStartDate
       .clone()
       .isoWeekday(1)
       .startOf('isoweek')
       .unix();
 
-    const endTime = momentDate
+    const momentEndDate = moment.unix(schedule.endTime);
+
+    const endTime = momentEndDate
       .clone()
       .isoWeekday(1)
       .endOf('isoweek')
@@ -221,70 +223,81 @@ class Detail extends Component {
     const schedule = this.getSchedule();
     const filteredItems = this.getTimeSegments();
 
+    if (schedule.startTime === 0) {
+      return (
+        <Holder marginTop paddingVertical>
+          <Message>Ongoing support for availability entry coming soon</Message>
+        </Holder>
+      );
+    }
+
     return (
       <Container>
-        {schedule.startTime > 0 && (
-          <View>
-            <Holder marginTop paddingVertical>
-              <Message>
-                {moment.unix(schedule.startTime).format('ll')} -{' '}
-                {moment.unix(schedule.endTime).format('ll')}
-              </Message>
-            </Holder>
-            {this.state.showInfo && (
+        <ScrollView>
+          {schedule.startTime > 0 && (
+            <View>
               <Holder marginTop paddingVertical>
-                <Message>{schedule.details}</Message>
+                <Message>
+                  {moment.unix(schedule.startTime).format('ll')} -{' '}
+                  {moment.unix(schedule.endTime).format('ll')}
+                </Message>
               </Holder>
-            )}
+              {this.state.showInfo && (
+                <Holder marginTop paddingVertical>
+                  <Message>{schedule.details}</Message>
+                </Holder>
+              )}
+              <Holder marginTop paddingVertical>
+                <DateRange
+                  startTime={schedule.startTime}
+                  endTime={schedule.endTime}
+                  onSelect={this.onSelectDay}
+                  selectedDays={this.state.selectedDays}
+                  timeSegments={filteredItems}
+                />
+              </Holder>
+            </View>
+          )}
+          {this.state.selectedDays.length === 0 ? (
             <Holder marginTop paddingVertical>
-              <DateRange
-                startTime={schedule.startTime}
-                endTime={schedule.endTime}
-                onSelect={this.onSelectDay}
-                selectedDays={this.state.selectedDays}
-                timeSegments={filteredItems}
-              />
+              <Message center>Tap multiple days to add/edit</Message>
             </Holder>
-          </View>
-        )}
-        {this.state.selectedDays.length === 0 ? (
-          <Holder marginTop paddingVertical>
-            <Message>Tap multiple days to add/edit</Message>
-          </Holder>
-        ) : (
-          <View>
-            <Holder marginTop paddingVertical>
-              <Message>{this.state.selectedDays.length} day(s) selected</Message>
-            </Holder>
-            <Holder marginTop paddingVertical>
-              <TimeSelect
-                selectionSegments={this.state.selectionSegments}
-                onPress={this.onPressSegment}
-              />
-            </Holder>
-            <Holder marginTop paddingVertical>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text style={{ fontSize: 16 }}>
-                  <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  <Icon size={18} name="check-circle" color={Colors.bgBtnUnavailable} /> Unavailable
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  <Icon size={18} name="check-circle" color={Colors.bgBtnUrgent} /> Urgent
-                </Text>
-              </View>
-            </Holder>
-            <Holder marginTop transparent>
-              <Button text="Save Availability" onPress={this.onPressEdit} />
-            </Holder>
-          </View>
-        )}
+          ) : (
+            <View>
+              <Holder marginTop paddingVertical>
+                <Message>Select time blocks below and tap to cycle between status types.</Message>
+              </Holder>
+              <Holder marginTop paddingVertical>
+                <TimeSelect
+                  selectionSegments={this.state.selectionSegments}
+                  onPress={this.onPressSegment}
+                />
+              </Holder>
+              <Holder marginTop paddingVertical>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
+                  </Text>
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="times-circle" color={Colors.bgBtnUnavailable} />{' '}
+                    Unavailable
+                  </Text>
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="exclamation-circle" color={Colors.bgBtnUrgent} /> Urgent
+                  </Text>
+                </View>
+              </Holder>
+              <Holder marginTop transparent>
+                <Button text="Save Availability" onPress={this.onPressEdit} />
+              </Holder>
+            </View>
+          )}
+        </ScrollView>
       </Container>
     );
   }
