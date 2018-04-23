@@ -7,10 +7,11 @@ import styles from './styles';
 
 const ListItem = ({
   title,
-  subtitleEllipsis,
+  titleNumberOfLines,
   wide,
   supertitle,
   subtitle,
+  subtitleNumberOfLines,
   detail,
   iconRight,
   iconLeft,
@@ -37,13 +38,17 @@ const ListItem = ({
             </View>
           )}
           <View style={styles.textContainer}>
-            {supertitle && <Text style={styles.supertitleText}>{supertitle}</Text>}
-            <Text style={styles.titleTextBold}>{title}</Text>
+            {supertitle && (
+              <Text style={styles.supertitleText}>
+                {supertitle}
+              </Text>
+            )}
+            <Text style={styles.titleTextBold} numberOfLines={titleNumberOfLines}>
+              {title}
+            </Text>
             {subtitle && (
-              <Text style={styles.subtitleText}>
-                {subtitleEllipsis && subtitle.length > 80
-                  ? `${subtitle.substring(0, 80 - 3)}...`
-                  : subtitle}
+              <Text style={styles.subtitleText} numberOfLines={subtitleNumberOfLines}>
+                {subtitle}
               </Text>
             )}
           </View>
@@ -65,10 +70,11 @@ const ListItem = ({
 
 ListItem.propTypes = {
   title: PropTypes.string,
-  subtitleEllipsis: PropTypes.bool,
+  titleNumberOfLines: PropTypes.number,
   wide: PropTypes.bool,
   urgent: PropTypes.bool,
   subtitle: PropTypes.string,
+  subtitleNumberOfLines: PropTypes.number,
   supertitle: PropTypes.string,
   detail: PropTypes.string,
   iconLeft: PropTypes.string,
