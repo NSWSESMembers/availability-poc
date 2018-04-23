@@ -26,6 +26,7 @@ EventListItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   event: PropTypes.shape({
     name: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
   }),
   urgent: PropTypes.bool,
 };
