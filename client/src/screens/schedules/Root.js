@@ -10,7 +10,7 @@ import { Center, Container } from '../../components/Container';
 import { ScheduleListItem } from '../../components/Schedules';
 import { Progress } from '../../components/Progress';
 
-class Root extends Component {
+class SchedulesRoot extends Component {
   static navigationOptions = () => ({
     title: 'My Availability',
   });
@@ -73,7 +73,7 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
+SchedulesRoot.propTypes = {
   loading: PropTypes.bool,
   navigation: PropTypes.shape({
     push: PropTypes.func,
@@ -120,4 +120,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(Root);
+export default compose(connect(mapStateToProps), userQuery)(SchedulesRoot);
