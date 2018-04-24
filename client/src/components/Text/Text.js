@@ -18,4 +18,4 @@ TextCustom.propTypes = {
   style: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
-module.exports = TextCustom;
+export default TextCustom;
