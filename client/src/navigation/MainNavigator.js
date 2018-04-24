@@ -3,15 +3,17 @@ import { Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { compose } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
-
 import { isLoggedIn } from '../selectors/auth';
+import { firebaseClient } from '../app';
 import HomeNavigator from './HomeNavigator';
 import SchedulesNavigator from './SchedulesNavigator';
 import GroupsNavigator from './GroupsNavigator';
 import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
+
+import UPDATE_TOKEN_MUTATION from '../graphql/update-token.mutation';
 
 const fontSize = Platform.OS === 'ios' ? 10 : 8;
 
@@ -81,6 +83,11 @@ const MainTabNavigator = TabNavigator(
 // this wrapper exists simply to detect when we have logged out so that we can navigate back to the
 // auth screen
 class MainNavigator extends Component {
+  state = {
+    token: '',
+  }
+
+
   componentDidUpdate() {
     const { auth } = this.props;
     if (!isLoggedIn(auth)) {
@@ -89,7 +96,26 @@ class MainNavigator extends Component {
     }
   }
 
+
   render() {
+    const { auth } = this.props;
+    if (!isLoggedIn(auth)) {
+      if (firebaseClient.token) {
+        firebaseClient.clear();
+      }
+    } else {
+      // TODO: we shouldnt store token in state we should store it in redux
+      // because it doesnt change unless you clear data or change device
+      firebaseClient.init().then((registrationId) => {
+        if (registrationId !== this.state.token) {
+          this.setState({ token: registrationId });
+          return Promise.resolve(this.props.updateToken({ token: registrationId }));
+        }
+        return Promise.resolve();
+      });
+    }
+
+
     return (
       <MainTabNavigator screenProps={{ modalNavigation: this.props.navigation }} />
     );
@@ -101,11 +127,20 @@ MainNavigator.propTypes = {
     navigate: PropTypes.func,
   }),
   auth: PropTypes.shape().isRequired,
+  updateToken: PropTypes.func,
 };
 
+const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
+  props: ({ mutate }) => ({
+    updateToken: token =>
+      mutate({
+        variables: { token },
+      }),
+  }),
+});
 
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps))(MainNavigator);
+export default compose(updateTokenMutation, connect(mapStateToProps))(MainNavigator);
