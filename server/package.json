@@ -18,7 +18,10 @@
   },
   "jest": {
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
   },
   "devDependencies": {
     "eslint": "^4.4.1",
