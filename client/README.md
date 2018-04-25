@@ -1,6 +1,7 @@
 # Rect Native client for Availability
 
 [![Build Status](https://travis-ci.org/NSWSESMembers/availability-poc.svg?branch=master)](https://travis-ci.org/NSWSESMembers/availability-poc)
+[![codecov](https://codecov.io/gh/NSWSESMembers/availability-poc/branch/master/graph/badge.svg)](https://codecov.io/gh/NSWSESMembers/availability-poc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This is a React Native app that consumes the GraphQL API provided by the code in
