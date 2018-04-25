@@ -1,3 +1,6 @@
 dist
 coverage
 *.sqlite
+
+# We don't use NPM so lets make sure we don't commit it's lock file
+package-lock.json
