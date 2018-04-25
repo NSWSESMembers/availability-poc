@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "borderBottomWidth": 0.5,
+      "borderColor": "#cbcbcb",
+      "marginBottom": 25,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      autoCorrect={false}
+      onChangeText={[Function]}
+      placeholder="placeholder"
+      placeholderTextColor="#C2C2C2"
+      returnKeyType="next"
+      style={
+        Object {
+          "alignItems": "center",
+          "color": "#1e3c78",
+          "flex": 1,
+          "flexDirection": "row",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "height": 50,
+          "justifyContent": "center",
+        }
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value="value"
+    />
+  </View>
+</View>
+`;
+
+exports[`renders correctly 2`] = `
+<View
+  style={
+    Object {
+      "borderBottomWidth": 0.5,
+      "borderColor": "#cbcbcb",
+      "marginBottom": 25,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType="email-address"
+      onChangeText={[Function]}
+      placeholder="placeholder"
+      placeholderTextColor="#C2C2C2"
+      returnKeyType="next"
+      style={
+        Object {
+          "alignItems": "center",
+          "color": "#1e3c78",
+          "flex": 1,
+          "flexDirection": "row",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "height": 50,
+          "justifyContent": "center",
+        }
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value="value"
+    />
+  </View>
+</View>
+`;
+
+exports[`renders correctly 3`] = `
+<View
+  style={
+    Object {
+      "borderBottomWidth": 0.5,
+      "borderColor": "#cbcbcb",
+      "marginBottom": 25,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      placeholder="placeholder"
+      placeholderTextColor="#C2C2C2"
+      secureTextEntry={true}
+      style={
+        Object {
+          "alignItems": "center",
+          "color": "#1e3c78",
+          "flex": 1,
+          "flexDirection": "row",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "height": 50,
+          "justifyContent": "center",
+        }
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value="value"
+    />
+  </View>
+</View>
+`;
+
+exports[`renders correctly 4`] = `
+<View
+  style={
+    Object {
+      "borderBottomWidth": 0.5,
+      "borderColor": "#cbcbcb",
+      "marginBottom": 25,
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flexDirection": "row",
+      }
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      placeholder="placeholder"
+      placeholderTextColor="#C2C2C2"
+      style={
+        Object {
+          "alignItems": "center",
+          "color": "#1e3c78",
+          "flex": 1,
+          "flexDirection": "row",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "height": 50,
+          "justifyContent": "center",
+        }
+      }
+      underlineColorAndroid="rgba(0,0,0,0)"
+      value="value"
+    />
+  </View>
+</View>
+`;

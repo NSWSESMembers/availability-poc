@@ -13,7 +13,7 @@ const Button = ({ text, onPress, type, disabled }) => {
   }
 
   return (
-    <TouchableOpacity style={style} onPress={() => onPress()} disabled={disabled}>
+    <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
       <Text style={textStyle}>{text}</Text>
     </TouchableOpacity>
   );

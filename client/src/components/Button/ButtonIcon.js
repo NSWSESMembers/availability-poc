@@ -13,7 +13,7 @@ const ButtonIcon = ({ backgroundColor, text, icon, onPress }) => {
   }
 
   return (
-    <TouchableOpacity onPress={() => onPress()} style={containerStyles}>
+    <TouchableOpacity onPress={onPress} style={containerStyles}>
       <Icon size={60} name={icon} color="white" />
       <Text style={styles.buttonIconText}>{text}</Text>
     </TouchableOpacity>

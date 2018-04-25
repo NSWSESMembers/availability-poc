@@ -8,7 +8,7 @@ const ButtonRow = ({ title, description, onPress, showIcon, showIconNoPress }) =
     {onPress === undefined ? (
       <ButtonText icon={showIconNoPress} title={title} description={description} />
     ) : (
-      <TouchableOpacity onPress={() => onPress()}>
+      <TouchableOpacity onPress={onPress}>
         <ButtonText icon={showIcon} title={title} description={description} />
       </TouchableOpacity>
     )}
