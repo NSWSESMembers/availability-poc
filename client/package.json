@@ -80,6 +80,10 @@
       "node_modules/(?!react-native|react-navigation)/"
     ],
     "coverageDirectory": "./coverage/",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "*.js"
+    ],
     "collectCoverage": true
   }
 }
