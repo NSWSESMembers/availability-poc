@@ -1,0 +1,255 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  collapsable={undefined}
+  message="message"
+  status="status"
+  style={
+    Object {
+      "backgroundColor": "#ffffff",
+      "borderRadius": 5,
+      "bottom": -100,
+      "left": 25,
+      "padding": 20,
+      "paddingTop": 15,
+      "position": "absolute",
+      "right": 25,
+      "transform": Array [
+        Object {
+          "translateY": 0,
+        },
+      ],
+      "zIndex": 1,
+    }
+  }
+  title="title"
+>
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "color": "#6B6B6B",
+            "fontSize": 16,
+          },
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "color": "#FF5A5F",
+          },
+        ]
+      }
+    >
+      title
+    </Text>
+    <View
+      accessibilityComponentType={undefined}
+      accessibilityLabel={undefined}
+      accessibilityTraits={undefined}
+      accessible={true}
+      collapsable={undefined}
+      hitSlop={undefined}
+      isTVSelectable={true}
+      nativeID={undefined}
+      onLayout={undefined}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+      testID={undefined}
+      tvParallaxProperties={undefined}
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={false}
+        ellipsizeMode="tail"
+        style={
+          Array [
+            Object {
+              "color": "#FF5A5F",
+              "fontSize": 20,
+            },
+            undefined,
+            Object {
+              "fontFamily": "simple-line-icons",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+            },
+          ]
+        }
+      >
+        
+      </Text>
+    </View>
+  </View>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+    style={
+      Array [
+        Object {
+          "color": "#6B6B6B",
+          "fontSize": 16,
+        },
+        undefined,
+        Array [
+          Object {
+            "marginTop": 5,
+          },
+          Object {
+            "color": "#FF5A5F",
+          },
+        ],
+      ]
+    }
+  >
+    message
+  </Text>
+</View>
+`;
+
+exports[`renders correctly 2`] = `
+<View
+  collapsable={undefined}
+  status="success"
+  style={
+    Object {
+      "backgroundColor": "#ffffff",
+      "borderRadius": 5,
+      "bottom": -100,
+      "left": 25,
+      "padding": 20,
+      "paddingTop": 15,
+      "position": "absolute",
+      "right": 25,
+      "transform": Array [
+        Object {
+          "translateY": 0,
+        },
+      ],
+      "zIndex": 1,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      }
+    }
+  >
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "color": "#6B6B6B",
+            "fontSize": 16,
+          },
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "color": "#25ce66",
+          },
+        ]
+      }
+    >
+      Success
+    </Text>
+    <View
+      accessibilityComponentType={undefined}
+      accessibilityLabel={undefined}
+      accessibilityTraits={undefined}
+      accessible={true}
+      collapsable={undefined}
+      hitSlop={undefined}
+      isTVSelectable={true}
+      nativeID={undefined}
+      onLayout={undefined}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+      testID={undefined}
+      tvParallaxProperties={undefined}
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={false}
+        ellipsizeMode="tail"
+        style={
+          Array [
+            Object {
+              "color": "#25ce66",
+              "fontSize": 20,
+            },
+            undefined,
+            Object {
+              "fontFamily": "simple-line-icons",
+              "fontStyle": "normal",
+              "fontWeight": "normal",
+            },
+          ]
+        }
+      >
+        
+      </Text>
+    </View>
+  </View>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+    style={
+      Array [
+        Object {
+          "color": "#6B6B6B",
+          "fontSize": 16,
+        },
+        undefined,
+        Array [
+          Object {
+            "marginTop": 5,
+          },
+          Object {
+            "color": "#25ce66",
+          },
+        ],
+      ]
+    }
+  >
+    Data submitted successfully.
+  </Text>
+</View>
+`;

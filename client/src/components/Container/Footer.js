@@ -3,10 +3,14 @@ import React from 'react';
 import { View } from 'react-native';
 import styles from './styles';
 
-const Container = ({ children }) => <View style={styles.containerFooter}>{children}</View>;
+const Footer = ({ children }) => (
+  <View style={styles.containerFooter}>
+    {children}
+  </View>
+);
 
-Container.propTypes = {
+Footer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default Container;
+export default Footer;

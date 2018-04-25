@@ -42,7 +42,11 @@ const Container = ({
     containerStyles.push({ backgroundColor: 'transparent' });
   }
 
-  return <View style={containerStyles}>{children}</View>;
+  return (
+    <View style={containerStyles}>
+      {children}
+    </View>
+  );
 };
 
 Container.propTypes = {

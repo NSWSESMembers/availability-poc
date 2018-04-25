@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#ffffff",
+        "paddingLeft": 20,
+        "paddingRight": 20,
+        "width": "100%",
+      },
+    ]
+  }
+>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+  >
+    test
+  </Text>
+</View>
+`;
+
+exports[`renders correctly 2`] = `
+<View
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#ffffff",
+        "paddingLeft": 20,
+        "paddingRight": 20,
+        "width": "100%",
+      },
+      Object {
+        "paddingBottom": 8,
+        "paddingTop": 8,
+      },
+      Object {
+        "marginBottom": 8,
+        "marginTop": 8,
+      },
+      Object {
+        "marginTop": 8,
+      },
+      Object {
+        "paddingTop": 20,
+      },
+      Object {
+        "paddingLeft": 5,
+        "paddingRight": 5,
+      },
+      Object {
+        "paddingBottom": 20,
+      },
+      Object {
+        "backgroundColor": "transparent",
+      },
+    ]
+  }
+>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+  >
+    test
+  </Text>
+</View>
+`;

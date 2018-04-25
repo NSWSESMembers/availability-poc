@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './styles';
 
 const ButtonNavBar = ({ icon, onPress }) => (
-  <TouchableOpacity onPress={() => onPress()}>
+  <TouchableOpacity onPress={onPress}>
     <Icon name={icon} size={24} style={styles.buttonNavBarIcon} />
   </TouchableOpacity>
 );

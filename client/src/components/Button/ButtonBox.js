@@ -35,10 +35,10 @@ const ButtonBox = ({ text, subtext, onPress, selected, selectedColor, disabled }
   }
 
   return (
-    <TouchableOpacity style={buttonStyleBox} onPress={() => onPress()}>
+    <TouchableOpacity style={buttonStyleBox} onPress={onPress}>
       <Text style={textStyleBox}>{text}</Text>
       {subtext && <Text style={subtextStyleBox}>{subtext}</Text>}
-      {selected === false && <Icon size={18} name="times-circle" color="white" />}
+      {selected !== true && <Icon size={18} name="times-circle" color="white" />}
       {selectedColor === Colors.bgBtnAvailable && (
         <Icon size={18} name="check-circle" style={iconStyleBox} />
       )}
