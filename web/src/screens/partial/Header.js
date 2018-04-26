@@ -17,9 +17,17 @@ import { logout } from '../../actions/auth';
 import styles from './Header.styles';
 
 class Header extends React.Component {
-  state = {
-    route: 'Home',
-  };
+  constructor(props) {
+    super(props);
+    let route = 'Home';
+    if (props.location.pathname.startsWith('/groups')) route = 'Groups';
+    if (props.location.pathname.startsWith('/schedules')) route = 'Availability';
+    if (props.location.pathname.startsWith('/events')) route = 'Events';
+
+    this.state = {
+      route,
+    };
+  }
 
   handleChange = (event, value) => {
     this.setState({ route: value });
@@ -37,9 +45,11 @@ class Header extends React.Component {
     const { history } = this.props;
     history.push(path);
   };
+
   handleLogout = () => {
     this.props.dispatch(logout());
   };
+
   render() {
     const { classes, isAuthenticated } = this.props;
     return (
@@ -77,6 +87,9 @@ Header.propTypes = {
   history: PropTypes.shape({}),
   dispatch: PropTypes.func,
   isAuthenticated: PropTypes.bool.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }),
 };
 
 const mapStateToProps = state => ({

@@ -9,7 +9,7 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './ViewEvents.styles';
+import styles from './AddEvent.styles';
 
 const AddEvent = ({ classes, loading }) => {
   if (loading) {
