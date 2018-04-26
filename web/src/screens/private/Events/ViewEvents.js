@@ -6,33 +6,20 @@ import { connect } from 'react-redux';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
 
-import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './Dashboard.styles';
+import styles from './ViewEvents.styles';
 
-const Dashboard = ({ classes, loading }) => {
+const ViewEvents = ({ classes, loading }) => {
   if (loading) {
     return <CircularProgress className={classes.progress} size={50} />;
   }
 
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.paper} elevation={4}>
-        <Typography variant="headline" component="h3">
-          Welcome to Callout
-        </Typography>
-        <Typography component="p">
-          An open source availability and event response management system.
-        </Typography>
-      </Paper>
-    </div>
-  );
+  return <div className={classes.root}>View Events</div>;
 };
 
-Dashboard.propTypes = {
+ViewEvents.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
 };
@@ -51,4 +38,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(Dashboard);
+export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewEvents);
