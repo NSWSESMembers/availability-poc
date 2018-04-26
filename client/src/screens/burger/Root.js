@@ -1,13 +1,12 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, FlatList, Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import codePush from 'react-native-code-push';
 
-import { Container } from '../../components/Container';
-import { ListItem } from '../../components/List';
+import Menu from './components/Menu';
 import { FEEDBACK_URL } from '../../config/urls';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
@@ -34,7 +33,7 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   }),
 });
 
-class BurgerRoot extends Component {
+class BurgerScreen extends Component {
   static navigationOptions = {
     title: 'More',
   };
@@ -64,6 +63,10 @@ class BurgerRoot extends Component {
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
     );
+  }
+
+  handleSubmitFeedback = () => {
+    Linking.openURL(FEEDBACK_URL);
   }
 
   showUserProfile = () => {
@@ -111,72 +114,22 @@ class BurgerRoot extends Component {
     }
   };
 
-  renderItem = ({ item }) => (
-    <ListItem
-      bold
-      {...item}
-    />
-  )
-
   render() {
-    const items = [
-      {
-        title: 'User Profile',
-        subtitle: 'Modify your display name and preferences',
-        iconLeft: 'user-circle',
-        onPress: this.showUserProfile,
-      },
-      {
-        title: 'Force location update',
-        subtitle: 'Test the location tracking system',
-        iconLeft: 'compass',
-        onPress: this.updateLocation,
-      },
-      {
-        title: 'Check for updates',
-        subtitle: 'Install a new version of the app, if available',
-        iconLeft: 'download',
-        onPress: this.checkForUpdate,
-      },
-      {
-        title: 'Submit feedback',
-        subtitle: 'Please post in the Facebook feedback group',
-        iconLeft: 'comments',
-        onPress: () => Linking.openURL(FEEDBACK_URL),
-      },
-      {
-        title: 'Test Bugsnag',
-        subtitle: 'Submit a mock bug report to Bugsnag',
-        iconLeft: 'bug',
-        onPress: this.crashReport,
-      },
-      {
-        title: 'Internal Parameters',
-        subtitle: 'Display the app version and other details',
-        iconLeft: 'info-circle',
-        onPress: this.showParams,
-      },
-      {
-        title: 'Logout',
-        subtitle: 'Sign out of this device',
-        iconLeft: 'times-circle',
-        onPress: this.logout,
-      },
-    ];
-
     return (
-      <Container>
-        <FlatList
-          data={items}
-          keyExtractor={item => item.title}
-          renderItem={this.renderItem}
-        />
-      </Container>
+      <Menu
+        onShowUserProfile={this.showUserProfile}
+        onUpdateLocation={this.updateLocation}
+        onCheckForUpdate={this.checkForUpdate}
+        onSubmitFeedback={this.handleSubmitFeedback}
+        onTestBugsnag={this.crashReport}
+        onShowParams={this.showParams}
+        onLogout={this.logout}
+      />
     );
   }
 }
 
-BurgerRoot.propTypes = {
+BurgerScreen.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
   navigation: PropTypes.shape({
@@ -202,4 +155,4 @@ export default compose(
   userQuery,
   updateUserProfileMutation,
   updateLocationMutation,
-)(BurgerRoot);
+)(BurgerScreen);

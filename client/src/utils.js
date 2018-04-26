@@ -16,6 +16,6 @@ export const uuidv4 = () => (
   })
 );
 
-export const codePushHash = () => codePush.getCurrentPackage().then(result => (
+export const getCodePushHash = () => codePush.getCurrentPackage().then(result => (
   result ? result.packageHash.slice(0, 7) : '00000000'
 ));

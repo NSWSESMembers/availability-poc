@@ -1,18 +1,16 @@
 import React from 'react';
-import Renderer from 'react-test-renderer';
+import TestRenderer from 'react-test-renderer';
 import { Clipboard } from 'react-native';
 import { ListItem } from '../../../../components/List';
 
 import ParamsListItem from '../ParamsListItem';
 
-const noop = () => {};
-
 test('renders correctly', () => {
-  const tree = Renderer.create(
+  const tree = TestRenderer.create(
     <ParamsListItem
       title="title"
       detail="detail"
-      onPress={noop}
+      onPress={jest.fn()}
     />,
   ).toJSON();
   expect(tree).toMatchSnapshot();
@@ -24,11 +22,11 @@ test('onPress', () => {
   // mock the setString function
   Clipboard.setString = jest.fn();
 
-  const renderer = Renderer.create(
+  const renderer = TestRenderer.create(
     <ParamsListItem
       title="title"
       detail={detail}
-      onPress={noop}
+      onPress={jest.fn()}
     />,
   );
 
