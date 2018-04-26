@@ -1,14 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv');
-
-
-const config = {
-}
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -62,19 +58,18 @@ module.exports = (env) => {
       }),
       new webpack.HashedModuleIdsPlugin(),
       new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor'
+        name: 'vendor',
       }),
-      //new webpack.optimize.CommonsChunkPlugin({
+      // new webpack.optimize.CommonsChunkPlugin({
       //  name: 'manifest'
-      //}),
+      // }),
       // dump all files in static directly into the build root
-      new CopyWebpackPlugin([
-        { from: 'static', to: '.', },
-      ]),
+      new CopyWebpackPlugin([{ from: 'static', to: '.' }]),
     ],
     output: {
       filename: '[name].[chunkhash].js',
-      path: path.resolve(__dirname, 'dist')
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/',
     },
     module: {
       rules: [
@@ -104,21 +99,17 @@ module.exports = (env) => {
         },
         {
           test: /\.(png|svg|jpg|gif)$/,
-          use: [
-            'file-loader'
-          ]
+          use: ['file-loader'],
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/,
-          use: [
-            'file-loader'
-          ]
+          use: ['file-loader'],
         },
       ],
     },
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     devServer: {
-      //contentBase: path.join(__dirname, 'dist'),
+      // contentBase: path.join(__dirname, 'dist'),
       historyApiFallback: true,
       port: 5000,
     },
