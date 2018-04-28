@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  removeClippedSubviews={false}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "transparent",
+        "flexDirection": "row",
+      },
+      Object {},
+    ]
+  }
+>
+  <View
+    accessibilityComponentType={undefined}
+    accessibilityLabel={undefined}
+    accessibilityTraits={undefined}
+    accessible={true}
+    collapsable={undefined}
+    hitSlop={undefined}
+    isTVSelectable={true}
+    nativeID={undefined}
+    onLayout={undefined}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "white",
+        "borderBottomLeftRadius": 5,
+        "borderColor": "#1e3c78",
+        "borderRightWidth": 0,
+        "borderTopLeftRadius": 5,
+        "borderWidth": 1,
+        "flex": 1,
+        "justifyContent": "center",
+        "opacity": 1,
+        "paddingVertical": 5,
+      }
+    }
+    testID={undefined}
+    tvParallaxProperties={undefined}
+  >
+    <View
+      style={
+        Object {
+          "flexDirection": "row",
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        numberOfLines={1}
+        style={
+          Array [
+            Object {
+              "color": "#0076FF",
+            },
+            Object {
+              "color": "#1e3c78",
+            },
+            Object {},
+          ]
+        }
+      >
+        one
+      </Text>
+    </View>
+  </View>
+  <View
+    accessibilityComponentType={undefined}
+    accessibilityLabel={undefined}
+    accessibilityTraits={undefined}
+    accessible={true}
+    collapsable={undefined}
+    hitSlop={undefined}
+    isTVSelectable={true}
+    nativeID={undefined}
+    onLayout={undefined}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#1e3c78",
+        "borderColor": "#1e3c78",
+        "borderWidth": 1,
+        "flex": 1,
+        "justifyContent": "center",
+        "marginLeft": -1,
+        "opacity": 1,
+        "paddingVertical": 5,
+      }
+    }
+    testID={undefined}
+    tvParallaxProperties={undefined}
+  >
+    <View
+      style={
+        Object {
+          "flexDirection": "row",
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        numberOfLines={1}
+        style={
+          Array [
+            Object {
+              "color": "#0076FF",
+            },
+            Object {
+              "color": "#1e3c78",
+            },
+            Array [
+              Object {
+                "color": "white",
+              },
+              Object {},
+            ],
+          ]
+        }
+      >
+        two
+      </Text>
+    </View>
+  </View>
+  <View
+    accessibilityComponentType={undefined}
+    accessibilityLabel={undefined}
+    accessibilityTraits={undefined}
+    accessible={true}
+    collapsable={undefined}
+    hitSlop={undefined}
+    isTVSelectable={true}
+    nativeID={undefined}
+    onLayout={undefined}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "white",
+        "borderBottomRightRadius": 5,
+        "borderColor": "#1e3c78",
+        "borderLeftWidth": 0,
+        "borderTopRightRadius": 5,
+        "borderWidth": 1,
+        "flex": 1,
+        "justifyContent": "center",
+        "opacity": 1,
+        "paddingVertical": 5,
+      }
+    }
+    testID={undefined}
+    tvParallaxProperties={undefined}
+  >
+    <View
+      style={
+        Object {
+          "flexDirection": "row",
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        numberOfLines={1}
+        style={
+          Array [
+            Object {
+              "color": "#0076FF",
+            },
+            Object {
+              "color": "#1e3c78",
+            },
+            Object {},
+          ]
+        }
+      >
+        three
+      </Text>
+    </View>
+  </View>
+</View>
+`;
