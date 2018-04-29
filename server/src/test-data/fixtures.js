@@ -213,6 +213,16 @@ export const GROUPS = [
       'NSW',
     ],
   },
+  {
+    name: 'OCES Working Group',
+    icon: 'mci-radio-handheld',
+    users: [
+      'parramatta3',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
 ];
 
 export const SCHEDULES = [
@@ -281,6 +291,13 @@ export const SCHEDULES = [
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
+  },
+  {
+    name: 'Weekly Meeting',
+    details: 'Weekly Monday meeting',
+    startTime: MONDAY,
+    endTime: MONDAY + (60 * 60 * 24 * 1),
+    group: 'NSW SES',
   },
 ];
 
