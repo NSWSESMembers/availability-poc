@@ -203,6 +203,16 @@ export const GROUPS = [
       'PAR',
     ],
   },
+  {
+    name: 'Metro Zone',
+    icon: 'group',
+    users: [
+      'parramatta5',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
 ];
 
 export const SCHEDULES = [
@@ -257,6 +267,20 @@ export const SCHEDULES = [
       'parramatta4',
       'parramatta5',
     ],
+  },
+  {
+    name: 'Metro L3',
+    details: 'Flood Rescue operator availability',
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
+    group: 'Metro Zone',
+  },
+  {
+    name: 'Metro IMT',
+    details: 'IMT operator availability',
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
+    group: 'Metro Zone',
   },
 ];
 
