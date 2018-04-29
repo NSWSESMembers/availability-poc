@@ -108,9 +108,6 @@ export const getHandlers = ({ models, creators: Creators }) => {
       tags(user) {
         return user.getTags();
       },
-      capabilities(user) {
-        return user.getCapabilities();
-      },
       signup(args, ctx) {
         const { deviceUuid, email, username, password } = args.user;
 
@@ -419,13 +416,14 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return org.getUsers();
       },
       tags(org, args) {
-        if (args.filter) {
-          return org.getTags({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'ASC']] });
+        const where = {};
+        if (args.nameFilter) {
+          where.name = { [Op.like]: `%${args.nameFilter}%` };
         }
-        return org.getTags();
-      },
-      capabilities(org) {
-        return org.getCapabilities();
+        if (args.typeFilter) {
+          where.type = { [Op.like]: `%${args.typeFilter}%` };
+        }
+        return org.getTags({ where, order: [['id', 'ASC']] });
       },
     },
 

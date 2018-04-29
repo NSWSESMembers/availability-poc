@@ -60,50 +60,23 @@ describe('create event', () => {
 
 describe('create tag', () => {
   const name = 'test';
-  const group = { id: 34556 };
-  const user = { id: 548746 };
-  const organisation = { id: 1248 };
+  const type = 'group';
+  const organisation = { id: 1 };
 
-  it('rejects due to missing user', async () => {
-    await expect(creators.tag({})).rejects.toThrow();
-  });
-
-  it('rejects due to missing group', async () => {
-    await expect(creators.tag({ user })).rejects.toThrow();
+  it('rejects due to missing type', async () => {
+    await expect(creators.tag({ name })).rejects.toThrow();
   });
 
   it('rejects due to missing organisation', async () => {
-    await expect(creators.tag({ user, group })).rejects.toThrow();
+    await expect(creators.tag({ name, type })).rejects.toThrow();
   });
 
   it('returns a tag', async () => {
-    const result = await creators.tag({ name, user, group, organisation });
+    const result = await creators.tag({ name, type, organisation });
 
     expect(result.id).toBeDefined();
     expect(result.name).toBe(name);
     expect(result.organisationId).toBe(organisation.id);
-  });
-});
-
-describe('create capability', () => {
-  const name = 'test';
-  const user = { id: 548746 };
-  const organisation = { id: 1248 };
-
-  it('rejects due to missing organisation', async () => {
-    await expect(creators.capability({})).rejects.toThrow();
-  });
-
-  it('rejects due to missing user', async () => {
-    await expect(creators.capability({ organisation })).rejects.toThrow();
-  });
-
-  it('returns a capability', async () => {
-    const result = await creators.capability({ name, organisation, user });
-
-    // this returns the user rather than the capability which isn't ideal
-    // but lets test for it for now
-    expect(result.id).toBe(user.id);
   });
 });
 

@@ -6,12 +6,13 @@ export default gql`
       id
       name
       tags {
-        name
         id
+        name
+        type
       }
       users {
-        username
         id
+        username
       }
       events {
         id

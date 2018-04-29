@@ -17,7 +17,8 @@ export const Schema = [
 
   input TagInput {
     id: Int!
-    name: String
+    name: String,
+    type: String,
   }
 
   input CreateGroupInput {
@@ -115,7 +116,7 @@ export const Schema = [
     name: String!
     users: [User]!
     groups(id: Int,filter: String): [Group]!
-    tags(filter: String): [Tag]!
+    tags(nameFilter: String,typeFilter: String): [Tag]!
     capabilities: [Capability]!
   }
 
@@ -148,6 +149,7 @@ export const Schema = [
   type Tag {
     id: Int!
     name: String!
+    type: String!
   }
 
   type Capability {
