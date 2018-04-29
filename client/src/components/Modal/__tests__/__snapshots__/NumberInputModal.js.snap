@@ -85,7 +85,7 @@ exports[`renders correctly 1`] = `
                 }
               }
             >
-              test
+              title
             </Text>
           </View>
         </View>
@@ -115,7 +115,7 @@ exports[`renders correctly 1`] = `
               keyboardType="numeric"
               maxLength={10}
               onChangeText={[Function]}
-              placeholder="test"
+              placeholder="placeHolder"
               style={
                 Object {
                   "color": "red",
