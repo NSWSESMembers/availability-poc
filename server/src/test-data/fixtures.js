@@ -227,7 +227,7 @@ export const GROUPS = [
 
 export const SCHEDULES = [
   {
-    name: 'Wagga Wagga OOA',
+    name: 'Wagga Wagga OOA availability',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
@@ -240,7 +240,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Kiama Rescue',
+    name: 'Kiama rescue availability',
     details: 'Ongoing availability for RCR, VR, GLR',
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -252,7 +252,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Kiama Storm Team',
+    name: 'Kiama storm availability',
     details: 'Non-urgent availability for storm jobs during this week',
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
@@ -265,7 +265,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Parramatta Storm Team',
+    name: 'Parramatta storm availability',
     details: 'Non-urgent availability for storm jobs',
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -280,20 +280,20 @@ export const SCHEDULES = [
   },
   {
     name: 'Metro L3',
-    details: 'Flood Rescue operator availability',
+    details: 'Metro - Flood Rescue operator availability',
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
   },
   {
     name: 'Metro IMT',
-    details: 'IMT operator availability',
+    details: 'Mtro - IMT operator availability',
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
   },
   {
-    name: 'Weekly Meeting',
+    name: 'OCES - Weekly Meeting',
     details: 'Weekly Monday meeting',
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 1),
