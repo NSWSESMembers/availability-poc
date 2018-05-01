@@ -32,7 +32,7 @@ test('renders correctly', () => {
     <GroupDetailsList
       items={[groupUserItems, groupScheduleItems, groupEventItems]}
       networkStatus={4}
-      selectedIndex={1}
+      selectedIndex={0}
     />,
   ).toJSON();
   expect(tree).toMatchSnapshot();
@@ -41,7 +41,7 @@ test('renders correctly', () => {
     <GroupDetailsList
       items={[groupUserItems, groupScheduleItems, groupEventItems]}
       networkStatus={4}
-      selectedIndex={2}
+      selectedIndex={1}
     />,
   ).toJSON();
   expect(tree2).toMatchSnapshot();
@@ -50,8 +50,17 @@ test('renders correctly', () => {
     <GroupDetailsList
       items={[groupUserItems, groupScheduleItems, groupEventItems]}
       networkStatus={4}
-      selectedIndex={3}
+      selectedIndex={2}
     />,
   ).toJSON();
   expect(tree3).toMatchSnapshot();
+
+  const tree4 = renderer.create(
+    <GroupDetailsList
+      items={[groupUserItems, groupScheduleItems, []]}
+      networkStatus={4}
+      selectedIndex={2}
+    />,
+  ).toJSON();
+  expect(tree4).toMatchSnapshot();
 });
