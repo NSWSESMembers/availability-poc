@@ -53,7 +53,7 @@ const GroupDetailsList = ({ items, selectedIndex, networkStatus, refetch }) => (
     <FlatList
       data={items[selectedIndex]}
       ListHeaderComponent={() =>
-        (!items.length ? (
+        (!items[selectedIndex].length ? (
           <Center>
             <Text>Nothing here</Text>
           </Center>
