@@ -5,13 +5,22 @@ import { DISTANT_FUTURE } from './constants';
 // returns a set of creators bound to the given models
 export const getCreators = (models) => {
   const {
-    Organisation, Group, User, Capability, Tag, Device, Event,
-    Schedule, TimeSegment, EventResponse, EventLocation, Message,
+    Organisation,
+    Group,
+    User,
+    Capability,
+    Tag,
+    Device,
+    Event,
+    Schedule,
+    TimeSegment,
+    EventResponse,
+    EventLocation,
+    Message,
   } = models;
 
   return {
-    organisation: ({ name }) =>
-      Organisation.create({ name }),
+    organisation: ({ name }) => Organisation.create({ name }),
 
     schedule: ({ name, details, startTime, endTime, group }) => {
       if (!group || !group.id) {
@@ -40,17 +49,18 @@ export const getCreators = (models) => {
         permalink,
         location,
         groupId: group.id,
-        startTime: (new Date()).getTime() / 1000,
+        startTime: Math.round(new Date().getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
       });
     },
 
-    location: ({ name, detail, locationLatitude, locationLongitude }) => EventLocation.create({
-      name,
-      detail,
-      locationLatitude,
-      locationLongitude,
-    }),
+    location: ({ name, detail, locationLatitude, locationLongitude }) =>
+      EventLocation.create({
+        name,
+        detail,
+        locationLatitude,
+        locationLongitude,
+      }),
 
     tag: ({ name, organisation }) => {
       if (!organisation || !organisation.id) {
@@ -72,10 +82,7 @@ export const getCreators = (models) => {
       return Capability.create({
         name,
         organisationId: organisation.id,
-      }).then(capability =>
-        capability.addUser(user)
-          .then(() => user),
-      );
+      }).then(capability => capability.addUser(user).then(() => user));
     },
 
     device: ({ uuid, user }) => {
@@ -99,12 +106,12 @@ export const getCreators = (models) => {
         name,
         icon: icon || 'group',
         organisationId: organisation.id,
-      }).then(group => Promise.all([
-        group.addUsers(users),
-        tags && tags.map(
-          t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group)),
-        ),
-      ]).then(() => group.reload()));
+      }).then(group =>
+        Promise.all([
+          group.addUsers(users),
+          tags && tags.map(t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group))),
+        ]).then(() => group.reload()),
+      );
     },
 
     user: ({ id, username, password, email, displayName, version, organisation }) => {
@@ -170,7 +177,7 @@ export const getCreators = (models) => {
         locationTime,
         userId: user.id,
         eventId: event.id,
-        eventlocationId: (destination ? destination.id : null),
+        eventlocationId: destination ? destination.id : null,
       });
     },
     eventLocation: ({ name, detail, icon, locationLatitude, locationLongitude, event }) => {
@@ -194,42 +201,50 @@ export const getCreators = (models) => {
       }
 
       if (groupId) {
-        futs.push(Group.findById(groupId).then((group) => {
-          if (!group) {
-            return Promise.reject(Error('Must pass valid group ID'));
-          }
-          return group;
-        }));
+        futs.push(
+          Group.findById(groupId).then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Must pass valid group ID'));
+            }
+            return group;
+          }),
+        );
       }
       if (eventId) {
-        futs.push(Event.findById(eventId).then((event) => {
-          if (!event) {
-            return Promise.reject(Error('Must pass valid event ID'));
-          }
-          return event;
-        }));
+        futs.push(
+          Event.findById(eventId).then((event) => {
+            if (!event) {
+              return Promise.reject(Error('Must pass valid event ID'));
+            }
+            return event;
+          }),
+        );
       }
       if (scheduleId) {
-        futs.push(Schedule.findById(scheduleId).then((schedule) => {
-          if (!schedule) {
-            return Promise.reject(Error('Must pass valid schedule ID'));
-          }
-          return schedule;
-        }));
+        futs.push(
+          Schedule.findById(scheduleId).then((schedule) => {
+            if (!schedule) {
+              return Promise.reject(Error('Must pass valid schedule ID'));
+            }
+            return schedule;
+          }),
+        );
       }
 
       if (futs.length !== 1) {
         return Promise.reject(Error('must pass exactly one of groupId, eventId, scheduleId'));
       }
 
-      return Promise.all(futs).then(() => Message.create({
-        text,
-        groupId,
-        eventId,
-        scheduleId,
-        userId: user.id,
-        edited: false,
-      }));
+      return Promise.all(futs).then(() =>
+        Message.create({
+          text,
+          groupId,
+          eventId,
+          scheduleId,
+          userId: user.id,
+          edited: false,
+        }),
+      );
     },
   };
 };

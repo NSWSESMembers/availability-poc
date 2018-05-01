@@ -30,7 +30,9 @@ export default theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    maxWidth: 300,
     width: '100%',
+  },
+  menu: {
+    width: 200,
   },
 });

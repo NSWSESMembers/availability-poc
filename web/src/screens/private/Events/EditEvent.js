@@ -4,22 +4,19 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Button from 'material-ui/Button';
 import Card, { CardContent } from 'material-ui/Card';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
+import { FormControl } from 'material-ui/Form';
 import { CircularProgress } from 'material-ui/Progress';
-import Select from 'material-ui/Select';
-import Snackbar from 'material-ui/Snackbar';
 import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
-import Switch from 'material-ui/Switch';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
+
+import Locations from '../../../fixtures/locations';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
@@ -29,6 +26,7 @@ class EditEvent extends React.Component {
   state = {
     name: '',
     details: '',
+    location: '',
   };
 
   onNameChange = (e) => {
@@ -41,8 +39,15 @@ class EditEvent extends React.Component {
     this.setState(() => ({ details }));
   };
 
+  onLocationChange = (event) => {
+    const location = event.target.value;
+    this.setState(() => ({ location }));
+  };
+
   handleSave = () => {
     console.log('save');
+
+    console.log(Locations.filter(location => location.name === this.state.location));
   };
 
   render() {
@@ -93,6 +98,30 @@ class EditEvent extends React.Component {
                       margin="normal"
                     />
                   </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      id="select-currency-native"
+                      select
+                      label="Location"
+                      className={classes.textField}
+                      onChange={this.onLocationChange}
+                      SelectProps={{
+                        native: true,
+                        MenuProps: {
+                          className: classes.menu,
+                        },
+                      }}
+                      margin="normal"
+                      required
+                    >
+                      <option key="" value="" />
+                      {Locations.map(option => (
+                        <option key={option.name} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </TextField>
+                  </FormControl>
                   <div className={classes.actionsContainer}>
                     <div>
                       <Button
@@ -100,7 +129,11 @@ class EditEvent extends React.Component {
                         color="primary"
                         onClick={this.handleSave}
                         className={classes.button}
-                        disabled={this.state.name === '' || this.state.details === ''}
+                        disabled={
+                          this.state.name === '' ||
+                          this.state.details === '' ||
+                          this.state.location === ''
+                        }
                       >
                         Save
                       </Button>
