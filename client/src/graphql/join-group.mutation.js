@@ -5,6 +5,7 @@ export default gql`
     addUserToGroup(groupUpdate: $groupUpdate) {
       id
       name
+      icon
       tags {
         id
         name

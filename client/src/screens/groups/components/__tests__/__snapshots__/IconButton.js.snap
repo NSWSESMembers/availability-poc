@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  accessibilityComponentType={undefined}
+  accessibilityLabel={undefined}
+  accessibilityTraits={undefined}
+  accessible={true}
+  collapsable={undefined}
+  hitSlop={undefined}
+  isTVSelectable={true}
+  nativeID={undefined}
+  onLayout={undefined}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "flexDirection": "column",
+      "justifyContent": "center",
+      "opacity": 1,
+      "paddingLeft": 8,
+      "width": 50,
+    }
+  }
+  testID={undefined}
+  tvParallaxProperties={undefined}
+>
+  <Text
+    accessible={true}
+    allowFontScaling={false}
+    ellipsizeMode="tail"
+    style={
+      Array [
+        Object {
+          "color": undefined,
+          "fontSize": 25,
+        },
+        Object {
+          "alignSelf": "center",
+        },
+        Object {
+          "fontFamily": "FontAwesome",
+          "fontStyle": "normal",
+          "fontWeight": "normal",
+        },
+      ]
+    }
+  >
+    
+  </Text>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+    style={
+      Object {
+        "alignItems": "center",
+        "color": "#6B6B6B",
+        "flex": 0,
+        "fontSize": 7,
+        "includeFontPadding": false,
+        "justifyContent": "center",
+        "textAlign": "center",
+      }
+    }
+  >
+    text
+  </Text>
+</View>
+`;
