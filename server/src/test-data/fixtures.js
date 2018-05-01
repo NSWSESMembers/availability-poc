@@ -36,6 +36,7 @@ const makeTags = (rawTags) => {
 
 export const TAGS = makeTags({
   orgStructure: [
+    'NSW',
     'SWR',
     'ISR',
     'SSR',
