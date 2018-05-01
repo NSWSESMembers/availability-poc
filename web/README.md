@@ -37,7 +37,7 @@ Install dependencies:
 yarn
 ```
 
-For a local dev server at //localhost:5000, use:
+For a local dev server at localhost:5000, use:
 
 ```sh
 yarn start
