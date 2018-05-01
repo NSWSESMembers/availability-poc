@@ -22,26 +22,51 @@ export const DEFAULT_GROUP = 'NSW SES';
 
 export const ORG_NAME = 'NSW SES';
 
-export const CAPABILITIES = [
-  'Road Crash Rescue',
-  'Vertical Rescue',
-  'Flood Rescue',
-  'Chainsaw',
-];
+const makeTags = (rawTags) => {
+  const results = [];
+  Object.keys(rawTags).forEach((type) => {
+    rawTags[type].forEach((tag) => {
+      results.push({ name: tag, type });
+    });
+  });
+  return results;
+};
 
-export const TAGS = [
-  'NSW',
-  'SWR',
-  'ISR',
-  'SSR',
-  'KMA',
-  'PAR',
-  'HLS',
-  'WOL',
-  'AUB',
-  'HAW',
-  'HOL',
-];
+export const TAGS = makeTags({
+  orgStructure: [
+    'NSW',
+    'SWR',
+    'ISR',
+    'SSR',
+    'KMA',
+    'PAR',
+    'HLS',
+    'HOL',
+    'AUB',
+    'HAW',
+    'HOL',
+  ],
+  capability: [
+    'Storm and Water Damage - Ground',
+    'Storm and Water Damage - Heights',
+    'Flood Rescue Operator Level 1',
+    'Flood Rescue Operator Level 2',
+    'Flood Rescue Boat Operator',
+    'Flood Rescue Operator Level 3',
+    'General Land Rescue Operator',
+    'Road Crash Rescue Operator',
+    'Community First Responder Registration',
+    'Vertical Rescue Operator',
+    'Chainsaw L1 (Cross Cut)',
+    'Chainsaw L2 (Intermediate Felling)',
+    'Land Search',
+    'SES IM Incident Controller',
+    'SES IM Planning Officer',
+    'SES IM Public Information Officer',
+    'SES IM Operations Officer',
+    'SES IM Logistics Officer',
+  ],
+});
 
 export const USERS = [
   {
@@ -50,6 +75,11 @@ export const USERS = [
     password: 'test',
     displayName: 'Paddy Platypus',
     email: 'test@example.com',
+    tags: [
+      'Road Crash Rescue Operator',
+      'Chainsaw L1 (Cross Cut)',
+      'Land Search',
+    ],
   },
   {
     id: 11,
@@ -57,6 +87,10 @@ export const USERS = [
     password: 'test',
     displayName: 'Alex Alpha',
     email: 'kiama1@example.com',
+    tags: [
+      'Vertical Rescue Operator',
+      'SES IM Incident Controller',
+    ],
   },
   {
     id: 12,
@@ -64,6 +98,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Bob Bravo',
     email: 'kiama2@example.com',
+    tags: ['SES IM Logistics Officer'],
   },
   {
     id: 13,
@@ -71,6 +106,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Caroline Charlie',
     email: 'kiama3@example.com',
+    tags: ['SES IM Public Information Officer'],
   },
   {
     id: 14,
@@ -78,6 +114,7 @@ export const USERS = [
     password: 'test',
     displayName: 'David Delta',
     email: 'kiama4@example.com',
+    tags: [],
   },
   {
     id: 15,
@@ -85,6 +122,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Erin Echo',
     email: 'kiama4@example.com',
+    tags: [],
   },
   {
     id: 16,
@@ -92,6 +130,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Fabio Foxtrot',
     email: 'kiama6@example.com',
+    tags: [],
   },
   {
     id: 17,
@@ -99,6 +138,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Greg Golf',
     email: 'kiama7@example.com',
+    tags: [],
   },
   {
     id: 18,
@@ -106,6 +146,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Heather Hotel',
     email: 'kiama8@example.com',
+    tags: [],
   },
   {
     id: 21,
@@ -113,6 +154,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Tim Dykes',
     email: 'paramatta1@example.com',
+    tags: [],
   },
   {
     id: 22,
@@ -120,6 +162,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Ian India',
     email: 'parramatta2@example.com',
+    tags: [],
   },
   {
     id: 23,
@@ -127,6 +170,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Jane Juliet',
     email: 'parramatta3@example.com',
+    tags: [],
   },
   {
     id: 24,
@@ -134,6 +178,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Katt Kilo',
     email: 'parramatta4@example.com',
+    tags: [],
   },
   {
     id: 25,
@@ -141,6 +186,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Luke Lima',
     email: 'parramatta5@example.com',
+    tags: [],
   },
 ];
 

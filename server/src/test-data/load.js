@@ -1,10 +1,12 @@
 import {
-  ORG_NAME, CAPABILITIES, TAGS, USERS, GROUPS, SCHEDULES, EVENTS, DEFAULT_USERNAME,
+  ORG_NAME, TAGS, USERS, GROUPS, SCHEDULES, EVENTS,
 } from './fixtures';
 import { DEFAULT_DEVICE_UUID } from '../config';
 
-const createUser = (Creators, organisation, user) => {
-  const { id, username, password, email, displayName } = user;
+const createUser = (Creators, organisation, user, allTags) => {
+  const { id, username, password, email, displayName, tags } = user;
+  const neededTags = tags.map(t => allTags[t] && { id: allTags[t].id });
+
   return Creators.user({
     id,
     username,
@@ -12,16 +14,19 @@ const createUser = (Creators, organisation, user) => {
     email,
     displayName,
     organisation,
+    tags: neededTags,
   }).then(u => Creators.device({ uuid: DEFAULT_DEVICE_UUID, user: u })
     .then(() => u));
 };
 
-const createUsers = (Creators, organisation) => {
+const createUsers = (Creators, organisation, tags) => {
   // create the users from USERS above
   const results = {};
   return Promise.all(
     USERS.map(
-      user => createUser(Creators, organisation, user).then((u) => { results[u.username] = u; }),
+      user => createUser(Creators, organisation, user, tags).then((u) => {
+        results[u.username] = u;
+      }),
     ),
   ).then(() => results);
 };
@@ -51,23 +56,10 @@ const createTags = (Creators, organisation) => {
   const results = {};
   return Promise.all(
     TAGS.map(
-      t => Creators.tag({ name: t, organisation })
+      t => Creators.tag({ name: t.name, type: t.type, organisation })
         .then((tag) => {
           results[tag.name] = tag;
         }),
-    ),
-  ).then(() => results);
-};
-
-const createCapabilities = (Creators, organisation, user) => {
-  // create the capabilities and then return the created objects in a dict keyed by their name
-  // For now we assign all capabilities to the single provided user
-  const results = {};
-  return Promise.all(
-    CAPABILITIES.map(c => Creators.capability({ name: c, organisation, user })
-      .then((capability) => {
-        results[capability.name] = capability;
-      }),
     ),
   ).then(() => results);
 };
@@ -166,10 +158,8 @@ export const loadTestData = Creators =>
     name: ORG_NAME,
   }).then(async (org) => {
     const tags = await createTags(Creators, org);
-    const users = await createUsers(Creators, org);
+    const users = await createUsers(Creators, org, tags);
     const groups = await createGroups(Creators, org, users, tags);
-    const testUser = users[DEFAULT_USERNAME];
-    await createCapabilities(Creators, org, testUser);
     await createSchedules(Creators, groups, users);
     await createEvents(Creators, groups, users);
   });
