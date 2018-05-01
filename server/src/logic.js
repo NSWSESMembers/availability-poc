@@ -413,7 +413,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       users(org) {
         // TODO: think about who we show the complete organisation user list to
-        return org.getUsers();
+        return org.getUsers({ order: [['id', 'ASC']] });
       },
       tags(org, args) {
         const where = {};
@@ -429,7 +429,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
 
     group: {
       users(group) {
-        return group.getUsers();
+        return group.getUsers({ order: [['displayName', 'ASC']] });
       },
       schedules(group) {
         return group.getSchedules();
