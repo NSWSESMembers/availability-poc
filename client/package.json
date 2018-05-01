@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
-    "test": "TZ=UTC jest",
-    "test-and-coverage": "TZ=UTC jest && codecov -F unittests",
+    "test": "TZ=UTC jest --maxWorkers=4",
+    "test-and-coverage": "TZ=UTC jest --maxWorkers=4 && codecov -F unittests",
     "push-ios": "code-push release-react availability-poc-ios ios",
     "push-android": "code-push release-react availability-poc-android android",
     "run-ios": "react-native run-ios",
