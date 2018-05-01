@@ -3,25 +3,117 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
+import Paper from 'material-ui/Paper';
+import Toolbar from 'material-ui/Toolbar';
 import { CircularProgress } from 'material-ui/Progress';
+import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
+
+import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
 import styles from './ViewEvents.styles';
 
-const ViewEvents = ({ classes, loading }) => {
-  if (loading) {
-    return <CircularProgress className={classes.progress} size={50} />;
-  }
+const columnData = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'details', numeric: false, disablePadding: false, label: 'Details' },
+];
 
-  return <div className={classes.root}>View Events</div>;
-};
+class ViewEvents extends React.Component {
+  state = {
+    order: 'asc',
+    orderBy: 'name',
+  };
+
+  handleRequestSort = (event, property) => {
+    const orderBy = property;
+    let order = 'desc';
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc';
+    }
+
+    this.setState({ order, orderBy });
+  };
+
+  render() {
+    const { classes } = this.props;
+    const { order, orderBy } = this.state;
+
+    if (this.props.loading) {
+      return <CircularProgress className={classes.progress} size={50} />;
+    }
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.actionPanel}>
+          <div>
+            <Button
+              variant="raised"
+              size="small"
+              color="primary"
+              component={Link}
+              to="/events/edit"
+            >
+              Add New Event
+            </Button>
+          </div>
+        </div>
+        <Paper className={classes.paper}>
+          <Toolbar className={classes.tableToolbar}>
+            <Typography variant="title">Events</Typography>
+          </Toolbar>
+          <Table className={classes.table}>
+            <EnhancedTableHead
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={this.handleRequestSort}
+              columnData={columnData}
+            />
+            <TableBody>
+              {this.props.user.events.map(event => (
+                <TableRow key={event.id}>
+                  <TableCell>
+                    <Link to={`/events/edit/${event.id}`}>{event.name}</Link>
+                  </TableCell>
+                  <TableCell>
+                    {event.details} {event.startTime}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
+    );
+  }
+}
 
 ViewEvents.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  user: PropTypes.shape({
+    schedules: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        details: PropTypes.string.isRequired,
+        startTime: PropTypes.number.isRequired,
+        endTime: PropTypes.number.isRequired,
+      }),
+    ),
+    groups: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+  }),
 };
 
 const userQuery = graphql(CURRENT_USER_QUERY, {

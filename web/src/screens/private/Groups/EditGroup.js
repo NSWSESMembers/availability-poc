@@ -9,17 +9,17 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './ViewEvent.styles';
+import styles from './EditGroup.styles';
 
-const ViewEvent = ({ classes, loading }) => {
+const EditGroup = ({ classes, loading }) => {
   if (loading) {
     return <CircularProgress className={classes.progress} size={50} />;
   }
 
-  return <div className={classes.root}>View Event</div>;
+  return <div className={classes.root}>Add Group</div>;
 };
 
-ViewEvent.propTypes = {
+EditGroup.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
 };
@@ -38,4 +38,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewEvent);
+export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(EditGroup);

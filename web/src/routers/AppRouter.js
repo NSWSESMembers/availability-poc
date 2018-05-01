@@ -13,12 +13,10 @@ import ViewSchedule from '../screens/private/Schedules/ViewSchedule';
 import AddSchedule from '../screens/private/Schedules/AddSchedule';
 
 import ViewEvents from '../screens/private/Events/ViewEvents';
-import ViewEvent from '../screens/private/Events/ViewEvent';
-import AddEvent from '../screens/private/Events/AddEvent';
+import EditEvent from '../screens/private/Events/EditEvent';
 
 import ViewGroups from '../screens/private/Groups/ViewGroups';
-import ViewGroup from '../screens/private/Groups/ViewGroup';
-import AddGroup from '../screens/private/Groups/AddGroup';
+import EditGroup from '../screens/private/Groups/EditGroup';
 
 import Header from '../screens/partial/Header';
 
@@ -35,14 +33,12 @@ const AppRouter = () => (
         <PublicRoute path="/signup" component={SignupPage} exact />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/groups" component={ViewGroups} exact />
-        <PrivateRoute path="/groups/add" component={AddGroup} exact />
-        <PrivateRoute path="/groups/:id" component={ViewGroup} />
+        <PrivateRoute path="/groups/edit" component={EditGroup} />
         <PrivateRoute path="/schedules" component={ViewSchedules} exact />
         <PrivateRoute path="/schedules/add" component={AddSchedule} exact />
         <PrivateRoute path="/schedules/:id" component={ViewSchedule} />
         <PrivateRoute path="/events" component={ViewEvents} exact />
-        <PrivateRoute path="/events/add" component={AddEvent} exact />
-        <PrivateRoute path="/events/:id" component={ViewEvent} />
+        <PrivateRoute path="/events/edit" component={EditEvent} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>
