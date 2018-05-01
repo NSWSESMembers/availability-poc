@@ -22,12 +22,10 @@ export const DEFAULT_GROUP = 'NSW SES';
 
 export const ORG_NAME = 'NSW SES';
 
-
 const makeTags = (rawTags) => {
   const results = [];
-  Object.entries(rawTags).forEach((entry) => {
-    const [type, value] = entry;
-    value.forEach((tag) => {
+  Object.keys(rawTags).forEach((type) => {
+    rawTags[type].forEach((tag) => {
       results.push({ name: tag, type });
     });
   });
