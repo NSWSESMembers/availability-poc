@@ -17,15 +17,39 @@ import { logout } from '../../actions/auth';
 import styles from './Header.styles';
 
 class Header extends React.Component {
-  handleChange = () => {
-    const { history } = this.props;
-    if (history.location.pathname !== '/dashboard') {
-      history.push('/dashboard');
+  constructor(props) {
+    super(props);
+    let route = 'Home';
+    if (props.location.pathname.startsWith('/groups')) route = 'Groups';
+    if (props.location.pathname.startsWith('/schedules')) route = 'Availability';
+    if (props.location.pathname.startsWith('/events')) route = 'Events';
+
+    this.state = {
+      route,
+    };
+  }
+
+  handleChange = (event, value) => {
+    this.setState({ route: value });
+
+    const paths = {
+      Home: '/dashboard',
+      Groups: '/groups',
+      Availability: '/schedules',
+      Events: '/events',
+    };
+    let path = paths[value];
+    if (typeof path === 'undefined') {
+      path = '/dashboard';
     }
+    const { history } = this.props;
+    history.push(path);
   };
+
   handleLogout = () => {
     this.props.dispatch(logout());
   };
+
   render() {
     const { classes, isAuthenticated } = this.props;
     return (
@@ -46,8 +70,11 @@ class Header extends React.Component {
           </Toolbar>
         </AppBar>
         <AppBar position="static" color="default">
-          <Tabs value="Requests" onChange={this.handleChange} style={{ marginLeft: 30 }}>
-            <Tab value="Requests" label="Requests" />
+          <Tabs value={this.state.route} onChange={this.handleChange} style={{ marginLeft: 30 }}>
+            <Tab value="Home" label="Home" />
+            <Tab value="Groups" label="Groups" />
+            <Tab value="Availability" label="Availability" />
+            <Tab value="Events" label="Events" />
           </Tabs>
         </AppBar>
       </div>
@@ -60,6 +87,9 @@ Header.propTypes = {
   history: PropTypes.shape({}),
   dispatch: PropTypes.func,
   isAuthenticated: PropTypes.bool.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }),
 };
 
 const mapStateToProps = state => ({

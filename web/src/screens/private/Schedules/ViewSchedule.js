@@ -103,7 +103,6 @@ class ViewSchedule extends React.Component {
     this.setState({ modalOpen: false });
   };
   onDeleteModal = (timeSegmentId) => {
-    console.log(timeSegmentId);
     if (timeSegmentId > 0) {
       this.props.removeTimeSegment({
         scheduleId: parseInt(this.props.match.params.id, 10),
