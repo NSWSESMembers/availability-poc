@@ -14,6 +14,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
+import { numbers } from '../../constants';
 
 import styles from './Dashboard.styles';
 
@@ -52,12 +53,12 @@ const displayRequests = (classes, user) => {
               </TableCell>
               <TableCell>{schedule.group.name}</TableCell>
               {/* TODO: Make sure schedule object has this in the future */}
-              {/* <TableCell>{schedule.type}</TableCell> */}
+              <TableCell>{schedule.type}</TableCell>
               <TableCell>
-                {schedule.startTime === 0 ? '-' : moment.unix(schedule.startTime).format('LLL')}
+                {schedule.startTime === numbers.zero ? '-' : moment.unix(schedule.startTime).format('LLL')}
               </TableCell>
               <TableCell>
-                {schedule.endTime === 2147483647
+                {schedule.endTime === numbers.undefined
                   ? '-'
                   : moment.unix(schedule.endTime).format('LLL')}
               </TableCell>
