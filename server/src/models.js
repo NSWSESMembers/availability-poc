@@ -20,12 +20,9 @@ export const defineModels = (db) => {
     version: { type: Sequelize.INTEGER }, // version the password
   });
 
-  const CapabilityModel = db.define('capability', {
-    name: { type: Sequelize.STRING },
-  });
-
   const TagModel = db.define('tag', {
     name: { type: Sequelize.STRING },
+    type: { type: Sequelize.STRING },
   });
 
   const DeviceModel = db.define('device', {
@@ -130,10 +127,6 @@ export const defineModels = (db) => {
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
-  // users belong to capability tags
-  UserModel.belongsToMany(CapabilityModel, { through: 'user_capability' });
-  CapabilityModel.belongsToMany(UserModel, { through: 'user_capability' });
-
   // events are created for a single group
   EventModel.belongsTo(GroupModel);
   GroupModel.hasMany(EventModel);
@@ -167,15 +160,10 @@ export const defineModels = (db) => {
   TagModel.belongsTo(OrganisationModel);
   OrganisationModel.hasMany(TagModel);
 
-  // tags belong to one organisation for now
-  CapabilityModel.belongsTo(OrganisationModel);
-  OrganisationModel.hasMany(CapabilityModel);
-
   return {
     Organisation: db.models.organisation,
     Group: db.models.group,
     User: db.models.user,
-    Capability: db.models.capability,
     Tag: db.models.tag,
     Device: db.models.device,
     Event: db.models.event,

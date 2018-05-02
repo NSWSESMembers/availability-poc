@@ -5,7 +5,7 @@ import { DISTANT_FUTURE } from './constants';
 // returns a set of creators bound to the given models
 export const getCreators = (models) => {
   const {
-    Organisation, Group, User, Capability, Tag, Device, Event,
+    Organisation, Group, User, Tag, Device, Event,
     Schedule, TimeSegment, EventResponse, EventLocation, Message,
   } = models;
 
@@ -52,30 +52,18 @@ export const getCreators = (models) => {
       locationLongitude,
     }),
 
-    tag: ({ name, organisation }) => {
+    tag: ({ name, type, organisation }) => {
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
+      }
+      if (!type) {
+        return Promise.reject(Error('Must pass type'));
       }
       return Tag.create({
         name,
+        type,
         organisationId: organisation.id,
       });
-    },
-
-    capability: ({ name, organisation, user }) => {
-      if (!organisation || !organisation.id) {
-        return Promise.reject(Error('Must pass organisation'));
-      }
-      if (!user || !user.id) {
-        return Promise.reject(Error('Must pass user'));
-      }
-      return Capability.create({
-        name,
-        organisationId: organisation.id,
-      }).then(capability =>
-        capability.addUser(user)
-          .then(() => user),
-      );
     },
 
     device: ({ uuid, user }) => {
@@ -107,7 +95,7 @@ export const getCreators = (models) => {
       ]).then(() => group.reload()));
     },
 
-    user: ({ id, username, password, email, displayName, version, organisation }) => {
+    user: ({ id, username, password, email, displayName, version, organisation, tags }) => {
       // it's fine for id to be left null/undefined
       if (!organisation || !organisation.id) {
         return Promise.reject(Error('Must pass organisation'));
@@ -121,7 +109,12 @@ export const getCreators = (models) => {
           email,
           version,
           organisationId: organisation.id,
-        }),
+        }).then(user => Promise.all([
+          tags && tags.map(
+            t => Tag.findById(t.id).then(foundTag => foundTag.addUser(user)),
+          ),
+        ]).then(() => user.reload()),
+        ),
       );
     },
 

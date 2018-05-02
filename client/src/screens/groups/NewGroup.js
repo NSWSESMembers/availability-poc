@@ -98,7 +98,7 @@ searchTagOnPress = (text) => {
 }
 
 applyTagSearchFilter = () => {
-  this.props.refetch({ filter: this.state.filterString });
+  this.props.refetch({ nameFilter: this.state.filterString });
 }
 
   create = () => {
@@ -208,6 +208,7 @@ NewGroup.propTypes = {
         PropTypes.shape({
           id: PropTypes.number.isRequired,
           name: PropTypes.string.isRequired,
+          type: PropTypes.string.isRequired,
         }),
       ),
     }),
@@ -225,7 +226,8 @@ NewGroup.propTypes = {
 const tagsQuery = graphql(ORGANISATION_TAGS, {
   options: () => ({
     variables: {
-      filter: '',
+      nameFilter: '',
+      typeFilter: 'orgStructure',
     },
   }),
   props: ({ data: { loading, networkStatus, refetch, user } }) => ({

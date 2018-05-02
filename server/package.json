@@ -12,9 +12,9 @@
     "build": "bash scripts/build.sh",
     "serve": "node dist/main.js",
     "lint": "eslint src tests",
-    "test-integration": "jest tests/ && codecov -F integration",
-    "test-unit": "jest --testPathIgnorePatterns '^<rootDir>/(tests|dist)/' && codecov -F unittests",
-    "test": "jest --testPathIgnorePatterns '^<rootDir>/(tests|dist)/'"
+    "test-integration": "jest tests/ --maxWorkers=4&& codecov -F integration",
+    "test-unit": "jest --maxWorkers=4 --testPathIgnorePatterns '^<rootDir>/(tests|dist)/' && codecov -F unittests",
+    "test": "jest --maxWorkers=4 --testPathIgnorePatterns '^<rootDir>/(tests|dist)/'"
   },
   "jest": {
     "coverageDirectory": "./coverage/",

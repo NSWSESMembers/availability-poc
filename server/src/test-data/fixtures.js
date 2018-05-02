@@ -22,26 +22,51 @@ export const DEFAULT_GROUP = 'NSW SES';
 
 export const ORG_NAME = 'NSW SES';
 
-export const CAPABILITIES = [
-  'Road Crash Rescue',
-  'Vertical Rescue',
-  'Flood Rescue',
-  'Chainsaw',
-];
+const makeTags = (rawTags) => {
+  const results = [];
+  Object.keys(rawTags).forEach((type) => {
+    rawTags[type].forEach((tag) => {
+      results.push({ name: tag, type });
+    });
+  });
+  return results;
+};
 
-export const TAGS = [
-  'NSW',
-  'SWR',
-  'ISR',
-  'SSR',
-  'KMA',
-  'PAR',
-  'HLS',
-  'WOL',
-  'AUB',
-  'HAW',
-  'HOL',
-];
+export const TAGS = makeTags({
+  orgStructure: [
+    'NSW',
+    'SWR',
+    'ISR',
+    'SSR',
+    'KMA',
+    'PAR',
+    'HLS',
+    'HOL',
+    'AUB',
+    'HAW',
+    'HOL',
+  ],
+  capability: [
+    'Storm and Water Damage - Ground',
+    'Storm and Water Damage - Heights',
+    'Flood Rescue Operator Level 1',
+    'Flood Rescue Operator Level 2',
+    'Flood Rescue Boat Operator',
+    'Flood Rescue Operator Level 3',
+    'General Land Rescue Operator',
+    'Road Crash Rescue Operator',
+    'Community First Responder Registration',
+    'Vertical Rescue Operator',
+    'Chainsaw L1 (Cross Cut)',
+    'Chainsaw L2 (Intermediate Felling)',
+    'Land Search',
+    'SES IM Incident Controller',
+    'SES IM Planning Officer',
+    'SES IM Public Information Officer',
+    'SES IM Operations Officer',
+    'SES IM Logistics Officer',
+  ],
+});
 
 export const USERS = [
   {
@@ -50,6 +75,11 @@ export const USERS = [
     password: 'test',
     displayName: 'Paddy Platypus',
     email: 'test@example.com',
+    tags: [
+      'Road Crash Rescue Operator',
+      'Chainsaw L1 (Cross Cut)',
+      'Land Search',
+    ],
   },
   {
     id: 11,
@@ -57,6 +87,10 @@ export const USERS = [
     password: 'test',
     displayName: 'Alex Alpha',
     email: 'kiama1@example.com',
+    tags: [
+      'Vertical Rescue Operator',
+      'SES IM Incident Controller',
+    ],
   },
   {
     id: 12,
@@ -64,6 +98,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Bob Bravo',
     email: 'kiama2@example.com',
+    tags: ['SES IM Logistics Officer'],
   },
   {
     id: 13,
@@ -71,6 +106,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Caroline Charlie',
     email: 'kiama3@example.com',
+    tags: ['SES IM Public Information Officer'],
   },
   {
     id: 14,
@@ -78,6 +114,7 @@ export const USERS = [
     password: 'test',
     displayName: 'David Delta',
     email: 'kiama4@example.com',
+    tags: [],
   },
   {
     id: 15,
@@ -85,6 +122,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Erin Echo',
     email: 'kiama4@example.com',
+    tags: [],
   },
   {
     id: 16,
@@ -92,6 +130,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Fabio Foxtrot',
     email: 'kiama6@example.com',
+    tags: [],
   },
   {
     id: 17,
@@ -99,6 +138,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Greg Golf',
     email: 'kiama7@example.com',
+    tags: [],
   },
   {
     id: 18,
@@ -106,6 +146,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Heather Hotel',
     email: 'kiama8@example.com',
+    tags: [],
   },
   {
     id: 21,
@@ -113,6 +154,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Tim Dykes',
     email: 'paramatta1@example.com',
+    tags: [],
   },
   {
     id: 22,
@@ -120,6 +162,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Ian India',
     email: 'parramatta2@example.com',
+    tags: [],
   },
   {
     id: 23,
@@ -127,6 +170,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Jane Juliet',
     email: 'parramatta3@example.com',
+    tags: [],
   },
   {
     id: 24,
@@ -134,6 +178,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Katt Kilo',
     email: 'parramatta4@example.com',
+    tags: [],
   },
   {
     id: 25,
@@ -141,6 +186,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Luke Lima',
     email: 'parramatta5@example.com',
+    tags: [],
   },
 ];
 
@@ -203,11 +249,31 @@ export const GROUPS = [
       'PAR',
     ],
   },
+  {
+    name: 'Metro Zone',
+    icon: 'group',
+    users: [
+      'parramatta5',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
+  {
+    name: 'OCES Working Group',
+    icon: 'mci-radio-handheld',
+    users: [
+      'parramatta3',
+    ],
+    tags: [
+      'NSW',
+    ],
+  },
 ];
 
 export const SCHEDULES = [
   {
-    name: 'Wagga Wagga OOA',
+    name: 'Wagga Wagga OOA availability',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
@@ -220,7 +286,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Kiama Rescue',
+    name: 'Kiama rescue availability',
     details: 'Ongoing availability for RCR, VR, GLR',
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -232,7 +298,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Kiama Storm Team',
+    name: 'Kiama storm availability',
     details: 'Non-urgent availability for storm jobs during this week',
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
@@ -245,7 +311,7 @@ export const SCHEDULES = [
     ],
   },
   {
-    name: 'Parramatta Storm Team',
+    name: 'Parramatta storm availability',
     details: 'Non-urgent availability for storm jobs',
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -257,6 +323,27 @@ export const SCHEDULES = [
       'parramatta4',
       'parramatta5',
     ],
+  },
+  {
+    name: 'Metro L3',
+    details: 'Metro - Flood Rescue operator availability',
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
+    group: 'Metro Zone',
+  },
+  {
+    name: 'Metro IMT',
+    details: 'Mtro - IMT operator availability',
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
+    group: 'Metro Zone',
+  },
+  {
+    name: 'OCES - Weekly Meeting',
+    details: 'Weekly Monday meeting',
+    startTime: MONDAY,
+    endTime: MONDAY + (60 * 60 * 24 * 1),
+    group: 'NSW SES',
   },
 ];
 

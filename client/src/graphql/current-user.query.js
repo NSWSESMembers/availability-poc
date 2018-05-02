@@ -13,7 +13,9 @@ export default gql`
         name
         icon
         tags {
+          id
           name
+          type
         }
       }
       events {
