@@ -46,7 +46,7 @@ const Dashboard = ({ classes, loading, user }) => {
 Dashboard.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
-  user: PropTypes.shape({}).isRequired,
+  user: PropTypes.shape({}),
 };
 
 const userQuery = graphql(CURRENT_USER_QUERY, {
