@@ -45,10 +45,10 @@ const DisplayRequests = ({ classes, user }) => {
               {/* TODO: Make sure schedule object has this in the future */}
               <TableCell>{schedule.type}</TableCell>
               <TableCell>
-                {schedule.startTime === numbers.zero ? '-' : moment.unix(schedule.startTime).format('LLL')}
+                {schedule.startTime === numbers.distantPast ? '-' : moment.unix(schedule.startTime).format('LLL')}
               </TableCell>
               <TableCell>
-                {schedule.endTime === numbers.undefined
+                {schedule.endTime === numbers.distantFuture
                   ? '-'
                   : moment.unix(schedule.endTime).format('LLL')}
               </TableCell>
