@@ -30,7 +30,6 @@ const DisplayRequests = ({ classes, user }) => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Group</TableCell>
-            <TableCell>Type</TableCell>
             <TableCell>Start Date</TableCell>
             <TableCell>End Date</TableCell>
           </TableRow>
@@ -42,10 +41,8 @@ const DisplayRequests = ({ classes, user }) => {
                 <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
               </TableCell>
               <TableCell>{schedule.group.name}</TableCell>
-              {/* TODO: Make sure schedule object has this in the future */}
-              <TableCell>{schedule.type}</TableCell>
               <TableCell>
-                {schedule.startTime === numbers.distantPast ? '-' : moment.unix(schedule.startTime).format('LLL')}
+                {schedule.startTime === numbers.distantPast ? 'Ongoing' : moment.unix(schedule.startTime).format('LLL')}
               </TableCell>
               <TableCell>
                 {schedule.endTime === numbers.distantFuture
@@ -74,8 +71,6 @@ DisplayRequests.propTypes = {
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        // TODO: make sure this is returned in the future
-        // type: PropTypes.string.isRequired,
         startTime: PropTypes.number.isRequired,
         endTime: PropTypes.number.isRequired,
       }),
