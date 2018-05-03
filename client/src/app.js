@@ -18,7 +18,7 @@ console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 
-export const bugsnag = BugSnagClient.typeof === undefined ? new BugSnagClient() : undefined;
+export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
 
 // middleware for requests
 networkInterface.use([

@@ -5,7 +5,6 @@
   "scripts": {
     "build:dev": "webpack",
     "build:prod": "webpack -p --env production",
-    "dev-server": "webpack-dev-server",
     "lint": "./node_modules/.bin/eslint src",
     "test": "jest --config=jest.config.json",
     "start": "webpack-dev-server",
