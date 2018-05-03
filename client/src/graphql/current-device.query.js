@@ -6,6 +6,7 @@ export default gql`
     device {
       id
       uuid
+      pushToken
     }
   }
 `;

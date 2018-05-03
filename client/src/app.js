@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
 import local from './state/local.reducer';
+import { PushManager } from './push';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
 
@@ -19,6 +20,7 @@ const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 
 export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
+export const pushManager = new PushManager();
 
 // middleware for requests
 networkInterface.use([
@@ -109,6 +111,9 @@ store = createStore(
 
 // persistent storage
 persistStore(store);
+
+// start up push notification handler
+pushManager.init().then(() => { console.log('Push is ready'); });
 
 const App = () => (
   <ApolloProvider store={store} client={client}>
