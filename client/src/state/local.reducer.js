@@ -2,13 +2,16 @@
 // of which user is logged in/logged out.
 
 import { REHYDRATE } from 'redux-persist';
-import Immutable from 'seamless-immutable';
 
 import { uuidv4 } from '../utils';
 
-const initialState = Immutable({
+import { SET_DEBUG } from './constants';
+
+
+const initialState = {
   loading: true,
-});
+  bugReport: 0,
+};
 
 const local = (state = initialState, action) => {
   switch (action.type) {
@@ -22,7 +25,14 @@ const local = (state = initialState, action) => {
         newState.deviceUuid = deviceUuid;
       }
       newState.loading = false;
-      return Immutable(currentState).merge(newState);
+      return Object.assign({}, currentState, newState);
+    }
+    case SET_DEBUG: {
+      // 0 - unknown
+      // 1 - dont report bugs
+      // 2 - report bugs
+      // 3 - report bugs with user idenfitication
+      return Object.assign({}, state, { bugReport: action.bugReport });
     }
     default:
       return state;

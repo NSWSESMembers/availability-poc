@@ -1,24 +1,30 @@
 import React from 'react';
-import { AsyncStorage, Alert } from 'react-native';
-import { Client as BugSnagClient } from 'bugsnag-react-native';
-
+import { AsyncStorage, Alert, Platform } from 'react-native';
+import storage from 'redux-persist/lib/storage';
 import { ApolloProvider } from 'react-apollo';
 import { createStore, applyMiddleware, compose } from 'redux';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
+import { Client as BugSnagClient, Configuration as BugSnagConfig } from 'bugsnag-react-native';
+
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
 import local from './state/local.reducer';
 import { logout } from './state/auth.actions';
 import { GRAPHQL_ENDPOINT } from './config';
 
+
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
 const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 
-export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
+
+// bugs
+export const bugsnagConfig = new BugSnagConfig();
+export const bugsnag = new BugSnagClient(bugsnagConfig);
+
 
 // middleware for requests
 networkInterface.use([
@@ -91,7 +97,7 @@ export const client = new ApolloClient({
 const reduxConfig = {
   key: 'primary',
   debug: __DEV__,
-  storage: AsyncStorage,
+  storage: Platform.OS === 'ios' ? AsyncStorage : storage,
   blacklist: ['apollo'], // never persist these things
 };
 
@@ -109,6 +115,7 @@ store = createStore(
 
 // persistent storage
 persistStore(store);
+
 
 const App = () => (
   <ApolloProvider store={store} client={client}>
