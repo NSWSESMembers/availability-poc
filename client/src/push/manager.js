@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import initDummy from './dummy';
 import initAPNS from './apns';
+import initFCM from './fcm';
 
 // this lib is designed to be an abstraction over our push services
 
@@ -25,6 +26,11 @@ class PushManager {
     const apns = await initAPNS(this);
     if (apns !== null) {
       this.services.apns = apns;
+    }
+
+    const fcm = await initFCM(this);
+    if (fcm !== null) {
+      this.services.fcm = fcm;
     }
 
     _.forEach(this.services, (s) => {
