@@ -8,6 +8,8 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import thunk from 'redux-thunk';
 import _ from 'lodash';
+import { Firebase } from './firebase';
+
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
 import local from './state/local.reducer';
@@ -19,6 +21,8 @@ const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
 let store;
 
 export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
+export const firebaseClient = new Firebase({});
+
 
 // middleware for requests
 networkInterface.use([
