@@ -1,6 +1,8 @@
 import _ from 'lodash';
+import { Platform } from 'react-native';
 import initDummy from './dummy';
 import initAPNS from './apns';
+import initFCM from './firebase';
 
 // this lib is designed to be an abstraction over our push services
 
@@ -25,6 +27,10 @@ class PushManager {
     const apns = await initAPNS(this);
     if (apns !== null) {
       this.services.apns = apns;
+    }
+
+    if (Platform.OS === 'android') {
+      this.services.firebase = await initFCM(this);
     }
 
     _.forEach(this.services, (s) => {
