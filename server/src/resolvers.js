@@ -1,3 +1,6 @@
+import { GraphQLScalarType } from 'graphql';
+import { Kind } from 'graphql/language';
+
 export const getResolvers = (handlers) => {
   const {
     device: deviceHandler,
@@ -12,6 +15,22 @@ export const getResolvers = (handlers) => {
   } = handlers;
 
   return {
+    Date: new GraphQLScalarType({
+      name: 'Date',
+      description: 'Date custom scalar type',
+      parseValue(value) {
+        return new Date(value * 1000); // value from the client
+      },
+      serialize(value) {
+        return Math.round(value.getTime() / 1000); // value sent to the client
+      },
+      parseLiteral(ast) {
+        if (ast.kind === Kind.INT) {
+          return parseInt(ast.value, 10); // ast value is always in string format
+        }
+        return null;
+      },
+    }),
     Group: {
       users(group, args, ctx) {
         return groupHandler.users(group, args, ctx);
