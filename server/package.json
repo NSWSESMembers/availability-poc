@@ -14,7 +14,8 @@
     "lint": "eslint src tests",
     "test-integration": "jest tests/ --maxWorkers=4 --coverage && codecov -F integration",
     "test-unit": "jest --maxWorkers=4 --testPathIgnorePatterns '^<rootDir>/(tests|dist)/' --coverage && codecov -F unittests",
-    "test": "jest --testPathIgnorePatterns '^<rootDir>/(tests|dist)/'"
+    "test": "jest --testPathIgnorePatterns '^<rootDir>/(tests|dist)/'",
+    "apns-test": "babel-node scripts/apns.js"
   },
   "jest": {
     "coverageDirectory": "./coverage/",
@@ -32,6 +33,7 @@
     "sequelize-mock": "^0.10.2"
   },
   "dependencies": {
+    "apn": "^2.2.0",
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.2",
