@@ -99,6 +99,8 @@ describe('GraphQL query - Current user', () => {
             tags {
               id
             }
+            createdAt
+            updatedAt
           }
         }
       }

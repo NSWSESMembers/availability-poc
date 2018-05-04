@@ -2,6 +2,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 export const Schema = [
   `
+  scalar Date
+
   input CreateOrganisationInput {
     name: String!
   }
@@ -128,6 +130,8 @@ export const Schema = [
     schedules: [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
     tags: [Tag]! # tags associdated with this group
+    createdAt: Date # sequelize managed field
+    updatedAt: Date # sequelize managed field
   }
 
   # a user -- keep type really simple for now
