@@ -13,6 +13,7 @@ test('renders correctly', () => {
       onSubmitFeedback={noop}
       onTestBugsnag={noop}
       onShowParams={noop}
+      onSendTestPush={noop}
       onLogout={noop}
     />,
   ).toJSON();

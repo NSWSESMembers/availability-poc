@@ -23,7 +23,7 @@ const getAuthenticatedDevice = ctx => ctx.device.then((device) => {
   return device;
 });
 
-export const getHandlers = ({ models, creators: Creators }) => {
+export const getHandlers = ({ models, creators: Creators, push }) => {
   const {
     Group,
     User,
@@ -510,6 +510,18 @@ export const getHandlers = ({ models, creators: Creators }) => {
             user,
           }),
         );
+      },
+    },
+    push: {
+      async sendTestPush(ctx) {
+        console.log(ctx);
+        const device = await getAuthenticatedDevice(ctx);
+        const result = push.sendPush({
+          devices: [device],
+          message: 'Test push notification \u2728\u2705\uD83D\uDC8C\uD83D\uDC4D',
+        });
+
+        return result;
       },
     },
   };
