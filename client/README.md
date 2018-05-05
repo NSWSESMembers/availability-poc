@@ -19,6 +19,10 @@ It uses:
 * [Redux](https://redux.js.org) to store state on the client
 * [Geolocation](https://facebook.github.io/react-native/docs/geolocation.html)
   as built into React Native
+* [react-native-firebase](https://github.com/invertase/react-native-firebase) for push notifications
+  on Android via [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM)
+* [React Native PushNotificationIOS](https://facebook.github.io/react-native/docs/pushnotificationios.html)
+  for push notifications on Android via Apple Push Notification Service.
 
 
 ## Install
@@ -128,6 +132,13 @@ Contributions of all kinds are welcomed but please attach screenshots to your
 pull requests (ideally for both platforms) showing new functionality and/or an
 explanation of what you did to verify your change doesn't cause a regression.
 
+Please ensure commits that land on master are self-contained changes and easily revertable. This
+can be achieved through non-fast-forward pushes to PR branches for PRs that contain multiple
+commits or by using GitHub's squash and merge feature when you merge the PR.
+
+CI/Travis must pass before a PR can be merged. We look for test coverage in all commits but do not
+require that codecov passes.
+
 
 #Windows Guide Dev environment setup
 
@@ -169,7 +180,7 @@ Android SUpport Repository - 47.0.0
 Google Repository - 58
 
 - Setup Android "AVD"  - Tools > Android > Setup AVD
-	- 86 Images > Marshmellow API = v23 
+	- 86 Images > Marshmellow API = v23
 
 **Test Compile app** Powershell (Run as admin) - You will need to change directory to suite yourself
 
@@ -185,5 +196,3 @@ If all goes to plan, it will error out saying "No AVD" available.
 - Run compile as per steps above
 
 To "reload" the app after you make changes, you need to push R twice while you have the emulator selected.
-
-
