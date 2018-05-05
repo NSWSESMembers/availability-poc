@@ -13,7 +13,8 @@ export const Schema = [
     locationLon: String!
   }
 
-  input TokenUpdateInput {
+  input DeviceUpdateInput {
+    name: String
     token: String!
   }
 
@@ -163,6 +164,7 @@ export const Schema = [
 
   type Device {
     id: Int!
+    name: String  # device name from device info
     uuid: String!
     pushToken: String
     locationLat: String
@@ -263,7 +265,7 @@ export const Schema = [
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
     updateLocation(location: LocationUpdateInput!): Boolean
-    updateToken(token: TokenUpdateInput!): Boolean
+    updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
   }
 

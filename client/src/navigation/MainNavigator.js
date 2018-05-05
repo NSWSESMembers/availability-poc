@@ -15,7 +15,7 @@ import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
 import PushHandler from '../components/push/PushHandler';
 
-import UPDATE_TOKEN_MUTATION from '../graphql/update-token.mutation';
+import UPDATE_DEVICE_MUTATION from '../graphql/update-device.mutation';
 import CURRENT_DEVICE_QUERY from '../graphql/current-device.query';
 
 const fontSize = Platform.OS === 'ios' ? 10 : 8;
@@ -95,12 +95,12 @@ class MainNavigator extends Component {
   }
 
   render() {
-    const { device, auth, updateToken } = this.props;
+    const { device, auth, updateDevice } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
         <PushHandler
-          updateToken={updateToken}
+          updateDevice={updateDevice}
           pushManager={pushManager}
           auth={auth}
           device={device}
@@ -119,7 +119,7 @@ MainNavigator.propTypes = {
     pushToken: PropTypes.string,
   }),
   auth: PropTypes.shape().isRequired,
-  updateToken: PropTypes.func.isRequired,
+  updateDevice: PropTypes.func.isRequired,
 };
 
 const deviceQuery = graphql(CURRENT_DEVICE_QUERY, {
@@ -132,11 +132,11 @@ const deviceQuery = graphql(CURRENT_DEVICE_QUERY, {
   }),
 });
 
-const updateTokenMutation = graphql(UPDATE_TOKEN_MUTATION, {
+const updateDeviceMutation = graphql(UPDATE_DEVICE_MUTATION, {
   props: ({ mutate }) => ({
-    updateToken: token =>
+    updateDevice: device =>
       mutate({
-        variables: { token },
+        variables: { device },
       }),
   }),
 });
@@ -147,7 +147,7 @@ const mapStateToProps = ({ auth, device }) => ({
 });
 
 export default compose(
-  updateTokenMutation,
+  updateDeviceMutation,
   connect(mapStateToProps),
   deviceQuery,
 )(MainNavigator);
