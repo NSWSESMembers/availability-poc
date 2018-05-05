@@ -1,6 +1,6 @@
 import { StackNavigator } from 'react-navigation';
 
-import { Root, Profile } from '../screens/burger';
+import { Root, Profile, Params } from '../screens/burger';
 import NavOptions from '../config/NavOptions';
 
 const BurgerNavigator = StackNavigator(
@@ -10,6 +10,9 @@ const BurgerNavigator = StackNavigator(
     },
     Profile: {
       screen: Profile,
+    },
+    Params: {
+      screen: Params,
     },
   },
   {
