@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { Alert, FlatList, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
-import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
 import { Container } from '../../components/Container';
@@ -72,27 +71,15 @@ class BurgerRoot extends Component {
     navigation.push('Profile');
   }
 
+  showParams = () => {
+    const { navigation } = this.props;
+    navigation.push('Params');
+  }
+
   logout = () => {
     this.props.dispatch(logout());
     // we don't need to navigate here because <MainNavigator /> will detect the change to the
     // `auth` prop and automatically navigate away
-  }
-
-  about = () => {
-    const deviceInfoAvailable = DeviceInfo.typeof === undefined;
-
-    codePush.getCurrentPackage().then((result) => {
-      Alert.alert(
-        'About',
-        `
-        getBundleId: ${deviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
-        BuildNumber: ${deviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
-        getReadableVersion: ${deviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
-        CodePushlabel: ${result ? result.label : 'No CP package installed'}
-        CodePushHash: ${result ? result.packageHash : 'No CP package installed'}
-        `,
-      );
-    });
   }
 
   checkForUpdate = () => {
@@ -164,10 +151,10 @@ class BurgerRoot extends Component {
         onPress: this.crashReport,
       },
       {
-        title: 'About',
+        title: 'Internal Parameters',
         subtitle: 'Display the app version and other details',
         iconLeft: 'info-circle',
-        onPress: this.about,
+        onPress: this.showParams,
       },
       {
         title: 'Logout',
