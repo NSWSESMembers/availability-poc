@@ -9,12 +9,13 @@ progress.
 
 ## Components
 
-There's currently 2 components that make up this project:
+There's currently 3 components that make up this project:
 * [GraphQL API Server](server/)
 * [React Native Mobile App](client/) for iOS and Android
+* [React Static Website](web/)
 
 ## License
 
 All components licensed under the [MIT License](LICENSE.md).
 
-Copyright 2017 NSW SES, volunteers of NSW SES and contributors.
+Copyright 2017-2018 NSW SES, volunteers of NSW SES and contributors.

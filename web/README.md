@@ -54,5 +54,12 @@ yarn build:prod
 ## Contributing
 
 Contributions of all kinds are welcomed but please attach screenshots to your
-pull requests (ideally for both platforms) showing new functionality and/or an
-explanation of what you did to verify your change doesn't cause a regression.
+pull requests showing new functionality and/or an explanation of what you did
+to verify your change doesn't cause a regression.
+
+Please ensure commits that land on master are self-contained changes and easily revertable. This
+can be achieved through non-fast-forward pushes to PR branches for PRs that contain multiple
+commits or by using GitHub's squash and merge feature when you merge the PR.
+
+CI/Travis must pass before a PR can be merged. We look for test coverage in all commits but do not
+require that codecov passes.
