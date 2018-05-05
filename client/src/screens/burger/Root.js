@@ -12,6 +12,7 @@ import { FEEDBACK_URL } from '../../config/urls';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
+import SEND_TEST_PUSH_MUTATION from '../../graphql/send-test-push.mutation';
 import { logout } from '../../state/auth.actions';
 import { bugsnag } from '../../app';
 
@@ -30,6 +31,12 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
       mutate({
         variables: { user: { displayName } },
       }),
+  }),
+});
+
+const sendTestPushMutation = graphql(SEND_TEST_PUSH_MUTATION, {
+  props: ({ mutate }) => ({
+    sendTestPush: () => mutate(),
   }),
 });
 
@@ -114,6 +121,15 @@ class BurgerScreen extends Component {
     }
   };
 
+  sendTestPush = () => {
+    this.props.sendTestPush().catch((e) => {
+      Alert.alert(
+        'Test push failed',
+        `${e}`,
+      );
+    });
+  }
+
   render() {
     return (
       <Menu
@@ -122,6 +138,7 @@ class BurgerScreen extends Component {
         onCheckForUpdate={this.checkForUpdate}
         onSubmitFeedback={this.handleSubmitFeedback}
         onTestBugsnag={this.crashReport}
+        onSendTestPush={this.sendTestPush}
         onShowParams={this.showParams}
         onLogout={this.logout}
       />
@@ -132,6 +149,7 @@ class BurgerScreen extends Component {
 BurgerScreen.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
+  sendTestPush: PropTypes.func,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }),
@@ -155,4 +173,5 @@ export default compose(
   userQuery,
   updateUserProfileMutation,
   updateLocationMutation,
+  sendTestPushMutation,
 )(BurgerScreen);

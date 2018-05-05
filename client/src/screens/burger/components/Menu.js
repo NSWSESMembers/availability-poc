@@ -47,6 +47,12 @@ class Menu extends Component {
         onPress: props.onTestBugsnag,
       },
       {
+        title: 'Send Test Push Notification',
+        subtitle: 'Send a notification to this device',
+        iconLeft: 'download',
+        onPress: props.onSendTestPush,
+      },
+      {
         title: 'Internal Parameters',
         subtitle: 'Display the app version and other details',
         iconLeft: 'info-circle',
@@ -78,6 +84,7 @@ Menu.propTypes = {
   onCheckForUpdate: PropTypes.func.isRequired,
   onSubmitFeedback: PropTypes.func.isRequired,
   onTestBugsnag: PropTypes.func.isRequired,
+  onSendTestPush: PropTypes.func.isRequired,
   onShowParams: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
 };

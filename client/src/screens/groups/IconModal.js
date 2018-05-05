@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import GridView from 'react-native-super-grid';
 
 import PropTypes from 'prop-types';
-import { View,
+import {
+  View,
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,

@@ -11,6 +11,7 @@ import { getHandlers } from './logic';
 import { getResolvers } from './resolvers';
 import { getCreators } from './creators';
 import { getCallback } from './callback';
+import * as push from './push';
 
 const cors = require('cors');
 
@@ -23,7 +24,7 @@ const { models } = setupDb();
 const creators = getCreators(models);
 const { User, Device } = models;
 
-const handlers = getHandlers({ models, creators });
+const handlers = getHandlers({ models, creators, push });
 const resolvers = getResolvers(handlers);
 const schema = getSchema(resolvers);
 

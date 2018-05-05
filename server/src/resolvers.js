@@ -12,6 +12,7 @@ export const getResolvers = (handlers) => {
     event: eventHandler,
     eventResponse: eventResponseHandler,
     message: messageHandler,
+    push: pushHandler,
   } = handlers;
 
   return {
@@ -184,6 +185,9 @@ export const getResolvers = (handlers) => {
       },
       createMessage(_, args, ctx) {
         return messageHandler.createMessage(_, args, ctx);
+      },
+      sendTestPush(_, __, ctx) {
+        return pushHandler.sendTestPush(ctx);
       },
     },
   };

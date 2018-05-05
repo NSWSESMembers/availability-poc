@@ -267,6 +267,7 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
+    sendTestPush: Boolean  # send a push notification to the requesting device
   }
 
   schema {
