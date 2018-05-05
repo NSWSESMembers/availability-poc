@@ -1,7 +1,11 @@
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
+import DeviceInfo from 'react-native-device-info';
 
 import PushHandler from '../PushHandler';
+
+const testDeviceName = 'test device';
+DeviceInfo.getDeviceName = jest.fn(() => testDeviceName);
 
 class MockPushManager {
   // eslint-disable-next-line class-methods-use-this
@@ -21,71 +25,50 @@ class MockPushManager {
   }
 }
 
-test('lifecycle', (done) => {
+test('lifecycle', async (done) => {
   const pushManager = new MockPushManager();
 
-  const failIfCalled = () => {
-    done.fail(new Error('updateToken should not be called'));
-  };
+  const failIfCalled = jest.fn(async () => {
+    done.fail(new Error('updateDevice should not be called'));
+  });
 
-  // this should not call updateToken because there is no auth nor device
+  // this should not call updateDevice because there is no auth nor device
   const renderer = TestRenderer.create(
     <PushHandler
       pushManager={pushManager}
-      updateToken={failIfCalled}
+      updateDevice={failIfCalled}
       auth={{}}
     />,
   );
 
-  // this should not call updateToken because there is no device
+  // this should not call updateDevice because there is no device
   renderer.update(
     <PushHandler
       pushManager={pushManager}
-      updateToken={failIfCalled}
+      updateDevice={failIfCalled}
       auth={{ username: 'test' }}
     />,
   );
 
-  // this should not call updateToken because there is no auth
+  // this should not call updateDevice because there is no auth
   renderer.update(
     <PushHandler
       pushManager={pushManager}
-      updateToken={failIfCalled}
+      updateDevice={failIfCalled}
       auth={{}}
       device={{ pushToken: '' }}
     />,
   );
 
-  const updateToken = async (tokens) => {
-    expect(tokens).toEqual({ token: '{"test":"TEST_TOKEN"}' });
-    done();
-  };
+  expect(failIfCalled.mock.calls.length).toBe(0);
 
-  // this should call updateToken
+  const updateDevice = jest.fn(async () => {});
+
+  // this should call updateDevice
   renderer.update(
     <PushHandler
       pushManager={pushManager}
-      updateToken={updateToken}
-      auth={{ username: 'test' }}
-      device={{ pushToken: '' }}
-    />,
-  );
-});
-
-test('everything pre-loaded', async () => {
-  const pushManager = new MockPushManager();
-  let didUpdateTokens = false;
-
-  const updateToken = async (tokens) => {
-    expect(tokens).toEqual({ token: '{"test":"TEST_TOKEN"}' });
-    didUpdateTokens = true;
-  };
-
-  // this should call updateToken
-  const renderer = TestRenderer.create(
-    <PushHandler
-      pushManager={pushManager}
-      updateToken={updateToken}
+      updateDevice={updateDevice}
       auth={{ username: 'test' }}
       device={{ pushToken: '' }}
     />,
@@ -93,21 +76,47 @@ test('everything pre-loaded', async () => {
 
   await pushManager.registerPromise;
   await renderer.root.updatePromise;
-  expect(didUpdateTokens).toBe(true);
+
+  expect(updateDevice.mock.calls[0][0]).toEqual(
+    { token: '{"test":"TEST_TOKEN"}', name: testDeviceName },
+  );
+
+  done();
+});
+
+test('everything pre-loaded', async () => {
+  const pushManager = new MockPushManager();
+
+  const updateDevice = jest.fn(async () => {});
+
+  // this should call updateDevice
+  const renderer = TestRenderer.create(
+    <PushHandler
+      pushManager={pushManager}
+      updateDevice={updateDevice}
+      auth={{ username: 'test' }}
+      device={{ pushToken: '' }}
+    />,
+  );
+
+  await pushManager.registerPromise;
+  await renderer.root.updatePromise;
+  expect(updateDevice.mock.calls.length).toBe(1);
+  expect(updateDevice.mock.calls[0][0]).toEqual(
+    { token: '{"test":"TEST_TOKEN"}', name: testDeviceName },
+  );
 });
 
 test('no change', async (done) => {
   const pushManager = new MockPushManager();
 
-  const updateToken = async () => {
-    done.fail(new Error('Should be no need to update the server'));
-  };
+  const updateDevice = jest.fn(async () => {});
 
-  // this should call updateToken
+  // this should call updateDevice
   const renderer = TestRenderer.create(
     <PushHandler
       pushManager={pushManager}
-      updateToken={updateToken}
+      updateDevice={updateDevice}
       auth={{ username: 'test' }}
       device={{ pushToken: '{"test":"TEST_TOKEN"}' }}
     />,
@@ -115,45 +124,42 @@ test('no change', async (done) => {
 
   await pushManager.registerPromise;
   await renderer.root.updatePromise;
+  expect(updateDevice.mock.calls.length).toBe(0);
   done();
 });
 
-test('token update fail', (done) => {
+test('token update fail', async (done) => {
   const pushManager = new MockPushManager();
 
-  const updateToken = async () => {
-    console.log('we did finish');
+  const updateDevice = jest.fn(async () => {
     done();
     throw new Error('fail');
-  };
+  });
 
-  // this should call updateToken
+  // this should call updateDevice
   const renderer = TestRenderer.create(
     <PushHandler
       pushManager={pushManager}
-      updateToken={updateToken}
+      updateDevice={updateDevice}
       auth={{ username: 'test' }}
       device={{ pushToken: '' }}
     />,
   );
 
-  pushManager.registerPromise.then(() => {
-    renderer.root.updatePromise.then(() => {
-      done();
-    });
-  });
+  await pushManager.registerPromise;
+  await renderer.root.updatePromise;
+  expect(updateDevice.mock.calls.length).toBe(1);
 });
 
 test('unmount', () => {
   const pushManager = new MockPushManager();
 
-  const noop = async () => {};
+  const noop = jest.fn();
 
-  // this should call updateToken
   const renderer = TestRenderer.create(
     <PushHandler
       pushManager={pushManager}
-      updateToken={noop}
+      updateDevice={noop}
       auth={{}}
     />,
   );

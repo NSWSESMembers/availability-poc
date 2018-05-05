@@ -155,8 +155,8 @@ export const getResolvers = (handlers) => {
       updateUserProfile(_, args, ctx) {
         return userHandler.updateUserProfile(_, args, ctx);
       },
-      updateToken(_, args, ctx) {
-        return deviceHandler.updateToken(_, args, ctx);
+      updateDevice(_, args, ctx) {
+        return deviceHandler.updateDevice(_, args, ctx);
       },
       updateLocation(_, args, ctx) {
         return deviceHandler.updateLocation(_, args, ctx);

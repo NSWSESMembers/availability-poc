@@ -15,7 +15,7 @@ import SEARCH_GROUP_QUERY from './search-group.query';
 import SET_EVENT_RESPONSE_MUTATION from './set-event-response.mutation';
 import SIGNUP_MUTATION from './signup.mutation';
 import UPDATE_LOCATION_MUTATION from './update-location.mutation';
-import UPDATE_TOKEN_MUTATION from './update-token.mutation';
+import UPDATE_DEVICE_MUTATION from './update-device.mutation';
 import UPDATE_USERPROFILE_MUTATION from './update-userprofile.mutation';
 
 import {
@@ -42,7 +42,7 @@ export {
   SET_EVENT_RESPONSE_MUTATION,
   SIGNUP_MUTATION,
   UPDATE_LOCATION_MUTATION,
-  UPDATE_TOKEN_MUTATION,
+  UPDATE_DEVICE_MUTATION,
   UPDATE_USERPROFILE_MUTATION,
   CREATE_TIME_SEGMENT_MUTATION,
   REMOVE_TIME_SEGMENT_MUTATION,

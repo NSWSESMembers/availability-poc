@@ -32,6 +32,7 @@ export const defineModels = () => {
 
   const DeviceModel = db.define('device', {
     uuid: '1234abc',
+    name: 'test-device',
     pushToken: 'testpushtoken',
     locationLat: -34.4267554,
     locationLon: 150.8880039,

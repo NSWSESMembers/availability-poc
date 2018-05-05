@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import DeviceInfo from 'react-native-device-info';
 
 import { isLoggedIn } from '../../selectors/auth';
 
@@ -19,6 +20,7 @@ class PushHandler extends React.Component {
     this.updatePromise = null;
     this.didRegister = false;
   }
+
   componentDidMount() {
     this.onMountOrUpdate();
   }
@@ -77,8 +79,9 @@ class PushHandler extends React.Component {
     log('Server has: ', device.pushToken);
     if (jsonTokens !== device.pushToken) {
       log('Sending tokens to the server: ', jsonTokens);
-      this.updatePromise = this.props.updateToken({
+      this.updatePromise = this.props.updateDevice({
         token: jsonTokens,
+        name: DeviceInfo.getDeviceName(),
       }).then(() => {
         log('Token update was successful');
       }).catch((err) => {
@@ -94,7 +97,7 @@ class PushHandler extends React.Component {
 PushHandler.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   pushManager: PropTypes.object,
-  updateToken: PropTypes.func,
+  updateDevice: PropTypes.func,
   auth: PropTypes.shape().isRequired,
   device: PropTypes.shape({
     pushToken: PropTypes.string,

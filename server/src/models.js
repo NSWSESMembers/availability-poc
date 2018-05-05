@@ -27,6 +27,7 @@ export const defineModels = (db) => {
 
   const DeviceModel = db.define('device', {
     uuid: { type: Sequelize.STRING },
+    name: { type: Sequelize.STRING },
     pushToken: { type: Sequelize.STRING },
     locationLat: { type: Sequelize.STRING },
     locationLon: { type: Sequelize.STRING },
