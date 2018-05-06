@@ -413,23 +413,36 @@ exports[`renders correctly 2`] = `
   </View>
   <View
     style={
-      Object {
-        "alignItems": "center",
-        "bottom": 0,
-        "justifyContent": "center",
-        "left": 0,
-        "position": "absolute",
-        "right": 0,
-        "top": 0,
-      }
+      Array [
+        Object {
+          "backgroundColor": "#EEE",
+          "flex": 1,
+          "flexDirection": "column",
+          "justifyContent": "flex-start",
+        },
+      ]
     }
   >
-    <ActivityIndicator
-      animating={true}
-      color="#999999"
-      hidesWhenStopped={true}
-      size="large"
-    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "bottom": 0,
+          "justifyContent": "center",
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        }
+      }
+    >
+      <ActivityIndicator
+        animating={true}
+        color="#999999"
+        hidesWhenStopped={true}
+        size="large"
+      />
+    </View>
   </View>
 </View>
 `;
