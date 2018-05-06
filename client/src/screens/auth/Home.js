@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DeviceInfo from 'react-native-device-info';
 
 import { getCodePushHash } from '../../utils';
+import DeviceInfo from '../../selectors/deviceInfo';
 import Home from './components/Home';
 
 class HomeScreen extends Component {
@@ -21,11 +21,9 @@ class HomeScreen extends Component {
         codePushHash: value,
       });
     });
-    if (DeviceInfo.typeof !== undefined) {
-      this.setState({
-        version: DeviceInfo.getReadableVersion(),
-      });
-    }
+    this.setState({
+      version: DeviceInfo.getVersionString(),
+    });
   }
 
   goToSignIn = () => {

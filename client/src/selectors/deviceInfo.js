@@ -51,5 +51,10 @@ const gatherDeviceInfo = async () => {
   return info;
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { gatherDeviceInfo };
+const getVersionString = () => {
+  const version = DeviceInfo.getVersion();
+  const build = DeviceInfo.getBuildNumber();
+  return `${version} (${build})`;
+};
+
+export default { gatherDeviceInfo, getVersionString };
