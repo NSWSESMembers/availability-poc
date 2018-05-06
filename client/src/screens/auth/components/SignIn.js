@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ActivityIndicator } from 'react-native';
 
 import { Container, Holder } from '../../../components/Container';
 import { Input } from '../../../components/Input';
 import { Button } from '../../../components/Button';
+import { Progress } from '../../../components/Progress';
 
 class SignIn extends Component {
   state = {
@@ -49,19 +49,9 @@ class SignIn extends Component {
           />
           <Button text="Sign In" onPress={this.onSignIn} disabled={loading} />
           {loading && (
-            <View
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <ActivityIndicator size="large" />
-            </View>
+            <Container>
+              <Progress />
+            </Container>
           )}
         </Holder>
       </Container>
