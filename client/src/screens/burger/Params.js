@@ -6,7 +6,7 @@ import codePush from 'react-native-code-push';
 
 import { Container } from '../../components/Container';
 import ParamsList from './components/ParamsList';
-import { gatherDeviceInfo } from '../../selectors/deviceInfo';
+import DeviceInfo from '../../selectors/deviceInfo';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import CURRENT_DEVICE_QUERY from '../../graphql/current-device.query';
@@ -24,7 +24,7 @@ class ParamsScreen extends Component {
   };
 
   componentDidMount() {
-    gatherDeviceInfo().then((result) => {
+    DeviceInfo.gatherDeviceInfo().then((result) => {
       const deviceInfo = stringify(result);
       this.setState({ deviceInfo });
     });
