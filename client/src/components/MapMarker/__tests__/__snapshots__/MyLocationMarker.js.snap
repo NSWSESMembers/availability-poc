@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<AIRMapMarker
+  anchor={
+    Object {
+      "x": 0.5,
+      "y": 0.5,
+    }
+  }
+  coordinate={
+    Object {
+      "heading": 0,
+      "latitude": 1,
+      "longitude": 1,
+    }
+  }
+  image={undefined}
+  onPress={[Function]}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "transparent",
+        "position": "absolute",
+      },
+      Object {
+        "zIndex": 1000,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "height": 32,
+        "width": 32,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": 10,
+          "height": 19,
+          "left": 0,
+          "margin": 6.5,
+          "position": "absolute",
+          "shadowColor": "black",
+          "shadowOffset": Object {
+            "height": 0,
+            "width": 0,
+          },
+          "shadowOpacity": 0.25,
+          "shadowRadius": 2,
+          "top": 0,
+          "width": 19,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "backgroundColor": "blue",
+          "borderRadius": 8,
+          "height": 15,
+          "justifyContent": "center",
+          "margin": 8.5,
+          "width": 15,
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        style={
+          Object {
+            "height": 0,
+            "width": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</AIRMapMarker>
+`;
+
+exports[`renders correctly 2`] = `null`;

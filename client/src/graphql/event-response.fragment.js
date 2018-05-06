@@ -11,6 +11,7 @@ const EVENT_RESPONSE_FRAGMENT = gql`
     eta
     locationLatitude
     locationLongitude
+    locationTime
     user {
       id
       username

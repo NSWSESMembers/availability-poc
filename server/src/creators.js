@@ -164,6 +164,7 @@ export const getCreators = (models) => {
       icon,
       locationLatitude,
       locationLongitude,
+      locationTime,
       primaryLocation,
       event,
     }) => {
@@ -176,6 +177,7 @@ export const getCreators = (models) => {
         icon,
         locationLatitude,
         locationLongitude,
+        locationTime: locationTime || (new Date()).getTime() / 1000,
         eventId: event.id,
       }).then((location) => {
         if (primaryLocation) {

@@ -206,7 +206,7 @@ export const Schema = [
     sourceIdentifier: String,
     permalink: String,
     group: Group!
-    responses: [EventResponse]!
+    responses: [EventResponse]
     messages: [Message]
     eventLocations: [EventLocation]
     primaryLocation: EventLocation
