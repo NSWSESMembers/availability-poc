@@ -1,4 +1,5 @@
 import { sendPush as apns } from './apns';
+import { sendPush as fcm } from './fcm';
 
 const sendPush = ({ devices, message }) => {
   devices.forEach((device) => {
@@ -7,7 +8,6 @@ const sendPush = ({ devices, message }) => {
     if (device.pushToken) {
       try {
         const pushTokens = JSON.parse(device.pushToken);
-
         if (pushTokens.apns) {
           promises.push(
             apns({
@@ -16,8 +16,16 @@ const sendPush = ({ devices, message }) => {
             }),
           );
         }
+        if (pushTokens.fcm) {
+          promises.push(
+            fcm({
+              token: pushTokens.fcm,
+              message,
+            }),
+          );
+        }
       } catch (e) {
-        console.log('Could not push to device: ', device);
+        console.log('Could not push to device: ', device, e);
       }
     }
 
