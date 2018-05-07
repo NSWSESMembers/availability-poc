@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 const makeCert = () => {
   const cert = [
     '-----BEGIN PRIVATE KEY-----\n',
-    process.env.FBA_KEY3,
+    process.env.FBA_KEY,
     '\n-----END PRIVATE KEY-----',
   ];
   return cert.join('');
