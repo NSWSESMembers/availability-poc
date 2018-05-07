@@ -22,9 +22,10 @@ const options = {
   client_x509_cert_url: 'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-hmrg2%40callout-bce1b.iam.gserviceaccount.com',
 };
 
-const fbaProvider = admin.initializeApp({
+// dont exist when there is no key in env
+const fbaProvider = process.env.FBA_KEY ? admin.initializeApp({
   credential: admin.credential.cert(options),
-});
+}) : null;
 
 
 const sendPush = ({ token, message }) => {
