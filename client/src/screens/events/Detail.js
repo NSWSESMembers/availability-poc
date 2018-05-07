@@ -81,19 +81,13 @@ class Detail extends Component {
     return mapMarkers;
   }
 
-  constructor(props) {
-    super(props);
-    this.mounted = false;
-    this.state = {
-      myPosition: null,
-      eventMarkers: null,
-      responseMarkers: null,
-    };
-  }
-
+  state = {
+    myPosition: null,
+    eventMarkers: null,
+    responseMarkers: null,
+  };
 
   componentDidMount() {
-    this.mounted = true;
     this.props.navigation.setParams({
       handleThis: this.mapZoomMe,
     });
@@ -129,7 +123,6 @@ class Detail extends Component {
   }
 
   componentWillUnmount() {
-    this.mounted = false;
     clearInterval(this.timer);
     if (this.geoWatch !== null) {
       navigator.geolocation.clearWatch(this.geoWatch);
@@ -141,6 +134,8 @@ class Detail extends Component {
     // NYI very well
     this.props.refetch();
   };
+
+  geoWatch = null
 
 androidLocationPermission = async () => {
   console.log('Checking android permissions');
@@ -183,9 +178,9 @@ mapZoomMe = () => {
     this.zoomMap(mergedpoints);
   }
 
-  zoomMap(onThis) {
+  zoomMap(fitToTheseCoordinates) {
     this.map.fitToCoordinates(
-      onThis,
+      fitToTheseCoordinates,
       {
         edgePadding: {
           top: 300,
@@ -366,7 +361,7 @@ mapZoomMe = () => {
                   locationTime={`Updated ${marker.locationTime}`}
                 />
               </Marker>
-        ))}
+            ))}
             {this.state.eventMarkers && this.state.eventMarkers.map(marker => (
               <Marker
                 title={marker.id}
@@ -375,7 +370,7 @@ mapZoomMe = () => {
                 coordinate={marker}
                 image={marker.image}
               />
-        ))}
+            ))}
           </MapView>
         </View>
         <View

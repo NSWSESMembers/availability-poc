@@ -70,7 +70,9 @@ exports[`renders correctly 1`] = `
           },
         ]
       }
-    />
+    >
+      locationTime
+    </Text>
   </View>
   <View
     style={

@@ -15,8 +15,8 @@ const MyLocationMarker = ({ myPosition }) => {
   // const rotate = (typeof myPosition.heading === 'number' && myPosition.heading >= 0) ?
   // `${myPosition.heading}deg` : null; //disabled due to heading bug in library
   const rotate = null; // dont draw heading
-  if (myPosition == null) return null;
-  if (!myPosition.latitude && myPosition.longitude) return null;
+
+  if (!myPosition || !myPosition.latitude || !myPosition.longitude) return null;
 
 
   return (
