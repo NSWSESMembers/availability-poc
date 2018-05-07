@@ -12,9 +12,9 @@ import styles from './styles';
 const ANCHOR = { x: 0.5, y: 0.5 };
 
 const MyLocationMarker = ({ myPosition }) => {
-  // const rotate = (typeof myPosition.heading === 'number' && myPosition.heading >= 0) ?
-  // `${myPosition.heading}deg` : null; //disabled due to heading bug in library
-  const rotate = null; // dont draw heading
+  const rotate = (typeof myPosition.heading === 'number' && myPosition.heading >= 0) ?
+    `${myPosition.heading}deg` : null; // disabled due to heading bug in library
+  // const rotate = null; // dont draw heading
 
   if (!myPosition || !myPosition.latitude || !myPosition.longitude) return null;
 
