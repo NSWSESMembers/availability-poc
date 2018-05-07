@@ -5697,9 +5697,9 @@ react-native-code-push@^5.2.0-beta:
     plist "1.2.0"
     xcode "0.9.2"
 
-react-native-device-info@^0.17.2:
-  version "0.17.4"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.17.4.tgz#c135d4719f0512729de1c72e058a137e29ea1e3e"
+react-native-device-info@^0.21.5:
+  version "0.21.5"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.21.5.tgz#99478a2d68182e012297f2d63f2bd1b788106dee"
 
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
