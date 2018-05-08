@@ -349,7 +349,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
               permalink,
               group,
             }).then((event) => {
-              if (eventLocations === undefined) return;
+              if (typeof eventLocations === 'undefined') return;
               Promise.all(
                 eventLocations.map(el =>
                   Creators.eventLocation({
