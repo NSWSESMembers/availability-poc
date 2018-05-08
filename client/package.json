@@ -9,7 +9,7 @@
     "push-ios": "code-push release-react availability-poc-ios ios",
     "push-android": "code-push release-react availability-poc-android android",
     "run-ios": "react-native run-ios",
-    "run-android": "react-native run-android",
+    "run-android": "adb reverse tcp:8080 tcp:8080 && react-native run-android",
     "lint": "eslint src"
   },
   "dependencies": {
