@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Clipboard } from 'react-native';
+import { Clipboard, Platform, ToastAndroid } from 'react-native';
 
 import { ListItem } from '../../../components/List';
 
@@ -8,6 +8,9 @@ import { ListItem } from '../../../components/List';
 const ParamsListItem = ({ title, detail }) => {
   const onPress = () => {
     Clipboard.setString(detail);
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
+    }
   };
 
   return (
