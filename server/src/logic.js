@@ -6,29 +6,23 @@ import { JWT_SECRET } from './config';
 import { schedulePerms, eventPerms } from './perms';
 
 // reusable function to check for a user with context
-const getAuthenticatedUser = ctx =>
-  ctx.user.then((user) => {
-    // null means we couldn't find the user record
-    if (!user) {
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject('Unauthorized: Invalid user ID');
-    }
-    return user;
-  });
+const getAuthenticatedUser = ctx => ctx.user.then((user) => {
+  // null means we couldn't find the user record
+  if (!user) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Unauthorized: Invalid user ID');
+  }
+  return user;
+});
 
-const getAuthenticatedDevice = ctx =>
-  ctx.device.then((device) => {
-    if (!device) {
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject('Unauthorized: Device not found');
-    }
-    return device;
-  });
+const getAuthenticatedDevice = ctx => ctx.device.then((device) => {
+  if (!device) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Unauthorized: Device not found');
+  }
+  return device;
+});
 
-<<<<<<< HEAD
-export const getHandlers = ({ models, creators: Creators }) => {
-  const { Group, User, Organisation, Schedule, Event, TimeSegment } = models;
-=======
 export const getHandlers = ({ models, creators: Creators, push }) => {
   const {
     Group,
@@ -38,7 +32,6 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
     Event,
     TimeSegment,
   } = models;
->>>>>>> origin/master
 
   const handlers = {
     device: {
@@ -56,14 +49,6 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           });
         });
       },
-<<<<<<< HEAD
-      updateToken(_, args, ctx) {
-        return getAuthenticatedDevice(ctx).then(device =>
-          device.update({
-            pushToken: args.token.token,
-          }),
-        );
-=======
       updateDevice(_, args, ctx) {
         const { name, token } = args.device;
         const params = {};
@@ -74,7 +59,6 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           params.pushToken = token;
         }
         return getAuthenticatedDevice(ctx).then(device => device.update(params));
->>>>>>> origin/master
       },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {
@@ -94,11 +78,11 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       updateUserProfile(_, args, ctx) {
         // TODO support more basic fields
         const { displayName } = args.user;
-        return getAuthenticatedUser(ctx).then(user =>
-          user.update({
+        return getAuthenticatedUser(ctx)
+          .then(user => user.update({
             displayName,
           }),
-        );
+          );
       },
       groups(user, args) {
         if (args.id) {
@@ -107,18 +91,16 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return user.getGroups({ order: [['id', 'ASC']] });
       },
       events(user) {
-        return user.getGroups().then(groups =>
-          Event.findAll({
+        return user.getGroups()
+          .then(groups => Event.findAll({
             where: { groupId: groups.map(g => g.id) },
-          }),
-        );
+          }));
       },
       schedules(user) {
-        return user.getGroups().then(groups =>
-          Schedule.findAll({
+        return user.getGroups()
+          .then(groups => Schedule.findAll({
             where: { groupId: groups.map(g => g.id) },
-          }),
-        );
+          }));
       },
       organisation(user) {
         return user.getOrganisation();
@@ -149,34 +131,37 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           })
           .then(
             // hash the user's password
-            () =>
-              Creators.user({
-                username,
-                email,
-                password,
-                version: 1,
-                organisation: { id: 1 },
-              }),
+            () => Creators.user({
+              username,
+              email,
+              password,
+              version: 1,
+              organisation: { id: 1 },
+            }),
           )
           .then(
             // now we have the user object we have some stuff to do in parallel
             user =>
               // create a new device with the given UUID
-              handlers.device.addDevice(user, deviceUuid).then(() => {
-                // now sign a new JWT to return to the user
-                const { id } = user;
-                const token = jwt.sign({ id, device: deviceUuid, email, version: 1 }, JWT_SECRET);
-                const newUser = user;
-                newUser.authToken = token;
+              handlers.device.addDevice(user, deviceUuid)
+                .then(() => {
+                  // now sign a new JWT to return to the user
+                  const { id } = user;
+                  const token = jwt.sign(
+                    { id, device: deviceUuid, email, version: 1 },
+                    JWT_SECRET,
+                  );
+                  const newUser = user;
+                  newUser.authToken = token;
 
-                // we stuff a Promise that will provide the user into the context
-                // so the User resolver knows that it can provide confidential
-                // info back to the newly-authenticated client
-                ctx.user = Promise.resolve(user);
+                  // we stuff a Promise that will provide the user into the context
+                  // so the User resolver knows that it can provide confidential
+                  // info back to the newly-authenticated client
+                  ctx.user = Promise.resolve(user);
 
-                // make sure we return the user to the caller of signup()
-                return newUser;
-              }),
+                  // make sure we return the user to the caller of signup()
+                  return newUser;
+                }),
           );
       },
       login(args, ctx) {
@@ -186,15 +171,12 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         // credentials check out.
         const userLoggedIn = user =>
           handlers.device.addDevice(user, deviceUuid).then(() => {
-            const token = jwt.sign(
-              {
-                id: user.id,
-                device: deviceUuid,
-                email: user.email,
-                version: user.version,
-              },
-              JWT_SECRET,
-            );
+            const token = jwt.sign({
+              id: user.id,
+              device: deviceUuid,
+              email: user.email,
+              version: user.version,
+            }, JWT_SECRET);
 
             const newUser = user;
             newUser.authToken = token;
@@ -256,19 +238,20 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       createSchedule(_, args) {
         const { name, details, startTime, endTime, groupId } = args.schedule;
 
-        return Group.findById(groupId).then((group) => {
-          if (!group) {
-            return Promise.reject(Error('Invalid group'));
-          }
-          // TODO: check whether the user is a member of the group
-          return Creators.schedule({
-            name,
-            details,
-            startTime,
-            endTime,
-            group,
+        return Group.findById(groupId)
+          .then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Invalid group'));
+            }
+            // TODO: check whether the user is a member of the group
+            return Creators.schedule({
+              name,
+              details,
+              startTime,
+              endTime,
+              group,
+            });
           });
-        });
       },
       messages(event) {
         return event.getMessages();
@@ -281,51 +264,52 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       },
       createTimeSegment(_, args, ctx) {
         const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
-        return getAuthenticatedUser(ctx).then(user =>
-          Schedule.findById(scheduleId).then((schedule) => {
-            if (!schedule) {
-              return Promise.reject(Error('Invalid schedule!'));
-            }
-            return Creators.timeSegment({
-              schedule,
-              status,
-              startTime,
-              endTime,
-              user: userId === undefined ? user : { id: userId },
-            });
-          }),
-        );
+        return getAuthenticatedUser(ctx)
+          .then(user =>
+            Schedule.findById(scheduleId).then((schedule) => {
+              if (!schedule) {
+                return Promise.reject(Error('Invalid schedule!'));
+              }
+              return Creators.timeSegment({
+                schedule,
+                status,
+                startTime,
+                endTime,
+                user: userId === undefined ? user : { id: userId },
+              });
+            }),
+          );
       },
       removeTimeSegment(_, args, ctx) {
         const { segmentId } = args.timeSegment;
-        return getAuthenticatedUser(ctx).then(() =>
-          TimeSegment.findById(segmentId).then((segment) => {
-            if (!segment) {
-              return Promise.reject(Error('Invalid segment!'));
-            }
-            return segment.destroy().then((rows) => {
-              if (rows) {
-                return true;
+        return getAuthenticatedUser(ctx)
+          .then(() =>
+            TimeSegment.findById(segmentId).then((segment) => {
+              if (!segment) {
+                return Promise.reject(Error('Invalid segment!'));
               }
-              return false;
-            });
-          }),
-        );
+              return segment.destroy().then((rows) => {
+                if (rows) { return true; }
+                return false;
+              });
+            }),
+          );
       },
       updateTimeSegment(_, args, ctx) {
         const { segmentId, status, startTime, endTime } = args.timeSegment;
-        return getAuthenticatedUser(ctx).then(() =>
-          TimeSegment.findById(segmentId).then((segment) => {
-            if (!segment) {
-              return Promise.reject(Error('Invalid segment!'));
-            }
-            return segment.update({
-              status,
-              startTime,
-              endTime,
-            });
-          }),
-        );
+        return getAuthenticatedUser(ctx)
+          .then(() =>
+            TimeSegment.findById(segmentId).then((segment) => {
+              if (!segment) {
+                return Promise.reject(Error('Invalid segment!'));
+              }
+              return segment.update({
+                status,
+                startTime,
+                endTime,
+              });
+            }),
+          );
       },
     },
 
@@ -337,12 +321,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         }
 
         // this Promise returns the event if the user is allowed to read it
-        return eventPerms
-          .userWantsToRead({
-            user: getAuthenticatedUser(ctx),
-            event: Event.findById(args.id),
-          })
-          .then(({ event }) => event);
+        return eventPerms.userWantsToRead({
+          user: getAuthenticatedUser(ctx),
+          event: Event.findById(args.id),
+        }).then(({ event }) => event);
       },
       group(event) {
         return event.getGroup();
@@ -419,7 +401,6 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                           newLoc.locationLatitude === el.locationLatitude &&
                           newLoc.locationLongitude === el.locationLongitude,
                       );
-                      console.log('LOC', loc);
                       if (loc === undefined) {
                         return el.destroy();
                       }
@@ -448,51 +429,39 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         );
       },
       setResponse(args, ctx) {
-        const { id } = args.response;
-        return eventPerms
-          .userWantsToWrite({
-            user: getAuthenticatedUser(ctx),
-            event: Event.findById(id),
-          })
-          .then(({ event, user }) =>
-            event.getEventresponses({ where: { userId: user.id } }).then((result) => {
-              const updateArgs = { ...args.response };
-              delete updateArgs.id;
-              if (typeof updateArgs.destination !== 'undefined') {
-                // null is truthy so we need this
-                if (updateArgs.destination !== null) {
-                  return event
-                    .getEventlocations({ where: { id: updateArgs.destination.id } })
-                    .then((destination) => {
-                      if (!destination) {
-                        return Promise.reject(Error('Unknown destination passed'));
-                      }
-                      updateArgs.eventlocationId = destination[0].id;
-                      delete updateArgs.destination;
-                      if (result.length > 0) {
-                        return result[0].update(updateArgs);
-                      }
-                      return Creators.eventResponse({
-                        event,
-                        user,
-                        destination: destination[0],
-                        ...updateArgs,
-                      });
+        const {
+          id,
+        } = args.response;
+        return eventPerms.userWantsToWrite({
+          user: getAuthenticatedUser(ctx),
+          event: Event.findById(id),
+        }).then(({ event, user }) => event.getEventresponses({ where: { userId: user.id } })
+          .then((result) => {
+            const updateArgs = { ...args.response };
+            delete updateArgs.id;
+            if (typeof (updateArgs.destination) !== 'undefined') { // null is truthy so we need this
+              if (updateArgs.destination !== null) {
+                return event.getEventlocations({ where: { id: updateArgs.destination.id } })
+                  .then((destination) => {
+                    if (!destination) {
+                      return Promise.reject(Error('Unknown destination passed'));
+                    }
+                    updateArgs.eventlocationId = destination[0].id;
+                    delete updateArgs.destination;
+                    if (result.length > 0) {
+                      return result[0].update(updateArgs);
+                    }
+                    return Creators.eventResponse({
+                      event,
+                      user,
+                      destination: destination[0],
+                      ...updateArgs,
                     });
-                }
-                // destination passed is null
-                if (result.length) {
-                  updateArgs.eventlocationId = null;
-                  return result[0].update(updateArgs);
-                }
-                return Creators.eventResponse({
-                  event,
-                  user,
-                  ...updateArgs,
-                });
+                  });
               }
-              // no destination passed
+              // destination passed is null
               if (result.length) {
+                updateArgs.eventlocationId = null;
                 return result[0].update(updateArgs);
               }
               return Creators.eventResponse({
@@ -500,8 +469,17 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                 user,
                 ...updateArgs,
               });
-            }),
-          );
+            }
+            // no destination passed
+            if (result.length) {
+              return result[0].update(updateArgs);
+            }
+            return Creators.eventResponse({
+              event,
+              user,
+              ...updateArgs,
+            });
+          }));
       },
       messages(event) {
         return event.getMessages();
@@ -528,10 +506,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           return org.getGroups({ where: { Id: args.id } });
         }
         if (args.filter) {
-          return org.getGroups({
-            where: { name: { [Op.like]: `%${args.filter}%` } },
-            order: [['id', 'ASC']],
-          });
+          return org.getGroups({ where: { name: { [Op.like]: `%${args.filter}%` } }, order: [['id', 'ASC']] });
         }
         return org.getGroups({ order: [['id', 'ASC']] });
       },
@@ -540,17 +515,9 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return org.getUsers({ order: [['id', 'ASC']] });
       },
       tags(org, args) {
-<<<<<<< HEAD
-        if (args.filter) {
-          return org.getTags({
-            where: { name: { [Op.like]: `%${args.filter}%` } },
-            order: [['id', 'ASC']],
-          });
-=======
         const where = {};
         if (args.nameFilter) {
           where.name = { [Op.like]: `%${args.nameFilter}%` };
->>>>>>> origin/master
         }
         if (args.typeFilter) {
           where.type = { [Op.like]: `%${args.typeFilter}%` };
@@ -571,17 +538,16 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       },
       createGroup(_, args, ctx) {
         const { name, tags, icon } = args.group;
-        return getAuthenticatedUser(ctx).then(user =>
-          Organisation.findById(user.organisationId).then(organisation =>
-            Creators.group({
+        return getAuthenticatedUser(ctx)
+          .then(user => Organisation.findById(user.organisationId)
+            .then(organisation => Creators.group({
               name,
               icon,
               tags,
               users: [user],
               organisation,
-            }),
-          ),
-        );
+            })),
+          );
       },
       addUserToGroup(_, args, ctx) {
         const { groupId } = args.groupUpdate;
@@ -592,7 +558,9 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             }
             return user.getGroups({ where: { id: groupId } }).then((existing) => {
               if (existing.length) {
-                return Promise.reject(Error(`${user.id} is already a member of ${groupId}!`));
+                return Promise.reject(
+                  Error(`${user.id} is already a member of ${groupId}!`),
+                );
               }
               return group.addUser(user).then(() => group);
             });
@@ -607,9 +575,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
               return Promise.reject(Error('Invalid group!'));
             }
             return group.removeUser(user).then((rows) => {
-              if (rows) {
-                return group;
-              }
+              if (rows) { return group; }
               return false;
             });
           }),
