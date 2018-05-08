@@ -1,3 +1,6 @@
+import { GraphQLScalarType } from 'graphql';
+import { Kind } from 'graphql/language';
+
 export const getResolvers = (handlers) => {
   const {
     device: deviceHandler,
@@ -9,9 +12,26 @@ export const getResolvers = (handlers) => {
     event: eventHandler,
     eventResponse: eventResponseHandler,
     message: messageHandler,
+    push: pushHandler,
   } = handlers;
 
   return {
+    Date: new GraphQLScalarType({
+      name: 'Date',
+      description: 'Date custom scalar type',
+      parseValue(value) {
+        return new Date(value * 1000); // value from the client
+      },
+      serialize(value) {
+        return Math.round(value.getTime() / 1000); // value sent to the client
+      },
+      parseLiteral(ast) {
+        if (ast.kind === Kind.INT) {
+          return parseInt(ast.value, 10); // ast value is always in string format
+        }
+        return null;
+      },
+    }),
     Group: {
       users(group, args, ctx) {
         return groupHandler.users(group, args, ctx);
@@ -142,8 +162,8 @@ export const getResolvers = (handlers) => {
       updateUserProfile(_, args, ctx) {
         return userHandler.updateUserProfile(_, args, ctx);
       },
-      updateToken(_, args, ctx) {
-        return deviceHandler.updateToken(_, args, ctx);
+      updateDevice(_, args, ctx) {
+        return deviceHandler.updateDevice(_, args, ctx);
       },
       updateLocation(_, args, ctx) {
         return deviceHandler.updateLocation(_, args, ctx);
@@ -171,6 +191,9 @@ export const getResolvers = (handlers) => {
       },
       createMessage(_, args, ctx) {
         return messageHandler.createMessage(_, args, ctx);
+      },
+      sendTestPush(_, __, ctx) {
+        return pushHandler.sendTestPush(ctx);
       },
     },
   };

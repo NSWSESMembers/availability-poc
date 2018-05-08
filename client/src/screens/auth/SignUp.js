@@ -1,53 +1,28 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 
-import PropTypes from 'prop-types';
-
 import { setCurrentUser } from '../../state/auth.actions';
-
-import { Alert } from '../../components/Alert';
-import { Container, Holder } from '../../components/Container';
-import { Input } from '../../components/Input';
-import { Button } from '../../components/Button';
+import SignUp from './components/SignUp';
 
 import SIGNUP_MUTATION from '../../graphql/signup.mutation';
 
-class SignUp extends Component {
+class SignUpScreen extends Component {
   static navigationOptions = () => ({
     title: 'Register',
   });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      email: '',
-    };
-  }
-
-  onChangeEmail = (value) => {
-    this.setState({
-      email: value,
-    });
+  state = {
+    loading: false,
   };
 
-  onChangePassword = (value) => {
-    this.setState({
-      password: value,
-    });
-  };
-
-  onChangeUsername = (value) => {
-    this.setState({
-      username: value,
-    });
-  };
-
-  onPressSignUp = () => {
+  handleSignUp = ({ username, email, password }) => {
     const { deviceUuid } = this.props.local;
-    const { username, password, email } = this.state;
+
+    this.setState({ loading: true });
+
     this.props
       .signup({ username, email, password, deviceUuid })
       .then(({ data: { signup: user } }) => {
@@ -56,39 +31,34 @@ class SignUp extends Component {
           username: user.username,
           token: user.authToken,
         };
+        this.setState({ loading: false });
         this.props.dispatch(setCurrentUser(ourUser));
         // we don't need to navigate here because as soon as the auth props are changed
         // <AuthNavigator /> will navigate for us
       })
       .catch((error) => {
-        this.setState({
-          status: 'Sign Up Error',
-          errorMessage: error.message,
-        });
-        this.popRef.show();
+        this.setState({ loading: false });
+        Alert.alert('Sign up failed', error.message);
       });
   };
 
   render() {
     return (
-      <Container>
-        <Holder margin transparent>
-          <Input type="username" placeholder="Username" onChangeText={this.onChangeUsername} />
-          <Input type="password" placeholder="Password" onChangeText={this.onChangePassword} />
-          <Input type="username" placeholder="Email" onChangeText={this.onChangeEmail} />
-          <Button text="Register" onPress={this.onPressSignUp} />
-        </Holder>
-        <Alert
-          ref={(el) => {
-            this.popRef = el;
-          }}
-          status={this.state.status}
-          message={this.state.errorMessage}
-        />
-      </Container>
+      <SignUp
+        loading={this.state.loading}
+        onSignUp={this.handleSignUp}
+      />
     );
   }
 }
+
+SignUpScreen.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  local: PropTypes.shape({
+    deviceUuid: PropTypes.string,
+  }),
+  signup: PropTypes.func.isRequired,
+};
 
 const signup = graphql(SIGNUP_MUTATION, {
   props: ({ mutate }) => ({
@@ -99,17 +69,9 @@ const signup = graphql(SIGNUP_MUTATION, {
   }),
 });
 
-SignUp.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  local: PropTypes.shape({
-    deviceUuid: PropTypes.string,
-  }),
-  signup: PropTypes.func.isRequired,
-};
-
 const mapStateToProps = ({ auth, local }) => ({
   auth,
   local,
 });
 
-export default compose(signup, connect(mapStateToProps))(SignUp);
+export default compose(signup, connect(mapStateToProps))(SignUpScreen);

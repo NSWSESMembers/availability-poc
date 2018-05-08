@@ -9,12 +9,13 @@ export default gql`
       name
       icon
       tags {
-         name
          id
+         name
+         type
        }
        users {
-         username
          id
+         username
        }
     }
   }

@@ -14,13 +14,14 @@ export default gql`
             icon
             id
             tags {
-              name
               id
+              name
+              type
             }
             users {
+             id
              username
              displayName
-             id
             }
             schedules {
               id

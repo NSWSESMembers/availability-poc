@@ -36,9 +36,6 @@ describe('GraphQL query - Current user', () => {
             tags {
               id
             }
-            capabilities {
-              id
-            }
           }
         }
       }
@@ -60,10 +57,6 @@ describe('GraphQL query - Current user', () => {
     it('Returns tags', () => response.then((res) => {
       expect(res.data.user.organisation.tags.length).toBeGreaterThan(0);
       expect(res.data.user.organisation.tags[0]).toHaveProperty('id');
-    }));
-    it('Returns capabilities', () => response.then((res) => {
-      expect(res.data.user.organisation.capabilities.length).toBeGreaterThan(0);
-      expect(res.data.user.organisation.capabilities[0]).toHaveProperty('id');
     }));
   });
 
@@ -106,6 +99,8 @@ describe('GraphQL query - Current user', () => {
             tags {
               id
             }
+            createdAt
+            updatedAt
           }
         }
       }
@@ -246,21 +241,6 @@ describe('GraphQL query - Current user', () => {
         user {
           id
           tags {
-            id
-          }
-        }
-      }
-    `);
-
-    itReturnsSuccess(response);
-  });
-
-  describe('Get capabilities', () => {
-    const response = query(`
-      {
-        user {
-          id
-          capabilities {
             id
           }
         }

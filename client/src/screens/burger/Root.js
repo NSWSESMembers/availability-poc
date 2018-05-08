@@ -1,19 +1,18 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, FlatList, Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
-import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
-import { Container } from '../../components/Container';
-import { ListItem } from '../../components/List';
+import Menu from './components/Menu';
 import { FEEDBACK_URL } from '../../config/urls';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import UPDATE_LOCATION_MUTATION from '../../graphql/update-location.mutation';
 import UPDATE_USERPROFILE_MUTATION from '../../graphql/update-userprofile.mutation';
+import SEND_TEST_PUSH_MUTATION from '../../graphql/send-test-push.mutation';
 import { logout } from '../../state/auth.actions';
 import { bugsnag } from '../../app';
 
@@ -35,7 +34,13 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
   }),
 });
 
-class BurgerRoot extends Component {
+const sendTestPushMutation = graphql(SEND_TEST_PUSH_MUTATION, {
+  props: ({ mutate }) => ({
+    sendTestPush: () => mutate(),
+  }),
+});
+
+class BurgerScreen extends Component {
   static navigationOptions = {
     title: 'More',
   };
@@ -67,32 +72,24 @@ class BurgerRoot extends Component {
     );
   }
 
+  handleSubmitFeedback = () => {
+    Linking.openURL(FEEDBACK_URL);
+  }
+
   showUserProfile = () => {
     const { navigation } = this.props;
     navigation.push('Profile');
+  }
+
+  showParams = () => {
+    const { navigation } = this.props;
+    navigation.push('Params');
   }
 
   logout = () => {
     this.props.dispatch(logout());
     // we don't need to navigate here because <MainNavigator /> will detect the change to the
     // `auth` prop and automatically navigate away
-  }
-
-  about = () => {
-    const deviceInfoAvailable = DeviceInfo.typeof === undefined;
-
-    codePush.getCurrentPackage().then((result) => {
-      Alert.alert(
-        'About',
-        `
-        getBundleId: ${deviceInfoAvailable ? DeviceInfo.getBundleId() : 'NA'}
-        BuildNumber: ${deviceInfoAvailable ? DeviceInfo.getBuildNumber() : 'NA'}
-        getReadableVersion: ${deviceInfoAvailable ? DeviceInfo.getReadableVersion() : 'NA'}
-        CodePushlabel: ${result ? result.label : 'No CP package installed'}
-        CodePushHash: ${result ? result.packageHash : 'No CP package installed'}
-        `,
-      );
-    });
   }
 
   checkForUpdate = () => {
@@ -124,74 +121,35 @@ class BurgerRoot extends Component {
     }
   };
 
-  renderItem = ({ item }) => (
-    <ListItem
-      bold
-      {...item}
-    />
-  )
+  sendTestPush = () => {
+    this.props.sendTestPush().catch((e) => {
+      Alert.alert(
+        'Test push failed',
+        `${e}`,
+      );
+    });
+  }
 
   render() {
-    const items = [
-      {
-        title: 'User Profile',
-        subtitle: 'Modify your display name and preferences',
-        iconLeft: 'user-circle',
-        onPress: this.showUserProfile,
-      },
-      {
-        title: 'Force location update',
-        subtitle: 'Test the location tracking system',
-        iconLeft: 'compass',
-        onPress: this.updateLocation,
-      },
-      {
-        title: 'Check for updates',
-        subtitle: 'Install a new version of the app, if available',
-        iconLeft: 'download',
-        onPress: this.checkForUpdate,
-      },
-      {
-        title: 'Submit feedback',
-        subtitle: 'Please post in the Facebook feedback group',
-        iconLeft: 'comments',
-        onPress: () => Linking.openURL(FEEDBACK_URL),
-      },
-      {
-        title: 'Test Bugsnag',
-        subtitle: 'Submit a mock bug report to Bugsnag',
-        iconLeft: 'bug',
-        onPress: this.crashReport,
-      },
-      {
-        title: 'About',
-        subtitle: 'Display the app version and other details',
-        iconLeft: 'info-circle',
-        onPress: this.about,
-      },
-      {
-        title: 'Logout',
-        subtitle: 'Sign out of this device',
-        iconLeft: 'times-circle',
-        onPress: this.logout,
-      },
-    ];
-
     return (
-      <Container>
-        <FlatList
-          data={items}
-          keyExtractor={item => item.title}
-          renderItem={this.renderItem}
-        />
-      </Container>
+      <Menu
+        onShowUserProfile={this.showUserProfile}
+        onUpdateLocation={this.updateLocation}
+        onCheckForUpdate={this.checkForUpdate}
+        onSubmitFeedback={this.handleSubmitFeedback}
+        onTestBugsnag={this.crashReport}
+        onSendTestPush={this.sendTestPush}
+        onShowParams={this.showParams}
+        onLogout={this.logout}
+      />
     );
   }
 }
 
-BurgerRoot.propTypes = {
+BurgerScreen.propTypes = {
   dispatch: PropTypes.func.isRequired,
   updateLocation: PropTypes.func,
+  sendTestPush: PropTypes.func,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }),
@@ -215,4 +173,5 @@ export default compose(
   userQuery,
   updateUserProfileMutation,
   updateLocationMutation,
-)(BurgerRoot);
+  sendTestPushMutation,
+)(BurgerScreen);

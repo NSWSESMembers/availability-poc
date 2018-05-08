@@ -1,30 +1,28 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
 import PropTypes from 'prop-types';
-import DeviceInfo from 'react-native-device-info';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Button } from '../../components/Button';
-import { codePushHash } from '../../utils';
-import { Center, Container, Footer, Half, Holder } from '../../components/Container';
+import { getCodePushHash } from '../../utils';
+import DeviceInfo from '../../selectors/deviceInfo';
+import Home from './components/Home';
 
-class Home extends Component {
+class HomeScreen extends Component {
   static navigationOptions = () => ({
     header: null,
   });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      codePushHash: '-',
-    };
+  state = {
+    codePushHash: '-',
+    version: 'N/A',
   }
 
   componentWillMount() {
-    codePushHash().then((value) => {
+    getCodePushHash().then((value) => {
       this.setState({
         codePushHash: value,
       });
+    });
+    this.setState({
+      version: DeviceInfo.getVersionString(),
     });
   }
 
@@ -37,36 +35,22 @@ class Home extends Component {
   };
 
   render() {
+    const { version, codePushHash } = this.state;
     return (
-      <Container isAlt>
-        <Center>
-          <Icon name="bullhorn" size={90} color="#FFF" />
-          <Text style={{ fontSize: 45, color: '#FFF' }}>Callout</Text>
-          <Text style={{ fontSize: 15, color: '#FFF' }}>
-          Version {DeviceInfo.typeof === undefined ? DeviceInfo.getReadableVersion() : 'NA'} Revision {this.state.codePushHash}
-          </Text>
-        </Center>
-        <Footer>
-          <Half>
-            <Holder>
-              <Button text="Sign In" onPress={this.goToSignIn} />
-            </Holder>
-          </Half>
-          <Half>
-            <Holder>
-              <Button text="Register" onPress={this.goToRegister} type="secondary" />
-            </Holder>
-          </Half>
-        </Footer>
-      </Container>
+      <Home
+        version={version}
+        codePushHash={codePushHash}
+        onPressSignIn={this.goToSignIn}
+        onPressRegister={this.goToRegister}
+      />
     );
   }
 }
 
-Home.propTypes = {
+HomeScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
 };
 
-export default Home;
+export default HomeScreen;

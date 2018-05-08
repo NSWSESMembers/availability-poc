@@ -2,6 +2,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 export const Schema = [
   `
+  scalar Date
+
   input CreateOrganisationInput {
     name: String!
   }
@@ -11,13 +13,15 @@ export const Schema = [
     locationLon: String!
   }
 
-  input TokenUpdateInput {
+  input DeviceUpdateInput {
+    name: String
     token: String!
   }
 
   input TagInput {
     id: Int!
-    name: String
+    name: String,
+    type: String,
   }
 
   input CreateGroupInput {
@@ -142,7 +146,7 @@ export const Schema = [
     name: String!
     users: [User]!
     groups(id: Int,filter: String): [Group]!
-    tags(filter: String): [Tag]!
+    tags(nameFilter: String,typeFilter: String): [Tag]!
     capabilities: [Capability]!
   }
 
@@ -154,6 +158,8 @@ export const Schema = [
     schedules: [Schedule]! # schedules associated with this group
     events: [Event]! # events associated with this group
     tags: [Tag]! # tags associdated with this group
+    createdAt: Date # sequelize managed field
+    updatedAt: Date # sequelize managed field
   }
 
   # a user -- keep type really simple for now
@@ -175,6 +181,7 @@ export const Schema = [
   type Tag {
     id: Int!
     name: String!
+    type: String!
   }
 
   type Capability {
@@ -184,6 +191,7 @@ export const Schema = [
 
   type Device {
     id: Int!
+    name: String  # device name from device info
     uuid: String!
     pushToken: String
     locationLat: String
@@ -286,8 +294,9 @@ export const Schema = [
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
     updateLocation(location: LocationUpdateInput!): Boolean
-    updateToken(token: TokenUpdateInput!): Boolean
+    updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
+    sendTestPush: Boolean  # send a push notification to the requesting device
   }
 
   schema {

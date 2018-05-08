@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { compose } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 
+import { pushManager } from '../app';
 import { isLoggedIn } from '../selectors/auth';
 import HomeNavigator from './HomeNavigator';
 import SchedulesNavigator from './SchedulesNavigator';
 import GroupsNavigator from './GroupsNavigator';
 import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
+import PushHandler from '../components/push/PushHandler';
+
+import UPDATE_DEVICE_MUTATION from '../graphql/update-device.mutation';
+import CURRENT_DEVICE_QUERY from '../graphql/current-device.query';
 
 const fontSize = Platform.OS === 'ios' ? 10 : 8;
 
@@ -90,8 +95,18 @@ class MainNavigator extends Component {
   }
 
   render() {
+    const { device, auth, updateDevice } = this.props;
+
     return (
-      <MainTabNavigator screenProps={{ modalNavigation: this.props.navigation }} />
+      <View style={{ flex: 1 }}>
+        <PushHandler
+          updateDevice={updateDevice}
+          pushManager={pushManager}
+          auth={auth}
+          device={device}
+        />
+        <MainTabNavigator screenProps={{ modalNavigation: this.props.navigation }} />
+      </View>
     );
   }
 }
@@ -100,12 +115,39 @@ MainNavigator.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
+  device: PropTypes.shape({
+    pushToken: PropTypes.string,
+  }),
   auth: PropTypes.shape().isRequired,
+  updateDevice: PropTypes.func.isRequired,
 };
 
-
-const mapStateToProps = ({ auth }) => ({
-  auth,
+const deviceQuery = graphql(CURRENT_DEVICE_QUERY, {
+  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
+  props: ({ data: { loading, networkStatus, refetch, device } }) => ({
+    loading,
+    networkStatus,
+    refetch,
+    device,
+  }),
 });
 
-export default compose(connect(mapStateToProps))(MainNavigator);
+const updateDeviceMutation = graphql(UPDATE_DEVICE_MUTATION, {
+  props: ({ mutate }) => ({
+    updateDevice: device =>
+      mutate({
+        variables: { device },
+      }),
+  }),
+});
+
+const mapStateToProps = ({ auth, device }) => ({
+  auth,
+  device,
+});
+
+export default compose(
+  updateDeviceMutation,
+  connect(mapStateToProps),
+  deviceQuery,
+)(MainNavigator);

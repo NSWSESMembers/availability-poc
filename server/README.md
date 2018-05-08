@@ -1,5 +1,5 @@
 # API Server for Availability
- 
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/gh/NSWSESMembers/availability-poc/branch/master/graph/badge.svg)](https://codecov.io/gh/NSWSESMembers/availability-poc)
 [![Build Status](https://travis-ci.org/NSWSESMembers/availability-poc.svg?branch=master)](https://travis-ci.org/NSWSESMembers/availability-poc)
@@ -76,3 +76,10 @@ Contributions of all kinds are welcomed but please explain what you did to
 verify your change didn't cause a regression in your pull request. Writing a
 new test case for your new feature is probably the best way to do this since
 Travis will perform the tests for all pull requests.
+
+Please ensure commits that land on master are self-contained changes and easily revertable. This
+can be achieved through non-fast-forward pushes to PR branches for PRs that contain multiple
+commits or by using GitHub's squash and merge feature when you merge the PR.
+
+CI/Travis must pass before a PR can be merged. We look for test coverage in all commits but do not
+require that codecov passes.

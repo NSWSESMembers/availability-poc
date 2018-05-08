@@ -7,15 +7,16 @@ export default gql`
       id
       organisation {
         groups {
-          name
           id
+          name
           users {
-            username
             id
+            username
           }
           tags {
-            name
             id
+            name
+            type
           }
         }
       }

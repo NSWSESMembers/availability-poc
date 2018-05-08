@@ -25,16 +25,14 @@ export const defineModels = () => {
     version: 1,
   });
 
-  const CapabilityModel = db.define('capability', {
-    name: 'test',
-  });
-
   const TagModel = db.define('tag', {
     name: 'test',
+    type: 'group',
   });
 
   const DeviceModel = db.define('device', {
     uuid: '1234abc',
+    name: 'test-device',
     pushToken: 'testpushtoken',
     locationLat: -34.4267554,
     locationLon: 150.8880039,
@@ -132,10 +130,6 @@ export const defineModels = () => {
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
-  // users belong to capability tags
-  UserModel.belongsToMany(CapabilityModel, { through: 'user_capability' });
-  CapabilityModel.belongsToMany(UserModel, { through: 'user_capability' });
-
   // events are created for a single group
   EventModel.belongsTo(GroupModel);
   GroupModel.hasMany(EventModel);
@@ -164,15 +158,10 @@ export const defineModels = () => {
   TagModel.belongsTo(OrganisationModel);
   OrganisationModel.hasMany(TagModel);
 
-  // tags belong to one organisation for now
-  CapabilityModel.belongsTo(OrganisationModel);
-  OrganisationModel.hasMany(CapabilityModel);
-
   return {
     Organisation: db.models.organisation,
     Group: db.models.group,
     User: db.models.user,
-    Capability: db.models.capability,
     Tag: db.models.tag,
     Device: db.models.device,
     Event: db.models.event,

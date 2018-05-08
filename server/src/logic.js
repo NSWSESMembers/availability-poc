@@ -25,8 +25,20 @@ const getAuthenticatedDevice = ctx =>
     return device;
   });
 
+<<<<<<< HEAD
 export const getHandlers = ({ models, creators: Creators }) => {
   const { Group, User, Organisation, Schedule, Event, TimeSegment } = models;
+=======
+export const getHandlers = ({ models, creators: Creators, push }) => {
+  const {
+    Group,
+    User,
+    Organisation,
+    Schedule,
+    Event,
+    TimeSegment,
+  } = models;
+>>>>>>> origin/master
 
   const handlers = {
     device: {
@@ -44,12 +56,25 @@ export const getHandlers = ({ models, creators: Creators }) => {
           });
         });
       },
+<<<<<<< HEAD
       updateToken(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then(device =>
           device.update({
             pushToken: args.token.token,
           }),
         );
+=======
+      updateDevice(_, args, ctx) {
+        const { name, token } = args.device;
+        const params = {};
+        if (name) {
+          params.name = name;
+        }
+        if (token) {
+          params.pushToken = token;
+        }
+        return getAuthenticatedDevice(ctx).then(device => device.update(params));
+>>>>>>> origin/master
       },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {
@@ -106,9 +131,6 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       tags(user) {
         return user.getTags();
-      },
-      capabilities(user) {
-        return user.getCapabilities();
       },
       signup(args, ctx) {
         const { deviceUuid, email, username, password } = args.user;
@@ -515,25 +537,31 @@ export const getHandlers = ({ models, creators: Creators }) => {
       },
       users(org) {
         // TODO: think about who we show the complete organisation user list to
-        return org.getUsers();
+        return org.getUsers({ order: [['id', 'ASC']] });
       },
       tags(org, args) {
+<<<<<<< HEAD
         if (args.filter) {
           return org.getTags({
             where: { name: { [Op.like]: `%${args.filter}%` } },
             order: [['id', 'ASC']],
           });
+=======
+        const where = {};
+        if (args.nameFilter) {
+          where.name = { [Op.like]: `%${args.nameFilter}%` };
+>>>>>>> origin/master
         }
-        return org.getTags();
-      },
-      capabilities(org) {
-        return org.getCapabilities();
+        if (args.typeFilter) {
+          where.type = { [Op.like]: `%${args.typeFilter}%` };
+        }
+        return org.getTags({ where, order: [['id', 'ASC']] });
       },
     },
 
     group: {
       users(group) {
-        return group.getUsers();
+        return group.getUsers({ order: [['displayName', 'ASC']] });
       },
       schedules(group) {
         return group.getSchedules();
@@ -609,6 +637,18 @@ export const getHandlers = ({ models, creators: Creators }) => {
             user,
           }),
         );
+      },
+    },
+    push: {
+      async sendTestPush(ctx) {
+        console.log(ctx);
+        const device = await getAuthenticatedDevice(ctx);
+        const result = push.sendPush({
+          devices: [device],
+          message: 'Test push notification \u2728\u2705\uD83D\uDC8C\uD83D\uDC4D',
+        });
+
+        return result;
       },
     },
   };

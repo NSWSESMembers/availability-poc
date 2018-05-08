@@ -23,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>CodePushDeploymentKey</key>
 	<string>RI6UfCKevlNt4DsfOcrdpRuADRwvae9e3d88-2347-4e09-a02a-76e4d3554374</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -64,6 +64,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
