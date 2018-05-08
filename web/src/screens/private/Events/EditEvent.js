@@ -63,6 +63,7 @@ class EditEvent extends React.Component {
   state = {
     id: 0,
     groupId: '',
+    groupName: '',
     name: '',
     details: '',
     activeStep: 0,
@@ -82,9 +83,9 @@ class EditEvent extends React.Component {
       );
 
       if (event !== undefined) {
-        const scene = event.eventLocations.find(s => s.icon === 'scene');
-        const lhq = event.eventLocations.find(s => s.icon === 'lhq');
-        const helo = event.eventLocations.find(s => s.icon === 'helo');
+        let scene = event.eventLocations.find(s => s.icon === 'scene');
+        let lhq = event.eventLocations.find(s => s.icon === 'lhq');
+        let helo = event.eventLocations.find(s => s.icon === 'helo');
 
         const scenes = [...defaultScenes];
         const lhqs = [...defaultLhqs];
@@ -96,7 +97,11 @@ class EditEvent extends React.Component {
               newLoc.locationLatitude === scene.locationLatitude &&
               newLoc.locationLongitude === scene.locationLongitude,
           );
-          if (loc === undefined) scenes.push(scene);
+          if (loc === undefined) {
+            scenes.push(scene);
+          } else {
+            scene = loc;
+          }
         }
 
         if (lhq !== undefined) {
@@ -105,7 +110,12 @@ class EditEvent extends React.Component {
               newLoc.locationLatitude === lhq.locationLatitude &&
               newLoc.locationLongitude === lhq.locationLongitude,
           );
-          if (loc === undefined) lhqs.push(lhq);
+
+          if (loc === undefined) {
+            lhqs.push(lhq);
+          } else {
+            lhq = loc;
+          }
         }
 
         if (helo !== undefined) {
@@ -114,18 +124,20 @@ class EditEvent extends React.Component {
               newLoc.locationLatitude === helo.locationLatitude &&
               newLoc.locationLongitude === helo.locationLongitude,
           );
-          if (loc === undefined) helos.push(helo);
-        }
 
-        console.log('scene', scene);
-        console.log('scenes', scenes);
-        console.log(event);
+          if (loc === undefined) {
+            helos.push(helo);
+          } else {
+            helo = loc;
+          }
+        }
 
         this.setState({
           id: event.id,
           name: event.name,
           details: event.details,
           groupId: event.group.id,
+          groupName: event.group.name,
           scene,
           lhq,
           helo,
@@ -139,7 +151,12 @@ class EditEvent extends React.Component {
 
   onGroupChange = (e) => {
     const groupId = e.target.value;
-    this.setState(() => ({ groupId }));
+    let name = '';
+
+    const group = this.props.user.groups.find(g => g.id === parseInt(groupId, 10));
+    if (group !== undefined) ({ name } = group);
+
+    this.setState(() => ({ groupId, groupName: name }));
   };
 
   onNameChange = (e) => {
@@ -176,6 +193,7 @@ class EditEvent extends React.Component {
       pushLocation(eventLocations, this.state.scene);
       pushLocation(eventLocations, this.state.lhq);
       pushLocation(eventLocations, this.state.helo);
+
       if (this.state.id === 0) {
         // Add event
         this.props
@@ -242,7 +260,11 @@ class EditEvent extends React.Component {
             <Stepper activeStep={activeStep} orientation="vertical">
               {steps.map((label, index) => (
                 <Step key={this.state.id}>
-                  <StepLabel>{label}</StepLabel>
+                  <StepLabel>
+                    {label}
+                    {index === 0 && activeStep !== 0 && this.state.groupId !== 0 && <span> : {this.state.groupName}</span>}
+                    {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
+                  </StepLabel>
                   <StepContent>
                     <Typography>{getStepContent(index)}</Typography>
                     {index === 0 && (
@@ -395,6 +417,11 @@ EditEvent.propTypes = {
   updateEvent: PropTypes.func.isRequired,
   history: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
   user: PropTypes.shape({
     groups: PropTypes.arrayOf(
       PropTypes.shape({

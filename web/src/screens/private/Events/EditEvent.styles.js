@@ -35,4 +35,5 @@ export default theme => ({
   menu: {
     width: 200,
   },
+  stepCaption: {},
 });
