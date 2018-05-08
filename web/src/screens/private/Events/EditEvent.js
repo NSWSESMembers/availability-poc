@@ -156,7 +156,7 @@ class EditEvent extends React.Component {
     const group = this.props.user.groups.find(g => g.id === parseInt(groupId, 10));
     if (group !== undefined) ({ name } = group);
 
-    this.setState(() => ({ groupId, groupName: name }));
+    this.setState({ groupId, groupName: name });
   };
 
   onNameChange = (e) => {
