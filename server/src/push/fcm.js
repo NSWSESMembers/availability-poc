@@ -12,9 +12,9 @@ const makeCert = () => {
 const options = {
   type: 'service_account',
   project_id: 'callout-bce1b',
-  private_key_id: '1d50a48a9fc36ec494c68b3a744558b9bac119d9',
+  private_key_id: process.env.FBA_KEY_ID,
   private_key: makeCert(),
-  client_email: 'firebase-adminsdk-hmrg2@callout-bce1b.iam.gserviceaccount.com',
+  client_email: process.env.FBA_EMAIL,
   client_id: '104804167075345407845',
   auth_uri: 'https://accounts.google.com/o/oauth2/auth',
   token_uri: 'https://accounts.google.com/o/oauth2/token',
