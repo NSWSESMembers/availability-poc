@@ -79,7 +79,7 @@ SchedulesRoot.propTypes = {
     push: PropTypes.func,
   }),
   networkStatus: PropTypes.number,
-  refetch: PropTypes.func.isRequired,
+  refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
