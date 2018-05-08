@@ -25,4 +25,8 @@ export default theme => ({
     width: '100%',
     minHeight: 40,
   },
+  tableCell: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
 });

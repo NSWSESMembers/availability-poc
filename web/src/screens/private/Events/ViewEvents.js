@@ -78,12 +78,10 @@ class ViewEvents extends React.Component {
             <TableBody>
               {this.props.user.events.map(event => (
                 <TableRow key={event.id}>
-                  <TableCell>
+                  <TableCell className={classes.tableCell}>
                     <Link to={`/events/edit/${event.id}`}>{event.name}</Link>
                   </TableCell>
-                  <TableCell>
-                    {event.details} {event.startTime}
-                  </TableCell>
+                  <TableCell>{event.details}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -98,16 +96,7 @@ ViewEvents.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
   user: PropTypes.shape({
-    schedules: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        details: PropTypes.string.isRequired,
-        startTime: PropTypes.number.isRequired,
-        endTime: PropTypes.number.isRequired,
-      }),
-    ),
-    groups: PropTypes.arrayOf(
+    events: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,

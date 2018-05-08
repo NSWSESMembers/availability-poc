@@ -16,6 +16,18 @@ export default gql`
         }
       }
       events {
+        group {
+          id
+          name
+        }
+        eventLocations {
+          id
+          name
+          detail
+          icon
+          locationLatitude
+          locationLongitude
+        }
         id
         name
         details

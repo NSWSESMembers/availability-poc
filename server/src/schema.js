@@ -114,6 +114,33 @@ export const Schema = [
     groupId: Int
   }
 
+  input LocationInput {
+    name: String
+    detail: String
+    icon: String
+    locationLatitude: Float!
+    locationLongitude: Float!
+  }
+
+  input CreateEventInput {
+    name: String!
+    details: String!
+    sourceIdentifier: String
+    permalink: String
+    eventLocations: [LocationInput]
+    groupId: Int!
+  }
+
+  input UpdateEventInput {
+    id: Int!
+    name: String!
+    details: String!
+    sourceIdentifier: String
+    permalink: String
+    eventLocations: [LocationInput]
+    groupId: Int!
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -251,6 +278,8 @@ export const Schema = [
 
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
+    createEvent(event: CreateEventInput!): Event
+    updateEvent(event: UpdateEventInput!): Event
     createUser(user: CreateUserInput!): User
     updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User

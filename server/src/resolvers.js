@@ -150,6 +150,12 @@ export const getResolvers = (handlers) => {
       removeUserFromGroup(_, args, ctx) {
         return groupHandler.removeUserFromGroup(_, args, ctx);
       },
+      createEvent(_, args, ctx) {
+        return eventHandler.createEvent(_, args, ctx);
+      },
+      updateEvent(_, args, ctx) {
+        return eventHandler.updateEvent(_, args, ctx);
+      },
       deleteUser(_, args, ctx) {
         return userHandler.deleteUser(args, ctx);
       },
