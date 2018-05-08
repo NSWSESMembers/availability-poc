@@ -70,7 +70,7 @@ class Header extends React.Component {
           </Toolbar>
         </AppBar>
         <AppBar position="static" color="default">
-          <Tabs value={this.state.route} onChange={this.handleChange} style={{ marginLeft: 30 }}>
+          <Tabs value={this.state.route} onChange={this.handleChange} fullWidth centered>
             <Tab value="Home" label="Home" />
             <Tab value="Groups" label="Groups" />
             <Tab value="Availability" label="Availability" />

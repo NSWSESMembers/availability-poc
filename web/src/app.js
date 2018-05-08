@@ -9,6 +9,7 @@ import { ApolloLink, concat } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import { GRAPHQL_ENDPOINT } from './config';
 
@@ -44,11 +45,28 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#1e3c78',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contast with palette.primary.main
+    },
+    secondary: {
+      main: '#f48603',
+    },
+    // error: will use the default color
+  },
+});
+
 const jsx = (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ApolloProvider client={client}>
-        <AppRouter />
+        <MuiThemeProvider theme={theme}>
+          <AppRouter />
+        </MuiThemeProvider>
       </ApolloProvider>
     </PersistGate>
   </Provider>
