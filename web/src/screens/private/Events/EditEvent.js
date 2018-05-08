@@ -262,7 +262,12 @@ class EditEvent extends React.Component {
                 <Step key={this.state.id}>
                   <StepLabel>
                     {label}
-                    {index === 0 && activeStep !== 0 && this.state.groupId !== 0 && <span> : {this.state.groupName}</span>}
+                    {
+                      index === 0 &&
+                      activeStep !== 0 &&
+                      this.state.groupId !== 0 &&
+                      <span> : {this.state.groupName}</span>
+                    }
                     {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
                   </StepLabel>
                   <StepContent>

@@ -7,14 +7,15 @@ import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Ta
 import moment from 'moment/moment';
 import { Link } from 'react-router-dom';
 
-import { numbers } from '../constants';
+import numbers from '../constants';
 
 const DisplayRequests = ({ classes, user }) => {
   if (!user.groups.length) {
     return (
       <Paper className={classes.paper}>
         <Typography component="p" align="center">
-          You are currently not assigned to any groups. <Link to="/groups">Click here to join groups</Link>
+          You are currently not assigned to any groups.{' '}
+          <Link to="/groups">Click here to join groups</Link>
         </Typography>
       </Paper>
     );
@@ -42,7 +43,9 @@ const DisplayRequests = ({ classes, user }) => {
               </TableCell>
               <TableCell>{schedule.group.name}</TableCell>
               <TableCell>
-                {schedule.startTime === numbers.distantPast ? 'Ongoing' : moment.unix(schedule.startTime).format('LLL')}
+                {schedule.startTime === numbers.distantPast
+                  ? 'Ongoing'
+                  : moment.unix(schedule.startTime).format('LLL')}
               </TableCell>
               <TableCell>
                 {schedule.endTime === numbers.distantFuture
@@ -56,7 +59,6 @@ const DisplayRequests = ({ classes, user }) => {
     </Paper>
   );
 };
-
 
 DisplayRequests.propTypes = {
   classes: PropTypes.shape({}).isRequired,
