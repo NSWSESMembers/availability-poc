@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation createEvent($event: CreateEventInput!) {
-    createEvent(event: $event) {
+  mutation updateEvent($event: UpdateEventInput!) {
+    updateEvent(event: $event) {
       id
       name
       details

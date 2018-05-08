@@ -10,23 +10,136 @@ import { withStyles } from 'material-ui/styles';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Button from 'material-ui/Button';
 import Card, { CardContent } from 'material-ui/Card';
+import { InputLabel } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
 import { CircularProgress } from 'material-ui/Progress';
+import { MenuItem } from 'material-ui/Menu';
+import Select from 'material-ui/Select';
 import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 
-import Locations from '../../../fixtures/locations';
+import defaultHelos from '../../../fixtures/helos';
+import defaultLhqs from '../../../fixtures/lhqs';
+import defaultScenes from '../../../fixtures/scenes';
 
+import CREATE_EVENT_MUTATION from '../../../graphql/create-event.mutation';
+import UPDATE_EVENT_MUTATION from '../../../graphql/update-event.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
 import styles from './EditEvent.styles';
 
+function getSteps() {
+  return ['Select Group', 'Event Information', 'Locations'];
+}
+
+function getStepContent(step) {
+  const steps = [
+    'Who will the event target?',
+    'Details about the event',
+    'Specify the locations for the event',
+  ];
+  if (step >= steps.length) {
+    return 'Unknown step';
+  }
+  return steps[step];
+}
+
+function pushLocation(locations, locationToAdd) {
+  if (locationToAdd !== undefined) {
+    locations.push({
+      name: locationToAdd.name,
+      detail: locationToAdd.detail,
+      icon: locationToAdd.icon,
+      locationLatitude: locationToAdd.locationLatitude,
+      locationLongitude: locationToAdd.locationLongitude,
+    });
+  }
+
+  return locations;
+}
+
 class EditEvent extends React.Component {
   state = {
+    id: 0,
+    groupId: '',
     name: '',
     details: '',
-    location: '',
+    activeStep: 0,
+    scenesList: defaultScenes,
+    lhqsList: defaultLhqs,
+    helosList: defaultHelos,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.loading === false &&
+      nextProps.match.params.id !== undefined &&
+      this.state.id === 0
+    ) {
+      const event = nextProps.user.events.find(
+        e => e.id === parseInt(this.props.match.params.id, 10),
+      );
+
+      if (event !== undefined) {
+        const scene = event.eventLocations.find(s => s.icon === 'scene');
+        const lhq = event.eventLocations.find(s => s.icon === 'lhq');
+        const helo = event.eventLocations.find(s => s.icon === 'helo');
+
+        const scenes = [...defaultScenes];
+        const lhqs = [...defaultLhqs];
+        const helos = [...defaultHelos];
+
+        if (scene !== undefined) {
+          const loc = scenes.find(
+            newLoc =>
+              newLoc.locationLatitude === scene.locationLatitude &&
+              newLoc.locationLongitude === scene.locationLongitude,
+          );
+          if (loc === undefined) scenes.push(scene);
+        }
+
+        if (lhq !== undefined) {
+          const loc = lhqs.find(
+            newLoc =>
+              newLoc.locationLatitude === lhq.locationLatitude &&
+              newLoc.locationLongitude === lhq.locationLongitude,
+          );
+          if (loc === undefined) lhqs.push(lhq);
+        }
+
+        if (helo !== undefined) {
+          const loc = helos.find(
+            newLoc =>
+              newLoc.locationLatitude === helo.locationLatitude &&
+              newLoc.locationLongitude === helo.locationLongitude,
+          );
+          if (loc === undefined) helos.push(helo);
+        }
+
+        console.log('scene', scene);
+        console.log('scenes', scenes);
+        console.log(event);
+
+        this.setState({
+          id: event.id,
+          name: event.name,
+          details: event.details,
+          groupId: event.group.id,
+          scene,
+          lhq,
+          helo,
+          scenesList: scenes,
+          lhqsList: lhqs,
+          helosList: helos,
+        });
+      }
+    }
+  }
+
+  onGroupChange = (e) => {
+    const groupId = e.target.value;
+    this.setState(() => ({ groupId }));
   };
 
   onNameChange = (e) => {
@@ -39,19 +152,76 @@ class EditEvent extends React.Component {
     this.setState(() => ({ details }));
   };
 
-  onLocationChange = (event) => {
-    const location = event.target.value;
-    this.setState(() => ({ location }));
+  onHeloChange = (event) => {
+    const helo = this.state.helosList.find(s => s.id === parseInt(event.target.value, 10));
+    this.setState(() => ({ helo }));
   };
 
-  handleSave = () => {
-    console.log('save');
+  onLHQChange = (event) => {
+    const lhq = this.state.lhqsList.find(s => s.id === parseInt(event.target.value, 10));
+    this.setState(() => ({ lhq }));
+  };
 
-    console.log(Locations.filter(location => location.name === this.state.location));
+  onSceneChange = (event) => {
+    const scene = this.state.scenesList.find(s => s.id === parseInt(event.target.value, 10));
+    this.setState(() => ({ scene }));
+  };
+
+  handleNext = () => {
+    const steps = getSteps();
+    if (this.state.activeStep === steps.length - 1) {
+      const { id, groupId, name, details } = this.state;
+
+      const eventLocations = [];
+      pushLocation(eventLocations, this.state.scene);
+      pushLocation(eventLocations, this.state.lhq);
+      pushLocation(eventLocations, this.state.helo);
+      if (this.state.id === 0) {
+        // Add event
+        this.props
+          .createEvent({ name, details, eventLocations, groupId })
+          .then(() => {
+            const { history } = this.props;
+            history.push('/events');
+          })
+          .catch((error) => {
+            this.setState(() => ({ message: error.message, open: true }));
+            setTimeout(() => {
+              this.setState(() => ({ message: '', open: false }));
+            }, 3000);
+          });
+      } else {
+        // Update event
+        this.props
+          .updateEvent({ id, name, details, eventLocations, groupId })
+          .then(() => {
+            const { history } = this.props;
+            history.push('/events');
+          })
+          .catch((error) => {
+            this.setState(() => ({ message: error.message, open: true }));
+            setTimeout(() => {
+              this.setState(() => ({ message: '', open: false }));
+            }, 3000);
+          });
+      }
+    } else {
+      this.setState({
+        activeStep: this.state.activeStep + 1,
+      });
+    }
+  };
+
+  handleBack = () => {
+    this.setState({
+      activeStep: this.state.activeStep - 1,
+    });
   };
 
   render() {
     const { classes } = this.props;
+    const steps = getSteps();
+    const { activeStep } = this.state;
 
     if (this.props.loading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -66,81 +236,151 @@ class EditEvent extends React.Component {
                 <ArrowBackIcon className={classes.cardIcon} />
               </NavLink>
               <Typography variant="title" color="inherit" className={classes.cardTitle}>
-                Add New Event
+                {this.state.id === 0 ? 'Add New' : 'Edit'} Event
               </Typography>
             </div>
-            <Stepper activeStep={0} orientation="vertical">
-              <Step key={1}>
-                <StepLabel>Event Information</StepLabel>
-                <StepContent>
-                  <Typography>Enter details about your event.</Typography>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      required
-                      id="name"
-                      label="name"
-                      type="text"
-                      margin="normal"
-                      value={this.state.name}
-                      onChange={this.onNameChange}
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      required
-                      id="details"
-                      label="details"
-                      multiline
-                      rowsMax="4"
-                      value={this.state.details}
-                      onChange={this.onDetailsChange}
-                      className={classes.textField}
-                      margin="normal"
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <TextField
-                      id="select-currency-native"
-                      select
-                      label="Location"
-                      className={classes.textField}
-                      onChange={this.onLocationChange}
-                      SelectProps={{
-                        native: true,
-                        MenuProps: {
-                          className: classes.menu,
-                        },
-                      }}
-                      margin="normal"
-                      required
-                    >
-                      <option key="" value="" />
-                      {Locations.map(option => (
-                        <option key={option.name} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </TextField>
-                  </FormControl>
-                  <div className={classes.actionsContainer}>
-                    <div>
+            <Stepper activeStep={activeStep} orientation="vertical">
+              {steps.map((label, index) => (
+                <Step key={this.state.id}>
+                  <StepLabel>{label}</StepLabel>
+                  <StepContent>
+                    <Typography>{getStepContent(index)}</Typography>
+                    {index === 0 && (
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="groupId" required>
+                          group
+                        </InputLabel>
+                        <Select
+                          value={this.state.groupId}
+                          onChange={this.onGroupChange}
+                          inputProps={{
+                            name: 'groupId',
+                            id: 'groupId',
+                          }}
+                          required
+                        >
+                          <MenuItem value="" key={0}>
+                            <em>none</em>
+                          </MenuItem>
+                          {this.props.user.groups.map(group => (
+                            <MenuItem value={group.id} key={group.id}>
+                              {group.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                    {index === 1 && (
+                      <div>
+                        <FormControl className={classes.formControl}>
+                          <TextField
+                            required
+                            id="name"
+                            label="name"
+                            type="text"
+                            margin="normal"
+                            value={this.state.name}
+                            onChange={this.onNameChange}
+                          />
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                          <TextField
+                            required
+                            id="details"
+                            label="details"
+                            multiline
+                            rowsMax="4"
+                            value={this.state.details}
+                            onChange={this.onDetailsChange}
+                            className={classes.textField}
+                            margin="normal"
+                          />
+                        </FormControl>
+                      </div>
+                    )}
+                    {index === 2 && (
+                      <div>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="scene" required>
+                            Scene
+                          </InputLabel>
+                          <Select
+                            value={this.state.scene !== undefined ? this.state.scene.id : ''}
+                            onChange={this.onSceneChange}
+                            required
+                          >
+                            <MenuItem value={0}>
+                              <em>none</em>
+                            </MenuItem>
+                            {this.state.scenesList.map(option => (
+                              <MenuItem
+                                value={option.id}
+                                key={`${this.state.id}-scene-${option.id}`}
+                              >
+                                {option.detail}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="lhq">Local HQ</InputLabel>
+                          <Select
+                            value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
+                            onChange={this.onLHQChange}
+                          >
+                            <MenuItem value={0}>
+                              <em>none</em>
+                            </MenuItem>
+                            {this.state.lhqsList.map(option => (
+                              <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
+                                {option.detail}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="helo">Helo</InputLabel>
+                          <Select
+                            value={this.state.helo !== undefined ? this.state.helo.id : ''}
+                            onChange={this.onHeloChange}
+                          >
+                            <MenuItem value={0}>
+                              <em>none</em>
+                            </MenuItem>
+                            {this.state.helosList.map(option => (
+                              <MenuItem
+                                value={option.id}
+                                key={`${this.state.id}-helo-${option.id}`}
+                              >
+                                {option.detail}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    )}
+                    <div className={classes.actionsContainer}>
+                      <Button disabled={activeStep === 0} onClick={this.handleBack}>
+                        Back
+                      </Button>
                       <Button
                         variant="raised"
                         color="primary"
-                        onClick={this.handleSave}
+                        onClick={this.handleNext}
                         className={classes.button}
                         disabled={
-                          this.state.name === '' ||
-                          this.state.details === '' ||
-                          this.state.location === ''
+                          (activeStep === 0 && this.state.groupId === '') ||
+                          (activeStep === 1 &&
+                            (this.state.name === '' || this.state.details === '')) ||
+                          (activeStep === 2 && this.state.scene === '')
                         }
                       >
-                        Save
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                       </Button>
                     </div>
-                  </div>
-                </StepContent>
-              </Step>
+                  </StepContent>
+                </Step>
+              ))}
             </Stepper>
           </CardContent>
         </Card>
@@ -151,7 +391,24 @@ class EditEvent extends React.Component {
 
 EditEvent.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  createEvent: PropTypes.func.isRequired,
+  updateEvent: PropTypes.func.isRequired,
+  history: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  user: PropTypes.shape({
+    groups: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+    events: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+  }),
 };
 
 const userQuery = graphql(CURRENT_USER_QUERY, {
@@ -164,8 +421,46 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
+const createEvent = graphql(CREATE_EVENT_MUTATION, {
+  props: ({ mutate }) => ({
+    createEvent: ({ name, details, sourceIdentifier, permalink, eventLocations, groupId }) =>
+      mutate({
+        variables: {
+          event: { name, details, sourceIdentifier, permalink, eventLocations, groupId },
+        },
+        refetchQueries: [
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const updateEvent = graphql(UPDATE_EVENT_MUTATION, {
+  props: ({ mutate }) => ({
+    updateEvent: ({ id, name, details, sourceIdentifier, permalink, eventLocations, groupId }) =>
+      mutate({
+        variables: {
+          event: { id, name, details, sourceIdentifier, permalink, eventLocations, groupId },
+        },
+        refetchQueries: [
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(EditEvent);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  createEvent,
+  updateEvent,
+  userQuery,
+)(EditEvent);

@@ -81,9 +81,7 @@ class ViewEvents extends React.Component {
                   <TableCell>
                     <Link to={`/events/edit/${event.id}`}>{event.name}</Link>
                   </TableCell>
-                  <TableCell>
-                    {event.details} {event.startTime}
-                  </TableCell>
+                  <TableCell>{event.details}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
