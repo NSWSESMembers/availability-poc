@@ -332,8 +332,7 @@ export const getHandlers = ({ models, creators: Creators }) => {
         return event.getEventlocations();
       },
       createEvent(_, args, ctx) {
-        console.log(args);
-        const { name, details, sourceIdentifier, permalink, groupId } = args.event;
+        const { name, details, sourceIdentifier, permalink, eventLocations, groupId } = args.event;
         return getAuthenticatedUser(ctx).then(() =>
           Group.findById(groupId).then((group) => {
             if (!group) {
@@ -345,7 +344,84 @@ export const getHandlers = ({ models, creators: Creators }) => {
               sourceIdentifier,
               permalink,
               group,
+            }).then((event) => {
+              if (eventLocations === undefined) return;
+              Promise.all(
+                eventLocations.map(el =>
+                  Creators.eventLocation({
+                    name: el.name,
+                    detail: el.detail,
+                    icon: el.icon,
+                    locationLatitude: el.locationLatitude,
+                    locationLongitude: el.locationLongitude,
+                    event,
+                  }),
+                ),
+              );
             });
+          }),
+        );
+      },
+      updateEvent(_, args, ctx) {
+        const {
+          id,
+          name,
+          details,
+          sourceIdentifier,
+          permalink,
+          eventLocations,
+          groupId,
+        } = args.event;
+        return getAuthenticatedUser(ctx).then(() =>
+          Event.findById(id).then((event) => {
+            if (!event) {
+              return Promise.reject(Error('Invalid event!'));
+            }
+            return event
+              .update({
+                name,
+                details,
+                sourceIdentifier,
+                permalink,
+                groupId,
+              })
+              .then(() => {
+                event.getEventlocations().then((existingLocations) => {
+                  if (eventLocations === undefined) return;
+
+                  Promise.all(
+                    existingLocations.map((el) => {
+                      // is it in the existing request? then do not remove.
+                      const loc = eventLocations.find(
+                        newLoc =>
+                          newLoc.locationLatitude === el.locationLatitude &&
+                          newLoc.locationLongitude === el.locationLongitude,
+                      );
+                      console.log('LOC', loc);
+                      if (loc === undefined) {
+                        return el.destroy();
+                      }
+                      return true;
+                    }),
+                    eventLocations.map((el) => {
+                      const loc = existingLocations.find(
+                        newLoc =>
+                          newLoc.locationLatitude === el.locationLatitude &&
+                          newLoc.locationLongitude === el.locationLongitude,
+                      );
+                      if (loc) return true;
+                      return Creators.eventLocation({
+                        name: el.name,
+                        detail: el.detail,
+                        icon: el.icon,
+                        locationLatitude: el.locationLatitude,
+                        locationLongitude: el.locationLongitude,
+                        event,
+                      });
+                    }),
+                  );
+                });
+              });
           }),
         );
       },

@@ -133,6 +133,9 @@ export const getResolvers = (handlers) => {
       createEvent(_, args, ctx) {
         return eventHandler.createEvent(_, args, ctx);
       },
+      updateEvent(_, args, ctx) {
+        return eventHandler.updateEvent(_, args, ctx);
+      },
       deleteUser(_, args, ctx) {
         return userHandler.deleteUser(args, ctx);
       },
