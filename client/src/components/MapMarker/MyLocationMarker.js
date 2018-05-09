@@ -26,10 +26,10 @@ const MyLocationMarker = ({ myPosition }) => {
       <View style={styles.myMarkercontainer}>
         <View style={styles.markerHalo} />
         {rotate &&
-        <View style={[styles.heading, { transform: [{ rotate }] }]}>
-          <View style={styles.headingPointer} />
-        </View>
-          }
+          <View style={[styles.heading, { transform: [{ rotate }] }]}>
+            <View style={styles.headingPointer} />
+          </View>
+        }
         <View style={styles.marker}>
           <Text style={{ width: 0, height: 0 }}>
             {rotate}
