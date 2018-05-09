@@ -13,57 +13,44 @@ const SESCallback = {
       tags: req.body.Tags,
     };
     // look for a group with the LHQ name in it, or use group id:1
-    this.models.Group.findOne({ where: { name: { [Op.like]: `%${req.body.EntityAssignedTo.Code}%` } } }).then((group) => {
-      Promise.resolve(this.creator.event({
-        name: job.name,
-        details: `${job.SituationOnScene} [${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
-        identifier: job.identifier,
-        permalink: `https://beacon.com/job/${job.identifier}`,
-        group: group || { id: 1 },
-      }).then(event => Promise.all(
-        [
-          this.creator.eventLocation({
-            name: 'hlq',
-            detail: req.body.EntityAssignedTo.Code,
-            icon: 'scene',
-            locationLatitude: req.body.EntityAssignedTo.Latitude,
-            locationLongitude: req.body.EntityAssignedTo.Longitude,
-            primaryLocation: true,
-            event,
-          }),
-          this.creator.eventLocation({
-            name: 'scene',
-            detail: req.body.Address.PrettyAddress,
-            icon: 'scene',
-            locationLatitude: req.body.Address.Latitude,
-            locationLongitude: req.body.Address.Longitude,
-            primaryLocation: false,
-            event,
-          }),
-        ],
-      ).then(() => {
-        // we are done?
-        const result = {
+    this.models.Group.findOne({ where: { name: { [Op.like]: `%${req.body.EntityAssignedTo.Code}%` } } }).then(group => Promise.resolve(this.creator.event({
+      name: job.name,
+      details: `${job.SituationOnScene} [${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
+      identifier: job.identifier,
+      permalink: `https://beacon.com/job/${job.identifier}`,
+      group: group || { id: 1 },
+    }).then(event => Promise.all(
+      [
+        this.creator.eventLocation({
+          name: 'lhq',
+          detail: req.body.EntityAssignedTo.Code,
+          icon: 'lhq',
+          locationLatitude: req.body.EntityAssignedTo.Latitude,
+          locationLongitude: req.body.EntityAssignedTo.Longitude,
+          primaryLocation: true,
           event,
-        };
-        res.send(JSON.stringify(result));
-      }).catch((err) => {
-        const result = {
-          status: err,
-        };
-        res.send(JSON.stringify(result));
-      })).catch((err) => {
-        const result = {
-          status: err,
-        };
-        res.send(JSON.stringify(result));
-      }),
-      ).catch((err) => {
-        const result = {
-          status: err,
-        };
-        res.send(JSON.stringify(result));
-      });
+        }),
+        this.creator.eventLocation({
+          name: 'scene',
+          detail: req.body.Address.PrettyAddress,
+          icon: 'scene',
+          locationLatitude: req.body.Address.Latitude,
+          locationLongitude: req.body.Address.Longitude,
+          primaryLocation: false,
+          event,
+        }),
+      ],
+    )),
+    )).then(() => {
+      const result = {
+        status: 'OK',
+      };
+      res.send(JSON.stringify(result));
+    }).catch(() => {
+      const result = {
+        status: 'FAIL',
+      };
+      res.send(JSON.stringify(result));
     });
 
 
