@@ -56,7 +56,7 @@ class EventsRoot extends Component {
     this.props.refetch();
   }
 
-  keyExtractor = item => item.id;
+  keyExtractor = item => `event-${item.id}`;
 
   goToEvent = (event) => {
     const { navigate } = this.props.navigation;
