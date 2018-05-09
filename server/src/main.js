@@ -80,7 +80,7 @@ app.use(
     endpointURL: GRAPHQL_PATH,
   }),
 );
-console.log(models);
+
 app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators, models));
 
 const graphQLServer = createServer(app);
