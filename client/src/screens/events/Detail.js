@@ -223,7 +223,7 @@ mapZoomMe = () => {
         (err) => {
           console.log(`Unable to update location from watchPosition: ${err.message}`);
         },
-        { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 10, timeout: 20000 },
+        { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 20000 },
       );
     }
   }
