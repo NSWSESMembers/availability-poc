@@ -373,7 +373,7 @@ mapZoomMe = () => {
               myPosition={this.state.myPosition}
             />
             {this.state.responseMarkers && this.state.responseMarkers.map(marker => (
-              <Marker coordinate={marker} key={marker.id}>
+              <Marker coordinate={marker} key={`user${marker.id}`}>
                 <UserMarker
                   name={marker.displayName}
                   status={marker.status}
@@ -384,8 +384,8 @@ mapZoomMe = () => {
             ))}
             {this.state.eventMarkers && this.state.eventMarkers.map(marker => (
               <Marker
+                key={`marker${marker.id}`}
                 coordinate={marker}
-                key={marker.id}
               // TODO: anchor & centerOffset
               >
                 <IconMarker
