@@ -383,7 +383,11 @@ mapZoomMe = () => {
               </Marker>
             ))}
             {this.state.eventMarkers && this.state.eventMarkers.map(marker => (
-              <Marker coordinate={marker} key={marker.id}>
+              <Marker
+                coordinate={marker}
+                key={marker.id}
+              // TODO: anchor & centerOffset
+              >
                 <IconMarker
                   name={marker.icon}
                 />
