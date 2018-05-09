@@ -11,6 +11,15 @@ const colorOfmyLocationMapMarker = 'blue';
 
 
 const styles = StyleSheet.create({
+
+  circle: {
+    width: 30,
+    height: 30,
+    borderRadius: 100 / 2,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flexDirection: 'column',
     alignSelf: 'flex-start',
@@ -111,7 +120,14 @@ const styles = StyleSheet.create({
     borderRadius: Math.ceil(SIZE / 2),
     margin: (HEADING_BOX_SIZE - SIZE) / 2,
   },
-
+  arrowBorderBlack: {
+    backgroundColor: 'transparent',
+    borderWidth: 4,
+    borderColor: 'transparent',
+    borderTopColor: 'black',
+    alignSelf: 'center',
+    marginTop: -0.5,
+  },
 });
 
 export default styles;

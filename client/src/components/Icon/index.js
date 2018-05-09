@@ -21,7 +21,7 @@ const Icon = function iconBuilder(props) {
   }
 };
 Icon.propTypes = {
-  name: PropTypes.string,
+  props: PropTypes.string,
 };
 
 export default Icon;
