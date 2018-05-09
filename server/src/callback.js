@@ -20,37 +20,55 @@ const SESCallback = {
         identifier: job.identifier,
         permalink: `https://beacon.com/job/${job.identifier}`,
         group: group || { id: 1 },
-      }).then((event) => {
-        Promise.all(
-          [
-            this.creator.eventLocation({
-              name: 'hlq',
-              detail: req.body.EntityAssignedTo.Code,
-              icon: 'scene',
-              locationLatitude: req.body.EntityAssignedTo.Latitude,
-              locationLongitude: req.body.EntityAssignedTo.Longitude,
-              primaryLocation: true,
-              event,
-            }),
-            this.creator.eventLocation({
-              name: 'scene',
-              detail: req.body.Address.PrettyAddress,
-              icon: 'scene',
-              locationLatitude: req.body.Address.Latitude,
-              locationLongitude: req.body.Address.Longitude,
-              primaryLocation: false,
-              event,
-            }),
-          ],
-        );
+      }).then(event => Promise.all(
+        [
+          this.creator.eventLocation({
+            name: 'hlq',
+            detail: req.body.EntityAssignedTo.Code,
+            icon: 'scene',
+            locationLatitude: req.body.EntityAssignedTo.Latitude,
+            locationLongitude: req.body.EntityAssignedTo.Longitude,
+            primaryLocation: true,
+            event,
+          }),
+          this.creator.eventLocation({
+            name: 'scene',
+            detail: req.body.Address.PrettyAddress,
+            icon: 'scene',
+            locationLatitude: req.body.Address.Latitude,
+            locationLongitude: req.body.Address.Longitude,
+            primaryLocation: false,
+            event,
+          }),
+        ],
+      ).then(() => {
+        // we are done?
+        const result = {
+          event,
+        };
+        res.send(JSON.stringify(result));
+      }).catch((err) => {
+        const result = {
+          status: err,
+        };
+        res.send(JSON.stringify(result));
+      })).catch((err) => {
+        const result = {
+          status: err,
+        };
+        res.send(JSON.stringify(result));
       }),
-      );
+      ).catch((err) => {
+        const result = {
+          status: err,
+        };
+        res.send(JSON.stringify(result));
+      });
     });
 
 
     // get the base handler to add the event
     // send notifications (probably belongs in the other code)
-    res.send('OK');
   },
 };
 
