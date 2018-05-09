@@ -209,6 +209,7 @@ export const Schema = [
     responses: [EventResponse]!
     messages: [Message]
     eventLocations: [EventLocation]
+    primaryLocation: EventLocation
     startTime: Int!
     endTime: Int!
   }
