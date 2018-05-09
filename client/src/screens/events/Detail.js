@@ -225,11 +225,11 @@ class Detail extends Component {
     _.keys(summaryByDestinationUsers).forEach((r) => {
       summaryByDestinationUsersArray.push(`${summaryByDestinationUsers[r].length} to ${r.toUpperCase()}`);
     });
-    const summaryByDestinationUsersString = summaryByDestinationUsersArray.join(', ');
+    const summaryByDestinationUsersString = summaryByDestinationUsersArray.length ? summaryByDestinationUsersArray.join(', ') : 'No responses yet';
 
     const userSubtitleArray = [];
-    userSubtitleArray.push(myStatus && myStatus.destination ? `Destination ${myStatus.destination.name.toUpperCase()}` : 'No destination set');
-    userSubtitleArray.push(myStatus && myStatus.eta !== 0 ? `ETA ${moment.unix(myStatus.eta).fromNow()}` : 'ETA unknown');
+    userSubtitleArray.push(myStatus && myStatus.destination ? `Destination ${myStatus.destination.name.toUpperCase()}` : 'Destination not set');
+    userSubtitleArray.push(myStatus && myStatus.eta !== 0 ? `ETA ${moment.unix(myStatus.eta).fromNow()}` : 'ETA not set');
     const userSubtitleString = userSubtitleArray.join(', ');
 
 

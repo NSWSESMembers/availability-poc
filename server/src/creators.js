@@ -40,7 +40,7 @@ export const getCreators = (models) => {
         permalink,
         location,
         groupId: group.id,
-        startTime: (new Date()).getTime() / 1000,
+        startTime: Math.floor((new Date()).getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
       });
     },
