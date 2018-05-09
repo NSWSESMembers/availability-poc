@@ -96,7 +96,7 @@ class SearchGroup extends Component {
     });
   }
 
-  keyExtractor = item => item.id;
+  keyExtractor = item => `group-${item.id}`;
 
   renderItem = ({ item }) => (
     <Group

@@ -63,7 +63,7 @@ class SchedulesRoot extends Component {
               </Center>
             ) : null)
           }
-          keyExtractor={item => item.id}
+          keyExtractor={item => `schedule-${item.id}`}
           renderItem={this.renderItem}
           refreshing={this.props.networkStatus === 4}
           onRefresh={this.onRefresh}

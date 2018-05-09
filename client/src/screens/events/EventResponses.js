@@ -22,7 +22,7 @@ const ResponseList = ({ responses, networkStatus, description }) => (
             <Text>{`There are no ${description} responses yet.`}</Text>
           </Center>
         ) : null)}
-      keyExtractor={response => response.user.id}
+      keyExtractor={response => `response-${response.user.id}`}
       renderItem={response => (
         <ListItem
           title={response.item.user.displayName}
