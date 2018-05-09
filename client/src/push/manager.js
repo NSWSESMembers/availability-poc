@@ -21,7 +21,10 @@ class PushManager {
   async init() {
     const promises = [];
 
-    this.services.dummy = await initDummy(this);
+    const dummy = await initDummy(this);
+    if (dummy !== null) {
+      this.services.dummy = dummy;
+    }
 
     const apns = await initAPNS(this);
     if (apns !== null) {

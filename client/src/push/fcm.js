@@ -82,11 +82,10 @@ class FCMClient {
     // }
   }
 
+  // eslint-disable-next-line
   async deregister() {
-    // here we tell firebase we don't care about further updates to the push token
-    if (this.refreshTokenListener) {
-      this.refreshTokenListener.remove();
-    }
+    // here we would tell firebase we don't care about further updates to the push token
+    // but it doesnt seem to have this concept
   }
 }
 
