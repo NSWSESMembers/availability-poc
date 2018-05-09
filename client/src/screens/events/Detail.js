@@ -17,7 +17,7 @@ import { Container, Holder } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { ButtonNavBar } from '../../components/Button';
-
+import MapDelta from '../../selectors/MapDelta';
 
 const styles = extendAppStyleSheet({
   map: {
@@ -153,11 +153,12 @@ androidLocationPermission = async () => {
 mapZoomMe = () => {
   if (this.state.myPosition) {
     const { longitude, latitude } = this.state.myPosition;
-    const myLocation = [{
-      longitude,
+    const myLocation = MapDelta(
       latitude,
-    }];
-    this.zoomMap(myLocation);
+      longitude,
+      500, // 500m height
+    );
+    this.zoomToRegionMap(myLocation);
   }
 }
 
@@ -193,38 +194,58 @@ mapZoomMe = () => {
     );
   }
 
+  zoomToRegionMap(fitToTheseCoordinates) {
+    this.map.animateToRegion(
+      fitToTheseCoordinates,
+    );
+  }
+
   watchLocation() {
-    const { props } = this;
     if (!this.props.event) {
       return;
     }
-    if (this.geoWatch == null) {
+    if (this.geoWatch == null) { // If this is the first run
+      // start a single fuzzy location fix aqusition
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.processReturnedLocation(position, false);
+      });
+
+      // start a accurate fix watcher
       this.geoWatch = navigator.geolocation.watchPosition(
         (position) => {
-          const myLastPosition = this.state.myPosition;
-          const myPosition = position.coords;
-          if (!_.isEqual(myPosition, myLastPosition)) {
-            this.setState({ myPosition }, () => {
-              // on first update of user location, zoom to fit
-              if (myLastPosition === null) {
-                this.mapOnLayout();
-              }
-            });
-            const myStatus = this.props.event.responses.find(
-              r => this.props.auth.id === r.user.id,
-            );
-            if (myStatus) {
-              if (myStatus.status.toLowerCase() !== 'unavailable') {
-                this.updateLocation(props, position);
-              }
-            }
-          }
+          this.processReturnedLocation(position, true);
         },
         (err) => {
           console.log(`Unable to update location from watchPosition: ${err.message}`);
         },
         { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 20000 },
       );
+    }
+  }
+
+  processReturnedLocation = (position, HighAccuracy) => {
+    const { props } = this;
+    const myLastPosition = this.state.myPosition;
+    const myPosition = position.coords;
+    // if we already have a high accuracy location ignore this fuzzy location
+    if (!HighAccuracy && !myLastPosition) {
+      if (!_.isEqual(myPosition, myLastPosition)) {
+        this.setState({ myPosition }, () => {
+        // on first update of user location, zoom to fit
+        // we will assume that the fuzzy one comes back first
+          if (myLastPosition === null) {
+            this.mapOnLayout();
+          }
+        });
+        const myStatus = this.props.event.responses.find(
+          r => this.props.auth.id === r.user.id,
+        );
+        if (myStatus) {
+          if (myStatus.status.toLowerCase() !== 'unavailable') {
+            this.updateLocation(props, position);
+          }
+        }
+      }
     }
   }
 
