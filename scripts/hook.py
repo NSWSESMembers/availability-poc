@@ -1,5 +1,7 @@
 import requests
 import json
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 data = {
     "Id": 28795,
@@ -8,7 +10,7 @@ data = {
     "FloodAssistanceJob": False,
     "ReferringAgency": None,
     "ReferringAgencyReference": None,
-    "SituationOnScene": None,
+    "SituationOnScene": "Things about stuff",
     "EvacuationRequired": False,
     "PeopleInundated": 0,
     "PeopleExtricated": 0,
@@ -134,4 +136,5 @@ data = {
 
 headers = {'content-type': 'application/json'}
 
-requests.post("http://localhost:8080/hook", data=json.dumps(data), headers=headers)
+r = requests.post("http://localhost:8080/hook", data=json.dumps(data), headers=headers)
+pp.pprint(r.text)

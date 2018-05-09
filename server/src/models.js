@@ -145,13 +145,15 @@ export const defineModels = (db) => {
   // event responses belong to a combination of user/event
   EventResponseModel.belongsTo(EventModel);
   EventModel.hasMany(EventResponseModel);
-  EventModel.hasOne(EventLocationModel, { as: 'primaryLocation' });
   EventResponseModel.belongsTo(UserModel);
   UserModel.hasMany(EventResponseModel);
 
   // event marker locations belong to an event
   EventLocationModel.belongsTo(EventModel);
   EventModel.hasMany(EventLocationModel);
+  // 'constraints: false ' to avoid Cyclic dependency
+  // https://github.com/sequelize/sequelize/issues/1717
+  EventModel.belongsTo(EventLocationModel, { as: 'primaryLocation', constraints: false });
 
   // event marker locations belong to a eventResponse
   EventResponseModel.belongsTo(EventLocationModel);

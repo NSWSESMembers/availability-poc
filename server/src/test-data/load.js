@@ -113,12 +113,15 @@ const createEventLocation = (Creators, event, location) => {
     locationLatitude,
     locationLongitude,
   } = location;
+  // lets assume LHQ is the default for now
+  const primaryLocation = (name.toLowerCase() === 'lhq');
   return Creators.eventLocation({
     name,
     detail,
     icon,
     locationLatitude,
     locationLongitude,
+    primaryLocation,
     event,
   });
 };

@@ -31,6 +31,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
     Schedule,
     Event,
     TimeSegment,
+    EventLocation,
   } = models;
 
   const handlers = {
@@ -334,6 +335,12 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       },
       eventLocations(event) {
         return event.getEventlocations();
+      },
+      primaryLocation(event) {
+        // to avoid a cyclic table associations we are calling 'constraints: false'
+        // so we have to do a traditional SELECT to get the item back
+        // because there is no forign key
+        return EventLocation.findById(event.primaryLocationId);
       },
       createEvent(_, args, ctx) {
         const { name, details, sourceIdentifier, permalink, eventLocations, groupId } = args.event;

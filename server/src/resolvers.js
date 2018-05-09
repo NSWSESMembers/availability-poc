@@ -95,6 +95,9 @@ export const getResolvers = (handlers) => {
       eventLocations(event, args, ctx) {
         return eventHandler.eventLocations(event, args, ctx);
       },
+      primaryLocation(event, args, ctx) {
+        return eventHandler.primaryLocation(event, args, ctx);
+      },
       messages(group, args, ctx) {
         return eventHandler.messages(group, args, ctx);
       },
