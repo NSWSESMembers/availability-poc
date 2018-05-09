@@ -6,7 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { _, isEqual } from 'lodash';
+import { _ } from 'lodash';
 
 import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
@@ -143,7 +143,7 @@ androidLocationPermission = async () => {
     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     {
       title: 'Permission Needed',
-      message: 'We need permission to track your location accuratly.',
+      message: 'We need permission to track your location accurately.',
     },
   );
   console.log('permissions:', granted);
@@ -203,7 +203,7 @@ mapZoomMe = () => {
         (position) => {
           const myLastPosition = this.state.myPosition;
           const myPosition = position.coords;
-          if (!isEqual(myPosition, myLastPosition)) {
+          if (!_.isEqual(myPosition, myLastPosition)) {
             this.setState({ myPosition }, () => {
               // on first update of user location, zoom to fit
               if (myLastPosition === null) {
@@ -337,7 +337,7 @@ mapZoomMe = () => {
             </Holder>
           </View>
           <MapView
-            onMapReady={() => this.mapOnLayout()}
+            onMapReady={this.mapOnLayout}
             ref={(ref) => {
               this.map = ref;
             }}
