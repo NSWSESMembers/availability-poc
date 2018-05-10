@@ -11,8 +11,7 @@ import _ from 'lodash';
 import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
-import markers from '../../assets/images/map/markers';
-import { UserMarker, MyLocationMarker } from '../../components/MapMarker/';
+import { UserMarker, IconMarker, MyLocationMarker } from '../../components/MapMarker/';
 import { Container, Holder } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
@@ -53,7 +52,7 @@ class Detail extends Component {
           id: r.name,
           latitude: r.locationLatitude,
           longitude: r.locationLongitude,
-          image: markers(r.icon),
+          icon: r.icon,
         });
       }
     });
@@ -374,7 +373,7 @@ mapZoomMe = () => {
               myPosition={this.state.myPosition}
             />
             {this.state.responseMarkers && this.state.responseMarkers.map(marker => (
-              <Marker coordinate={marker} key={marker.id}>
+              <Marker coordinate={marker} key={`user${marker.id}`}>
                 <UserMarker
                   name={marker.displayName}
                   status={marker.status}
@@ -385,12 +384,15 @@ mapZoomMe = () => {
             ))}
             {this.state.eventMarkers && this.state.eventMarkers.map(marker => (
               <Marker
-                title={marker.id}
-                key={marker.id}
-                identifier={marker.id}
+                key={`marker${marker.id}`}
                 coordinate={marker}
-                image={marker.image}
-              />
+                style={{ zIndex: 1, opacity: 0.9 }} // apear onto of others
+              // TODO: anchor & centerOffset
+              >
+                <IconMarker
+                  name={marker.icon}
+                />
+              </Marker>
             ))}
           </MapView>
         </View>

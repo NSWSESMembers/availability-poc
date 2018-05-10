@@ -11,6 +11,17 @@ const colorOfmyLocationMapMarker = 'blue';
 
 
 const styles = StyleSheet.create({
+
+  circle: {
+    width: 30,
+    height: 30,
+    borderRadius: 100 / 2,
+    backgroundColor: 'black',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
   container: {
     flexDirection: 'column',
     alignSelf: 'flex-start',
@@ -57,7 +68,7 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   },
   mapMarker: {
-    zIndex: 1000,
+    zIndex: 1000, // onto of everthing
   },
   // The container is necessary to protect the markerHalo shadow from clipping
   myMarkercontainer: {
@@ -111,7 +122,14 @@ const styles = StyleSheet.create({
     borderRadius: Math.ceil(SIZE / 2),
     margin: (HEADING_BOX_SIZE - SIZE) / 2,
   },
-
+  arrowBorderBlack: {
+    backgroundColor: 'transparent',
+    borderWidth: 4,
+    borderColor: 'transparent',
+    borderTopColor: 'black',
+    alignSelf: 'center',
+    marginTop: -0.5,
+  },
 });
 
 export default styles;
