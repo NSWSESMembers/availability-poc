@@ -30,7 +30,7 @@ const SESCallback = {
         this.creator.eventLocation({
           name: 'lhq',
           detail: req.body.SimpleJobViewModel.EntityAssignedTo.Code,
-          icon: 'lhq',
+          icon: 'mci-castle',
           locationLatitude: req.body.SimpleJobViewModel.EntityAssignedTo.Latitude,
           locationLongitude: req.body.SimpleJobViewModel.EntityAssignedTo.Longitude,
           primaryLocation: true,
@@ -39,7 +39,7 @@ const SESCallback = {
         this.creator.eventLocation({
           name: 'scene',
           detail: req.body.SimpleJobViewModel.Address.PrettyAddress,
-          icon: 'scene',
+          icon: 'mci-target',
           locationLatitude: req.body.SimpleJobViewModel.Address.Latitude,
           locationLongitude: req.body.SimpleJobViewModel.Address.Longitude,
           primaryLocation: false,
