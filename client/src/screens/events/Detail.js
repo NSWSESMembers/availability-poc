@@ -91,7 +91,7 @@ class Detail extends Component {
       handleThis: this.mapZoomMe,
     });
     this.refreshTimer = setInterval(this.onRefresh, 5000); // 5s
-    this.locationTimeoutTimer = setInterval(this.locationTimeout, 10000); // 10s
+    this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
       this.androidLocationPermission().then((answer) => {
         if (answer === true) {
@@ -144,7 +144,6 @@ locationTimeout = () => {
   if (!this.state.myPosition) {
     Alert.alert('Unable to locate you', 'We are unable to locate you. Check that location services are enabled');
   }
-  clearInterval(this.locationTimeoutTimer);
 }
 
 androidLocationPermission = async () => {
