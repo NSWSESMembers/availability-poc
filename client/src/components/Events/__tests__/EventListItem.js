@@ -10,6 +10,9 @@ test('renders correctly', () => {
     id: 1,
     name: 'Name',
     details: 'Details',
+    group: {
+      name: 'group.name',
+    },
   };
   const tree = renderer.create(
     <EventListItem

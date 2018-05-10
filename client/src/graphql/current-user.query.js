@@ -22,6 +22,10 @@ export default gql`
         id
         name
         details
+        group {
+          id
+          name
+        }
       }
       schedules {
         id
@@ -29,6 +33,10 @@ export default gql`
         details
         startTime
         endTime
+        group {
+          id
+          name
+        }
         timeSegments {
           user {
             id

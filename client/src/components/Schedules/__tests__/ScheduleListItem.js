@@ -12,6 +12,9 @@ test('renders correctly', () => {
     details: 'Details',
     startTime: 1524460714,
     endTime: 1524460714 + (60 * 60 * 24),
+    group: {
+      name: 'group.name',
+    },
   };
   const tree = renderer.create(
     <ScheduleListItem

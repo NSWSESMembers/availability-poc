@@ -12,6 +12,7 @@ const EventListItem = ({ event, urgent, onPress }) => {
   return (
     <ListItem
       title={event.name}
+      supertitle={event.group && event.group.name}
       titleNumberOfLines={titleNumberOfLines}
       subtitle={event.details}
       subtitleNumberOfLines={subtitleNumberOfLines}
