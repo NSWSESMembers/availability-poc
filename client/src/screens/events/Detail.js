@@ -1,7 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -215,8 +215,8 @@ mapZoomMe = () => {
         (position) => {
           this.processReturnedLocation(position, true);
         },
-        (err) => {
-          console.log(`Unable to update location from watchPosition: ${err.message}`);
+        () => {
+          Alert.alert('Unable to locate you', 'Unable to Unable to find your location');
         },
         { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 20000 },
       );
