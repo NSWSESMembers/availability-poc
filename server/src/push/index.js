@@ -1,4 +1,4 @@
-import { sendPush } from './broker';
+import { sendPush, sendTestPush } from './broker';
 
 // eslint-disable-next-line import/prefer-default-export
-export { sendPush };
+export { sendPush, sendTestPush };
