@@ -46,5 +46,4 @@ const sendTestPush = async ({ devices, message, delay }) => {
   return sendPush({ devices, message });
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { sendPush, sendTestPush };
