@@ -386,6 +386,7 @@ mapZoomMe = () => {
               <Marker
                 key={`marker${marker.id}`}
                 coordinate={marker}
+                style={{ zIndex: 1, opacity: 0.9 }} // apear onto of others
               // TODO: anchor & centerOffset
               >
                 <IconMarker

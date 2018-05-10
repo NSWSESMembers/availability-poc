@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   },
   mapMarker: {
-    zIndex: 1000,
+    zIndex: 1000, // onto of everthing
   },
   // The container is necessary to protect the markerHalo shadow from clipping
   myMarkercontainer: {

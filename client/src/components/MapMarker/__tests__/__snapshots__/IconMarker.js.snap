@@ -8,6 +8,7 @@ exports[`renders correctly 1`] = `
         "alignItems": "center",
         "backgroundColor": "black",
         "borderRadius": 50,
+        "flex": 1,
         "height": 30,
         "justifyContent": "center",
         "width": 30,
@@ -24,7 +25,11 @@ exports[`renders correctly 1`] = `
             "color": "white",
             "fontSize": 20,
           },
-          undefined,
+          Object {
+            "includeFontPadding": false,
+            "textAlign": "center",
+            "textAlignVertical": "center",
+          },
           Object {
             "fontFamily": "FontAwesome",
             "fontStyle": "normal",
