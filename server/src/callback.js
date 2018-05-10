@@ -6,17 +6,17 @@ const SESCallback = {
   models: undefined,
   eventCallback(req, res) {
     const job = {
-      name: `${req.body.JobType.Name} - ${req.body.Address.PrettyAddress}`,
+      name: `${req.body.SimpleJobViewModel.JobType.Name} - ${req.body.SimpleJobViewModel.Address.PrettyAddress}`,
       identifier: req.body.Identifier,
-      description: req.body.JobType.Description,
-      SituationOnScene: req.body.SituationOnScene,
-      tags: req.body.Tags,
+      description: req.body.SimpleJobViewModel.JobType.Description,
+      SituationOnScene: req.body.SimpleJobViewModel.SituationOnScene,
+      tags: req.body.SimpleJobViewModel.Tags,
     };
     // look for a group with the LHQ name in it, or use group id:1
     this.models.Group.findOne({
       where: {
         name: {
-          [Op.like]: `%${req.body.EntityAssignedTo.Code}%`,
+          [Op.like]: `%${req.body.SimpleJobViewModel.EntityAssignedTo.Code}%`,
         },
       },
     }).then(group => Promise.resolve(this.creator.event({
@@ -29,19 +29,19 @@ const SESCallback = {
       [
         this.creator.eventLocation({
           name: 'lhq',
-          detail: req.body.EntityAssignedTo.Code,
+          detail: req.body.SimpleJobViewModel.EntityAssignedTo.Code,
           icon: 'mci-castle',
-          locationLatitude: req.body.EntityAssignedTo.Latitude,
-          locationLongitude: req.body.EntityAssignedTo.Longitude,
+          locationLatitude: req.body.SimpleJobViewModel.EntityAssignedTo.Latitude,
+          locationLongitude: req.body.SimpleJobViewModel.EntityAssignedTo.Longitude,
           primaryLocation: true,
           event,
         }),
         this.creator.eventLocation({
           name: 'scene',
-          detail: req.body.Address.PrettyAddress,
+          detail: req.body.SimpleJobViewModel.Address.PrettyAddress,
           icon: 'mci-target',
-          locationLatitude: req.body.Address.Latitude,
-          locationLongitude: req.body.Address.Longitude,
+          locationLatitude: req.body.SimpleJobViewModel.Address.Latitude,
+          locationLongitude: req.body.SimpleJobViewModel.Address.Longitude,
           primaryLocation: false,
           event,
         }),
