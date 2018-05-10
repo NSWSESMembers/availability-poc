@@ -13,9 +13,15 @@ const SESCallback = {
       tags: req.body.Tags,
     };
     // look for a group with the LHQ name in it, or use group id:1
-    this.models.Group.findOne({ where: { name: { [Op.like]: `%${req.body.EntityAssignedTo.Code}%` } } }).then(group => Promise.resolve(this.creator.event({
+    this.models.Group.findOne({
+      where: {
+        name: {
+          [Op.like]: `%${req.body.EntityAssignedTo.Code}%`,
+        },
+      },
+    }).then(group => Promise.resolve(this.creator.event({
       name: job.name,
-      details: `${job.SituationOnScene} [${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
+      details: `${job.SituationOnScene || ''}${job.SituationOnScene ? ' ' : ''}[${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
       identifier: job.identifier,
       permalink: `https://beacon.com/job/${job.identifier}`,
       group: group || { id: 1 },
