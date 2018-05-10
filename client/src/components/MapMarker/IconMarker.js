@@ -8,7 +8,12 @@ import styles from './styles';
 const IconMarker = ({ name }) => (
   <View>
     <View style={styles.circle} >
-      <Icon name={name} size={20} color="white" />
+      <Icon
+        name={name}
+        size={20}
+        color="white"
+        style={{ textAlign: 'center', textAlignVertical: 'center', includeFontPadding: false }}
+      />
     </View>
     <View style={styles.arrowBorderBlack} />
     <View style={styles.arrow} />
