@@ -11,8 +11,12 @@ export default gql`
       groups {
         id
         name
+        createdAt
+        updatedAt
         tags {
           name
+          id
+          type
         }
       }
       events {
