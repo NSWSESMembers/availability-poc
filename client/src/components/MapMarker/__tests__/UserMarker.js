@@ -9,6 +9,7 @@ test('renders correctly', () => {
       name="name"
       status="status"
       destination="destination"
+      locationTime="locationTime"
     />,
   ).toJSON();
   expect(tree1).toMatchSnapshot();

@@ -19,7 +19,7 @@ exports[`renders correctly 1`] = `
         "borderWidth": 0.5,
         "flex": 0,
         "opacity": 0.8,
-        "padding": 2,
+        "padding": 1,
       }
     }
   >
@@ -31,7 +31,8 @@ exports[`renders correctly 1`] = `
         Array [
           Object {
             "color": "#FFFFFF",
-            "fontSize": 13,
+            "fontSize": 10,
+            "textAlign": "center",
           },
         ]
       }
@@ -47,7 +48,7 @@ exports[`renders correctly 1`] = `
           Object {
             "alignSelf": "center",
             "color": "#FFFFFF",
-            "fontSize": 9,
+            "fontSize": 8,
           },
         ]
       }
@@ -55,6 +56,22 @@ exports[`renders correctly 1`] = `
       STATUS
        
       DESTINATION
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "alignSelf": "center",
+            "color": "#FFFFFF",
+            "fontSize": 6,
+          },
+        ]
+      }
+    >
+      locationTime
     </Text>
   </View>
   <View

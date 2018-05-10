@@ -1,7 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text, View, Dimensions, StyleSheet } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -12,11 +12,12 @@ import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import markers from '../../assets/images/map/markers';
-import { UserMarker } from '../../components/MapMarker/';
+import { UserMarker, MyLocationMarker } from '../../components/MapMarker/';
 import { Container, Holder } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
-
 import { Progress } from '../../components/Progress';
+import { ButtonNavBar } from '../../components/Button';
+import MapDelta from '../../selectors/MapDelta';
 
 const styles = extendAppStyleSheet({
   map: {
@@ -37,9 +38,11 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 
 class Detail extends Component {
-  static navigationOptions = {
+  static navigationOptions = ({ navigation }) => ({
     title: 'Event Detail',
-  };
+    headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="mi-my-location" />,
+  });
+
 
   static makeEventLocations(eventLocations) {
     const mapMarkers = [];
@@ -56,31 +59,67 @@ class Detail extends Component {
     });
     return mapMarkers;
   }
-  static makeResponseMarkers(responses) {
+  static makeResponseMarkers(userid, responses) {
     const mapMarkers = [];
-
-    responses.forEach((r) => {
-      if (r.locationLatitude !== null && r.locationLongitude !== null) {
-        mapMarkers.push({
-          displayName: r.user.displayName,
-          status: r.status,
-          destination: r.destination && r.destination.name,
-          id: r.user.username,
-          latitude: r.locationLatitude,
-          longitude: r.locationLongitude,
-        });
-      }
-    });
+    if (responses) {
+      responses.forEach((r) => {
+        if (r.locationLatitude !== null && r.locationLongitude !== null) {
+          if (r.user.id !== userid) {
+            mapMarkers.push({
+              displayName: r.user.displayName,
+              status: r.status,
+              destination: r.destination && r.destination.name,
+              locationTime: moment.unix(r.locationTime).fromNow(),
+              id: r.user.username,
+              latitude: r.locationLatitude,
+              longitude: r.locationLongitude,
+            });
+          }
+        }
+      });
+    }
     return mapMarkers;
   }
 
+  state = {
+    myPosition: null,
+    eventMarkers: null,
+    responseMarkers: null,
+  };
+
   componentDidMount() {
+    this.props.navigation.setParams({
+      handleThis: this.mapZoomMe,
+    });
     this.timer = setInterval(this.onRefresh, 5000); // 5s
-    this.manageLocationTracking();
+    if (Platform.OS === 'android') {
+      this.androidLocationPermission().then((answer) => {
+        if (answer === true) {
+          this.watchLocation();
+        }
+      });
+    } else {
+      this.watchLocation();
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    // catch incoming props and generate the marker states
+    const { event, loading, auth } = newProps;
+    if (!loading && event) {
+      this.setState({
+        responseMarkers: Detail.makeResponseMarkers(
+          auth.id, event.responses,
+        ),
+      });
+      this.setState({
+        eventMarkers: Detail.makeEventLocations(event.eventLocations),
+      });
+    }
   }
 
   componentDidUpdate() {
-    this.manageLocationTracking();
+    this.watchLocation();
   }
 
   componentWillUnmount() {
@@ -92,14 +131,57 @@ class Detail extends Component {
   }
 
   onRefresh = () => {
-    // NYI
+    // NYI very well
     this.props.refetch();
   };
 
-  mapOnLayout = (marks, locations) => {
-    const mergedpoints = marks.concat(locations);
+  geoWatch = null
+
+androidLocationPermission = async () => {
+  console.log('Checking android permissions');
+  const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    {
+      title: 'Permission Needed',
+      message: 'We need permission to track your location accurately.',
+    },
+  );
+  console.log('permissions:', granted);
+  return granted === PermissionsAndroid.RESULTS.GRANTED;
+}
+
+mapZoomMe = () => {
+  if (this.state.myPosition) {
+    const { longitude, latitude } = this.state.myPosition;
+    const myLocation = MapDelta(
+      latitude,
+      longitude,
+      500, // 500m height
+    );
+    this.zoomToRegionMap(myLocation);
+  }
+}
+
+  mapOnLayout = () => {
+    let mergedpoints = [];
+    if (this.state.myPosition) {
+      const { longitude, latitude } = this.state.myPosition;
+      const myLocation = [{
+        longitude,
+        latitude,
+      }];
+      mergedpoints = myLocation.concat(this.state.eventMarkers);
+    } else {
+      mergedpoints = this.state.eventMarkers;
+    }
+    // Zoom to the user and events if possible, otherwise start around events
+
+    this.zoomMap(mergedpoints);
+  }
+
+  zoomMap(fitToTheseCoordinates) {
     this.map.fitToCoordinates(
-      mergedpoints,
+      fitToTheseCoordinates,
       {
         edgePadding: {
           top: 300,
@@ -107,32 +189,62 @@ class Detail extends Component {
           bottom: 300,
           left: 100,
         },
-        animated: false,
+        animated: true,
       },
     );
   }
 
-  manageLocationTracking() {
-    const { props } = this;
+  zoomToRegionMap(fitToTheseCoordinates) {
+    this.map.animateToRegion(
+      fitToTheseCoordinates,
+    );
+  }
+
+  watchLocation() {
     if (!this.props.event) {
       return;
     }
+    if (this.geoWatch == null) { // If this is the first run
+      // start a single fuzzy location fix aqusition
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.processReturnedLocation(position, false);
+      });
 
-    const myStatus = props.event.responses.find(r => props.auth.id === r.user.id);
-    if (myStatus) {
-      if (myStatus.status.toLowerCase() !== 'unavailable' && this.geoWatch === null) {
-        this.geoWatch = navigator.geolocation.watchPosition(
-          (position) => {
-            this.updateLocation(props, position);
-          },
-          (err) => {
-            console.log(`Unable to update location: ${err}`);
-          },
-          { enableHighAccuracy: true, maximumAge: 1000 },
+      // start a accurate fix watcher
+      this.geoWatch = navigator.geolocation.watchPosition(
+        (position) => {
+          this.processReturnedLocation(position, true);
+        },
+        () => {
+          Alert.alert('Unable to locate you', 'Unable to Unable to find your location');
+        },
+        { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 20000 },
+      );
+    }
+  }
+
+  processReturnedLocation = (position, HighAccuracy) => {
+    const { props } = this;
+    const myLastPosition = this.state.myPosition;
+    const myPosition = position.coords;
+    // if we already have a high accuracy location ignore this fuzzy location
+    if (!HighAccuracy && !myLastPosition) {
+      if (!_.isEqual(myPosition, myLastPosition)) {
+        this.setState({ myPosition }, () => {
+        // on first update of user location, zoom to fit
+        // we will assume that the fuzzy one comes back first
+          if (myLastPosition === null) {
+            this.mapOnLayout();
+          }
+        });
+        const myStatus = this.props.event.responses.find(
+          r => this.props.auth.id === r.user.id,
         );
-      } else if (myStatus.status.toLowerCase() === 'unavailable' && this.geoWatch !== null) {
-        navigator.geolocation.clearWatch(this.geoWatch);
-        this.geoWatch = null;
+        if (myStatus) {
+          if (myStatus.status.toLowerCase() !== 'unavailable') {
+            this.updateLocation(props, position);
+          }
+        }
       }
     }
   }
@@ -144,16 +256,15 @@ class Detail extends Component {
         id: props.event.id,
         locationLatitude: latitude,
         locationLongitude: longitude,
+        locationTime: position.timestamp,
       })
       .then(() => {
-        console.log('location updated');
+        console.log('location change sent');
       })
       .catch((err) => {
-        console.log(`Failed to update location: ${latitude},${longitude} (${err})`);
+        console.log(`Failed to send location change: ${latitude},${longitude} (${err})`);
       });
   }, 4000);
-
-  geoWatch = null;
 
   editResponse = () => {
     const { navigation } = this.props;
@@ -171,12 +282,8 @@ class Detail extends Component {
 
   render() {
     const { event, loading } = this.props;
-    let mapResponseMarkers = [];
-    let mapEventLocations = [];
-    if (!loading && event) {
-      mapResponseMarkers = Detail.makeResponseMarkers(event.responses);
-      mapEventLocations = Detail.makeEventLocations(event.eventLocations);
-    }
+
+
     if (loading) {
       return (
         <Container>
@@ -251,10 +358,10 @@ class Detail extends Component {
             </Holder>
           </View>
           <MapView
-            onMapReady={() => this.mapOnLayout(mapResponseMarkers, mapEventLocations)}
+            onMapReady={this.mapOnLayout}
             ref={(ref) => {
-          this.map = ref;
-        }}
+              this.map = ref;
+            }}
             initialRegion={{
           latitude: LATITUDE,
           longitude: LONGITUDE,
@@ -263,16 +370,20 @@ class Detail extends Component {
         }}
             style={styles.map}
           >
-            {mapResponseMarkers.map(marker => (
+            <MyLocationMarker
+              myPosition={this.state.myPosition}
+            />
+            {this.state.responseMarkers && this.state.responseMarkers.map(marker => (
               <Marker coordinate={marker} key={marker.id}>
                 <UserMarker
                   name={marker.displayName}
                   status={marker.status}
                   destination={marker.destination}
+                  locationTime={`Updated ${marker.locationTime}`}
                 />
               </Marker>
-        ))}
-            {mapEventLocations.map(marker => (
+            ))}
+            {this.state.eventMarkers && this.state.eventMarkers.map(marker => (
               <Marker
                 title={marker.id}
                 key={marker.id}
@@ -280,7 +391,7 @@ class Detail extends Component {
                 coordinate={marker}
                 image={marker.image}
               />
-        ))}
+            ))}
           </MapView>
         </View>
         <View
@@ -310,6 +421,10 @@ class Detail extends Component {
 Detail.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    setParams: PropTypes.func,
+    state: PropTypes.shape({
+      params: PropTypes.object,
+    }),
   }),
   loading: PropTypes.bool,
   refetch: PropTypes.func,
@@ -329,6 +444,7 @@ Detail.propTypes = {
         icon: PropTypes.string,
         locationLatitude: PropTypes.float,
         locationLongitude: PropTypes.float,
+        locationTime: PropTypes.number,
       }),
     ),
     responses: PropTypes.arrayOf(
