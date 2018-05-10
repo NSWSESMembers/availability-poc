@@ -1,7 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -90,7 +90,8 @@ class Detail extends Component {
     this.props.navigation.setParams({
       handleThis: this.mapZoomMe,
     });
-    this.timer = setInterval(this.onRefresh, 5000); // 5s
+    this.refreshTimer = setInterval(this.onRefresh, 5000); // 5s
+    this.locationTimeoutTimer = setInterval(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
       this.androidLocationPermission().then((answer) => {
         if (answer === true) {
@@ -101,6 +102,7 @@ class Detail extends Component {
       this.watchLocation();
     }
   }
+
 
   componentWillReceiveProps(newProps) {
     // catch incoming props and generate the marker states
@@ -122,7 +124,7 @@ class Detail extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    clearInterval(this.refreshTimer);
     if (this.geoWatch !== null) {
       navigator.geolocation.clearWatch(this.geoWatch);
       this.geoWatch = null;
@@ -135,6 +137,15 @@ class Detail extends Component {
   };
 
   geoWatch = null
+
+
+locationTimeout = () => {
+  // if we dont have a location yet, give some feedback to the user
+  if (!this.state.myPosition) {
+    Alert.alert('Unable to locate you', 'We are unable to locate you. Check that location services are enabled');
+  }
+  clearInterval(this.locationTimeoutTimer);
+}
 
 androidLocationPermission = async () => {
   console.log('Checking android permissions');
@@ -207,14 +218,18 @@ mapZoomMe = () => {
       // start a single fuzzy location fix aqusition
       navigator.geolocation.getCurrentPosition((position) => {
         this.processReturnedLocation(position, false);
+      }, (err) => {
+        console.log(err);
       });
 
       // start a accurate fix watcher
       this.geoWatch = navigator.geolocation.watchPosition(
         (position) => {
           this.processReturnedLocation(position, true);
+        }, (err) => {
+          console.log(err);
         },
-        { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 20000 },
+        { enableHighAccuracy: true, maximumAge: 0, distanceFilter: 0, timeout: 0 },
       );
     }
   }
