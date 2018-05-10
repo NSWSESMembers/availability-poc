@@ -613,12 +613,12 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       },
     },
     push: {
-      async sendTestPush(ctx) {
-        console.log(ctx);
+      async sendTestPush(ctx, args) {
         const device = await getAuthenticatedDevice(ctx);
-        const result = await push.sendPush({
+        const result = await push.sendTestPush({
           devices: [device],
           message: 'Test push notification \u2728\u2705\uD83D\uDC8C\uD83D\uDC4D',
+          delay: args.vars && args.vars.delay ? args.vars.delay : false,
         });
 
         return result;

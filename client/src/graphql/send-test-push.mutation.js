@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation sendTestPush {
-    sendTestPush
+  mutation sendTestPush($vars: SendTestPushInput) {
+    sendTestPush(vars: $vars)
   }
 `;

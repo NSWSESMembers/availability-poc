@@ -141,6 +141,10 @@ export const Schema = [
     groupId: Int!
   }
 
+  input SendTestPushInput {
+    delay: Boolean
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -297,7 +301,7 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
-    sendTestPush: Boolean  # send a push notification to the requesting device
+    sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
 
   schema {
