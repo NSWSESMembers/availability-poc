@@ -614,7 +614,6 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
     },
     push: {
       async sendTestPush(ctx, args) {
-        console.log(args);
         const device = await getAuthenticatedDevice(ctx);
         const result = await push.sendTestPush({
           devices: [device],
