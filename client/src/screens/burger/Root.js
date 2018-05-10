@@ -124,17 +124,17 @@ class BurgerScreen extends Component {
     }
   };
 
-TestPushPrompt = () => {
-  Alert.alert(
-    'When?',
-    'Instantly or in 5 seconds?',
-    [
-      { text: 'Instantly', onPress: () => this.sendTestPush(false) },
-      { text: 'In 5 Seconds', onPress: () => this.sendTestPush(true) },
-    ],
-    { cancelable: false },
-  );
-}
+  testPushPrompt = () => {
+    Alert.alert(
+      'When?',
+      'Instantly or in 5 seconds?',
+      [
+        { text: 'Instantly', onPress: () => this.sendTestPush(false) },
+        { text: 'In 5 Seconds', onPress: () => this.sendTestPush(true) },
+      ],
+      { cancelable: false },
+    );
+  }
 
   sendTestPush = (delay) => {
     this.props.sendTestPush(delay).catch((e) => {
@@ -153,7 +153,7 @@ TestPushPrompt = () => {
         onCheckForUpdate={this.checkForUpdate}
         onSubmitFeedback={this.handleSubmitFeedback}
         onTestBugsnag={this.crashReport}
-        onSendTestPush={this.TestPushPrompt}
+        onSendTestPush={this.testPushPrompt}
         onShowParams={this.showParams}
         onLogout={this.logout}
       />

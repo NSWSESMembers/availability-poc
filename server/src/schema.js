@@ -141,7 +141,7 @@ export const Schema = [
     groupId: Int!
   }
 
-  input sendTestPushInput {
+  input SendTestPushInput {
     delay: Boolean
   }
 
@@ -301,7 +301,7 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
-    sendTestPush(vars: sendTestPushInput): Boolean  # send a push notification to the requesting device
+    sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
 
   schema {

@@ -42,7 +42,6 @@ const sendPush = ({ devices, message }) => {
 const sendTestPush = async ({ devices, message, delay }) => {
   if (delay) {
     await sleep(5000);
-    return sendPush({ devices, message });
   }
   return sendPush({ devices, message });
 };
