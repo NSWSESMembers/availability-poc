@@ -19,6 +19,9 @@ const topic = 'com.sdunster.callout';
 
 // hack to make tests dev server and tests work. Later on we should mock this out properly
 const apnProvider = process.env.APNS_KEY ? new apn.Provider(options) : null;
+if (apnProvider === null) {
+  console.warn('No APNS_KEY is set');
+}
 
 const sendPush = ({ token, message }) => {
   const note = new apn.Notification();
