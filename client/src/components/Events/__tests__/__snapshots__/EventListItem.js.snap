@@ -58,6 +58,22 @@ exports[`renders correctly 1`] = `
         accessible={true}
         allowFontScaling={true}
         ellipsizeMode="tail"
+        style={
+          Object {
+            "color": "#6B6B6B",
+            "flex": 0,
+            "fontSize": 12,
+            "includeFontPadding": false,
+            "textAlignVertical": "top",
+          }
+        }
+      >
+        group.name
+      </Text>
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
         numberOfLines={1}
         style={
           Object {
