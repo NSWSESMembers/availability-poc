@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<AIRMapCircle
+  center={
+    Object {
+      "accuracy": 1,
+      "latitude": 1,
+      "longitude": 1,
+    }
+  }
+  fillColor="rgba(135,206,250,0.3)"
+  radius={1}
+  strokeColor="transparent"
+  strokeWidth={1}
+/>
+`;
+
+exports[`renders correctly 2`] = `null`;

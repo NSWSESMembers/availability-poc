@@ -8,7 +8,6 @@ import { Marker } from 'react-native-maps';
 
 import styles from './styles';
 
-
 const ANCHOR = { x: 0.5, y: 0.5 };
 
 const MyLocationMarker = ({ myPosition }) => {
@@ -19,6 +18,7 @@ const MyLocationMarker = ({ myPosition }) => {
 
   return (
     <Marker
+      key={(myPosition.longitude + myPosition.latitude).toString()}
       anchor={ANCHOR}
       style={styles.mapMarker}
       coordinate={myPosition}

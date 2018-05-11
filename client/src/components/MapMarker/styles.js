@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const SIZE = 15;
-const HALO_RADIUS = 4;
+const HALO_RADIUS = 2;
 const ARROW_SIZE = 7;
 const ARROW_DISTANCE = 6;
 const HALO_SIZE = SIZE + HALO_RADIUS;

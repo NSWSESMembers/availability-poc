@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { extendAppStyleSheet } from '../style-sheet';
 import EVENT_QUERY from '../../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
-import { UserMarker, IconMarker, MyLocationMarker } from '../../components/MapMarker/';
+import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
 import { Container, Holder } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
@@ -139,37 +139,37 @@ class Detail extends Component {
   geoWatch = null
 
 
-locationTimeout = () => {
+  locationTimeout = () => {
   // if we dont have a location yet, give some feedback to the user
-  if (!this.state.myPosition) {
-    Alert.alert('Unable to locate you', 'We are unable to locate you. Check that location services are enabled');
+    if (!this.state.myPosition) {
+      Alert.alert('Unable to locate you', 'We are unable to locate you. Check that location services are enabled');
+    }
   }
-}
 
-androidLocationPermission = async () => {
-  console.log('Checking android permissions');
-  const granted = await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    {
-      title: 'Permission Needed',
-      message: 'We need permission to track your location accurately.',
-    },
-  );
-  console.log('permissions:', granted);
-  return granted === PermissionsAndroid.RESULTS.GRANTED;
-}
-
-mapZoomMe = () => {
-  if (this.state.myPosition) {
-    const { longitude, latitude } = this.state.myPosition;
-    const myLocation = MapDelta(
-      latitude,
-      longitude,
-      500, // 500m height
+  androidLocationPermission = async () => {
+    console.log('Checking android permissions');
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Permission Needed',
+        message: 'We need permission to track your location accurately.',
+      },
     );
-    this.zoomToRegionMap(myLocation);
+    console.log('permissions:', granted);
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
   }
-}
+
+  mapZoomMe = () => {
+    if (this.state.myPosition) {
+      const { longitude, latitude } = this.state.myPosition;
+      const myLocation = MapDelta(
+        latitude,
+        longitude,
+        500, // 500m height
+      );
+      this.zoomToRegionMap(myLocation);
+    }
+  }
 
   mapOnLayout = () => {
     let mergedpoints = [];
@@ -213,8 +213,8 @@ mapZoomMe = () => {
     if (!this.props.event) {
       return;
     }
-    if (this.geoWatch == null) { // If this is the first run
-      // start a single fuzzy location fix aqusition
+    // If this is the first run start a single fuzzy location fix acquisition
+    if (this.geoWatch == null) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.processReturnedLocation(position, false);
       }, (err) => {
@@ -233,12 +233,12 @@ mapZoomMe = () => {
     }
   }
 
-  processReturnedLocation = (position, HighAccuracy) => {
+  processReturnedLocation = (position, highAccuracy) => {
     const { props } = this;
     const myLastPosition = this.state.myPosition;
     const myPosition = position.coords;
     // if we already have a high accuracy location ignore this fuzzy location
-    if (!HighAccuracy && !myLastPosition) {
+    if ((!highAccuracy && !myLastPosition) || highAccuracy) {
       if (!_.isEqual(myPosition, myLastPosition)) {
         this.setState({ myPosition }, () => {
         // on first update of user location, zoom to fit
@@ -381,6 +381,9 @@ mapZoomMe = () => {
             style={styles.map}
           >
             <MyLocationMarker
+              myPosition={this.state.myPosition}
+            />
+            <AccuracyHalo
               myPosition={this.state.myPosition}
             />
             {this.state.responseMarkers && this.state.responseMarkers.map(marker => (
