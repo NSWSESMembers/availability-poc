@@ -2,78 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
-import { FlatList, Text } from 'react-native';
-import { withNavigation } from 'react-navigation';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import { Center, Container } from '../../components/Container';
-import { Progress } from '../../components/Progress';
-import EventListItem from '../../components/Events/EventListItem';
-import ScheduleListItem from '../../components/Schedules/ScheduleListItem';
+import HomeList from './components/HomeList';
 
 
-class _HomeEventListItem extends Component {
-  onPress = () => {
-    const { event, navigation } = this.props;
-    navigation.push('EventDetail', { eventId: event.id });
-  }
-
-  render() {
-    return (
-      <EventListItem event={this.props.event} onPress={this.onPress} />
-    );
-  }
-}
-_HomeEventListItem.propTypes = {
-  event: PropTypes.shape().isRequired,
-  navigation: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }),
-};
-const HomeEventListItem = withNavigation(_HomeEventListItem);
-
-class _HomeNewEventListItem extends Component {
-  onPress = () => {
-    const { event, modalNavigation } = this.props;
-    modalNavigation.push('EventNewResponse', { eventId: event.id });
-  }
-
-  render() {
-    return (
-      <EventListItem event={this.props.event} onPress={this.onPress} urgent />
-    );
-  }
-}
-_HomeNewEventListItem.propTypes = {
-  event: PropTypes.shape().isRequired,
-  modalNavigation: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }),
-};
-const HomeNewEventListItem = withNavigation(_HomeNewEventListItem);
-
-class _HomeScheduleListItem extends Component {
-  onPress = () => {
-    const { schedule: { id, name }, navigation } = this.props;
-    navigation.push('SchedulesDetail', { id, title: name });
-  }
-
-  render() {
-    return (
-      <ScheduleListItem schedule={this.props.schedule} onPress={this.onPress} />
-    );
-  }
-}
-_HomeScheduleListItem.propTypes = {
-  schedule: PropTypes.shape().isRequired,
-  navigation: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }),
-};
-const HomeScheduleListItem = withNavigation(_HomeScheduleListItem);
-
-class HomeRoot extends Component {
+class HomeScreen extends Component {
   static navigationOptions = () => ({
     title: 'Home',
   });
@@ -82,90 +17,17 @@ class HomeRoot extends Component {
     this.props.refetch();
   };
 
-  renderItem = ({ item }) => {
-    if (item.type === 'event') {
-      return <HomeEventListItem event={item.event} />;
-    }
-    if (item.type === 'new-event') {
-      return (
-        <HomeNewEventListItem
-          event={item.event}
-          modalNavigation={this.props.screenProps.modalNavigation}
-        />
-      );
-    }
-    if (item.type === 'schedule') {
-      return <HomeScheduleListItem schedule={item.schedule} />;
-    }
-    throw Error(`Invalid type: ${item.type}`);
-  };
-
   render() {
-    const { loading, user } = this.props;
-
-    if (loading || !user) {
-      return (
-        <Container>
-          <Progress />
-        </Container>
-      );
-    }
-    const items = [];
-    const { events, schedules } = user;
-    const oneEvent = [];
-    if (events.length > 0) {
-      oneEvent.push(events[Math.floor(Math.random() * events.length)]);
-    }
-
-    // here we create 2 entries for every event to show the difference between new events and
-    // ones the user has already responded to
-    events.forEach((e) => {
-      items.push({
-        type: 'event',
-        id: e.id,
-        event: e,
-        sortKey: 1,
-      });
-    });
-    oneEvent.forEach((e) => {
-      items.push({
-        type: 'new-event',
-        id: e.id,
-        event: e,
-        sortKey: 0,
-      });
-    });
-    schedules.forEach((s) => {
-      items.push({
-        type: 'schedule',
-        id: s.id,
-        schedule: s,
-        sortKey: s.startTime,
-      });
-    });
-
-    items.sort(i => i.sortKey);
-
-    if (items.length === 0) {
-      return (
-        <Container>
-          <Center>
-            <Text>There is nothing interesting happening right now.</Text>
-          </Center>
-        </Container>
-      );
-    }
-
+    const { loading, user, navigation, screenProps } = this.props;
     return (
-      <Container>
-        <FlatList
-          data={items}
-          keyExtractor={item => `${item.type}-${item.id}`}
-          renderItem={this.renderItem}
-          refreshing={this.props.networkStatus === 4}
-          onRefresh={this.onRefresh}
-        />
-      </Container>
+      <HomeList
+        loading={loading}
+        onRefresh={this.onRefresh}
+        refreshing={this.props.networkStatus === 4}
+        modalNavigation={screenProps.modalNavigation}
+        homeNavigation={navigation}
+        user={user}
+      />
     );
   }
 }
@@ -180,14 +42,17 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-HomeRoot.propTypes = {
+HomeScreen.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
-  refetch: PropTypes.func,
+  refetch: PropTypes.func.isRequired,
   screenProps: PropTypes.shape({
     modalNavigation: PropTypes.shape({
-      push: PropTypes.func,
+      push: PropTypes.func.isRequired,
     }),
+  }),
+  navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
   }),
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -208,4 +73,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), userQuery)(HomeRoot);
+export default compose(connect(mapStateToProps), userQuery)(HomeScreen);
