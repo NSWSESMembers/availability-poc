@@ -3,33 +3,32 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import Paper from 'material-ui/Paper';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
-import Chip from 'material-ui/Chip';
 import Grid from 'material-ui/Grid';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import { InputLabel } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
+import TextField from 'material-ui/TextField';
 
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
-import GET_GROUPS_QUERY from '../../../graphql/search-group.query';
 
 import styles from './ViewGroups.styles';
-import moment from "moment/moment";
-import { numbers } from "../../../constants";
+
+import DisplayGroupsTable from '../../partial/DisplayGroupsTable';
 
 class ViewGroups extends React.Component {
   state = {
     tab: 0,
     locationFilter: '',
     capabilityFilter: '',
+    searchFilter: '',
   };
 
   handleSelectChange = (e, key) => {
@@ -41,65 +40,33 @@ class ViewGroups extends React.Component {
     this.setState({ tab });
   };
 
-  displayGroups = (classes, groups) => (
-    <Table className={classes.table}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Group Name</TableCell>
-          <TableCell>Location/HQ</TableCell>
-          <TableCell>Capabilities</TableCell>
-          <TableCell>Date Updated</TableCell>
-          <TableCell>Date Created</TableCell>
-          <TableCell>Created By</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {console.log(groups)}
-        {groups.map(group => (
-          <TableRow key={group.id}>
-            <TableCell>
-              <Link to={`/groups/${group.id}`}>{group.name}</Link>
-            </TableCell>
-            <TableCell>
-              {group.tags.map(tag => this.displayLocationTags(classes, tag))}
-            </TableCell>
-            <TableCell>
-              <div>
-                {group.tags.map(tag => this.displayCapabilityTags(classes, tag))}
-              </div>
-            </TableCell>
-            <TableCell>
-              {moment.unix(group.updatedAt).format('LLL')}
-            </TableCell>
-            <TableCell>
-              {moment.unix(group.createdAt).format('LLL')}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-
-  displayLocationTags = (classes, tag) => (
-    tag.type === 'orgStructure' && <span key={tag.name}>{tag.name} </span>
-  );
-
-  displayCapabilityTags = (classes, tag) => (
-    tag.type === 'capability' && <Chip key={tag.name} label={tag.name} className={classes.chip} />
-  );
-
   render() {
     const { classes, loading, user } = this.props;
-    const { tab } = this.state;
+    const { tab, locationFilter, capabilityFilter, searchFilter } = this.state;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
+    const allGroups = user.organisation.groups;
+    const myGroups = user.groups;
+    const allLocations = _.keys(_.transform(allGroups, (result, group) => {
+      _.forEach(group.tags, (tag) => {
+        if (tag.type === 'orgStructure') {
+          result[tag.name] = true;
+        }
+      });
+    }, {}));
+    const allCapabilities = _.keys(_.transform(allGroups, (result, group) => {
+      _.forEach(group.tags, (tag) => {
+        if (tag.type === 'capability') {
+          result[tag.name] = true;
+        }
+      });
+    }, {}));
+
     return (
       <div className={classes.root}>
-        {console.log(this.state)}
-        {console.log(user)}
         <Paper className={classes.paper}>
           <Grid container spacing={0}>
             <Grid item xs={12} sm={6}>
@@ -113,7 +80,7 @@ class ViewGroups extends React.Component {
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="locationFilter">Select Location</InputLabel>
                   <Select
-                    value={this.state.locationFilter}
+                    value={locationFilter}
                     onChange={e => this.handleSelectChange(e, 'locationFilter')}
                     inputProps={{
                       id: 'locationFilter',
@@ -122,20 +89,17 @@ class ViewGroups extends React.Component {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="dog">
-                      <em>doge</em>
-                    </MenuItem>
-                    {/*{this.props.user.groups.map(group => (*/}
-                    {/*<MenuItem value={group.id} key={group.id}>*/}
-                    {/*{group.name}*/}
-                    {/*</MenuItem>*/}
-                    {/*))}*/}
+                    {allLocations.map(location => (
+                      <MenuItem value={location} key={location}>
+                        {location}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="capabilityFilter">Select Capability</InputLabel>
                   <Select
-                    value={this.state.capabilityFilter}
+                    value={capabilityFilter}
                     onChange={e => this.handleSelectChange(e, 'capabilityFilter')}
                     inputProps={{
                       id: 'capabilityFilter',
@@ -144,21 +108,42 @@ class ViewGroups extends React.Component {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="cat">
-                      <em>Cat</em>
-                    </MenuItem>
-                    {/*{this.props.user.groups.map(group => (*/}
-                    {/*<MenuItem value={group.id} key={group.id}>*/}
-                    {/*{group.name}*/}
-                    {/*</MenuItem>*/}
-                    {/*))}*/}
+                    {allCapabilities.map(capability => (
+                      <MenuItem value={capability} key={capability}>
+                        {capability}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
+                <TextField
+                  id="groupSearch"
+                  label="Search groups"
+                  value={searchFilter}
+                  onChange={e => this.handleSelectChange(e, 'searchFilter')}
+                  className={classes.textField}
+                  margin="normal"
+                />
               </div>
             </Grid>
           </Grid>
-          {tab === 0 && <div>Item One</div>}
-          {/*{tab === 1 && <div>{this.displayGroups(classes, user.groups)}</div>}*/}
+          {tab === 0 &&
+          <DisplayGroupsTable
+            classes={classes}
+            groups={allGroups}
+            locationFilter={locationFilter}
+            capabilityFilter={capabilityFilter}
+            searchFilter={searchFilter}
+          />
+          }
+          {tab === 1 &&
+          <DisplayGroupsTable
+            classes={classes}
+            groups={myGroups}
+            locationFilter={locationFilter}
+            capabilityFilter={capabilityFilter}
+            searchFilter={searchFilter}
+          />
+          }
         </Paper>
       </div>
     );
@@ -197,18 +182,8 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
   }),
 });
 
-const groupsQuery = graphql(GET_GROUPS_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  props: ({ data: { loading, user: { organisation }, networkStatus, refetch } }) => ({
-    loading,
-    user: { organisation },
-    networkStatus,
-    refetch,
-  }),
-});
-
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery, groupsQuery)(ViewGroups);
+export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewGroups);
