@@ -266,7 +266,7 @@ class Detail extends Component {
         id: props.event.id,
         locationLatitude: latitude,
         locationLongitude: longitude,
-        locationTime: position.timestamp,
+        locationTime: Math.floor(position.timestamp / 1000), // seconds not milliseconds
       })
       .then(() => {
         console.log('location change sent');
