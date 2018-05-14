@@ -38,7 +38,8 @@ const AppRouter = () => (
         <PrivateRoute path="/schedules/add" component={AddSchedule} exact />
         <PrivateRoute path="/schedules/:id" component={ViewSchedule} />
         <PrivateRoute path="/events" component={ViewEvents} exact />
-        <PrivateRoute path="/events/edit" component={EditEvent} />
+        <PrivateRoute path="/events/edit" component={EditEvent} exact />
+        <PrivateRoute path="/events/edit/:id" component={EditEvent} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>

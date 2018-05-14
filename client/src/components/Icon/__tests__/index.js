@@ -35,4 +35,10 @@ test('renders correctly', () => {
     />,
   ).toJSON();
   expect(tree5).toMatchSnapshot();
+  const tree6 = renderer.create(
+    <Icon
+      name="mi-satellite"
+    />,
+  ).toJSON();
+  expect(tree6).toMatchSnapshot();
 });

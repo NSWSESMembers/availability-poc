@@ -2,6 +2,7 @@ dist
 coverage
 *.sqlite
 apns.p8
+.env
 
 # We don't use NPM so lets make sure we don't commit it's lock file
 package-lock.json

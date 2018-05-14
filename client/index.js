@@ -1,5 +1,6 @@
 import {
   AppRegistry,
+  YellowBox,
 } from 'react-native';
 import codePush from 'react-native-code-push';
 import App from './src/app';
@@ -11,6 +12,13 @@ const codePushOptions = {
   updateDialog: true,
   installMode: codePush.InstallMode.ON_NEXT_RESUME,
 };
+
+// suppress false-positive isMounted() deprecation warning
+// proper fix coming from react-native soon:
+// https://github.com/facebook/react-native/issues/18868#issuecomment-387627007
+if (YellowBox) {
+  YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
+}
 
 AppRegistry.registerComponent(
   'Callout',

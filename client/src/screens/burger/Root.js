@@ -36,7 +36,10 @@ const updateUserProfileMutation = graphql(UPDATE_USERPROFILE_MUTATION, {
 
 const sendTestPushMutation = graphql(SEND_TEST_PUSH_MUTATION, {
   props: ({ mutate }) => ({
-    sendTestPush: () => mutate(),
+    sendTestPush: delay =>
+      mutate({
+        variables: { vars: { delay } },
+      }),
   }),
 });
 
@@ -121,8 +124,20 @@ class BurgerScreen extends Component {
     }
   };
 
-  sendTestPush = () => {
-    this.props.sendTestPush().catch((e) => {
+  testPushPrompt = () => {
+    Alert.alert(
+      'When?',
+      'Instantly or in 5 seconds?',
+      [
+        { text: 'Instantly', onPress: () => this.sendTestPush(false) },
+        { text: 'In 5 Seconds', onPress: () => this.sendTestPush(true) },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  sendTestPush = (delay) => {
+    this.props.sendTestPush(delay).catch((e) => {
       Alert.alert(
         'Test push failed',
         `${e}`,
@@ -138,7 +153,7 @@ class BurgerScreen extends Component {
         onCheckForUpdate={this.checkForUpdate}
         onSubmitFeedback={this.handleSubmitFeedback}
         onTestBugsnag={this.crashReport}
-        onSendTestPush={this.sendTestPush}
+        onSendTestPush={this.testPushPrompt}
         onShowParams={this.showParams}
         onLogout={this.logout}
       />

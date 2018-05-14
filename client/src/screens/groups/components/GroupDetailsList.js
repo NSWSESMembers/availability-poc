@@ -58,7 +58,8 @@ const GroupDetailsList = ({ items, selectedIndex, networkStatus, refetch }) => (
             <Text>Nothing here</Text>
           </Center>
         ) : null)}
-      keyExtractor={item => item.id}
+      // eslint-disable-next-line no-underscore-dangle
+      keyExtractor={item => `groupdetails-${item.__typename}-${item.id}`}
       renderItem={groupDetailsRenderItem}
       refreshing={networkStatus === 4}
       onRefresh={refetch}

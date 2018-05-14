@@ -22,7 +22,7 @@ const ResponseList = ({ responses, networkStatus, description }) => (
             <Text>{`There are no ${description} responses yet.`}</Text>
           </Center>
         ) : null)}
-      keyExtractor={response => response.user.id}
+      keyExtractor={response => `response-${response.user.id}`}
       renderItem={response => (
         <ListItem
           title={response.item.user.displayName}
@@ -43,7 +43,7 @@ ResponseList.propTypes = {
         displayName: PropTypes.string.isRequired,
       }),
       status: PropTypes.string.isRequired,
-      detail: PropTypes.string.isRequired,
+      detail: PropTypes.string,
     }),
   ).isRequired,
   networkStatus: PropTypes.number.isRequired,
@@ -150,8 +150,8 @@ class EventResponses extends Component {
 const eventQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.eventId } }),
-  props: ({ data: { loading, event, refetch } }) => ({
-    loading, event, refetch,
+  props: ({ data: { loading, networkStatus, event, refetch } }) => ({
+    loading, networkStatus, event, refetch,
   }),
 });
 

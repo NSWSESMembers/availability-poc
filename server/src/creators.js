@@ -29,7 +29,7 @@ export const getCreators = (models) => {
       });
     },
 
-    event: ({ name, details, sourceIdentifier, permalink, group, location }) => {
+    event: ({ name, details, sourceIdentifier, permalink, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -38,19 +38,11 @@ export const getCreators = (models) => {
         details,
         sourceIdentifier,
         permalink,
-        location,
         groupId: group.id,
-        startTime: (new Date()).getTime() / 1000,
+        startTime: Math.floor((new Date()).getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
       });
     },
-
-    location: ({ name, detail, locationLatitude, locationLongitude }) => EventLocation.create({
-      name,
-      detail,
-      locationLatitude,
-      locationLongitude,
-    }),
 
     tag: ({ name, type, organisation }) => {
       if (!organisation || !organisation.id) {
@@ -166,7 +158,16 @@ export const getCreators = (models) => {
         eventlocationId: (destination ? destination.id : null),
       });
     },
-    eventLocation: ({ name, detail, icon, locationLatitude, locationLongitude, event }) => {
+    eventLocation: ({
+      name,
+      detail,
+      icon,
+      locationLatitude,
+      locationLongitude,
+      locationTime,
+      primaryLocation,
+      event,
+    }) => {
       if (!event || !event.id) {
         return Promise.reject(Error('Must pass event'));
       }
@@ -176,7 +177,13 @@ export const getCreators = (models) => {
         icon,
         locationLatitude,
         locationLongitude,
+        locationTime: locationTime || (new Date()).getTime() / 1000,
         eventId: event.id,
+      }).then((location) => {
+        if (primaryLocation) {
+          event.update({ primaryLocationId: location.id });
+        }
+        return location;
       });
     },
     message: ({ text, user, groupId, eventId, scheduleId }) => {

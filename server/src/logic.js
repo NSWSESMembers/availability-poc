@@ -31,6 +31,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
     Schedule,
     Event,
     TimeSegment,
+    EventLocation,
   } = models;
 
   const handlers = {
@@ -335,6 +336,105 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       eventLocations(event) {
         return event.getEventlocations();
       },
+      primaryLocation(event) {
+        // to avoid a cyclic table associations we are calling 'constraints: false'
+        // so we have to do a traditional SELECT to get the item back
+        // because there is no forign key
+        return EventLocation.findById(event.primaryLocationId);
+      },
+      createEvent(_, args, ctx) {
+        const { name, details, sourceIdentifier, permalink, eventLocations, groupId } = args.event;
+        return getAuthenticatedUser(ctx).then(() =>
+          Group.findById(groupId).then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Invalid group!'));
+            }
+            return Creators.event({
+              name,
+              details,
+              sourceIdentifier,
+              permalink,
+              group,
+            }).then((event) => {
+              if (typeof eventLocations === 'undefined') return;
+              Promise.all(
+                eventLocations.map(el =>
+                  Creators.eventLocation({
+                    name: el.name,
+                    detail: el.detail,
+                    icon: el.icon,
+                    locationLatitude: el.locationLatitude,
+                    locationLongitude: el.locationLongitude,
+                    event,
+                  }),
+                ),
+              );
+            });
+          }),
+        );
+      },
+      updateEvent(_, args, ctx) {
+        const {
+          id,
+          name,
+          details,
+          sourceIdentifier,
+          permalink,
+          eventLocations,
+          groupId,
+        } = args.event;
+        return getAuthenticatedUser(ctx).then(() =>
+          Event.findById(id).then((event) => {
+            if (!event) {
+              return Promise.reject(Error('Invalid event!'));
+            }
+            return event
+              .update({
+                name,
+                details,
+                sourceIdentifier,
+                permalink,
+                groupId,
+              })
+              .then(() => {
+                event.getEventlocations().then((existingLocations) => {
+                  if (eventLocations === undefined) return;
+
+                  Promise.all(
+                    existingLocations.map((el) => {
+                      // is it in the existing request? then do not remove.
+                      const loc = eventLocations.find(
+                        newLoc =>
+                          newLoc.locationLatitude === el.locationLatitude &&
+                          newLoc.locationLongitude === el.locationLongitude,
+                      );
+                      if (loc === undefined) {
+                        return el.destroy();
+                      }
+                      return true;
+                    }),
+                    eventLocations.map((el) => {
+                      const loc = existingLocations.find(
+                        newLoc =>
+                          newLoc.locationLatitude === el.locationLatitude &&
+                          newLoc.locationLongitude === el.locationLongitude,
+                      );
+                      if (loc) return true;
+                      return Creators.eventLocation({
+                        name: el.name,
+                        detail: el.detail,
+                        icon: el.icon,
+                        locationLatitude: el.locationLatitude,
+                        locationLongitude: el.locationLongitude,
+                        event,
+                      });
+                    }),
+                  );
+                });
+              });
+          }),
+        );
+      },
       setResponse(args, ctx) {
         const {
           id,
@@ -513,12 +613,12 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       },
     },
     push: {
-      async sendTestPush(ctx) {
-        console.log(ctx);
+      async sendTestPush(ctx, args) {
         const device = await getAuthenticatedDevice(ctx);
-        const result = push.sendPush({
+        const result = await push.sendTestPush({
           devices: [device],
           message: 'Test push notification \u2728\u2705\uD83D\uDC8C\uD83D\uDC4D',
+          delay: args.vars && args.vars.delay ? args.vars.delay : false,
         });
 
         return result;

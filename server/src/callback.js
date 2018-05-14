@@ -1,36 +1,75 @@
+import { Op } from 'sequelize';
+
+
 const SESCallback = {
   creator: undefined,
+  models: undefined,
   eventCallback(req, res) {
     const job = {
-      name: req.body.JobType.Name,
+      name: `${req.body.SimpleJobViewModel.JobType.Name} - ${req.body.SimpleJobViewModel.Address.PrettyAddress}`,
       identifier: req.body.Identifier,
-      description: req.body.JobType.Description,
+      description: req.body.SimpleJobViewModel.JobType.Description,
+      SituationOnScene: req.body.SimpleJobViewModel.SituationOnScene,
+      tags: req.body.SimpleJobViewModel.Tags,
     };
-
-    Promise.resolve(this.creator.location({
-      name: 'scene',
-      detail: req.body.Address.PrettyAddress,
-      locationLatitude: req.body.Address.Latitude,
-      locationLongitude: req.body.Address.Longitude,
-    }).then(eventLocation => this.creator.event({
+    // look for a group with the LHQ name in it, or use group id:1
+    this.models.Group.findOne({
+      where: {
+        name: {
+          [Op.like]: `%${req.body.SimpleJobViewModel.EntityAssignedTo.Code}%`,
+        },
+      },
+    }).then(group => Promise.resolve(this.creator.event({
       name: job.name,
-      description: job.description,
+      details: `${job.SituationOnScene || ''}${job.SituationOnScene ? ' ' : ''}[${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
       identifier: job.identifier,
       permalink: `https://beacon.com/job/${job.identifier}`,
-      location: eventLocation,
-      group: { id: 1 },
-    })));
+      group: group || { id: 1 },
+    }).then(event => Promise.all(
+      [
+        this.creator.eventLocation({
+          name: 'lhq',
+          detail: req.body.SimpleJobViewModel.EntityAssignedTo.Code,
+          icon: 'mci-castle',
+          locationLatitude: req.body.SimpleJobViewModel.EntityAssignedTo.Latitude,
+          locationLongitude: req.body.SimpleJobViewModel.EntityAssignedTo.Longitude,
+          primaryLocation: true,
+          event,
+        }),
+        this.creator.eventLocation({
+          name: 'scene',
+          detail: req.body.SimpleJobViewModel.Address.PrettyAddress,
+          icon: 'mci-target',
+          locationLatitude: req.body.SimpleJobViewModel.Address.Latitude,
+          locationLongitude: req.body.SimpleJobViewModel.Address.Longitude,
+          primaryLocation: false,
+          event,
+        }),
+      ],
+    )),
+    )).then(() => {
+      const result = {
+        status: 'OK',
+      };
+      res.send(JSON.stringify(result));
+    }).catch(() => {
+      const result = {
+        status: 'FAIL',
+      };
+      res.send(JSON.stringify(result));
+    });
+
 
     // get the base handler to add the event
     // send notifications (probably belongs in the other code)
-    res.send('OK');
   },
 };
 
-function getCallback(type, creator) {
+function getCallback(type, creator, models) {
   if (type === 'ses-hook') {
     SESCallback.creator = creator;
-    console.log(SESCallback.creator);
+    SESCallback.models = models;
+
     return SESCallback.eventCallback.bind(SESCallback);
   }
   return null;

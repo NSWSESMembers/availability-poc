@@ -16,7 +16,7 @@ class FCMClient {
     // set up the notification handlers and handle any pending notifications
     const self = this;
 
-    self.notificationListener = this.FCN.onNotificationOpened((notification) => {
+    self.onNotificationOpened = this.FCN.onNotificationOpened((notification) => {
       Alert.alert(
         notification.fcm.title,
         notification.fcm.body,
@@ -41,14 +41,18 @@ class FCMClient {
       }
     });
 
-    this.FCN.getInitialNotification().then((notificationOpen) => {
-      if (notificationOpen) {
-        // App was opened by a notification
-        // Get the action triggered by the notification being opened
-        // Get information about the notification that was opened
-        // const { action, notification } = notificationOpen;
-      }
-    });
+    self.notificationListener = this.FCN.onNotification(
+      (notification) => {
+        Alert.alert(
+          notification.title,
+          notification.body,
+          [
+            { text: 'OK' },
+          ],
+          { cancelable: false },
+        );
+      },
+    );
   }
 
   async register() {

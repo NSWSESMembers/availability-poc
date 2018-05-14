@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<AIRMapMarker
+  anchor={
+    Object {
+      "x": 0.5,
+      "y": 0.5,
+    }
+  }
+  coordinate={
+    Object {
+      "heading": 1,
+      "latitude": 1,
+      "longitude": 1,
+    }
+  }
+  image={undefined}
+  onPress={[Function]}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "transparent",
+        "position": "absolute",
+      },
+      Object {
+        "zIndex": 1000,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "height": 30,
+        "width": 30,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": 9,
+          "height": 17,
+          "left": 0,
+          "margin": 6.5,
+          "position": "absolute",
+          "shadowColor": "black",
+          "shadowOffset": Object {
+            "height": 0,
+            "width": 0,
+          },
+          "shadowOpacity": 0.25,
+          "shadowRadius": 2,
+          "top": 0,
+          "width": 17,
+        }
+      }
+    />
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "height": 30,
+            "left": 0,
+            "position": "absolute",
+            "top": 0,
+            "width": 30,
+          },
+          Object {
+            "transform": Array [
+              Object {
+                "rotate": "1deg",
+              },
+            ],
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "backgroundColor": "transparent",
+            "borderBottomColor": "blue",
+            "borderBottomWidth": 7,
+            "borderLeftColor": "transparent",
+            "borderLeftWidth": 5.25,
+            "borderRightColor": "transparent",
+            "borderRightWidth": 5.25,
+            "borderStyle": "solid",
+            "borderTopColor": "transparent",
+            "borderTopWidth": 0,
+            "height": 0,
+            "width": 0,
+          }
+        }
+      />
+    </View>
+    <View
+      style={
+        Object {
+          "backgroundColor": "blue",
+          "borderRadius": 8,
+          "height": 15,
+          "justifyContent": "center",
+          "margin": 7.5,
+          "width": 15,
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        style={
+          Object {
+            "height": 0,
+            "width": 0,
+          }
+        }
+      >
+        1deg
+      </Text>
+    </View>
+  </View>
+</AIRMapMarker>
+`;
+
+exports[`renders correctly 2`] = `null`;
+
+exports[`renders correctly 3`] = `
+<AIRMapMarker
+  anchor={
+    Object {
+      "x": 0.5,
+      "y": 0.5,
+    }
+  }
+  coordinate={
+    Object {
+      "latitude": 1,
+      "longitude": 1,
+    }
+  }
+  image={undefined}
+  onPress={[Function]}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "transparent",
+        "position": "absolute",
+      },
+      Object {
+        "zIndex": 1000,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "height": 30,
+        "width": 30,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": 9,
+          "height": 17,
+          "left": 0,
+          "margin": 6.5,
+          "position": "absolute",
+          "shadowColor": "black",
+          "shadowOffset": Object {
+            "height": 0,
+            "width": 0,
+          },
+          "shadowOpacity": 0.25,
+          "shadowRadius": 2,
+          "top": 0,
+          "width": 17,
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "backgroundColor": "blue",
+          "borderRadius": 8,
+          "height": 15,
+          "justifyContent": "center",
+          "margin": 7.5,
+          "width": 15,
+        }
+      }
+    >
+      <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
+        style={
+          Object {
+            "height": 0,
+            "width": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</AIRMapMarker>
+`;

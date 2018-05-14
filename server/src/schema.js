@@ -114,6 +114,37 @@ export const Schema = [
     groupId: Int
   }
 
+  input LocationInput {
+    name: String
+    detail: String
+    icon: String
+    locationLatitude: Float!
+    locationLongitude: Float!
+  }
+
+  input CreateEventInput {
+    name: String!
+    details: String!
+    sourceIdentifier: String
+    permalink: String
+    eventLocations: [LocationInput]
+    groupId: Int!
+  }
+
+  input UpdateEventInput {
+    id: Int!
+    name: String!
+    details: String!
+    sourceIdentifier: String
+    permalink: String
+    eventLocations: [LocationInput]
+    groupId: Int!
+  }
+
+  input SendTestPushInput {
+    delay: Boolean
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -179,9 +210,10 @@ export const Schema = [
     sourceIdentifier: String,
     permalink: String,
     group: Group!
-    responses: [EventResponse]!
+    responses: [EventResponse]
     messages: [Message]
     eventLocations: [EventLocation]
+    primaryLocation: EventLocation
     startTime: Int!
     endTime: Int!
   }
@@ -251,6 +283,8 @@ export const Schema = [
 
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
+    createEvent(event: CreateEventInput!): Event
+    updateEvent(event: UpdateEventInput!): Event
     createUser(user: CreateUserInput!): User
     updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User
@@ -267,7 +301,7 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Boolean
     setEventResponse(response: SetEventResponseInput!): EventResponse
-    sendTestPush: Boolean  # send a push notification to the requesting device
+    sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
 
   schema {

@@ -1,5 +1,7 @@
-import { NativeModules, PushNotificationIOS } from 'react-native';
+import { NativeModules, PushNotificationIOS, Alert } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+
+// eslint no-underscore-dangle: ["error", { "allow": ["foo_", "_bar"] }]
 
 const { log } = console;
 
@@ -40,10 +42,20 @@ class APNSClient {
 
   receivedNotification = (notification) => {
     log('Notification received: ', notification);
+    Alert.alert(
+      'You got push!',
+      // eslint-disable-next-line no-underscore-dangle
+      notification._alert,
+    );
   }
 
   receivedLocalNotification = (notification) => {
     log('Local notification received: ', notification);
+    Alert.alert(
+      'You got a local notification!',
+      // eslint-disable-next-line no-underscore-dangle
+      notification._alert,
+    );
   }
 
   didRegister = (token) => {

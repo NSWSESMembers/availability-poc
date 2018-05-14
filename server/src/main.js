@@ -81,7 +81,7 @@ app.use(
   }),
 );
 
-app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators));
+app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators, models));
 
 const graphQLServer = createServer(app);
 
