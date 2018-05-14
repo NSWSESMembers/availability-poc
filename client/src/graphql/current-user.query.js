@@ -22,6 +22,7 @@ export default gql`
         id
         name
         details
+        sourceIdentifier
         group {
           id
           name

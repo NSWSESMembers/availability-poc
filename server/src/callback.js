@@ -22,7 +22,7 @@ const SESCallback = {
     }).then(group => Promise.resolve(this.creator.event({
       name: job.name,
       details: `${job.SituationOnScene || ''}${job.SituationOnScene ? ' ' : ''}[${job.tags.map(g => `#${g.Name}`).join(', ')}]`,
-      identifier: job.identifier,
+      sourceIdentifier: job.identifier,
       permalink: `https://beacon.com/job/${job.identifier}`,
       group: group || { id: 1 },
     }).then(event => Promise.all(

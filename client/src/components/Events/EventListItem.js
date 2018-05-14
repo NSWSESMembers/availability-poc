@@ -12,7 +12,7 @@ const EventListItem = ({ event, urgent, onPress }) => {
   return (
     <ListItem
       title={event.name}
-      supertitle={event.group && event.group.name}
+      supertitle={event.group && `${event.group.name} - #${event.sourceIdentifier}`}
       titleNumberOfLines={titleNumberOfLines}
       subtitle={event.details}
       subtitleNumberOfLines={subtitleNumberOfLines}
@@ -28,6 +28,7 @@ EventListItem.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
+    sourceIdentifier: PropTypes.string,
   }),
   urgent: PropTypes.bool,
 };

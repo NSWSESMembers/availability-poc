@@ -10,6 +10,7 @@ test('renders correctly', () => {
     id: 1,
     name: 'Name',
     details: 'Details',
+    sourceIdentifier: 'sourceIdentifier',
     group: {
       name: 'group.name',
     },
