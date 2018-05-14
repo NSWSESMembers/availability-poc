@@ -69,7 +69,7 @@ exports[`renders correctly 1`] = `
           }
         }
       >
-        group.name
+        group.name - #sourceIdentifier
       </Text>
       <Text
         accessible={true}

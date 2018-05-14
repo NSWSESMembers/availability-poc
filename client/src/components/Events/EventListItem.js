@@ -28,7 +28,7 @@ EventListItem.propTypes = {
   event: PropTypes.shape({
     name: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
-    identifier: PropTypes.string.isRequired,
+    sourceIdentifier: PropTypes.string,
   }),
   urgent: PropTypes.bool,
 };
