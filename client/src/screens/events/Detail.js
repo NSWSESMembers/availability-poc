@@ -290,6 +290,10 @@ class Detail extends Component {
     });
   };
 
+  openExternal = () => {
+    Linking.openURL(this.props.event.permalink);
+  };
+
   render() {
     const { event, loading } = this.props;
 
@@ -362,7 +366,7 @@ class Detail extends Component {
                 title={event.name}
                 subtitle={event.details}
                 icon="external-link"
-                onPress={() => { Linking.openURL(event.permalink); }}
+                onPress={this.openExternal}
                 selectable
               />
             </Holder>
