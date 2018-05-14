@@ -1,7 +1,7 @@
 /* global navigator */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -362,7 +362,7 @@ class Detail extends Component {
                 title={event.name}
                 subtitle={event.details}
                 icon="external-link"
-                onPress={() => undefined}
+                onPress={() => { Linking.openURL(event.permalink); }}
                 selectable
               />
             </Holder>
