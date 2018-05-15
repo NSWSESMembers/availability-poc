@@ -23,7 +23,6 @@ export default () => {
       endTime: begin
         .clone()
         .add(1, 'days')
-        .add(-1, 'seconds')
         .unix(),
     });
   }
