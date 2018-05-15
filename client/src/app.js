@@ -3,7 +3,7 @@ import { AsyncStorage, Alert } from 'react-native';
 import { Client as BugSnagClient } from 'bugsnag-react-native';
 import ApolloClient from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
-import { ApolloLink, concat } from 'apollo-link';
+import { ApolloLink } from 'apollo-link';
 
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
@@ -39,11 +39,13 @@ const httpLink = new HttpLink({ uri: GRAPHQL_ENDPOINT });
 // replaces networkInterface.use(applyMiddleware...)
 const authMiddleware = new ApolloLink((operation, forward) => {
   // add the authorization to the headers
-  operation.setContext({
-    headers: {
-      authorization: store.getState().auth || null,
-    },
-  });
+  if (store.getState().auth.token) {
+    operation.setContext({
+      headers: {
+        authorization: store.getState().auth.token ? `Bearer ${store.getState().auth.token}` : null,
+      },
+    });
+  }
 
   return forward(operation);
 });
