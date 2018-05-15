@@ -4,7 +4,7 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Toolbar from 'material-ui/Toolbar';
 import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
-import moment from 'moment/moment';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import numbers from '../constants';
