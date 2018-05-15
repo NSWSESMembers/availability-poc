@@ -8,24 +8,15 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { extendAppStyleSheet } from '../style-sheet';
+import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
-import { Container, Holder } from '../../components/Container';
+import { Container, Holder, Center } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { ButtonNavBar } from '../../components/Button';
 import MapDelta from '../../selectors/MapDelta';
-
-const styles = extendAppStyleSheet({
-  map: {
-    backgroundColor: '#f9f9f9',
-    flexGrow: 1,
-    zIndex: -1,
-    ...StyleSheet.absoluteFillObject,
-  },
-});
 
 const screen = Dimensions.get('window');
 
@@ -308,9 +299,9 @@ class Detail extends Component {
 
     if (!event) {
       return (
-        <Container>
-          <Text style={styles.warning}>Unable to load event.</Text>
-        </Container>
+        <Center>
+          <Text>Unable to load event, or event no longer exists</Text>
+        </Center>
       );
     }
 
