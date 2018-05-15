@@ -49,13 +49,12 @@ class ViewSchedule extends React.Component {
 
   onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
     // find existing segments
-    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments,
-      {
-        status: modalStatus,
-        startTime: modalStartTime,
-        endTime: modalEndTime,
-        userId: modalUser.id,
-      });
+    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments, {
+      status: modalStatus,
+      startTime: modalStartTime,
+      endTime: modalEndTime,
+      userId: modalUser.id,
+    });
 
     let modalTimeSegmentId = 0;
     let modalTimeSegmentStartTime = 0;
@@ -224,9 +223,7 @@ class ViewSchedule extends React.Component {
                     column =>
                       (column.id === 'name' ? (
                         <TableCell key={user.id} className={classes.tableCellFirst}>
-                          <Link to="/dashboard">
-                            {user.displayName}
-                          </Link>
+                          <Link to="/dashboard">{user.displayName}</Link>
                         </TableCell>
                       ) : (
                         <ViewScheduleItem
