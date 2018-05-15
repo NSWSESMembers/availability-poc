@@ -9,7 +9,7 @@ import { ButtonBox } from '../Button';
 
 import styles from './styles';
 
-const TimeSelect = ({ selectionSegments, onPress }) => {
+const TimeSelect = ({ selectionSegments, onPress, onPressNewSegment }) => {
   const start = moment()
     .startOf('day')
     .unix();
@@ -36,12 +36,21 @@ const TimeSelect = ({ selectionSegments, onPress }) => {
           />
         </View>
       ))}
+      <View style={styles.timeSelectChild}>
+        <ButtonBox
+          text="{{ New Custom }}"
+          subtext="Enter New Time"
+          onPress={() => onPressNewSegment()}
+          selectedColor={selectColor()}
+        />
+      </View>
     </View>
   );
 };
 
 TimeSelect.propTypes = {
   onPress: PropTypes.func.isRequired,
+  onPressNewSegment: PropTypes.func.isRequired,
   selectionSegments: PropTypes.arrayOf(
     PropTypes.shape({
       startTime: PropTypes.number.isRequired,

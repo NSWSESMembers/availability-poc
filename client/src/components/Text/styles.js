@@ -5,7 +5,7 @@ const h6 = { fontSize: 13 };
 const h5 = { fontSize: 16 };
 const h4 = { fontSize: 18 };
 const h3 = { fontSize: 25 };
-const h1 = { fontSize: 32 };
+const h1 = { fontSize: 32, color: Colors.txtMain };
 const styles = StyleSheet.create({
   default: {
     color: Colors.txtDark,
