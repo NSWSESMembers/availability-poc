@@ -50,6 +50,7 @@ class ViewGroups extends React.Component {
 
     const allGroups = user.organisation.groups;
     const myGroups = user.groups;
+    // data transform for getting all orgStructure tags of groups
     const allLocations = _.keys(_.transform(allGroups, (result, group) => {
       _.forEach(group.tags, (tag) => {
         if (tag.type === 'orgStructure') {
@@ -57,6 +58,7 @@ class ViewGroups extends React.Component {
         }
       });
     }, {}));
+    // data transform for getting all capability tags of groups
     const allCapabilities = _.keys(_.transform(allGroups, (result, group) => {
       _.forEach(group.tags, (tag) => {
         if (tag.type === 'capability') {
