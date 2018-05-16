@@ -28,7 +28,7 @@ const TimePicker = ({ selectedValue, onValueChange }) => (
     <Picker.Item label="9:00 PM" value={75600} />
     <Picker.Item label="10:00 PM" value={79200} />
     <Picker.Item label="11:00 PM" value={82800} />
-    <Picker.Item label="12:00 PM" value={86400} />
+    <Picker.Item label="12:00 AM (end of day)" value={86400} />
   </Picker>
 );
 

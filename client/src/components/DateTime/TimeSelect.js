@@ -40,7 +40,7 @@ const TimeSelect = ({ selectionSegments, onPress, onPressNewSegment }) => {
         <ButtonBox
           text="{{ New Custom }}"
           subtext="Enter New Time"
-          onPress={() => onPressNewSegment()}
+          onPress={onPressNewSegment}
           selectedColor={selectColor()}
         />
       </View>
