@@ -91,16 +91,27 @@ const warnLogout = _.debounce(() => {
   );
 }, 1000);
 
-const logoutLink = onError(({ networkError }) => {
-  if (networkError.statusCode === 401) {
-    warnLogout();
+// Hack to get around known issue with networkError not having network header errors
+// https://github.com/apollographql/apollo-link/issues/300
+const logoutLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors && graphQLErrors[0].message.includes('Unauthorized')) {
     store.dispatch(logout());
+    return warnLogout();
   }
+  return null;
 });
 
+// This should work once apollo-link issue #300 is resolved
+// const logoutLink = onError(({ networkError }) => {
+//   if (networkError.statusCode === 401) {
+//     warnLogout();
+//     store.dispatch(logout());
+//   }
+// });
+//
 
 export const client = new ApolloClient({
-  link: ApolloLink.from([ErrorLink, LoggerLink, authMiddleware, logoutLink, httpLink]),
+  link: ApolloLink.from([ErrorLink, LoggerLink, logoutLink, authMiddleware, httpLink]),
   cache: new InMemoryCache(),
 });
 
