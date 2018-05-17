@@ -31,7 +31,7 @@ class ViewGroups extends React.Component {
     searchFilter: '',
   };
 
-  handleSelectChange = (e, key) => {
+  handleChange = (e, key) => {
     const { value } = e.target;
     this.setState({ [key]: value });
   };
@@ -83,7 +83,7 @@ class ViewGroups extends React.Component {
                   <InputLabel htmlFor="locationFilter">Select Location</InputLabel>
                   <Select
                     value={locationFilter}
-                    onChange={e => this.handleSelectChange(e, 'locationFilter')}
+                    onChange={e => this.handleChange(e, 'locationFilter')}
                     inputProps={{
                       id: 'locationFilter',
                     }}
@@ -102,7 +102,7 @@ class ViewGroups extends React.Component {
                   <InputLabel htmlFor="capabilityFilter">Select Capability</InputLabel>
                   <Select
                     value={capabilityFilter}
-                    onChange={e => this.handleSelectChange(e, 'capabilityFilter')}
+                    onChange={e => this.handleChange(e, 'capabilityFilter')}
                     inputProps={{
                       id: 'capabilityFilter',
                     }}
@@ -121,7 +121,7 @@ class ViewGroups extends React.Component {
                   id="groupSearch"
                   label="Search groups"
                   value={searchFilter}
-                  onChange={e => this.handleSelectChange(e, 'searchFilter')}
+                  onChange={e => this.handleChange(e, 'searchFilter')}
                   className={classes.textField}
                   margin="normal"
                 />
