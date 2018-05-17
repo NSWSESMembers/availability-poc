@@ -7,11 +7,9 @@ import styles from './styles';
 
 const BasicModal = ({ visible, closeModal, children }) => (
   <Modal visible={visible} animationType="slide" onRequestClose={closeModal}>
-    <View style={styles.modalContainer}>
-      <View style={styles.innerContainer}>
-        {children}
-        <Button onPress={closeModal} title="Close modal" />
-      </View>
+    <View style={styles.container}>
+      {children}
+      <Button onPress={closeModal} title="Cancel" />
     </View>
   </Modal>
 );

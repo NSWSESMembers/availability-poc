@@ -12,6 +12,11 @@ const Button = ({ text, onPress, type, disabled }) => {
     textStyle = [styles.textStyleSecondary];
   }
 
+  if (disabled) {
+    style = [styles.buttonStyleDisabled];
+    textStyle = [styles.textStyleDisabled];
+  }
+
   return (
     <TouchableOpacity style={style} onPress={onPress} disabled={disabled}>
       <Text style={textStyle}>{text}</Text>
