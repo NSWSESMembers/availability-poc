@@ -101,15 +101,6 @@ const logoutLink = onError(({ graphQLErrors }) => {
   return null;
 });
 
-// This should work once apollo-link issue #300 is resolved
-// const logoutLink = onError(({ networkError }) => {
-//   if (networkError.statusCode === 401) {
-//     warnLogout();
-//     store.dispatch(logout());
-//   }
-// });
-//
-
 export const client = new ApolloClient({
   link: ApolloLink.from([ErrorLink, LoggerLink, logoutLink, authMiddleware, httpLink]),
   cache: new InMemoryCache(),
