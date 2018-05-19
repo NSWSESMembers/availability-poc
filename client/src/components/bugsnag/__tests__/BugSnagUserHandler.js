@@ -2,16 +2,13 @@ import React from 'react';
 import TestRenderer from 'react-test-renderer';
 import BugSnagUserHandler from '../BugSnagUserHandler';
 
+
 test('lifecycle', async () => {
   const bugsnag = {
-    setUser(id, username, email) {
-      this.id = id;
-      this.username = username;
-      this.email = email;
-    },
+    setUser: jest.fn(),
   };
 
-  const failIfCalled = jest.fn();
+  const failIfCalled = { setUser: jest.fn() };
 
 
   // this should/cant call setUser because there is no auth nor bugnsag
@@ -38,7 +35,7 @@ test('lifecycle', async () => {
     />,
   );
 
-  expect(failIfCalled.mock.calls.length).toBe(0);
+  expect(failIfCalled.setUser.mock.calls.length).toBe(0);
 
   // this should call setUser
   renderer.update(
@@ -50,19 +47,15 @@ test('lifecycle', async () => {
 
   await renderer.root.updatePromise;
 
-
-  expect(bugsnag.username).toEqual('test');
-  expect(bugsnag.id).toEqual('1');
-  expect(bugsnag.email).toEqual(undefined);
+  expect(bugsnag.setUser.mock.calls.length).toBe(1);
+  expect(bugsnag.setUser.mock.calls[0][0]).toEqual('1');
+  expect(bugsnag.setUser.mock.calls[0][1]).toEqual('test');
+  expect(bugsnag.setUser.mock.calls[0][2]).toEqual(undefined);
 });
 
 test('everything pre-loaded', async () => {
   const bugsnag = {
-    setUser(id, username, email) {
-      this.id = id;
-      this.username = username;
-      this.email = email;
-    },
+    setUser: jest.fn(),
   };
 
 
@@ -76,8 +69,8 @@ test('everything pre-loaded', async () => {
 
   await renderer.root.updatePromise;
 
-
-  expect(bugsnag.username).toEqual('test');
-  expect(bugsnag.id).toEqual('1');
-  expect(bugsnag.email).toEqual(undefined);
+  expect(bugsnag.setUser.mock.calls.length).toBe(1);
+  expect(bugsnag.setUser.mock.calls[0][0]).toEqual('1');
+  expect(bugsnag.setUser.mock.calls[0][1]).toEqual('test');
+  expect(bugsnag.setUser.mock.calls[0][2]).toEqual(undefined);
 });
