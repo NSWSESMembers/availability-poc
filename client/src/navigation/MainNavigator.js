@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { pushManager } from '../app';
+import { pushManager, bugsnag } from '../app';
+
 import { isLoggedIn } from '../selectors/auth';
 import HomeNavigator from './HomeNavigator';
 import SchedulesNavigator from './SchedulesNavigator';
@@ -14,6 +15,7 @@ import GroupsNavigator from './GroupsNavigator';
 import EventsNavigator from './EventsNavigator';
 import BurgerNavigator from './BurgerNavigator';
 import PushHandler from '../components/push/PushHandler';
+import BugSnagUserHandler from '../components/bugsnag/BugSnagUserHandler';
 
 import UPDATE_DEVICE_MUTATION from '../graphql/update-device.mutation';
 import CURRENT_DEVICE_QUERY from '../graphql/current-device.query';
@@ -104,6 +106,10 @@ class MainNavigator extends Component {
           pushManager={pushManager}
           auth={auth}
           device={device}
+        />
+        <BugSnagUserHandler
+          auth={auth}
+          bugsnag={bugsnag}
         />
         <MainTabNavigator screenProps={{ modalNavigation: this.props.navigation }} />
       </View>
