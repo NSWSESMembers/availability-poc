@@ -7,14 +7,20 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
+import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
 import { CircularProgress } from 'material-ui/Progress';
 import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
+import { FormControl } from 'material-ui/Form';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
+import Search from 'material-ui-icons/Search';
+
+import Alert from '../../../components/Alerts/Alert';
 
 import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
 
@@ -35,13 +41,19 @@ const columnData = [
 class ViewSchedules extends React.Component {
   state = {
     groupId: '',
+    name: '',
     order: 'asc',
     orderBy: 'name',
   };
 
   onGroupChange = (e) => {
     const groupId = e.target.value;
-    this.setState(() => ({ groupId }));
+    this.setState({ groupId });
+  };
+
+  onNameChange = (e) => {
+    const name = e.target.value;
+    this.setState({ name });
   };
 
   handleRequestSort = (event, property) => {
@@ -57,16 +69,23 @@ class ViewSchedules extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { groupId, order, orderBy } = this.state;
+    const { groupId, name, order, orderBy } = this.state;
 
     if (this.props.loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
-    const filteredItems = filterSchedules(this.props.user.schedules, { groupId, order, orderBy });
+    const filteredItems = filterSchedules(this.props.user.schedules, {
+      groupId,
+      name,
+      order,
+      orderBy,
+    });
+
     return (
       <div className={classes.root}>
         <div className={classes.actionPanel}>
+          <Typography variant="title">Availability Requests</Typography>
           <div>
             <Button
               variant="raised"
@@ -81,47 +100,74 @@ class ViewSchedules extends React.Component {
         </div>
         <Paper className={classes.paper}>
           <Toolbar className={classes.tableToolbar}>
-            <Typography variant="title">Requests</Typography>
-            <div>
-              <Select value={this.state.groupId} onChange={this.onGroupChange} required>
-                <MenuItem value="" key={0}>
-                  <em>none</em>
-                </MenuItem>
-                {this.props.user.groups.map(group => (
-                  <MenuItem value={group.id} key={group.id}>
-                    {group.name}
+            <Grid container spacing={16} alignItems="flex-end" direction="row" justify="flex-end">
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="groupFilter">Group</InputLabel>
+                <Select
+                  value={this.state.groupId}
+                  onChange={this.onGroupChange}
+                  required
+                  inputProps={{
+                    id: 'groupFilter',
+                  }}
+                >
+                  <MenuItem value="" key={0}>
+                    <em>none</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </div>
+                  {this.props.user.groups.map(group => (
+                    <MenuItem value={group.id} key={group.id}>
+                      {group.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Input
+                  id="nameFilter"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Search color="disabled" />
+                    </InputAdornment>
+                  }
+                  onChange={this.onNameChange}
+                />
+              </FormControl>
+            </Grid>
           </Toolbar>
-          <Table className={classes.table}>
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={this.handleRequestSort}
-              columnData={columnData}
-            />
-            <TableBody>
-              {filteredItems.map(schedule => (
-                <TableRow key={schedule.id}>
-                  <TableCell>
-                    <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
-                  </TableCell>
-                  <TableCell>{schedule.group}</TableCell>
-                  <TableCell>{schedule.type}</TableCell>
-                  <TableCell>
-                    {schedule.startTime === 0 ? '-' : moment.unix(schedule.startTime).format('LLL')}
-                  </TableCell>
-                  <TableCell>
-                    {schedule.endTime === 2147483647
-                      ? '-'
-                      : moment.unix(schedule.endTime).format('LLL')}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+          {filteredItems.length === 0 ? (
+            <Alert>There are no requests that match this filter.</Alert>
+          ) : (
+            <Table className={classes.table}>
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={this.handleRequestSort}
+                columnData={columnData}
+              />
+              <TableBody>
+                {filteredItems.map(schedule => (
+                  <TableRow key={schedule.id}>
+                    <TableCell>
+                      <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
+                    </TableCell>
+                    <TableCell>{schedule.group}</TableCell>
+                    <TableCell>{schedule.type}</TableCell>
+                    <TableCell>
+                      {schedule.startTime === 0
+                        ? '-'
+                        : moment.unix(schedule.startTime).format('LLL')}
+                    </TableCell>
+                    <TableCell>
+                      {schedule.endTime === 2147483647
+                        ? '-'
+                        : moment.unix(schedule.endTime).format('LLL')}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </Paper>
       </div>
     );
