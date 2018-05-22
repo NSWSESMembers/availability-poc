@@ -5,6 +5,7 @@ const SCHEDULE_QUERY = gql`
     schedule(id: $id) {
       id
       name
+      details
       group {
         id
         name

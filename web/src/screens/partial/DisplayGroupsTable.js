@@ -8,13 +8,11 @@ import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Ta
 import Chip from 'material-ui/Chip';
 
 const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, searchFilter }) => {
-  const displayLocationTags = tag => (
-    tag.type === 'orgStructure' && <span key={tag.name}>{tag.name} </span>
-  );
+  const displayLocationTags = tag =>
+    tag.type === 'orgStructure' && <span key={tag.name}>{tag.name} </span>;
 
-  const displayCapabilityTags = tag => (
-    tag.type === 'capability' && <Chip key={tag.name} label={tag.name} className={classes.chip} />
-  );
+  const displayCapabilityTags = tag =>
+    tag.type === 'capability' && <Chip key={tag.name} label={tag.name} className={classes.chip} />;
 
   return (
     <Table className={classes.table}>
@@ -30,10 +28,15 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
       </TableHead>
       <TableBody>
         {groups.map((group) => {
-          const hasFilterLocation = _.some(group.tags, tag => (tag.type === 'orgStructure' && tag.name === locationFilter));
-          const hasFilterCapability = _.some(group.tags, tag => (tag.type === 'capability' && tag.name === capabilityFilter));
-          const hasSearchFilter =
-            ((group.name).toLowerCase()).startsWith((searchFilter).toLowerCase());
+          const hasFilterLocation = _.some(
+            group.tags,
+            tag => tag.type === 'orgStructure' && tag.name === locationFilter,
+          );
+          const hasFilterCapability = _.some(
+            group.tags,
+            tag => tag.type === 'capability' && tag.name === capabilityFilter,
+          );
+          const hasSearchFilter = group.name.toLowerCase().startsWith(searchFilter.toLowerCase());
 
           if (
             (hasFilterLocation || locationFilter === '') &&
@@ -45,20 +48,12 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
                 <TableCell>
                   <Link to={`/groups/${group.id}`}>{group.name}</Link>
                 </TableCell>
+                <TableCell>{group.tags.map(tag => displayLocationTags(tag))}</TableCell>
                 <TableCell>
-                  {group.tags.map(tag => displayLocationTags(tag))}
+                  <div>{group.tags.map(tag => displayCapabilityTags(tag))}</div>
                 </TableCell>
-                <TableCell>
-                  <div>
-                    {group.tags.map(tag => displayCapabilityTags(tag))}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {moment.unix(group.updatedAt).format('LLL')}
-                </TableCell>
-                <TableCell>
-                  {moment.unix(group.createdAt).format('LLL')}
-                </TableCell>
+                <TableCell>{moment.unix(group.updatedAt).format('LLL')}</TableCell>
+                <TableCell>{moment.unix(group.createdAt).format('LLL')}</TableCell>
               </TableRow>
             );
           }
@@ -88,6 +83,7 @@ DisplayRequests.propTypes = {
   ),
   locationFilter: PropTypes.string.isRequired,
   capabilityFilter: PropTypes.string.isRequired,
+  searchFilter: PropTypes.string.isRequired,
 };
 
 export default DisplayRequests;

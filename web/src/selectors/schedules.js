@@ -1,7 +1,10 @@
-export default (schedules, { groupId, order, orderBy }) => {
+export default (schedules, { groupId, name, order, orderBy }) => {
   const filteredItems = [];
   schedules.forEach((schedule) => {
-    if (groupId === '' || groupId === schedule.group.id) {
+    if (
+      (groupId === '' || groupId === schedule.group.id) &&
+      (name === '' || schedule.name.toUpperCase().includes(name.toUpperCase()))
+    ) {
       filteredItems.push({
         id: schedule.id,
         name: schedule.name,

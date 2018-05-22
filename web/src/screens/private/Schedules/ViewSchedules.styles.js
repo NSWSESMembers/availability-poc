@@ -4,7 +4,8 @@ export default theme => ({
   },
   actionPanel: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
     marginBottom: 10,
   },
   paper: {
@@ -24,5 +25,10 @@ export default theme => ({
     justifyContent: 'space-between',
     width: '100%',
     minHeight: 40,
+    marginBottom: 10,
+  },
+  formControl: {
+    width: 150,
+    marginLeft: 15,
   },
 });

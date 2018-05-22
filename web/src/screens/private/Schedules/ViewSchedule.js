@@ -129,8 +129,7 @@ class ViewSchedule extends React.Component {
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
-              ex, sit amet blandit leo lobortis eget.
+              {schedule.details}
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -270,6 +269,7 @@ ViewSchedule.propTypes = {
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
+    details: PropTypes.string,
     group: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
