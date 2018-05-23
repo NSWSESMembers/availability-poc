@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import initDummy from './dummy';
 import initAPNS from './apns';
 import initFCM from './fcm';
 
@@ -20,8 +19,6 @@ class PushManager {
   // happen before register is called
   async init() {
     const promises = [];
-
-    this.services.dummy = await initDummy(this);
 
     const apns = await initAPNS(this);
     if (apns !== null) {
