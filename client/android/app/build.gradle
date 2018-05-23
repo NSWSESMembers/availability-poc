@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-app-auth')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-device-info')
     implementation (project(':react-native-maps')){

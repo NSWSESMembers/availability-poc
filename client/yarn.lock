@@ -659,12 +659,6 @@ apollo-cache@^1.1.8:
   dependencies:
     apollo-utilities "^1.0.12"
 
-apollo-cache@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.9.tgz#90426f25c43bc66ae02808af01194d78fd15ea40"
-  dependencies:
-    apollo-utilities "^1.0.13"
-
 apollo-client@^1.4.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-1.9.3.tgz#37000b3c801f4571b7b089739e696a158896aeab"
@@ -680,14 +674,14 @@ apollo-client@^1.4.0:
     "@types/graphql" "0.10.2"
 
 apollo-client@^2.3.1:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.3.2.tgz#0c4c06eba0aedc63d2d988f247a9310cb2152c2e"
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.3.1.tgz#64b204779b7e8b21f901529527a9a9c973eb7fd4"
   dependencies:
     "@types/zen-observable" "^0.5.3"
-    apollo-cache "^1.1.9"
+    apollo-cache "^1.1.8"
     apollo-link "^1.0.0"
     apollo-link-dedup "^1.0.0"
-    apollo-utilities "^1.0.13"
+    apollo-utilities "^1.0.12"
     symbol-observable "^1.0.2"
     zen-observable "^0.8.0"
   optionalDependencies:
@@ -743,10 +737,6 @@ apollo-link@^1.0.0, apollo-link@^1.2.2:
 apollo-utilities@^1.0.0, apollo-utilities@^1.0.12:
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.12.tgz#9e2b2a34cf89f3bf0d73a664effd8c1bb5d1b7f7"
-
-apollo-utilities@^1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.13.tgz#793c858bb42243f7254d3c2961c64a7158e51022"
 
 apollo-utilities@^1.0.15:
   version "1.0.15"
@@ -5799,6 +5789,10 @@ react-native-animatable@^1.2.3:
   resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.2.4.tgz#b5fb7657e8f6edadbc26697057a327fb920b3039"
   dependencies:
     prop-types "^15.5.10"
+
+react-native-app-auth@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-app-auth/-/react-native-app-auth-2.4.1.tgz#80d38b9d2fcae67a5184d2fa4e7a3bc64a1b6507"
 
 react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"

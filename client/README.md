@@ -23,6 +23,9 @@ It uses:
   on Android via [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM)
 * [React Native PushNotificationIOS](https://facebook.github.io/react-native/docs/pushnotificationios.html)
   for push notifications on Android via Apple Push Notification Service.
+* [react-native-app-auth](ttps://github.com/FormidableLabs/react-native-app-auth)
+  to do system-native OAuth. On iOS it asks the user for permission to use
+  secrets from Safari.
 
 
 ## Install
@@ -48,6 +51,10 @@ Install dependencies:
 ```sh
 yarn
 ```
+
+For iOS you'll need to install
+[CocoaPods](https://guides.cocoapods.org/using/getting-started.html) and run
+`pod install` in the `client/ios` directory.
 
 If this doesn't work or something is missing you may want to check the React
 Native guide for **Building Projects with Native Code**

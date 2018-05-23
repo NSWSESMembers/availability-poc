@@ -22,6 +22,13 @@
 	<string>0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.sdunster.callout</string>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>5</string>
 	<key>CodePushDeploymentKey</key>
