@@ -3,6 +3,7 @@ package com.callout;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNAppAuthPackage;
 import com.bugsnag.BugsnagReactNative;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNAppAuthPackage(),
             BugsnagReactNative.getPackage(),
             new RNDeviceInfo(),
             new MapsPackage(),

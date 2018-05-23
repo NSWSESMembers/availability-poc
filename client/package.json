@@ -37,6 +37,7 @@
     "react-apollo": "^1.4.16",
     "react-native": "0.55.3",
     "react-native-alphabetlistview": "^0.2.0",
+    "react-native-app-auth": "^2.4.1",
     "react-native-check-box": "^2.1.0",
     "react-native-code-push": "^5.2.0-beta",
     "react-native-device-info": "^0.21.5",
