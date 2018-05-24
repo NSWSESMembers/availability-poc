@@ -2,6 +2,14 @@ export default theme => ({
   root: {
     margin: 30,
   },
+  formControl: {
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  bottomNav: {
+    marginTop: 16,
+    marginBottom: 16,
+  },
 
   // We had to use a lot of global selectors in order to style react-select.
   // We are waiting on https://github.com/JedWatson/react-select/issues/1679
