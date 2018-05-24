@@ -45,6 +45,7 @@ export const TAGS = makeTags({
     'AUB',
     'HAW',
     'HOL',
+    'SSR',
   ],
   capability: [
     'Storm and Water Damage - Ground',
