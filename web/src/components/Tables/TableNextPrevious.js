@@ -5,8 +5,8 @@ import { withStyles } from 'material-ui/styles';
 import styles from './TableNextPrevious.styles';
 
 const TableNextPrevious = ({ classes, children, hasNext, hasPrevious, pressNext, pressPrevious }) =>
-  hasNext &&
-  hasPrevious && (
+  (hasNext ||
+  hasPrevious) && (
     <div className={classes.navPanel}>
       <div>{hasPrevious && <button onClick={pressPrevious}>Previous</button>}</div>
       <div>{children}</div>

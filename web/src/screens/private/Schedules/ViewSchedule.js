@@ -142,6 +142,9 @@ class ViewSchedule extends React.Component {
     const columnData = dateColumns(moment.unix(this.state.startTimeRange),
       moment.unix(this.state.endTimeRange));
 
+    const scheduleStart = moment.unix(schedule.startTime).startOf('day').unix();
+    const scheduleEnd = moment.unix(schedule.endTime).startOf('day').unix();
+
     return (
       <div className={classes.root}>
         <ExpansionPanel>
@@ -156,8 +159,8 @@ class ViewSchedule extends React.Component {
         </ExpansionPanel>
         <Paper className={classes.rootPaper}>
           <TableNextPrevious
-            hasNext={schedule.endTime > this.state.endTimeRange}
-            hasPrevious={schedule.startTime < this.state.startTimeRange}
+            hasNext={scheduleEnd > this.state.endTimeRange}
+            hasPrevious={scheduleStart < this.state.startTimeRange}
             pressNext={this.onNextDateRange}
             pressPrevious={this.onPreviousDateRange}
           />
@@ -173,8 +176,8 @@ class ViewSchedule extends React.Component {
                     );
                   }
                   if (
-                    column.startTime < schedule.startTime ||
-                    column.startTime > schedule.endTime
+                    column.startTime < scheduleStart ||
+                    column.startTime > scheduleEnd
                   ) {
                     return (
                       <TableCell key={column.id} className={classes.tableCellHeaderDisabled} />
@@ -232,8 +235,8 @@ class ViewSchedule extends React.Component {
                         </TableCell>
                       );
                     }
-                    return column.startTime >= schedule.startTime &&
-                      column.startTime <= schedule.endTime ? (
+                    return column.startTime >= scheduleStart &&
+                      column.startTime <= scheduleEnd ? (
                         <TableCell
                           key={column.id}
                           className={classes.tableCellHeader}
@@ -280,8 +283,8 @@ class ViewSchedule extends React.Component {
                         </TableCell>
                       );
                     }
-                    return column.startTime >= schedule.startTime &&
-                      column.startTime <= schedule.endTime ? (
+                    return column.startTime >= scheduleStart &&
+                      column.startTime <= scheduleEnd ? (
                         <ViewScheduleItem
                           key={`vsi-${user.id}-${column.startTime}`}
                           user={user}
