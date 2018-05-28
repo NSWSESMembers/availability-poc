@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
@@ -21,9 +21,10 @@ import Colors from '../../themes/Colors';
 
 import { Button, ButtonNavBar } from '../../components/Button';
 import { Center, Container, Holder } from '../../components/Container';
-import { DateRange, TimeSelect } from '../../components/DateTime';
+import { DateRange, TimePicker, TimeSelect } from '../../components/DateTime';
+import { Modal } from '../../components/Modal';
 import { Progress } from '../../components/Progress';
-import { Message } from '../../components/Text';
+import { Message, Text } from '../../components/Text';
 
 const defaultSegmentState = [
   { startTime: 0, endTime: 86400, label: 'All Day', status: '' },
@@ -42,6 +43,9 @@ class Detail extends Component {
     selectedDays: [],
     selectionSegments: defaultSegmentState,
     showInfo: false,
+    modalVisible: false,
+    modalStartTime: 0,
+    modalEndTime: 0,
   };
 
   componentDidMount() {
@@ -49,6 +53,18 @@ class Detail extends Component {
       handleThis: this.onShowInfo,
     });
   }
+
+  onCloseModal = () => {
+    this.setState({ modalVisible: false });
+  };
+
+  onModalStartChange = (value) => {
+    this.setState({ modalStartTime: parseInt(value, 10) });
+  };
+
+  onModalEndChange = (value) => {
+    this.setState({ modalEndTime: parseInt(value, 10) });
+  };
 
   onPressEdit = () => {
     const schedule = this.getSchedule();
@@ -81,6 +97,23 @@ class Detail extends Component {
 
   onPressInfo = () => {
     this.setState({ showInfo: !this.state.showInfo });
+  };
+
+  onPressNewSegment = () => {
+    this.setState({ modalVisible: true });
+  };
+
+  onPressSaveTimeSegment = () => {
+    const updatedSegments = this.state.selectionSegments;
+
+    updatedSegments.push({
+      startTime: this.state.modalStartTime,
+      endTime: this.state.modalEndTime,
+      label: 'Custom',
+      status: '',
+    });
+
+    this.setState({ selectionSegments: updatedSegments, modalVisible: false });
   };
 
   onPressSegment = (updateSegment) => {
@@ -130,6 +163,24 @@ class Detail extends Component {
             }
 
             return selectionSegment;
+          });
+
+          // Are any not part of the default stack of segments?
+          segments.forEach((segment) => {
+            const select = this.state.selectionSegments.filter(
+              selectionSegment =>
+                selectionSegment.startTime + day === segment.startTime &&
+                selectionSegment.endTime + day === segment.endTime,
+            );
+
+            if (select.length === 0) {
+              updatedSegments.push({
+                startTime: segment.startTime - day,
+                endTime: segment.endTime - day,
+                label: 'Custom',
+                status: segment.status,
+              });
+            }
           });
 
           this.setState({ selectedDays: newArray, selectionSegments: updatedSegments });
@@ -233,6 +284,46 @@ class Detail extends Component {
 
     return (
       <Container>
+        <Modal visible={this.state.modalVisible} closeModal={this.onCloseModal}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text type="h1">New Custom Time</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
+              <View style={{ flex: 0.3 }}>
+                <Text>Start Hour</Text>
+              </View>
+              <View style={{ flex: 0.7 }}>
+                <TimePicker
+                  onValueChange={this.onModalStartChange}
+                  selectedValue={this.state.modalStartTime}
+                />
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
+              <View style={{ flex: 0.3 }}>
+                <Text>End Hour</Text>
+              </View>
+              <View style={{ flex: 0.7 }}>
+                <TimePicker
+                  onValueChange={this.onModalEndChange}
+                  selectedValue={this.state.modalEndTime}
+                />
+              </View>
+            </View>
+          </View>
+          <Holder marginTop transparent>
+            <Button
+              text="Save Time Segment"
+              onPress={this.onPressSaveTimeSegment}
+              disabled={this.state.modalStartTime >= this.state.modalEndTime}
+            />
+          </Holder>
+        </Modal>
         <ScrollView>
           {schedule.startTime > 0 && (
             <View>
@@ -271,6 +362,7 @@ class Detail extends Component {
                 <TimeSelect
                   selectionSegments={this.state.selectionSegments}
                   onPress={this.onPressSegment}
+                  onPressNewSegment={this.onPressNewSegment}
                 />
               </Holder>
               <Holder marginTop paddingVertical>

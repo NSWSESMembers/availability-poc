@@ -10,6 +10,7 @@ import Dashboard from '../screens/private/Dashboard';
 
 import ViewSchedules from '../screens/private/Schedules/ViewSchedules';
 import ViewSchedule from '../screens/private/Schedules/ViewSchedule';
+import ViewScheduleDay from '../screens/private/Schedules/ViewScheduleDay';
 import AddSchedule from '../screens/private/Schedules/AddSchedule';
 
 import ViewEvents from '../screens/private/Events/ViewEvents';
@@ -36,6 +37,7 @@ const AppRouter = () => (
         <PrivateRoute path="/groups/edit" component={EditGroup} />
         <PrivateRoute path="/schedules" component={ViewSchedules} exact />
         <PrivateRoute path="/schedules/add" component={AddSchedule} exact />
+        <PrivateRoute path="/schedules/:id/:time" component={ViewScheduleDay} />
         <PrivateRoute path="/schedules/:id" component={ViewSchedule} />
         <PrivateRoute path="/events" component={ViewEvents} exact />
         <PrivateRoute path="/events/edit" component={EditEvent} exact />

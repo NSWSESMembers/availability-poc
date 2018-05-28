@@ -1,5 +1,5 @@
 const Colors = {
-  txtMain: '#000',
+  txtMain: '#1e3c78',
   txtDark: '#6B6B6B',
   txtWhite: '#ffffff',
   txtError: '#FF5A5F',

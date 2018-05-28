@@ -6,19 +6,15 @@ import Modal from '../Modal';
 
 const noop = () => {};
 
-const child = (
-  <Text>child</Text>
-);
+const child = <Text>child</Text>;
 
 test('renders correctly', () => {
-  const tree1 = renderer.create(
-    <Modal
-      title="test"
-      closeModal={noop}
-      visible
-    >
-      {child}
-    </Modal>,
-  ).toJSON();
+  const tree1 = renderer
+    .create(
+      <Modal closeModal={noop} visible>
+        {child}
+      </Modal>,
+    )
+    .toJSON();
   expect(tree1).toMatchSnapshot();
 });

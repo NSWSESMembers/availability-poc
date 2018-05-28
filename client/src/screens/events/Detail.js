@@ -8,24 +8,15 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { extendAppStyleSheet } from '../style-sheet';
+import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
-import { Container, Holder } from '../../components/Container';
+import { Container, Holder, Center } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { ButtonNavBar } from '../../components/Button';
 import MapDelta from '../../selectors/MapDelta';
-
-const styles = extendAppStyleSheet({
-  map: {
-    backgroundColor: '#f9f9f9',
-    flexGrow: 1,
-    zIndex: -1,
-    ...StyleSheet.absoluteFillObject,
-  },
-});
 
 const screen = Dimensions.get('window');
 
@@ -80,6 +71,24 @@ class Detail extends Component {
     return mapMarkers;
   }
 
+  static getDerivedStateFromProps(newProps) {
+    // catch incoming props and generate the marker states
+    const { event, loading, auth } = newProps;
+    let responseMarkers = {};
+    let eventMarkers = {};
+    if (!loading && event) {
+      responseMarkers = Detail.makeResponseMarkers(
+        auth.id, event.responses,
+      );
+      eventMarkers = Detail.makeEventLocations(event.eventLocations);
+      return {
+        responseMarkers,
+        eventMarkers,
+      };
+    }
+    return null;
+  }
+
   state = {
     myPosition: null,
     eventMarkers: null,
@@ -90,7 +99,7 @@ class Detail extends Component {
     this.props.navigation.setParams({
       handleThis: this.mapZoomMe,
     });
-    this.refreshTimer = setInterval(this.onRefresh, 5000); // 5s
+    this.refetchTimer = setInterval(this.onRefresh, 5000);
     this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
       this.androidLocationPermission().then((answer) => {
@@ -103,28 +112,13 @@ class Detail extends Component {
     }
   }
 
-
-  componentWillReceiveProps(newProps) {
-    // catch incoming props and generate the marker states
-    const { event, loading, auth } = newProps;
-    if (!loading && event) {
-      this.setState({
-        responseMarkers: Detail.makeResponseMarkers(
-          auth.id, event.responses,
-        ),
-      });
-      this.setState({
-        eventMarkers: Detail.makeEventLocations(event.eventLocations),
-      });
-    }
-  }
-
   componentDidUpdate() {
     this.watchLocation();
   }
 
   componentWillUnmount() {
-    clearInterval(this.refreshTimer);
+    clearInterval(this.refetchTimer);
+    clearInterval(this.locationTimeoutTimer);
     if (this.geoWatch !== null) {
       navigator.geolocation.clearWatch(this.geoWatch);
       this.geoWatch = null;
@@ -183,8 +177,8 @@ class Detail extends Component {
     } else {
       mergedpoints = this.state.eventMarkers;
     }
-    // Zoom to the user and events if possible, otherwise start around events
 
+    // Zoom to the user and events if possible, otherwise start around events
     this.zoomMap(mergedpoints);
   }
 
@@ -308,9 +302,9 @@ class Detail extends Component {
 
     if (!event) {
       return (
-        <Container>
-          <Text style={styles.warning}>Unable to load event.</Text>
-        </Container>
+        <Center>
+          <Text>Unable to load event, or event no longer exists</Text>
+        </Center>
       );
     }
 

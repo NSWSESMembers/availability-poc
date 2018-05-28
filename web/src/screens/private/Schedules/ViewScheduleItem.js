@@ -12,7 +12,7 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
   const currentSegments = timeSegments.filter(
     timeSegment =>
       timeSegment.startTime >= startTime &&
-      timeSegment.endTime < endTime &&
+      timeSegment.endTime <= endTime &&
       timeSegment.user.id === user.id,
   );
 

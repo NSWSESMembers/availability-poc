@@ -12,11 +12,8 @@ const testData = {
 };
 
 test('renders correctly', () => {
-  const tree = renderer.create(
-    <TimeSelect
-      selectionSegments={[testData]}
-      onPress={noop}
-    />,
-  ).toJSON();
+  const tree = renderer
+    .create(<TimeSelect selectionSegments={[testData]} onPress={noop} onPressNewSegment={noop} />)
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

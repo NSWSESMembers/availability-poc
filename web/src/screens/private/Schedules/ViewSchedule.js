@@ -20,7 +20,7 @@ import Paper from 'material-ui/Paper';
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
 
 import { peopleCount, searchTimeSegments } from '../../../selectors/timeSegments';
-import dates from '../../../selectors/dates';
+import { dateColumns, dateScheduleLabel } from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
 import {
@@ -32,11 +32,15 @@ import {
 import TimeCountLabel from './TimeCountLabel';
 import ViewScheduleItem from './ViewScheduleItem';
 import TimeModal from '../../../components/Modals/TimeModal';
+import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 
 import styles from './ViewSchedule.styles';
 
 class ViewSchedule extends React.Component {
   state = {
+    startTimeRange: moment().isoWeekday(1).startOf('week').unix(),
+    endTimeRange: moment().isoWeekday(1).startOf('week').add(7, 'days')
+      .unix(),
     modalOpen: false,
     modalStatus: '',
     modalStartTime: 0,
@@ -49,13 +53,12 @@ class ViewSchedule extends React.Component {
 
   onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
     // find existing segments
-    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments,
-      {
-        status: modalStatus,
-        startTime: modalStartTime,
-        endTime: modalEndTime,
-        userId: modalUser.id,
-      });
+    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments, {
+      status: modalStatus,
+      startTime: modalStartTime,
+      endTime: modalEndTime,
+      userId: modalUser.id,
+    });
 
     let modalTimeSegmentId = 0;
     let modalTimeSegmentStartTime = 0;
@@ -112,31 +115,55 @@ class ViewSchedule extends React.Component {
 
     this.setState({ modalOpen: false });
   };
+  onNextDateRange = () => {
+    const nextStartTimeRange = moment.unix(this.state.startTimeRange).add(7, 'days').unix();
+    const nextEndTimeRange = moment.unix(this.state.endTimeRange).add(7, 'days').unix();
+
+    this.setState({
+      startTimeRange: nextStartTimeRange,
+      endTimeRange: nextEndTimeRange,
+    });
+  };
+  onPreviousDateRange = () => {
+    const previousStartTimeRange = moment.unix(this.state.startTimeRange).add(-7, 'days').unix();
+    const previousEndTimeRange = moment.unix(this.state.endTimeRange).add(-7, 'days').unix();
+
+    this.setState({
+      startTimeRange: previousStartTimeRange,
+      endTimeRange: previousEndTimeRange,
+    });
+  };
   render() {
     const { classes, loading, schedule } = this.props;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
-    const columnData = dates();
+    const columnData = dateColumns(moment.unix(this.state.startTimeRange),
+      moment.unix(this.state.endTimeRange));
+
+    const scheduleStart = moment.unix(schedule.startTime).startOf('day').unix();
+    const scheduleEnd = moment.unix(schedule.endTime).startOf('day').unix();
 
     return (
       <div className={classes.root}>
         <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="title" className={classes.paperTitle}>
-              {schedule.name} - ({schedule.group.name})
+            <Typography variant="title" className={classes.paperTitle} gutterBottom>
+              {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
-              ex, sit amet blandit leo lobortis eget.
-            </Typography>
+            <Typography>{schedule.details}</Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-
         <Paper className={classes.rootPaper}>
+          <TableNextPrevious
+            hasNext={scheduleEnd > this.state.endTimeRange}
+            hasPrevious={scheduleStart < this.state.startTimeRange}
+            pressNext={this.onNextDateRange}
+            pressPrevious={this.onPreviousDateRange}
+          />
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
@@ -146,6 +173,14 @@ class ViewSchedule extends React.Component {
                       <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
                         Totals
                       </TableCell>
+                    );
+                  }
+                  if (
+                    column.startTime < scheduleStart ||
+                    column.startTime > scheduleEnd
+                  ) {
+                    return (
+                      <TableCell key={column.id} className={classes.tableCellHeaderDisabled} />
                     );
                   }
                   const amountAvailable = peopleCount(schedule.timeSegments, {
@@ -192,16 +227,35 @@ class ViewSchedule extends React.Component {
               </TableRow>
               <TableRow>
                 {columnData.map(
-                  column =>
-                    (column.id === 'name' ? (
-                      <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
-                        {column.label}
-                      </TableCell>
+                  (column) => {
+                    if (column.id === 'name') {
+                      return (
+                        <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
+                          {column.label}
+                        </TableCell>
+                      );
+                    }
+                    return column.startTime >= scheduleStart &&
+                      column.startTime <= scheduleEnd ? (
+                        <TableCell
+                          key={column.id}
+                          className={classes.tableCellHeader}
+                          style={{ paddingRight: 0 }}
+                        >
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Link to={`/schedules/${schedule.id}/${column.startTime}`}>{column.label}</Link>
+                          </div>
+                        </TableCell>
                     ) : (
                       <TableCell
-                        key={column.id}
-                        className={classes.tableCellHeader}
-                        style={{ paddingRight: 0 }}
+                        key={`vsi-${column.startTime}`}
+                        className={classes.tableCellHeaderDisabled}
                       >
                         <div
                           style={{
@@ -210,25 +264,27 @@ class ViewSchedule extends React.Component {
                             justifyContent: 'center',
                           }}
                         >
-                          <Link to="/dashboard">{column.label}</Link>
+                          {column.label}
                         </div>
                       </TableCell>
-                    )),
+                    );
+                  },
                 )}
               </TableRow>
             </TableHead>
             <TableBody>
               {schedule.group.users.map(user => (
                 <TableRow key={user.id}>
-                  {columnData.map(
-                    column =>
-                      (column.id === 'name' ? (
+                  {columnData.map((column) => {
+                    if (column.id === 'name') {
+                      return (
                         <TableCell key={user.id} className={classes.tableCellFirst}>
-                          <Link to="/dashboard">
-                            {user.displayName}
-                          </Link>
+                          <Link to="/dashboard">{user.displayName}</Link>
                         </TableCell>
-                      ) : (
+                      );
+                    }
+                    return column.startTime >= scheduleStart &&
+                      column.startTime <= scheduleEnd ? (
                         <ViewScheduleItem
                           key={`vsi-${user.id}-${column.startTime}`}
                           user={user}
@@ -237,8 +293,13 @@ class ViewSchedule extends React.Component {
                           onOpenModal={this.onOpenModal}
                           timeSegments={schedule.timeSegments}
                         />
-                      )),
-                  )}
+                    ) : (
+                      <TableCell
+                        key={`vsi-${user.id}-${column.startTime}`}
+                        className={classes.tableCellDisabled}
+                      />
+                    );
+                  })}
                 </TableRow>
               ))}
             </TableBody>
@@ -273,6 +334,7 @@ ViewSchedule.propTypes = {
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
+    details: PropTypes.string,
     group: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,

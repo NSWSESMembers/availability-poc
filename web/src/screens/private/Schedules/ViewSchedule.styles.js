@@ -17,6 +17,14 @@ export default theme => ({
     borderStyle: 'solid',
     padding: 0,
   },
+  tableCellHeaderDisabled: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    padding: 0,
+    backgroundColor: '#CCC',
+    color: 'white',
+  },
   tableCellHeaderFirst: {
     border: 1,
     borderColor: '#E0E0E0',
@@ -26,6 +34,12 @@ export default theme => ({
     border: 1,
     borderColor: '#E0E0E0',
     borderStyle: 'solid',
+  },
+  tableCellDisabled: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    backgroundColor: '#CCC',
   },
   paperTitle: {},
   toolbar: {

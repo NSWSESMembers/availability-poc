@@ -12,6 +12,11 @@ const styles = StyleSheet.create({
     color: Colors.txtWhite,
     textAlign: 'center',
   },
+  textStyleDisabled: {
+    fontSize: 20,
+    color: Colors.txtDark,
+    textAlign: 'center',
+  },
   textStyleBox: {
     textAlign: 'center',
     fontWeight: 'bold',
@@ -30,6 +35,11 @@ const styles = StyleSheet.create({
   buttonStyleSecondary: {
     padding: 10,
     backgroundColor: Colors.bgBtnSecondary,
+    width: '100%',
+  },
+  buttonStyleDisabled: {
+    padding: 10,
+    backgroundColor: Colors.bgDisabled,
     width: '100%',
   },
   buttonStyleBox: {

@@ -121,6 +121,9 @@ class BurgerScreen extends Component {
   crashReport = () => {
     if (bugsnag) {
       bugsnag.notify(new Error('Test error'));
+      Alert.alert('Sent', 'Test bug report sent');
+    } else {
+      Alert.alert('Bugsnag isnt loaded', 'Cant sent test bug report without bugsnag. You are probably in dev mode.');
     }
   };
 

@@ -386,7 +386,7 @@ exports[`renders correctly 2`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "backgroundColor": "#f48603",
+          "backgroundColor": "#D3D3D3",
           "opacity": 1,
           "padding": 10,
           "width": "100%",
@@ -402,7 +402,7 @@ exports[`renders correctly 2`] = `
         style={
           Array [
             Object {
-              "color": "#ffffff",
+              "color": "#6B6B6B",
               "fontSize": 20,
               "textAlign": "center",
             },

@@ -1,12 +1,16 @@
 import React from 'react';
 import { AsyncStorage, Alert } from 'react-native';
 import { Client as BugSnagClient } from 'bugsnag-react-native';
+import ApolloClient from 'apollo-client';
+import { HttpLink } from 'apollo-link-http';
+import { ApolloLink } from 'apollo-link';
+
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { onError } from 'apollo-link-error';
 
 import { ApolloProvider } from 'react-apollo';
-import { createStore, applyMiddleware, compose } from 'redux';
-import ApolloClient, { createNetworkInterface } from 'apollo-client';
+import { createStore } from 'redux';
 import { persistStore, persistCombineReducers } from 'redux-persist';
-import thunk from 'redux-thunk';
 import _ from 'lodash';
 import { RootNavigator } from './navigation';
 import auth from './state/auth.reducer';
@@ -24,28 +28,58 @@ if (!__DEV__) {
 }
 
 console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
-const networkInterface = createNetworkInterface({ uri: GRAPHQL_ENDPOINT });
+
 let store;
 
 export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
 export const pushManager = new PushManager();
 
-// middleware for requests
-networkInterface.use([
-  {
-    applyMiddleware(req, next) {
-      if (!req.options.headers) {
-        req.options.headers = {};
-      }
-      // get the authentication token from local storage if it exists
-      const { token } = store.getState().auth;
-      if (token) {
-        req.options.headers.authorization = `Bearer ${token}`;
-      }
-      next();
-    },
-  },
-]);
+const httpLink = new HttpLink({ uri: GRAPHQL_ENDPOINT });
+
+// replaces networkInterface.use(applyMiddleware...)
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  if (store.getState().auth.token) {
+    operation.setContext({
+      headers: {
+        authorization: store.getState().auth.token ? `Bearer ${store.getState().auth.token}` : null,
+      },
+    });
+  }
+
+  return forward(operation);
+});
+
+
+// logger
+const LoggerLink = new ApolloLink((operation, forward) => {
+  if (__DEV__) console.log(`[GraphQL Logger] ${operation.operationName}`);
+  return forward(operation).map((result) => {
+    if (__DEV__) {
+      console.log(
+        `[GraphQL Logger] received result from ${operation.operationName}`,
+      );
+    }
+    return result;
+  });
+});
+
+// error - use your error lib here
+const ErrorLink = onError(({ response, operation, graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL Error] Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ));
+  }
+  if (operation.operationName === 'IgnoreErrorsQuery') {
+    response.errors = null;
+  }
+  if (networkError) {
+    console.log(`[Network error] ${networkError}`);
+  }
+});
+
 
 // avoid spamming the user by suppressing alerts for 1s after the first one
 const warnLogout = _.debounce(() => {
@@ -57,45 +91,19 @@ const warnLogout = _.debounce(() => {
   );
 }, 1000);
 
-// afterware for responses
-networkInterface.useAfter([
-  {
-    applyAfterware({ response }, next) {
-      if (!response.ok) {
-        response
-          .clone()
-          .text()
-          .then((bodyText) => {
-            console.log(`Network Error: ${response.status} (${response.statusText}) - ${bodyText}`);
-            next();
-          });
-      } else {
-        let isUnauthorized = false;
-        response
-          .clone()
-          .json()
-          .then(({ errors }) => {
-            if (errors) {
-              console.log('GraphQL Errors:', errors);
-              if (_.some(errors, e => e.message.startsWith('Unauthorized'))) {
-                isUnauthorized = true;
-              }
-            }
-          })
-          .then(() => {
-            if (isUnauthorized) {
-              warnLogout();
-              store.dispatch(logout());
-            }
-            next();
-          });
-      }
-    },
-  },
-]);
+// Hack to get around known issue with networkError not having network header errors
+// https://github.com/apollographql/apollo-link/issues/300
+const logoutLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors && graphQLErrors[0].message.includes('Unauthorized')) {
+    store.dispatch(logout());
+    return warnLogout();
+  }
+  return null;
+});
 
 export const client = new ApolloClient({
-  networkInterface,
+  link: ApolloLink.from([ErrorLink, LoggerLink, logoutLink, authMiddleware, httpLink]),
+  cache: new InMemoryCache(),
 });
 
 const reduxConfig = {
@@ -106,15 +114,12 @@ const reduxConfig = {
 };
 
 const reducers = {
-  apollo: client.reducer(),
   auth,
   local,
 };
 
 store = createStore(
   persistCombineReducers(reduxConfig, reducers),
-  {}, // initial state
-  compose(applyMiddleware(client.middleware(), thunk)),
 );
 
 // persistent storage

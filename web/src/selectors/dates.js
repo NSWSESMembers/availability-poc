@@ -1,8 +1,39 @@
 import moment from 'moment';
+import numbers from '../constants';
 
-export default () => {
+export const dateColumns = (startTime, endTime) => {
   const columnData = [{ id: 'name', label: 'Name' }];
 
+  const diff = endTime.diff(startTime, 'days');
+
+  for (let i = 1; i <= diff; i += 1) {
+    startTime.add(1, 'days');
+    columnData.push({
+      id: i,
+      label: startTime.format('ddd, MMM D'),
+      startTime: startTime.unix(),
+      endTime: startTime
+        .clone()
+        .add(1, 'days')
+        .unix(),
+    });
+  }
+  return columnData;
+};
+
+export const dateScheduleLabel = (startTime, endTime) => {
+  if (startTime === numbers.distantPast && endTime === numbers.distantFuture) {
+    return 'Ongoing';
+  }
+
+  return `${moment.unix(startTime).format('LL')} - 
+    ${moment.unix(endTime).format('LL')}`;
+};
+
+export const dateRangeLabel = (startTime, endTime) => `${moment.unix(startTime).format('DD MMM')} - 
+    ${moment.unix(endTime).format('DD MMM')}`;
+
+export default () => {
   const begin = moment()
     .isoWeekday(1)
     .startOf('week');
@@ -12,21 +43,5 @@ export default () => {
     .startOf('week')
     .add(7, 'days');
 
-  const diff = end.diff(begin, 'days');
-
-  for (let i = 1; i <= diff; i += 1) {
-    begin.add(1, 'days');
-    columnData.push({
-      id: i,
-      label: begin.format('ddd, MMM D'),
-      startTime: begin.unix(),
-      endTime: begin
-        .clone()
-        .add(1, 'days')
-        .add(-1, 'seconds')
-        .unix(),
-    });
-  }
-
-  return columnData;
+  return dateColumns(begin, end);
 };
