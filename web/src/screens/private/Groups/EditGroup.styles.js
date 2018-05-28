@@ -3,14 +3,26 @@ export default theme => ({
     margin: 30,
   },
   formControl: {
-    marginTop: 16,
-    marginBottom: 8,
+    margin: theme.spacing.unit,
+    width: '100%',
   },
   bottomNav: {
     marginTop: 16,
     marginBottom: 16,
   },
-
+  card: {
+    minWidth: 275,
+  },
+  cardContent: {
+    width: 760,
+  },
+  cardIcon: {},
+  cardTitle: {
+    marginLeft: 10,
+  },
+  cardInputs: {
+    marginLeft: 40,
+  },
   // We had to use a lot of global selectors in order to style react-select.
   // We are waiting on https://github.com/JedWatson/react-select/issues/1679
   // to provide a much better implementation.

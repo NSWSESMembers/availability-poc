@@ -23,7 +23,6 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
           <TableCell>Capabilities</TableCell>
           <TableCell>Date Updated</TableCell>
           <TableCell>Date Created</TableCell>
-          <TableCell>Created By</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -46,7 +45,7 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
             return (
               <TableRow key={group.id}>
                 <TableCell>
-                  <Link to={`/groups/${group.id}`}>{group.name}</Link>
+                  <Link to={`/groups/edit/${group.id}`}>{group.name}</Link>
                 </TableCell>
                 <TableCell>{group.tags.map(tag => displayLocationTags(tag))}</TableCell>
                 <TableCell>
@@ -83,7 +82,6 @@ DisplayRequests.propTypes = {
   ),
   locationFilter: PropTypes.string.isRequired,
   capabilityFilter: PropTypes.string.isRequired,
-  searchFilter: PropTypes.string.isRequired,
 };
 
 export default DisplayRequests;

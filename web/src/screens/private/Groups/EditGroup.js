@@ -5,9 +5,13 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import { NavLink } from 'react-router-dom';
+
 // material ui
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
+import Card, { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
@@ -17,6 +21,8 @@ import IconButton from 'material-ui/IconButton';
 import { FormControl } from 'material-ui/Form';
 import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
+import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
+import { InputLabel } from 'material-ui/Input';
 
 // icons
 import Search from 'material-ui-icons/Search';
@@ -37,6 +43,7 @@ import styles from './EditGroup.styles';
 
 class EditGroup extends React.Component {
   state = {
+    id: 0,
     groupName: '',
     groupLocation: [],
     groupCapabilities: [],
@@ -140,6 +147,104 @@ class EditGroup extends React.Component {
 
     return (
       <div className={classes.root}>
+        <Card className={classes.card}>
+          <CardContent className={classes.cardContent}>
+            <div style={{ display: 'flex' }}>
+              <NavLink to="/groups">
+                <ArrowBackIcon className={classes.cardIcon} />
+              </NavLink>
+              <Typography variant="title" color="inherit" className={classes.cardTitle}>
+                {this.state.id === 0 ? 'Add New' : 'Edit'} Group
+              </Typography>
+            </div>
+            <Stepper activeStep={0} orientation="vertical">
+              <Step>
+                <StepLabel>
+                  Group Details
+                </StepLabel>
+                <StepContent>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="groupId" required>
+                      group
+                    </InputLabel>
+                    <TextField
+                      id="groupName"
+                      className={classes.textField}
+                      value={groupName}
+                      onChange={e => this.handleChange(e, 'groupName')}
+                      margin="normal"
+                    />
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="groupId" required>
+                      Group location / HQ
+                    </InputLabel>
+                    <TextField
+                      // todo: stop this from throwing warnings onSelect
+                      fullWidth
+                      value={groupLocation}
+                      onChange={e => this.handleChange(e, 'groupLocation')}
+                      name="groupLocation"
+                      margin="normal"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      InputProps={{
+                        inputComponent: AutocompleteSelect,
+                        inputProps: {
+                          classes,
+                          name: 'groupLocation',
+                          instanceId: 'groupLocation',
+                          multi: true,
+                          options: allLocations.map(location => (
+                            { value: location.id, label: location.name, type: location.type }
+                          )),
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="groupId" required>
+                      Capabilities needed
+                    </InputLabel>
+                    <TextField
+                      // todo: stop this from throwing warnings onSelect
+                      fullWidth
+                      value={groupCapabilities}
+                      onChange={e => this.handleChange(e, 'groupCapabilities')}
+                      name="groupCapabilities"
+                      margin="normal"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      InputProps={{
+                        inputComponent: AutocompleteSelect,
+                        inputProps: {
+                          classes,
+                          name: 'groupCapabilities',
+                          instanceId: 'groupCapabilities',
+                          multi: true,
+                          options: allCapabilities.map(Capability =>
+                            ({ value: Capability.id, label: Capability.name, type: Capability.type })),
+                        },
+                      }}
+                    />
+                  </FormControl>
+                  <div className={classes.actionsContainer}>
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={() => this.createGroup()}
+                      className={classes.button}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </StepContent>
+              </Step>
+            </Stepper>
+          </CardContent>
+        </Card>
         <Paper className={classes.paper}>
           <Grid
             container
@@ -147,65 +252,7 @@ class EditGroup extends React.Component {
             justify="center"
           >
             <Grid item xs={12} sm={6}>
-              <Toolbar disableGutters>
-                <Typography variant="title">Create new group</Typography>
-              </Toolbar>
               <form className={classes.container} autoComplete="off">
-                <TextField
-                  id="groupName"
-                  label="Group name"
-                  className={classes.textField}
-                  value={groupName}
-                  onChange={e => this.handleChange(e, 'groupName')}
-                  margin="normal"
-                />
-                <TextField
-                  // todo: stop this from throwing warnings onSelect
-                  fullWidth
-                  value={groupLocation}
-                  onChange={e => this.handleChange(e, 'groupLocation')}
-                  name="groupLocation"
-                  margin="normal"
-                  label="Group location / HQ"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    inputComponent: AutocompleteSelect,
-                    inputProps: {
-                      classes,
-                      name: 'groupLocation',
-                      instanceId: 'groupLocation',
-                      multi: true,
-                      options: allLocations.map(location => (
-                        { value: location.id, label: location.name, type: location.type }
-                      )),
-                    },
-                  }}
-                />
-                <TextField
-                  // todo: stop this from throwing warnings onSelect
-                  fullWidth
-                  value={groupCapabilities}
-                  onChange={e => this.handleChange(e, 'groupCapabilities')}
-                  name="groupCapabilities"
-                  margin="normal"
-                  label="Capabilities needed"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    inputComponent: AutocompleteSelect,
-                    inputProps: {
-                      classes,
-                      name: 'groupCapabilities',
-                      instanceId: 'groupCapabilities',
-                      multi: true,
-                      options: allCapabilities.map(Capability =>
-                        ({ value: Capability.id, label: Capability.name, type: Capability.type })),
-                    },
-                  }}
-                />
                 <div className={classes.margin}>
                   <Grid container spacing={8} alignItems="flex-end">
                     <Grid item>

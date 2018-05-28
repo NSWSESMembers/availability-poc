@@ -52,6 +52,7 @@ class ViewEvents extends React.Component {
     return (
       <div className={classes.root}>
         <div className={classes.actionPanel}>
+          <Typography variant="title">Events</Typography>
           <div>
             <Button
               variant="raised"
@@ -65,9 +66,6 @@ class ViewEvents extends React.Component {
           </div>
         </div>
         <Paper className={classes.paper}>
-          <Toolbar className={classes.tableToolbar}>
-            <Typography variant="title">Events</Typography>
-          </Toolbar>
           <Table className={classes.table}>
             <EnhancedTableHead
               order={order}
