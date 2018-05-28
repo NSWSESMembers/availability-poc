@@ -8,11 +8,15 @@ const testDeviceName = 'test device';
 DeviceInfo.getDeviceName = jest.fn(() => testDeviceName);
 
 class MockPushManager {
+  hasAllTokens = false
+  tokens = {}
   // eslint-disable-next-line class-methods-use-this
   async register({ onTokenUpdate }) {
     this.registerPromise = new Promise((resolve) => {
       setTimeout(() => {
-        onTokenUpdate({ test: 'TEST_TOKEN' });
+        this.hasAllTokens = true;
+        this.tokens.test = 'TEST_TOKEN';
+        onTokenUpdate();
         resolve();
       }, 500);
     });

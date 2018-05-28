@@ -22,13 +22,20 @@ class PushManager {
 
     const apns = await initAPNS(this);
     if (apns !== null) {
+      console.log('APNS loaded');
       this.services.apns = apns;
+    } else {
+      console.log('APNS not loaded');
     }
 
     const fcm = await initFCM(this);
     if (fcm !== null) {
+      console.log('FCM loaded');
       this.services.fcm = fcm;
+    } else {
+      console.log('FCM not loaded');
     }
+
 
     _.forEach(this.services, (s) => {
       promises.push(s.init());
@@ -82,9 +89,9 @@ class PushManager {
     });
 
     await Promise.all(promises);
-
-    this.onTokenUpdate(this.tokens);
     this.hasAllTokens = true;
+    console.log('hasAllTokens');
+    this.onTokenUpdate(this.tokens);
   }
 
   // call this to prevent further notifications from being received/processed.
