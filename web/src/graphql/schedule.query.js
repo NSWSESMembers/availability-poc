@@ -6,6 +6,8 @@ const SCHEDULE_QUERY = gql`
       id
       name
       details
+      startTime
+      endTime
       group {
         id
         name
