@@ -23,6 +23,11 @@ export default theme => ({
   cardInputs: {
     marginLeft: 40,
   },
+  actionsContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   // We had to use a lot of global selectors in order to style react-select.
   // We are waiting on https://github.com/JedWatson/react-select/issues/1679
   // to provide a much better implementation.

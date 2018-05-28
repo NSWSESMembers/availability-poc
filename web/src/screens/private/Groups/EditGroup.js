@@ -157,92 +157,83 @@ class EditGroup extends React.Component {
                 {this.state.id === 0 ? 'Add New' : 'Edit'} Group
               </Typography>
             </div>
-            <Stepper activeStep={0} orientation="vertical">
-              <Step>
-                <StepLabel>
-                  Group Details
-                </StepLabel>
-                <StepContent>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="groupId" required>
-                      group
-                    </InputLabel>
-                    <TextField
-                      id="groupName"
-                      className={classes.textField}
-                      value={groupName}
-                      onChange={e => this.handleChange(e, 'groupName')}
-                      margin="normal"
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="groupId" required>
-                      Group location / HQ
-                    </InputLabel>
-                    <TextField
-                      // todo: stop this from throwing warnings onSelect
-                      fullWidth
-                      value={groupLocation}
-                      onChange={e => this.handleChange(e, 'groupLocation')}
-                      name="groupLocation"
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        inputComponent: AutocompleteSelect,
-                        inputProps: {
-                          classes,
-                          name: 'groupLocation',
-                          instanceId: 'groupLocation',
-                          multi: true,
-                          options: allLocations.map(location => (
-                            { value: location.id, label: location.name, type: location.type }
-                          )),
-                        },
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="groupId" required>
-                      Capabilities needed
-                    </InputLabel>
-                    <TextField
-                      // todo: stop this from throwing warnings onSelect
-                      fullWidth
-                      value={groupCapabilities}
-                      onChange={e => this.handleChange(e, 'groupCapabilities')}
-                      name="groupCapabilities"
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        inputComponent: AutocompleteSelect,
-                        inputProps: {
-                          classes,
-                          name: 'groupCapabilities',
-                          instanceId: 'groupCapabilities',
-                          multi: true,
-                          options: allCapabilities.map(Capability =>
-                            ({ value: Capability.id, label: Capability.name, type: Capability.type })),
-                        },
-                      }}
-                    />
-                  </FormControl>
-                  <div className={classes.actionsContainer}>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={() => this.createGroup()}
-                      className={classes.button}
-                    >
-                      Update
-                    </Button>
-                  </div>
-                </StepContent>
-              </Step>
-            </Stepper>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="groupId" required>
+                group
+              </InputLabel>
+              <TextField
+                id="groupName"
+                className={classes.textField}
+                value={groupName}
+                onChange={e => this.handleChange(e, 'groupName')}
+                margin="normal"
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="groupId" required>
+                Group location / HQ
+              </InputLabel>
+              <TextField
+                // todo: stop this from throwing warnings onSelect
+                fullWidth
+                value={groupLocation}
+                onChange={e => this.handleChange(e, 'groupLocation')}
+                name="groupLocation"
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  inputComponent: AutocompleteSelect,
+                  inputProps: {
+                    classes,
+                    name: 'groupLocation',
+                    instanceId: 'groupLocation',
+                    multi: true,
+                    options: allLocations.map(location => (
+                      { value: location.id, label: location.name, type: location.type }
+                    )),
+                  },
+                }}
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="groupId" required>
+                Capabilities needed
+              </InputLabel>
+              <TextField
+                // todo: stop this from throwing warnings onSelect
+                fullWidth
+                value={groupCapabilities}
+                onChange={e => this.handleChange(e, 'groupCapabilities')}
+                name="groupCapabilities"
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  inputComponent: AutocompleteSelect,
+                  inputProps: {
+                    classes,
+                    name: 'groupCapabilities',
+                    instanceId: 'groupCapabilities',
+                    multi: true,
+                    options: allCapabilities.map(Capability =>
+                      ({ value: Capability.id, label: Capability.name, type: Capability.type })),
+                  },
+                }}
+              />
+            </FormControl>
+            <div className={classes.actionsContainer}>
+              <Button
+                variant="raised"
+                color="primary"
+                onClick={() => this.createGroup()}
+                className={classes.button}
+              >
+                Update
+              </Button>
+            </div>
           </CardContent>
         </Card>
         <Paper className={classes.paper}>
@@ -305,17 +296,6 @@ class EditGroup extends React.Component {
                     )
                   }
                 </FormControl>
-                <Grid container justify="flex-end">
-                  <Grid item className={classes.bottomNav}>
-                    <Button
-                      className={classes.button}
-                      aria-label="Create group"
-                      onClick={() => this.createGroup()}
-                    >
-                      Create group
-                    </Button>
-                  </Grid>
-                </Grid>
               </form>
             </Grid>
           </Grid>
