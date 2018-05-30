@@ -4,7 +4,8 @@ export default theme => ({
   },
   actionPanel: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
     marginBottom: 10,
   },
   paper: {

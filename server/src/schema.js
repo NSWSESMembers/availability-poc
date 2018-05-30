@@ -23,11 +23,17 @@ export const Schema = [
     name: String,
     type: String,
   }
+  
+  input UserInput {
+    id: Int!
+    displayName: String,
+  }
 
   input CreateGroupInput {
     name: String!
     tags: [TagInput]
     icon: String
+    users: [UserInput]
   }
 
   input LoginInput {
