@@ -17,7 +17,6 @@ import { MenuItem } from 'material-ui/Menu';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
 import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
 import Toolbar from 'material-ui/Toolbar';
 import Search from 'material-ui-icons/Search';
 

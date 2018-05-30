@@ -3,147 +3,152 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
 import { NavLink } from 'react-router-dom';
+import _ from 'lodash';
 
 // material ui
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import Card, { CardContent } from 'material-ui/Card';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
 import { FormControl } from 'material-ui/Form';
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
-import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
-import { InputLabel } from 'material-ui/Input';
-
-// icons
-import Search from 'material-ui-icons/Search';
-import ClearIcon from 'material-ui-icons/Clear';
 
 // css
 import 'react-select/dist/react-select.css';
 
 // gql
-import GET_TAGS_QUERY from '../../../graphql/get-tags.query';
+import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
+import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 import CREATE_GROUP_MUTATION from '../../../graphql/create-group.mutation';
+import UPDATE_GROUP_MUTATION from '../../../graphql/update-group.mutation';
 
 // components
-import AutocompleteSelect from '../../../components/AutocompleteSelect';
-import AddMembersDialog from './AddMembersDialog';
+import Tag from '../../../components/Selects/Tag';
 
 import styles from './EditGroup.styles';
 
 class EditGroup extends React.Component {
   state = {
     id: 0,
-    groupName: '',
-    groupLocation: [],
-    groupCapabilities: [],
-    memberSearchText: '',
-    memberSearchOpen: false,
-    memberSearchResults: [],
-    membersToBeAdded: [],
+    name: '',
+    capabilities: '',
+    regions: '',
   };
 
-  handleDialogOpen = () => {
-    this.setState({ memberSearchOpen: true });
-  };
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.loading === false &&
+      nextProps.match.params.id !== undefined &&
+      this.state.id === 0
+    ) {
+      const group = nextProps.user.organisation.groups.find(
+        g => g.id === parseInt(this.props.match.params.id, 10),
+      );
+      if (group !== undefined) {
+        let regions = '';
+        if (group.tags !== undefined) {
+          regions = group.tags
+            .filter(tag => tag.type === 'orgStructure')
+            .map(tag => tag.id.toString())
+            .join(',');
+        }
 
-  handleDialogClose = () => {
-    this.setState({ memberSearchOpen: false });
-  };
+        let capabilities = '';
+        if (group.tags !== undefined) {
+          capabilities = group.tags
+            .filter(tag => tag.type === 'capability')
+            .map(tag => tag.id.toString())
+            .join(',');
+        }
+
+        this.setState({
+          id: group.id,
+          name: group.name,
+          regions,
+          capabilities,
+        });
+      }
+    }
+  }
 
   handleChange = (e, key) => {
-    // console.log('handling change for:', key);
-    // console.log('data is:', e);
     const value = _.get(e, 'target.value', e);
     this.setState({ [key]: value });
   };
 
-  performMemberSearch = (members, searchText) => {
-    const searchTextToLowerCase = searchText.toLowerCase();
-    return _.filter(members, (member) => {
-      const nameToLowerCase = (member.displayName).toLowerCase();
-      return _.startsWith(nameToLowerCase, searchTextToLowerCase);
-    });
-  };
-
-  startMemberSearch = (allMembers) => {
-    const { memberSearchText } = this.state;
-    const matchingNames = this.performMemberSearch(allMembers, memberSearchText);
-    this.setState({ memberSearchResults: matchingNames });
-    this.handleDialogOpen();
-  };
-
-  addMember = (member) => {
+  handleTagChange = name => (value) => {
     this.setState({
-      membersToBeAdded: [...this.state.membersToBeAdded, member],
+      [name]: value,
     });
   };
 
-  removeMember = (memberRemove) => {
-    const removeMemberId = memberRemove.id;
-    this.setState(prevState => ({
-      membersToBeAdded: _.filter(
-        prevState.membersToBeAdded, member => member.id !== removeMemberId,
-      ),
-    }));
-  };
+  saveGroup = () => {
+    const { name, regions, capabilities } = this.state;
 
-  createGroup = () => {
-    const { groupName, groupLocation, groupCapabilities } = this.state;
-    const keyMapping = { label: 'name', value: 'id', type: 'type' };
-    const groupLocationRename = _.map(groupLocation, location =>
-      _.transform(location, (result, value, key) => result[keyMapping[key]] = value, {}));
-    const groupCapabilitiesRename = _.map(groupCapabilities, capability =>
-      _.transform(capability, (result, value, key) => result[keyMapping[key]] = value, {}));
+    let tags = [];
 
+    if (regions !== '') {
+      tags = tags.concat(regions.split(',').map(tag => ({ id: parseInt(tag, 10) })));
+    }
 
-    // console.log(groupLocationRename);
-    // console.log(groupCapabilitiesRename);
-    // this.props.createGroup({
-    //   name: groupName,
-    // });
-    // .then(() => {
-    //   const { history } = this.props;
-    // history.push('/dashboard');
-    // })
-    // .catch((error) => {
-    //   this.setState(() => ({ message: error.message, open: true }));
-    //   setTimeout(() => {
-    //     this.setState(() => ({ message: '', open: false }));
-    //   }, 3000);
-    // });
+    if (capabilities !== '') {
+      tags = tags.concat(capabilities.split(',').map(tag => ({ id: parseInt(tag, 10) })));
+    }
+
+    if (this.state.id === 0) {
+      this.props
+        .createGroup({
+          name,
+          tags,
+        })
+        .then(() => {
+          const { history } = this.props;
+          history.push('/groups');
+        })
+        .catch((error) => {
+          this.setState(() => ({ message: error.message, open: true }));
+          setTimeout(() => {
+            this.setState(() => ({ message: '', open: false }));
+          }, 3000);
+        });
+    } else {
+      this.props
+        .updateGroup({
+          id: this.state.id,
+          name,
+          tags,
+        })
+        .then(() => {
+          const { history } = this.props;
+          history.push('/groups');
+        })
+        .catch((error) => {
+          this.setState(() => ({ message: error.message, open: true }));
+          setTimeout(() => {
+            this.setState(() => ({ message: '', open: false }));
+          }, 3000);
+        });
+    }
   };
 
   render() {
-    const {
-      groupName,
-      groupLocation,
-      groupCapabilities,
-      memberSearchText,
-      memberSearchResults,
-      memberSearchOpen,
-      membersToBeAdded,
-    } = this.state;
+    const { name } = this.state;
     const { classes, loading, user } = this.props;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
-    const allMembers = user.organisation.users;
-    const allTags = user.organisation.tags;
-    const allLocations = _.filter(allTags, tag => tag.type === 'orgStructure');
-    const allCapabilities = _.filter(allTags, tag => tag.type === 'capability');
+    const capabilities = user.organisation.tags
+      .filter(tag => tag.type === 'capability')
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
+
+    const regions = user.organisation.tags
+      .filter(tag => tag.type === 'orgStructure')
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     return (
       <div className={classes.root}>
@@ -158,160 +163,46 @@ class EditGroup extends React.Component {
               </Typography>
             </div>
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="groupId" required>
-                group
-              </InputLabel>
               <TextField
-                id="groupName"
+                id="name"
                 className={classes.textField}
-                value={groupName}
-                onChange={e => this.handleChange(e, 'groupName')}
+                value={name}
+                onChange={e => this.handleChange(e, 'name')}
                 margin="normal"
+                placeholder="Enter Group..."
               />
             </FormControl>
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="groupId" required>
-                Group location / HQ
-              </InputLabel>
-              <TextField
-                // todo: stop this from throwing warnings onSelect
-                fullWidth
-                value={groupLocation}
-                onChange={e => this.handleChange(e, 'groupLocation')}
-                name="groupLocation"
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  inputComponent: AutocompleteSelect,
-                  inputProps: {
-                    classes,
-                    name: 'groupLocation',
-                    instanceId: 'groupLocation',
-                    multi: true,
-                    options: allLocations.map(location => (
-                      { value: location.id, label: location.name, type: location.type }
-                    )),
-                  },
-                }}
+              <Tag
+                list={regions}
+                label="Regions"
+                placeholder="Select..."
+                onChange={this.handleTagChange('regions')}
+                value={this.state.regions}
               />
             </FormControl>
             <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="groupId" required>
-                Capabilities needed
-              </InputLabel>
-              <TextField
-                // todo: stop this from throwing warnings onSelect
-                fullWidth
-                value={groupCapabilities}
-                onChange={e => this.handleChange(e, 'groupCapabilities')}
-                name="groupCapabilities"
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                InputProps={{
-                  inputComponent: AutocompleteSelect,
-                  inputProps: {
-                    classes,
-                    name: 'groupCapabilities',
-                    instanceId: 'groupCapabilities',
-                    multi: true,
-                    options: allCapabilities.map(Capability =>
-                      ({ value: Capability.id, label: Capability.name, type: Capability.type })),
-                  },
-                }}
+              <Tag
+                list={capabilities}
+                label="Capabilities"
+                placeholder="Select..."
+                onChange={this.handleTagChange('capabilities')}
+                value={this.state.capabilities}
               />
             </FormControl>
             <div className={classes.actionsContainer}>
               <Button
                 variant="raised"
                 color="primary"
-                onClick={() => this.createGroup()}
+                onClick={this.saveGroup}
                 className={classes.button}
+                disabled={this.state.name === ''}
               >
                 Update
               </Button>
             </div>
           </CardContent>
         </Card>
-        <Paper className={classes.paper}>
-          <Grid
-            container
-            spacing={0}
-            justify="center"
-          >
-            <Grid item xs={12} sm={6}>
-              <form className={classes.container} autoComplete="off">
-                <div className={classes.margin}>
-                  <Grid container spacing={8} alignItems="flex-end">
-                    <Grid item>
-                      <TextField
-                        margin="normal"
-                        id="memberSearchText"
-                        type="text"
-                        value={memberSearchText}
-                        onChange={e => this.handleChange(e, 'memberSearchText')}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <div>
-                        <IconButton
-                          className={classes.button}
-                          aria-label="Find members"
-                          onClick={() => this.startMemberSearch(allMembers)}
-                        >
-                          <Search />
-                        </IconButton>
-                      </div>
-                    </Grid>
-                  </Grid>
-                </div>
-                <FormControl className={classes.formControl}>
-                  <Typography variant="title">Group members</Typography>
-                  {membersToBeAdded.length !== 0 ?
-                    (
-                      <Table className={classes.table}>
-                        <TableBody>
-                          {membersToBeAdded.map(member => (
-                            <TableRow key={member.id}>
-                              <TableCell>{member.displayName}</TableCell>
-                              <TableCell>
-                                <IconButton
-                                  className={classes.button}
-                                  aria-label="Remove member"
-                                  onClick={() => this.removeMember(member)}
-                                >
-                                  <ClearIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    ) :
-                    (
-                      <Typography variant="caption">No members have been added yet</Typography>
-                    )
-                  }
-                </FormControl>
-              </form>
-            </Grid>
-          </Grid>
-        </Paper>
-        <AddMembersDialog
-          classes={classes}
-          memberSearchOpen={memberSearchOpen}
-          memberSearchText={memberSearchText}
-          memberSearchResults={memberSearchResults}
-          handleDialogClose={this.handleDialogClose}
-          handleChange={this.handleChange}
-          startMemberSearch={() => this.startMemberSearch(allMembers)}
-          addMember={this.addMember}
-          removeMember={this.removeMember}
-          membersToBeAdded={membersToBeAdded}
-        />
       </div>
     );
   }
@@ -320,6 +211,14 @@ class EditGroup extends React.Component {
 EditGroup.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  createGroup: PropTypes.func.isRequired,
+  updateGroup: PropTypes.func.isRequired,
+  history: PropTypes.shape({}).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     organisation: PropTypes.shape({
@@ -330,12 +229,19 @@ EditGroup.propTypes = {
           type: PropTypes.string.isRequired,
         }),
       ),
-      users: PropTypes.arrayOf(
+      groups: PropTypes.arrayOf(
         PropTypes.shape({
           id: PropTypes.number.isRequired,
-          email: PropTypes.string.isRequired,
-          username: PropTypes.string.isRequired,
-          displayName: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          createdAt: PropTypes.number.isRequired,
+          updatedAt: PropTypes.number.isRequired,
+          tags: PropTypes.arrayOf(
+            PropTypes.shape({
+              id: PropTypes.number.isRequired,
+              name: PropTypes.string.isRequired,
+              type: PropTypes.string.isRequired,
+            }),
+          ),
         }),
       ),
     }),
@@ -349,20 +255,39 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
         variables: { group: { name, tags, icon, users } },
         refetchQueries: [
           {
-            query: GET_TAGS_QUERY,
+            query: CURRENT_USER_QUERY,
           },
         ],
       }),
   }),
 });
 
-const tagsQuery = graphql(GET_TAGS_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  props: ({ data: { loading, user, networkStatus, refetch } }) => ({
+const updateGroupMutation = graphql(UPDATE_GROUP_MUTATION, {
+  props: ({ mutate }) => ({
+    updateGroup: ({ id, name, tags, icon, users }) =>
+      mutate({
+        variables: { group: { id, name, tags, icon, users } },
+        refetchQueries: [
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const tagsQuery = graphql(CURRENT_ORG_QUERY, {
+  options: () => ({
+    variables: {
+      nameFilter: '',
+      typeFilter: '',
+    },
+  }),
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading,
-    user,
     networkStatus,
     refetch,
+    user,
   }),
 });
 
@@ -370,4 +295,10 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), tagsQuery, createGroupMutation)(EditGroup);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  tagsQuery,
+  createGroupMutation,
+  updateGroupMutation,
+)(EditGroup);

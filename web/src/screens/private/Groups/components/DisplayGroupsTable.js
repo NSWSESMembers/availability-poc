@@ -3,19 +3,21 @@ import PropTypes from 'prop-types';
 import moment from 'moment/moment';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { withStyles } from 'material-ui/styles';
 
 import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
 import Chip from 'material-ui/Chip';
 
-const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, searchFilter }) => {
-  const displayLocationTags = tag =>
-    tag.type === 'orgStructure' && <span key={tag.name}>{tag.name} </span>;
+import styles from './DisplayGroupsTable.styles';
 
-  const displayCapabilityTags = tag =>
-    tag.type === 'capability' && <Chip key={tag.name} label={tag.name} className={classes.chip} />;
+const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, searchFilter }) => {
+  const displayTag = (type, group, tag) =>
+    tag.type === type && (
+      <Chip key={`${group.id}-${tag.id}`} label={tag.name} className={classes.chip} />
+    );
 
   return (
-    <Table className={classes.table}>
+    <Table>
       <TableHead>
         <TableRow>
           <TableCell>Group Name</TableCell>
@@ -47,9 +49,11 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
                 <TableCell>
                   <Link to={`/groups/edit/${group.id}`}>{group.name}</Link>
                 </TableCell>
-                <TableCell>{group.tags.map(tag => displayLocationTags(tag))}</TableCell>
                 <TableCell>
-                  <div>{group.tags.map(tag => displayCapabilityTags(tag))}</div>
+                  {group.tags.map(tag => displayTag('orgStructure', group, tag))}
+                </TableCell>
+                <TableCell>
+                  <div>{group.tags.map(tag => displayTag('capability', group, tag))}</div>
                 </TableCell>
                 <TableCell>{moment.unix(group.updatedAt).format('LLL')}</TableCell>
                 <TableCell>{moment.unix(group.createdAt).format('LLL')}</TableCell>
@@ -82,6 +86,7 @@ DisplayRequests.propTypes = {
   ),
   locationFilter: PropTypes.string.isRequired,
   capabilityFilter: PropTypes.string.isRequired,
+  searchFilter: PropTypes.string.isRequired,
 };
 
-export default DisplayRequests;
+export default withStyles(styles)(DisplayRequests);

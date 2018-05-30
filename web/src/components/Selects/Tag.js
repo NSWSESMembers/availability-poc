@@ -2,45 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Typography from 'material-ui/Typography';
+import TextField from 'material-ui/TextField';
 import ArrowDropDownIcon from 'material-ui-icons/ArrowDropDown';
 import CancelIcon from 'material-ui-icons/Cancel';
 import ArrowDropUpIcon from 'material-ui-icons/ArrowDropUp';
 import ClearIcon from 'material-ui-icons/Clear';
 import Chip from 'material-ui/Chip';
 import Select from 'react-select';
-import { MenuItem } from 'material-ui/Menu';
+import 'react-select/dist/react-select.css';
 
-class AutocompleteSelectOption extends React.Component {
-  handleClick = (event) => {
-    this.props.onSelect(this.props.option, event);
-  };
+import { withStyles } from 'material-ui/styles';
+import styles from './Tag.styles';
 
-  render() {
-    const { children, isFocused, isSelected, onFocus } = this.props;
+import TagOption from './TagOption';
 
-    return (
-      <MenuItem
-        onFocus={onFocus}
-        selected={isFocused}
-        onClick={this.handleClick}
-        component="div"
-        style={{
-          fontWeight: isSelected ? 500 : 400,
-        }}
-      >
-        {children}
-      </MenuItem>
-    );
-  }
-}
-
-const AutocompleteSelect = (props) => {
+function SelectWrapped(props) {
   const { classes, ...other } = props;
 
   return (
     <Select
-      optionComponent={AutocompleteSelectOption}
-      noResultsText={<Typography>{'No results found'}</Typography>}
+      optionComponent={TagOption}
+      noResultsText={<Typography>No results found</Typography>}
       arrowRenderer={arrowProps =>
         (arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)
       }
@@ -71,20 +53,49 @@ const AutocompleteSelect = (props) => {
       {...other}
     />
   );
-};
+}
 
-AutocompleteSelect.propTypes = {
+SelectWrapped.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-
 };
 
-AutocompleteSelectOption.propTypes = {
-  children: PropTypes.string.isRequired,
-  isFocused: PropTypes.bool.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-  onFocus: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  option: PropTypes.shape({}).isRequired,
+const TagMulti = ({ classes, label, list, placeholder, onChange, value }) => (
+  <TextField
+    fullWidth
+    value={value}
+    onChange={onChange}
+    placeholder={placeholder}
+    name="react-select-chip-label"
+    label={label}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    InputProps={{
+      inputComponent: SelectWrapped,
+      inputProps: {
+        classes,
+        multi: true,
+        instanceId: 'react-select-chip-label',
+        id: 'react-select-chip-label',
+        simpleValue: true,
+        options: list,
+      },
+    }}
+  />
+);
+
+TagMulti.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+  value: PropTypes.string,
+  list: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    }),
+  ),
 };
 
-export default AutocompleteSelect;
+export default withStyles(styles)(TagMulti);

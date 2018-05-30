@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
 import { CircularProgress } from 'material-ui/Progress';
 import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
