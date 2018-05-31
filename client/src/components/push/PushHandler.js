@@ -25,6 +25,21 @@ class PushHandler extends React.Component {
     this.onMountOrUpdate();
   }
 
+  shouldComponentUpdate(nextProps) {
+    // dont run anything if the cause of the update was a change in stored device token
+    // because we caused the change to happen
+
+    // if the new token is what we just sent to the server and this is apollo
+    // updating the prop with the answer
+    if (
+      nextProps.device &&
+      nextProps.device.pushToken === JSON.stringify(this.props.pushManager.tokens)) {
+      console.log('nextProp pushToken matches the pushmanager token, returing false');
+      return false;
+    }
+    return true;
+  }
+
   componentDidUpdate() {
     this.onMountOrUpdate();
   }
@@ -47,14 +62,12 @@ class PushHandler extends React.Component {
     this.updateTokensMaybe();
   }
 
-  onTokenUpdate = (tokens) => {
+  onTokenUpdate = () => {
     // this will get called once we have a valid set of push tokens from the client push libs
     // it may get called again later if the tokens change
-    this.tokens = tokens;
     this.updateTokensMaybe();
   }
 
-  tokens = null;
 
   updateTokensMaybe() {
     // we don't know whether we will receive which of the following we will receive first so we
@@ -62,24 +75,28 @@ class PushHandler extends React.Component {
     // - push token from push client library
     // - push token from the server
     // If once we receive both we determine they are different then we need to sync them
-    const { device } = this.props;
+    console.log('Asked to update tokens maybe');
+
+    const { device, pushManager } = this.props;
 
     if (!device) {
-      log('cannot update tokens yet because there is no device');
+      log('Cannot update tokens yet because there is no device token');
       return;
     }
 
-    if (!this.tokens) {
-      log('cannot update tokens yet because there is no tokens');
+    if (!pushManager.hasAllTokens) {
+      log('Cannot update tokens yet because they are still loading');
       return;
     }
+
+    console.log('Have device and tokens, will compare to stored server answer');
 
     // this needs to understand what to do with multiple tokens
-    const jsonTokens = JSON.stringify(this.tokens);
+    const jsonTokens = JSON.stringify(pushManager.tokens);
     log('Server has: ', device.pushToken);
     if (jsonTokens !== device.pushToken) {
       log('Sending tokens to the server: ', jsonTokens);
-      this.updatePromise = this.props.updateDevice({
+      this.props.updateDevice({
         token: jsonTokens,
         name: DeviceInfo.getDeviceName(),
       }).then(() => {
@@ -87,6 +104,8 @@ class PushHandler extends React.Component {
       }).catch((err) => {
         log('Token update failed: ', err);
       });
+    } else {
+      log('Not sending tokens to the server');
     }
   }
 

@@ -299,7 +299,7 @@ export const Schema = [
     login(user: LoginInput!): User
     signup(user: SignupInput!): User
     updateLocation(location: LocationUpdateInput!): Boolean
-    updateDevice(device: DeviceUpdateInput!): Boolean
+    updateDevice(device: DeviceUpdateInput!): Device
     setEventResponse(response: SetEventResponseInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
