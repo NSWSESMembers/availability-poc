@@ -272,7 +272,7 @@ class AddSchedule extends React.Component {
                               Flood Rescue Operator Level 3
                             </MenuItem>
                             <MenuItem value="8" key={8}>
-                              Generea Land Rescue Operator
+                              General Land Rescue Operator
                             </MenuItem>
                             <MenuItem value="9" key={9}>
                               Land Search
