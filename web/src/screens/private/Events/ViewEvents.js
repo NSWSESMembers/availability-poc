@@ -16,7 +16,7 @@ import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './ViewEvents.styles';
+import styles from '../../../styles/AppStyle';
 
 const columnData = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },

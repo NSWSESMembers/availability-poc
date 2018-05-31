@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Reboot from 'material-ui/Reboot';
+import CssBaseline from 'material-ui/CssBaseline';
 
 import LoginPage from '../screens/public/LoginPage';
 import SignupPage from '../screens/public/SignUpPage';
@@ -27,7 +27,7 @@ import PublicRoute from './PublicRoute';
 const AppRouter = () => (
   <BrowserRouter>
     <div>
-      <Reboot />
+      <CssBaseline />
       <Header />
       <Switch>
         <PublicRoute path="/" component={LoginPage} exact />

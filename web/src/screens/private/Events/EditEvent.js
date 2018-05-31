@@ -27,7 +27,7 @@ import CREATE_EVENT_MUTATION from '../../../graphql/create-event.mutation';
 import UPDATE_EVENT_MUTATION from '../../../graphql/update-event.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './EditEvent.styles';
+import styles from '../../../styles/AppStyle';
 
 function getSteps() {
   return ['Select Group', 'Event Information', 'Locations'];
@@ -72,80 +72,19 @@ class EditEvent extends React.Component {
     helosList: defaultHelos,
   };
 
+  componentDidMount() {
+    if (this.props.loading === false && this.props.match.params.id !== undefined) {
+      this.setInitialState(this.props);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.loading === false &&
       nextProps.match.params.id !== undefined &&
       this.state.id === 0
     ) {
-      const event = nextProps.user.events.find(
-        e => e.id === parseInt(this.props.match.params.id, 10),
-      );
-
-      if (event !== undefined) {
-        let scene = event.eventLocations.find(s => s.icon === 'scene');
-        let lhq = event.eventLocations.find(s => s.icon === 'lhq');
-        let helo = event.eventLocations.find(s => s.icon === 'helo');
-
-        const scenes = [...defaultScenes];
-        const lhqs = [...defaultLhqs];
-        const helos = [...defaultHelos];
-
-        if (scene !== undefined) {
-          const loc = scenes.find(
-            newLoc =>
-              newLoc.locationLatitude === scene.locationLatitude &&
-              newLoc.locationLongitude === scene.locationLongitude,
-          );
-          if (loc === undefined) {
-            scenes.push(scene);
-          } else {
-            scene = loc;
-          }
-        }
-
-        if (lhq !== undefined) {
-          const loc = lhqs.find(
-            newLoc =>
-              newLoc.locationLatitude === lhq.locationLatitude &&
-              newLoc.locationLongitude === lhq.locationLongitude,
-          );
-
-          if (loc === undefined) {
-            lhqs.push(lhq);
-          } else {
-            lhq = loc;
-          }
-        }
-
-        if (helo !== undefined) {
-          const loc = helos.find(
-            newLoc =>
-              newLoc.locationLatitude === helo.locationLatitude &&
-              newLoc.locationLongitude === helo.locationLongitude,
-          );
-
-          if (loc === undefined) {
-            helos.push(helo);
-          } else {
-            helo = loc;
-          }
-        }
-
-        this.setState({
-          id: event.id,
-          name: event.name,
-          details: event.details,
-          groupId: event.group.id,
-          groupName: event.group.name,
-          scene,
-          lhq,
-          helo,
-          scenesList: scenes,
-          lhqsList: lhqs,
-          helosList: helos,
-        });
-      }
+      this.setInitialState(nextProps);
     }
   }
 
@@ -183,6 +122,77 @@ class EditEvent extends React.Component {
     const scene = this.state.scenesList.find(s => s.id === parseInt(event.target.value, 10));
     this.setState(() => ({ scene }));
   };
+
+  setInitialState(props) {
+    const event = props.user.events.find(
+      e => e.id === parseInt(props.match.params.id, 10),
+    );
+
+    if (event !== undefined) {
+      let scene = event.eventLocations.find(s => s.icon === 'scene');
+      let lhq = event.eventLocations.find(s => s.icon === 'lhq');
+      let helo = event.eventLocations.find(s => s.icon === 'helo');
+
+      const scenes = [...defaultScenes];
+      const lhqs = [...defaultLhqs];
+      const helos = [...defaultHelos];
+
+      if (scene !== undefined) {
+        const loc = scenes.find(
+          newLoc =>
+            newLoc.locationLatitude === scene.locationLatitude &&
+            newLoc.locationLongitude === scene.locationLongitude,
+        );
+        if (loc === undefined) {
+          scenes.push(scene);
+        } else {
+          scene = loc;
+        }
+      }
+
+      if (lhq !== undefined) {
+        const loc = lhqs.find(
+          newLoc =>
+            newLoc.locationLatitude === lhq.locationLatitude &&
+            newLoc.locationLongitude === lhq.locationLongitude,
+        );
+
+        if (loc === undefined) {
+          lhqs.push(lhq);
+        } else {
+          lhq = loc;
+        }
+      }
+
+      if (helo !== undefined) {
+        const loc = helos.find(
+          newLoc =>
+            newLoc.locationLatitude === helo.locationLatitude &&
+            newLoc.locationLongitude === helo.locationLongitude,
+        );
+
+        if (loc === undefined) {
+          helos.push(helo);
+        } else {
+          helo = loc;
+        }
+      }
+
+      this.setState({
+        id: event.id,
+        name: event.name,
+        details: event.details,
+        groupId: event.group.id,
+        groupName: event.group.name,
+        scene,
+        lhq,
+        helo,
+        scenesList: scenes,
+        lhqsList: lhqs,
+        helosList: helos,
+      });
+    }
+  }
 
   handleNext = () => {
     const steps = getSteps();

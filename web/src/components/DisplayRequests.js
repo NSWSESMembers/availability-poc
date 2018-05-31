@@ -2,17 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-import Toolbar from 'material-ui/Toolbar';
 import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+
+import { withStyles } from 'material-ui/styles';
+
+import styles from './DisplayRequests.styles';
 
 import numbers from '../constants';
 
 const DisplayRequests = ({ classes, user }) => {
   if (!user.groups.length) {
     return (
-      <Paper className={classes.paper}>
+      <Paper>
         <Typography component="p" align="center">
           You are currently not assigned to any groups.{' '}
           <Link to="/groups">Click here to join groups</Link>
@@ -22,11 +25,9 @@ const DisplayRequests = ({ classes, user }) => {
   }
 
   return (
-    <Paper className={classes.paper}>
-      <Toolbar className={classes.tableToolbar}>
-        <Typography variant="title">Requests</Typography>
-      </Toolbar>
-      <Table className={classes.table}>
+    <Paper>
+      <Typography variant="title">Requests</Typography>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -80,4 +81,4 @@ DisplayRequests.propTypes = {
   }),
 };
 
-export default DisplayRequests;
+export default withStyles(styles)(DisplayRequests);

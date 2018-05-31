@@ -24,6 +24,17 @@ export default gql`
           }
         }
       }
+      groups {
+        id
+        name
+        createdAt
+        updatedAt
+        tags {
+          id
+          name
+          type
+        }
+      }
     }
   }
 `;

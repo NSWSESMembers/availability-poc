@@ -1,4 +1,4 @@
-export default () => ({
+export default theme => ({
   root: {
     margin: 30,
   },
@@ -9,7 +9,7 @@ export default () => ({
     marginBottom: 10,
   },
   formControl: {
-    width: 150,
+    minWidth: 150,
     marginLeft: 15,
   },
 });

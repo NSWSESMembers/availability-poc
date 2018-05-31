@@ -10,9 +10,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 
-import DisplayRequests from '../../components/DisplayRequests';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
-
 
 import styles from './Dashboard.styles';
 
@@ -35,10 +33,10 @@ const Dashboard = ({ classes, loading, user }) => {
       <Paper className={classes.paper}>
         <Typography component="p" align="center">
           {/* TODO: update link to go edit profile page */}
-          You have no capabilities assigned for your user profile. <Link to="/groups">Click here to add capabilities</Link>
+          You have no capabilities assigned for your user profile.{' '}
+          <Link to="/groups">Click here to add capabilities</Link>
         </Typography>
       </Paper>
-      <DisplayRequests classes={classes} user={user} />
     </div>
   );
 };

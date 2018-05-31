@@ -3,26 +3,27 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import Paper from 'material-ui/Paper';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Grid from 'material-ui/Grid';
-import Select from 'material-ui/Select';
 import Button from 'material-ui/Button';
-import { MenuItem } from 'material-ui/Menu';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
+import Input, { InputAdornment } from 'material-ui/Input';
+import { FormControl, FormControlLabel } from 'material-ui/Form';
 import Typography from 'material-ui/Typography';
-import Toolbar from 'material-ui/Toolbar';
 import Search from 'material-ui-icons/Search';
 
-import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
+import Switch from 'material-ui/Switch';
+
+import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 
 import styles from './ViewGroups.styles';
+
+import Tag from '../../../components/Selects/Tag';
+
+import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
 
 import DisplayGroupsTable from './components/DisplayGroupsTable';
 
@@ -32,6 +33,7 @@ class ViewGroups extends React.Component {
     locationFilter: '',
     capabilityFilter: '',
     searchFilter: '',
+    allGroups: false,
   };
 
   handleChange = (e, key) => {
@@ -41,6 +43,16 @@ class ViewGroups extends React.Component {
 
   handleTabChange = (event, tab) => {
     this.setState({ tab });
+  };
+
+  handleSwitchChange = name => (event) => {
+    this.setState({ [name]: event.target.checked });
+  };
+
+  handleTagChange = name => (value) => {
+    this.setState({
+      [name]: value === null ? '' : value,
+    });
   };
 
   render() {
@@ -53,34 +65,14 @@ class ViewGroups extends React.Component {
 
     const allGroups = user.organisation.groups;
     const myGroups = user.groups;
-    // data transform for getting all orgStructure tags of groups
-    const allLocations = _.keys(
-      _.transform(
-        allGroups,
-        (result, group) => {
-          _.forEach(group.tags, (tag) => {
-            if (tag.type === 'orgStructure') {
-              result[tag.name] = true;
-            }
-          });
-        },
-        {},
-      ),
-    );
-    // data transform for getting all capability tags of groups
-    const allCapabilities = _.keys(
-      _.transform(
-        allGroups,
-        (result, group) => {
-          _.forEach(group.tags, (tag) => {
-            if (tag.type === 'capability') {
-              result[tag.name] = true;
-            }
-          });
-        },
-        {},
-      ),
-    );
+
+    const capabilities = user.organisation.tags
+      .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
+
+    const locations = user.organisation.tags
+      .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     return (
       <div className={classes.root}>
@@ -99,45 +91,36 @@ class ViewGroups extends React.Component {
           </div>
         </div>
         <Paper className={classes.paper}>
-          <Toolbar className={classes.tableToolbar}>
-            <Grid container spacing={16} alignItems="flex-end" direction="row" justify="flex-end">
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.allGroups}
+                  value="allGroups"
+                  onChange={this.handleSwitchChange('allGroups')}
+                  color="primary"
+                />
+              }
+              label="Only My groups"
+            />
+            <div>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="locationFilter">Select Location</InputLabel>
-                <Select
-                  value={locationFilter}
-                  onChange={e => this.handleChange(e, 'locationFilter')}
-                  inputProps={{
-                    id: 'locationFilter',
-                  }}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {allLocations.map(location => (
-                    <MenuItem value={location} key={location}>
-                      {location}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Tag
+                  list={locations}
+                  placeholder="Select Location"
+                  onChange={this.handleTagChange('locationFilter')}
+                  value={this.state.locationFilter}
+                  multi={false}
+                />
               </FormControl>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="capabilityFilter">Select Capability</InputLabel>
-                <Select
-                  value={capabilityFilter}
-                  onChange={e => this.handleChange(e, 'capabilityFilter')}
-                  inputProps={{
-                    id: 'capabilityFilter',
-                  }}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {allCapabilities.map(capability => (
-                    <MenuItem value={capability} key={capability}>
-                      {capability}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Tag
+                  list={capabilities}
+                  placeholder="Select Capability"
+                  onChange={this.handleTagChange('capabilityFilter')}
+                  value={this.state.capabilityFilter}
+                  multi={false}
+                />
               </FormControl>
               <FormControl className={classes.formControl}>
                 <Input
@@ -150,32 +133,21 @@ class ViewGroups extends React.Component {
                   onChange={e => this.handleChange(e, 'searchFilter')}
                 />
               </FormControl>
-            </Grid>
-          </Toolbar>
+            </div>
+          </div>
           <div className={classes.actionPanel}>
             <Tabs value={tab} onChange={this.handleTabChange}>
               <Tab label="All Groups" />
               <Tab label="My Groups" />
             </Tabs>
           </div>
-          {tab === 0 && (
-            <DisplayGroupsTable
-              classes={classes}
-              groups={allGroups}
-              locationFilter={locationFilter}
-              capabilityFilter={capabilityFilter}
-              searchFilter={searchFilter}
-            />
-          )}
-          {tab === 1 && (
-            <DisplayGroupsTable
-              classes={classes}
-              groups={myGroups}
-              locationFilter={locationFilter}
-              capabilityFilter={capabilityFilter}
-              searchFilter={searchFilter}
-            />
-          )}
+          <DisplayGroupsTable
+            classes={classes}
+            groups={tab === 0 ? allGroups : myGroups}
+            locationFilter={locationFilter}
+            capabilityFilter={capabilityFilter}
+            searchFilter={searchFilter}
+          />
         </Paper>
       </div>
     );
@@ -204,13 +176,18 @@ ViewGroups.propTypes = {
   }),
 };
 
-const userQuery = graphql(CURRENT_USER_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  props: ({ data: { loading, user, networkStatus, refetch } }) => ({
+const orgQuery = graphql(CURRENT_ORG_QUERY, {
+  options: () => ({
+    variables: {
+      nameFilter: '',
+      typeFilter: '',
+    },
+  }),
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading,
-    user,
     networkStatus,
     refetch,
+    user,
   }),
 });
 
@@ -218,4 +195,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewGroups);
+export default compose(connect(mapStateToProps), withStyles(styles), orgQuery)(ViewGroups);

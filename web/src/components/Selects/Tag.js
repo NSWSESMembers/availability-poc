@@ -59,7 +59,7 @@ SelectWrapped.propTypes = {
   classes: PropTypes.shape({}).isRequired,
 };
 
-const TagMulti = ({ classes, label, list, placeholder, onChange, value }) => (
+const Tag = ({ classes, label, list, placeholder, multi, onChange, value }) => (
   <TextField
     fullWidth
     value={value}
@@ -74,7 +74,7 @@ const TagMulti = ({ classes, label, list, placeholder, onChange, value }) => (
       inputComponent: SelectWrapped,
       inputProps: {
         classes,
-        multi: true,
+        multi,
         instanceId: 'react-select-chip-label',
         id: 'react-select-chip-label',
         simpleValue: true,
@@ -84,12 +84,13 @@ const TagMulti = ({ classes, label, list, placeholder, onChange, value }) => (
   />
 );
 
-TagMulti.propTypes = {
+Tag.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.string,
+  multi: PropTypes.bool,
   list: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
@@ -98,4 +99,8 @@ TagMulti.propTypes = {
   ),
 };
 
-export default withStyles(styles)(TagMulti);
+Tag.defaultProps = {
+  multi: false,
+};
+
+export default withStyles(styles)(Tag);

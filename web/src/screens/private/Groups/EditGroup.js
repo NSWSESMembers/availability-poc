@@ -16,9 +16,6 @@ import TextField from 'material-ui/TextField';
 import { FormControl } from 'material-ui/Form';
 import Button from 'material-ui/Button';
 
-// css
-import 'react-select/dist/react-select.css';
-
 // gql
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
@@ -27,6 +24,9 @@ import UPDATE_GROUP_MUTATION from '../../../graphql/update-group.mutation';
 
 // components
 import Tag from '../../../components/Selects/Tag';
+
+// constants
+import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
 
 import styles from './EditGroup.styles';
 
@@ -38,39 +38,49 @@ class EditGroup extends React.Component {
     regions: '',
   };
 
+  componentDidMount() {
+    if (this.props.loading === false && this.props.match.params.id !== undefined) {
+      this.setInitialState(this.props);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.loading === false &&
-      nextProps.match.params.id !== undefined &&
+      this.props.match.params.id !== undefined &&
       this.state.id === 0
     ) {
-      const group = nextProps.user.organisation.groups.find(
-        g => g.id === parseInt(this.props.match.params.id, 10),
-      );
-      if (group !== undefined) {
-        let regions = '';
-        if (group.tags !== undefined) {
-          regions = group.tags
-            .filter(tag => tag.type === 'orgStructure')
-            .map(tag => tag.id.toString())
-            .join(',');
-        }
+      this.setInitialState(nextProps);
+    }
+  }
 
-        let capabilities = '';
-        if (group.tags !== undefined) {
-          capabilities = group.tags
-            .filter(tag => tag.type === 'capability')
-            .map(tag => tag.id.toString())
-            .join(',');
-        }
-
-        this.setState({
-          id: group.id,
-          name: group.name,
-          regions,
-          capabilities,
-        });
+  setInitialState(props) {
+    const group = props.user.organisation.groups.find(
+      g => g.id === parseInt(props.match.params.id, 10),
+    );
+    if (group !== undefined) {
+      let regions = '';
+      if (group.tags !== undefined) {
+        regions = group.tags
+          .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
+          .map(tag => tag.id.toString())
+          .join(',');
       }
+
+      let capabilities = '';
+      if (group.tags !== undefined) {
+        capabilities = group.tags
+          .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+          .map(tag => tag.id.toString())
+          .join(',');
+      }
+
+      this.setState({
+        id: group.id,
+        name: group.name,
+        regions,
+        capabilities,
+      });
     }
   }
 
@@ -143,11 +153,11 @@ class EditGroup extends React.Component {
     }
 
     const capabilities = user.organisation.tags
-      .filter(tag => tag.type === 'capability')
+      .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     const regions = user.organisation.tags
-      .filter(tag => tag.type === 'orgStructure')
+      .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     return (
@@ -179,6 +189,7 @@ class EditGroup extends React.Component {
                 placeholder="Select..."
                 onChange={this.handleTagChange('regions')}
                 value={this.state.regions}
+                multi
               />
             </FormControl>
             <FormControl className={classes.formControl}>
@@ -188,6 +199,7 @@ class EditGroup extends React.Component {
                 placeholder="Select..."
                 onChange={this.handleTagChange('capabilities')}
                 value={this.state.capabilities}
+                multi
               />
             </FormControl>
             <div className={classes.actionsContainer}>
@@ -222,13 +234,6 @@ EditGroup.propTypes = {
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     organisation: PropTypes.shape({
-      tags: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          name: PropTypes.string.isRequired,
-          type: PropTypes.string.isRequired,
-        }),
-      ),
       groups: PropTypes.arrayOf(
         PropTypes.shape({
           id: PropTypes.number.isRequired,

@@ -12,6 +12,7 @@ export default theme => ({
   },
   card: {
     minWidth: 275,
+    overflow: 'visible',
   },
   cardContent: {
     width: 760,

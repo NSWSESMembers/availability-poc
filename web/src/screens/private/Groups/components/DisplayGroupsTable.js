@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import moment from 'moment/moment';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+
 import { withStyles } from 'material-ui/styles';
 
-import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
 import Chip from 'material-ui/Chip';
+import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
+
+import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../../constants';
 
 import styles from './DisplayGroupsTable.styles';
 
@@ -21,7 +24,7 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
       <TableHead>
         <TableRow>
           <TableCell>Group Name</TableCell>
-          <TableCell>Location/HQ</TableCell>
+          <TableCell>Location</TableCell>
           <TableCell>Capabilities</TableCell>
           <TableCell>Date Updated</TableCell>
           <TableCell>Date Created</TableCell>
@@ -31,11 +34,11 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
         {groups.map((group) => {
           const hasFilterLocation = _.some(
             group.tags,
-            tag => tag.type === 'orgStructure' && tag.name === locationFilter,
+            tag => tag.type === TAG_TYPE_ORG_STRUCTURE && tag.id === parseInt(locationFilter, 10),
           );
           const hasFilterCapability = _.some(
             group.tags,
-            tag => tag.type === 'capability' && tag.name === capabilityFilter,
+            tag => tag.type === TAG_TYPE_CAPABILITY && tag.id === capabilityFilter,
           );
           const hasSearchFilter = group.name.toLowerCase().startsWith(searchFilter.toLowerCase());
 
@@ -50,10 +53,10 @@ const DisplayRequests = ({ classes, groups, locationFilter, capabilityFilter, se
                   <Link to={`/groups/edit/${group.id}`}>{group.name}</Link>
                 </TableCell>
                 <TableCell>
-                  {group.tags.map(tag => displayTag('orgStructure', group, tag))}
+                  {group.tags.map(tag => displayTag(TAG_TYPE_ORG_STRUCTURE, group, tag))}
                 </TableCell>
                 <TableCell>
-                  <div>{group.tags.map(tag => displayTag('capability', group, tag))}</div>
+                  <div>{group.tags.map(tag => displayTag(TAG_TYPE_CAPABILITY, group, tag))}</div>
                 </TableCell>
                 <TableCell>{moment.unix(group.updatedAt).format('LLL')}</TableCell>
                 <TableCell>{moment.unix(group.createdAt).format('LLL')}</TableCell>
