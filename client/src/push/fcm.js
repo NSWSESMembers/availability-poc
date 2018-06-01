@@ -93,7 +93,7 @@ class FCMClient {
   async deregister() {
     // here we tell firebase we don't care about further updates to the push token
     if (this.refreshTokenListener) {
-      this.refreshTokenListener.remove();
+      this.refreshTokenListener();
     }
   }
 }
