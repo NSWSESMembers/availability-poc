@@ -593,8 +593,9 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                         }
                       }),
                     ),
-                  users && 
-                    users.map(u => User.findById(u.id).then(foundUser => foundUser.addGroup(group))),
+                  users &&
+                    users.map(u => User.findById(u.id)
+                      .then(foundUser => foundUser.addGroup(group))),
                 ]).then(() => group.reload()),
               );
           }),
