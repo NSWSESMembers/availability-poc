@@ -146,6 +146,14 @@ export const Schema = [
     eventLocations: [LocationInput]
     groupId: Int!
   }
+  
+  input UpdateGroupInput {
+    id: Int!
+    name: String!
+    tags: [TagInput]
+    icon: String
+    users: [UserInput]
+  }
 
   input SendTestPushInput {
     delay: Boolean
@@ -289,6 +297,7 @@ export const Schema = [
 
   type Mutation {
     createGroup(group: CreateGroupInput!): Group
+    updateGroup(group: UpdateGroupInput!): Group
     createEvent(event: CreateEventInput!): Event
     updateEvent(event: UpdateEventInput!): Event
     createUser(user: CreateUserInput!): User
