@@ -13,6 +13,8 @@ import Typography from 'material-ui/Typography';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 import styles from './Dashboard.styles';
+import Message from '../../components/Messages/Message';
+import ScheduleTable from './Schedules/components/ScheduleTable';
 
 const Dashboard = ({ classes, loading, user }) => {
   if (loading) {
@@ -21,7 +23,7 @@ const Dashboard = ({ classes, loading, user }) => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper} elevation={4}>
+      <Paper className={classes.paper}>
         <Typography variant="headline" component="h3" align="center">
           Welcome to Callout
         </Typography>
@@ -29,14 +31,25 @@ const Dashboard = ({ classes, loading, user }) => {
           An open source availability and event response management system.
         </Typography>
       </Paper>
-      {/* TODO: Hide this when user has added their capabilities */}
       <Paper className={classes.paper}>
-        <Typography component="p" align="center">
-          {/* TODO: update link to go edit profile page */}
+        <Message>
           You have no capabilities assigned for your user profile.{' '}
-          <Link to="/groups">Click here to add capabilities</Link>
-        </Typography>
+          <Link to="/profile">Click here to add capabilities</Link>
+        </Message>
       </Paper>
+      {user.groups.length === 0 ? (
+        <Paper className={classes.paper}>
+          <Message>
+            You are currently not assigned to any groups.{' '}
+            <Link to="/groups">Click here to join groups</Link>
+          </Message>
+        </Paper>
+      ) : (
+        <Paper className={classes.paper}>
+          <Typography variant="title">Outstanding Requests</Typography>
+          <ScheduleTable schedules={user.schedules} />
+        </Paper>
+      )}
     </div>
   );
 };

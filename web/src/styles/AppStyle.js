@@ -8,11 +8,30 @@ export default theme => ({
     alignItems: 'flex-end',
     marginBottom: 10,
   },
+  actionContainer: {
+    padding: 20,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  filters: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
   paper: {
     padding: 16,
-    textAlign: 'center',
+    textAlign: 'left',
     color: theme.palette.text.secondary,
-    overflowX: 'auto',
+    overflowX: 'visible',
+    minWidth: 720,
+  },
+  paperForm: {
+    padding: 16,
+    textAlign: 'left',
+    color: theme.palette.text.secondary,
+    overflowX: 'visible',
+    maxWidth: 720,
   },
   progress: {
     margin: theme.spacing.unit * 2,
@@ -60,7 +79,15 @@ export default theme => ({
     margin: theme.spacing.unit,
     width: '100%',
   },
+  formControlFilter: {
+    margin: theme.spacing.unit,
+    width: 220,
+  },
   menu: {
     width: 200,
+  },
+  chip: {
+    margin: theme.spacing.unit / 2,
+    textAlign: 'left',
   },
 });

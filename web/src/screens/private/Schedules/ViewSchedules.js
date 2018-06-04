@@ -20,7 +20,7 @@ import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
 import Search from 'material-ui-icons/Search';
 
-import Alert from '../../../components/Alerts/Alert';
+import Message from '../../../components/Messages/Message';
 
 import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
 
@@ -31,11 +31,11 @@ import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import styles from './ViewSchedules.styles';
 
 const columnData = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'group', numeric: false, disablePadding: false, label: 'Group' },
-  { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
-  { id: 'startTime', numeric: false, disablePadding: false, label: 'Start Date' },
-  { id: 'endTime', numeric: false, disablePadding: false, label: 'End Date' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'group', numeric: false, disablePadding: false, label: 'Group', enabled: true },
+  { id: 'type', numeric: false, disablePadding: false, label: 'Type', enabled: true },
+  { id: 'startTime', numeric: false, disablePadding: false, label: 'Start Date', enabled: true },
+  { id: 'endTime', numeric: false, disablePadding: false, label: 'End Date', enabled: true },
 ];
 
 class ViewSchedules extends React.Component {
@@ -136,7 +136,7 @@ class ViewSchedules extends React.Component {
           </Toolbar>
 
           {filteredItems.length === 0 ? (
-            <Alert>There are no requests that match this filter.</Alert>
+            <Message>There are no requests that match this filter.</Message>
           ) : (
             <Table className={classes.table}>
               <EnhancedTableHead

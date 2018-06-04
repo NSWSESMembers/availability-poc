@@ -22,6 +22,18 @@ export default gql`
             name
             type
           }
+          users {
+            id
+            username
+            displayName
+            email
+          }
+        }
+        users {
+          id
+          username
+          displayName
+          email
         }
       }
       groups {

@@ -8,41 +8,75 @@ import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import Paper from 'material-ui/Paper';
-import Tabs, { Tab } from 'material-ui/Tabs';
 import Button from 'material-ui/Button';
-import Input, { InputAdornment } from 'material-ui/Input';
+import Input from 'material-ui/Input';
 import { FormControl, FormControlLabel } from 'material-ui/Form';
 import Typography from 'material-ui/Typography';
-import Search from 'material-ui-icons/Search';
 
 import Switch from 'material-ui/Switch';
 
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
+import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
+import JOIN_GROUP_MUTATION from '../../../graphql/join-group.mutation';
+import LEAVE_GROUP_MUTATION from '../../../graphql/leave-group.mutation';
 
-import styles from './ViewGroups.styles';
+import styles from '../../../styles/AppStyle';
 
+// Components
+import Message from '../../../components/Messages/Message';
 import Tag from '../../../components/Selects/Tag';
+import GroupTable from './components/GroupTable';
+
+// Selectors
+import filterGroups from '../../../selectors/groups';
 
 import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
 
-import DisplayGroupsTable from './components/DisplayGroupsTable';
-
 class ViewGroups extends React.Component {
   state = {
-    tab: 0,
     locationFilter: '',
     capabilityFilter: '',
     searchFilter: '',
-    allGroups: false,
+    myGroups: false,
+    order: 'asc',
+    orderBy: 'name',
   };
 
-  handleChange = (e, key) => {
-    const { value } = e.target;
-    this.setState({ [key]: value });
+  handleAdd = (id) => {
+    this.props
+      .joinGroup({
+        groupId: id,
+      })
+      .catch((error) => {
+        this.setState(() => ({ message: error.message, open: true }));
+        setTimeout(() => {
+          this.setState(() => ({ message: '', open: false }));
+        }, 3000);
+      });
   };
 
-  handleTabChange = (event, tab) => {
-    this.setState({ tab });
+  handleRemove = (id) => {
+    this.props
+      .leaveGroup({
+        groupId: id,
+      })
+      .catch((error) => {
+        this.setState(() => ({ message: error.message, open: true }));
+        setTimeout(() => {
+          this.setState(() => ({ message: '', open: false }));
+        }, 3000);
+      });
+  };
+
+  handleSort = (event, property) => {
+    const orderBy = property;
+    let order = 'desc';
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc';
+    }
+
+    this.setState({ order, orderBy });
   };
 
   handleSwitchChange = name => (event) => {
@@ -55,16 +89,28 @@ class ViewGroups extends React.Component {
     });
   };
 
+  handleChange = (e, key) => {
+    const { value } = e.target;
+    this.setState({ [key]: value });
+  };
+
   render() {
     const { classes, loading, user } = this.props;
-    const { tab, locationFilter, capabilityFilter, searchFilter } = this.state;
+    const { locationFilter, capabilityFilter, searchFilter, order, orderBy } = this.state;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
-    const allGroups = user.organisation.groups;
-    const myGroups = user.groups;
+    let groups = this.state.myGroups ? user.groups : user.organisation.groups;
+
+    groups = filterGroups(groups, user.groups, {
+      locationFilter,
+      capabilityFilter,
+      searchFilter,
+      order,
+      orderBy,
+    });
 
     const capabilities = user.organisation.tags
       .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
@@ -91,20 +137,26 @@ class ViewGroups extends React.Component {
           </div>
         </div>
         <Paper className={classes.paper}>
-          <div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
             <FormControlLabel
               control={
                 <Switch
-                  checked={this.state.allGroups}
-                  value="allGroups"
-                  onChange={this.handleSwitchChange('allGroups')}
+                  checked={this.state.myGroups}
+                  value="myGroups"
+                  onChange={this.handleSwitchChange('myGroups')}
                   color="primary"
                 />
               }
               label="Only My groups"
             />
             <div>
-              <FormControl className={classes.formControl}>
+              <FormControl className={classes.formControlFilter}>
                 <Tag
                   list={locations}
                   placeholder="Select Location"
@@ -113,7 +165,7 @@ class ViewGroups extends React.Component {
                   multi={false}
                 />
               </FormControl>
-              <FormControl className={classes.formControl}>
+              <FormControl className={classes.formControlFilter}>
                 <Tag
                   list={capabilities}
                   placeholder="Select Capability"
@@ -122,32 +174,27 @@ class ViewGroups extends React.Component {
                   multi={false}
                 />
               </FormControl>
-              <FormControl className={classes.formControl}>
+              <FormControl className={classes.formControlFilter}>
                 <Input
                   id="groupSearch"
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <Search color="disabled" />
-                    </InputAdornment>
-                  }
+                  placeholder="Search Text..."
                   onChange={e => this.handleChange(e, 'searchFilter')}
                 />
               </FormControl>
             </div>
           </div>
-          <div className={classes.actionPanel}>
-            <Tabs value={tab} onChange={this.handleTabChange}>
-              <Tab label="All Groups" />
-              <Tab label="My Groups" />
-            </Tabs>
-          </div>
-          <DisplayGroupsTable
-            classes={classes}
-            groups={tab === 0 ? allGroups : myGroups}
-            locationFilter={locationFilter}
-            capabilityFilter={capabilityFilter}
-            searchFilter={searchFilter}
-          />
+          {groups.length > 0 ? (
+            <GroupTable
+              groups={groups}
+              order={order}
+              orderBy={orderBy}
+              handleAdd={this.handleAdd}
+              handleRemove={this.handleRemove}
+              handleSort={this.handleSort}
+            />
+          ) : (
+            <Message>No groups found.</Message>
+          )}
         </Paper>
       </div>
     );
@@ -157,6 +204,8 @@ class ViewGroups extends React.Component {
 ViewGroups.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  joinGroup: PropTypes.func.isRequired,
+  leaveGroup: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groups: PropTypes.arrayOf(
       PropTypes.shape({
@@ -191,8 +240,48 @@ const orgQuery = graphql(CURRENT_ORG_QUERY, {
   }),
 });
 
+const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
+  props: ({ mutate }) => ({
+    joinGroup: ({ groupId }) =>
+      mutate({
+        variables: { groupUpdate: { groupId } },
+        refetchQueries: [
+          {
+            query: CURRENT_ORG_QUERY,
+          },
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
+  props: ({ mutate }) => ({
+    leaveGroup: ({ groupId }) =>
+      mutate({
+        variables: { groupUpdate: { groupId } },
+        refetchQueries: [
+          {
+            query: CURRENT_ORG_QUERY,
+          },
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), orgQuery)(ViewGroups);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  orgQuery,
+  joinGroupMutation,
+  leaveGroupMutation,
+)(ViewGroups);

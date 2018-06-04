@@ -19,8 +19,8 @@ import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import styles from '../../../styles/AppStyle';
 
 const columnData = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'details', numeric: false, disablePadding: false, label: 'Details' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'details', numeric: false, disablePadding: false, label: 'Details', enabled: true },
 ];
 
 class ViewEvents extends React.Component {

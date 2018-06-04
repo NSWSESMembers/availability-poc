@@ -14,14 +14,14 @@ import 'react-select/dist/react-select.css';
 import { withStyles } from 'material-ui/styles';
 import styles from './Tag.styles';
 
-import TagOption from './TagOption';
+import SelectOption from './SelectOption';
 
 function SelectWrapped(props) {
   const { classes, ...other } = props;
 
   return (
     <Select
-      optionComponent={TagOption}
+      optionComponent={SelectOption}
       noResultsText={<Typography>No results found</Typography>}
       arrowRenderer={arrowProps =>
         (arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)

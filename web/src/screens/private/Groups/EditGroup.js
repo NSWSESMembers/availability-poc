@@ -7,17 +7,15 @@ import { NavLink } from 'react-router-dom';
 import _ from 'lodash';
 
 // material ui
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
-import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
 import { FormControl } from 'material-ui/Form';
 import Button from 'material-ui/Button';
+import Paper from 'material-ui/Paper';
 
 // gql
-import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 import CREATE_GROUP_MUTATION from '../../../graphql/create-group.mutation';
 import UPDATE_GROUP_MUTATION from '../../../graphql/update-group.mutation';
@@ -28,7 +26,7 @@ import Tag from '../../../components/Selects/Tag';
 // constants
 import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
 
-import styles from './EditGroup.styles';
+import styles from '../../../styles/AppStyle';
 
 class EditGroup extends React.Component {
   state = {
@@ -36,6 +34,7 @@ class EditGroup extends React.Component {
     name: '',
     capabilities: '',
     regions: '',
+    users: '',
   };
 
   componentDidMount() {
@@ -75,11 +74,17 @@ class EditGroup extends React.Component {
           .join(',');
       }
 
+      let users = '';
+      if (group.users !== undefined) {
+        users = group.users.map(user => user.id.toString()).join(',');
+      }
+
       this.setState({
         id: group.id,
         name: group.name,
         regions,
         capabilities,
+        users,
       });
     }
   }
@@ -96,9 +101,10 @@ class EditGroup extends React.Component {
   };
 
   saveGroup = () => {
-    const { name, regions, capabilities } = this.state;
+    const { name, regions, capabilities, users } = this.state;
 
     let tags = [];
+    let usersToAdd = [];
 
     if (regions !== '') {
       tags = tags.concat(regions.split(',').map(tag => ({ id: parseInt(tag, 10) })));
@@ -108,11 +114,16 @@ class EditGroup extends React.Component {
       tags = tags.concat(capabilities.split(',').map(tag => ({ id: parseInt(tag, 10) })));
     }
 
+    if (users !== '') {
+      usersToAdd = users.split(',').map(user => ({ id: parseInt(user, 10) }));
+    }
+
     if (this.state.id === 0) {
       this.props
         .createGroup({
           name,
           tags,
+          users: usersToAdd,
         })
         .then(() => {
           const { history } = this.props;
@@ -130,6 +141,7 @@ class EditGroup extends React.Component {
           id: this.state.id,
           name,
           tags,
+          users: usersToAdd,
         })
         .then(() => {
           const { history } = this.props;
@@ -160,61 +172,70 @@ class EditGroup extends React.Component {
       .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
+    const users = user.organisation.users.map(u => ({
+      value: u.id.toString(),
+      label: u.displayName,
+    }));
+
     return (
       <div className={classes.root}>
-        <Card className={classes.card}>
-          <CardContent className={classes.cardContent}>
-            <div style={{ display: 'flex' }}>
-              <NavLink to="/groups">
-                <ArrowBackIcon className={classes.cardIcon} />
-              </NavLink>
-              <Typography variant="title" color="inherit" className={classes.cardTitle}>
-                {this.state.id === 0 ? 'Add New' : 'Edit'} Group
-              </Typography>
-            </div>
-            <FormControl className={classes.formControl}>
-              <TextField
-                id="name"
-                className={classes.textField}
-                value={name}
-                onChange={e => this.handleChange(e, 'name')}
-                margin="normal"
-                placeholder="Enter Group..."
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Tag
-                list={regions}
-                label="Regions"
-                placeholder="Select..."
-                onChange={this.handleTagChange('regions')}
-                value={this.state.regions}
-                multi
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Tag
-                list={capabilities}
-                label="Capabilities"
-                placeholder="Select..."
-                onChange={this.handleTagChange('capabilities')}
-                value={this.state.capabilities}
-                multi
-              />
-            </FormControl>
-            <div className={classes.actionsContainer}>
-              <Button
-                variant="raised"
-                color="primary"
-                onClick={this.saveGroup}
-                className={classes.button}
-                disabled={this.state.name === ''}
-              >
-                Update
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className={classes.actionPanel}>
+          <Typography variant="title">{this.state.id === 0 ? 'Add New' : 'Edit'} Group</Typography>
+        </div>
+        <Paper className={classes.paperForm}>
+          <FormControl className={classes.formControl}>
+            <TextField
+              id="name"
+              className={classes.textField}
+              value={name}
+              onChange={e => this.handleChange(e, 'name')}
+              margin="normal"
+              placeholder="Enter Group..."
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Tag
+              list={regions}
+              label="Regions"
+              placeholder="Select..."
+              onChange={this.handleTagChange('regions')}
+              value={this.state.regions}
+              multi
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Tag
+              list={capabilities}
+              label="Capabilities"
+              placeholder="Select..."
+              onChange={this.handleTagChange('capabilities')}
+              value={this.state.capabilities}
+              multi
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <Tag
+              list={users}
+              label="Users"
+              placeholder="Select..."
+              onChange={this.handleTagChange('users')}
+              value={this.state.users}
+              multi
+            />
+          </FormControl>
+          <div className={classes.actionContainer}>
+            <Button
+              variant="raised"
+              color="primary"
+              onClick={this.saveGroup}
+              className={classes.button}
+              disabled={this.state.name === ''}
+            >
+              Update
+            </Button>
+            <NavLink to="/groups">Cancel</NavLink>
+          </div>
+        </Paper>
       </div>
     );
   }
@@ -260,7 +281,7 @@ const createGroupMutation = graphql(CREATE_GROUP_MUTATION, {
         variables: { group: { name, tags, icon, users } },
         refetchQueries: [
           {
-            query: CURRENT_USER_QUERY,
+            query: CURRENT_ORG_QUERY,
           },
         ],
       }),
@@ -274,7 +295,7 @@ const updateGroupMutation = graphql(UPDATE_GROUP_MUTATION, {
         variables: { group: { id, name, tags, icon, users } },
         refetchQueries: [
           {
-            query: CURRENT_USER_QUERY,
+            query: CURRENT_ORG_QUERY,
           },
         ],
       }),

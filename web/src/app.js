@@ -58,6 +58,16 @@ const theme = createMuiTheme({
     },
     // error: will use the default color
   },
+  overrides: {
+    MuiTableCell: {
+      // Name of the component ⚛️ / style shee
+      root: {
+        // Name of the rule
+        padding: 0, // Some CSS
+        paddingRight: 10, // Some CSS
+      },
+    },
+  },
 });
 
 const jsx = (

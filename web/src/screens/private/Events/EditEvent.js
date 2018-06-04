@@ -4,12 +4,9 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { NavLink } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Button from 'material-ui/Button';
-import Card, { CardContent } from 'material-ui/Card';
 import { InputLabel } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
 import { CircularProgress } from 'material-ui/Progress';
@@ -18,6 +15,7 @@ import Select from 'material-ui/Select';
 import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
+import Paper from 'material-ui/Paper';
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';
@@ -256,172 +254,167 @@ class EditEvent extends React.Component {
     }
 
     return (
-      <form className={classes.root}>
-        <Card className={classes.card}>
-          <CardContent className={classes.cardContent}>
-            <div style={{ display: 'flex' }}>
-              <NavLink to="/events">
-                <ArrowBackIcon className={classes.cardIcon} />
-              </NavLink>
-              <Typography variant="title" color="inherit" className={classes.cardTitle}>
-                {this.state.id === 0 ? 'Add New' : 'Edit'} Event
-              </Typography>
-            </div>
-            <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((label, index) => (
-                <Step key={this.state.id}>
-                  <StepLabel>
-                    {label}
-                    {
-                      index === 0 &&
-                      activeStep !== 0 &&
-                      this.state.groupId !== 0 &&
-                      <span> : {this.state.groupName}</span>
-                    }
-                    {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
-                  </StepLabel>
-                  <StepContent>
-                    <Typography>{getStepContent(index)}</Typography>
-                    {index === 0 && (
+      <div className={classes.root}>
+        <div className={classes.actionPanel}>
+          <Typography variant="title">
+            {this.state.id === 0 ? 'Add New' : 'Edit'} Event
+          </Typography>
+        </div>
+        <Paper className={classes.paperForm}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((label, index) => (
+              <Step key={this.state.id}>
+                <StepLabel>
+                  {label}
+                  {
+                    index === 0 &&
+                    activeStep !== 0 &&
+                    this.state.groupId !== 0 &&
+                    <span> : {this.state.groupName}</span>
+                  }
+                  {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
+                </StepLabel>
+                <StepContent>
+                  <Typography>{getStepContent(index)}</Typography>
+                  {index === 0 && (
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="groupId" required>
+                        group
+                      </InputLabel>
+                      <Select
+                        value={this.state.groupId}
+                        onChange={this.onGroupChange}
+                        inputProps={{
+                          name: 'groupId',
+                          id: 'groupId',
+                        }}
+                        required
+                      >
+                        <MenuItem value="" key={0}>
+                          <em>none</em>
+                        </MenuItem>
+                        {this.props.user.groups.map(group => (
+                          <MenuItem value={group.id} key={group.id}>
+                            {group.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                  {index === 1 && (
+                    <div>
                       <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="groupId" required>
-                          group
+                        <TextField
+                          required
+                          id="name"
+                          label="name"
+                          type="text"
+                          margin="normal"
+                          value={this.state.name}
+                          onChange={this.onNameChange}
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formControl}>
+                        <TextField
+                          required
+                          id="details"
+                          label="details"
+                          multiline
+                          rowsMax="4"
+                          value={this.state.details}
+                          onChange={this.onDetailsChange}
+                          className={classes.textField}
+                          margin="normal"
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                  {index === 2 && (
+                    <div>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="scene" required>
+                          Scene
                         </InputLabel>
                         <Select
-                          value={this.state.groupId}
-                          onChange={this.onGroupChange}
-                          inputProps={{
-                            name: 'groupId',
-                            id: 'groupId',
-                          }}
+                          value={this.state.scene !== undefined ? this.state.scene.id : ''}
+                          onChange={this.onSceneChange}
                           required
                         >
-                          <MenuItem value="" key={0}>
+                          <MenuItem value={0}>
                             <em>none</em>
                           </MenuItem>
-                          {this.props.user.groups.map(group => (
-                            <MenuItem value={group.id} key={group.id}>
-                              {group.name}
+                          {this.state.scenesList.map(option => (
+                            <MenuItem
+                              value={option.id}
+                              key={`${this.state.id}-scene-${option.id}`}
+                            >
+                              {option.detail}
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
-                    )}
-                    {index === 1 && (
-                      <div>
-                        <FormControl className={classes.formControl}>
-                          <TextField
-                            required
-                            id="name"
-                            label="name"
-                            type="text"
-                            margin="normal"
-                            value={this.state.name}
-                            onChange={this.onNameChange}
-                          />
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
-                          <TextField
-                            required
-                            id="details"
-                            label="details"
-                            multiline
-                            rowsMax="4"
-                            value={this.state.details}
-                            onChange={this.onDetailsChange}
-                            className={classes.textField}
-                            margin="normal"
-                          />
-                        </FormControl>
-                      </div>
-                    )}
-                    {index === 2 && (
-                      <div>
-                        <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="scene" required>
-                            Scene
-                          </InputLabel>
-                          <Select
-                            value={this.state.scene !== undefined ? this.state.scene.id : ''}
-                            onChange={this.onSceneChange}
-                            required
-                          >
-                            <MenuItem value={0}>
-                              <em>none</em>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="lhq">Local HQ</InputLabel>
+                        <Select
+                          value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
+                          onChange={this.onLHQChange}
+                        >
+                          <MenuItem value={0}>
+                            <em>none</em>
+                          </MenuItem>
+                          {this.state.lhqsList.map(option => (
+                            <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
+                              {option.detail}
                             </MenuItem>
-                            {this.state.scenesList.map(option => (
-                              <MenuItem
-                                value={option.id}
-                                key={`${this.state.id}-scene-${option.id}`}
-                              >
-                                {option.detail}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="lhq">Local HQ</InputLabel>
-                          <Select
-                            value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
-                            onChange={this.onLHQChange}
-                          >
-                            <MenuItem value={0}>
-                              <em>none</em>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="helo">Helo</InputLabel>
+                        <Select
+                          value={this.state.helo !== undefined ? this.state.helo.id : ''}
+                          onChange={this.onHeloChange}
+                        >
+                          <MenuItem value={0}>
+                            <em>none</em>
+                          </MenuItem>
+                          {this.state.helosList.map(option => (
+                            <MenuItem
+                              value={option.id}
+                              key={`${this.state.id}-helo-${option.id}`}
+                            >
+                              {option.detail}
                             </MenuItem>
-                            {this.state.lhqsList.map(option => (
-                              <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
-                                {option.detail}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="helo">Helo</InputLabel>
-                          <Select
-                            value={this.state.helo !== undefined ? this.state.helo.id : ''}
-                            onChange={this.onHeloChange}
-                          >
-                            <MenuItem value={0}>
-                              <em>none</em>
-                            </MenuItem>
-                            {this.state.helosList.map(option => (
-                              <MenuItem
-                                value={option.id}
-                                key={`${this.state.id}-helo-${option.id}`}
-                              >
-                                {option.detail}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-                    )}
-                    <div className={classes.actionsContainer}>
-                      <Button disabled={activeStep === 0} onClick={this.handleBack}>
-                        Back
-                      </Button>
-                      <Button
-                        variant="raised"
-                        color="primary"
-                        onClick={this.handleNext}
-                        className={classes.button}
-                        disabled={
-                          (activeStep === 0 && this.state.groupId === '') ||
-                          (activeStep === 1 &&
-                            (this.state.name === '' || this.state.details === '')) ||
-                          (activeStep === 2 && this.state.scene === '')
-                        }
-                      >
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                      </Button>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </div>
-                  </StepContent>
-                </Step>
-              ))}
-            </Stepper>
-          </CardContent>
-        </Card>
-      </form>
+                  )}
+                  <div className={classes.actionsContainer}>
+                    <Button disabled={activeStep === 0} onClick={this.handleBack}>
+                      Back
+                    </Button>
+                    <Button
+                      variant="raised"
+                      color="primary"
+                      onClick={this.handleNext}
+                      className={classes.button}
+                      disabled={
+                        (activeStep === 0 && this.state.groupId === '') ||
+                        (activeStep === 1 &&
+                          (this.state.name === '' || this.state.details === '')) ||
+                        (activeStep === 2 && this.state.scene === '')
+                      }
+                    >
+                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    </Button>
+                  </div>
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+        </Paper>
+      </div>
     );
   }
 }
