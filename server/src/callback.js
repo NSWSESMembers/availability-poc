@@ -1,9 +1,9 @@
 import { Op } from 'sequelize';
 
-
 const SESCallback = {
   creator: undefined,
   models: undefined,
+  push: undefined,
   eventCallback(req, res) {
     const job = {
       name: `${req.body.SimpleJobViewModel.JobType.Name} - ${req.body.SimpleJobViewModel.Address.PrettyAddress}`,
@@ -25,28 +25,33 @@ const SESCallback = {
       sourceIdentifier: job.identifier,
       permalink: `https://beacon.com/job/${job.identifier}`,
       group: group || { id: 1 },
-    }).then(event => Promise.all(
-      [
-        this.creator.eventLocation({
-          name: 'lhq',
-          detail: req.body.SimpleJobViewModel.EntityAssignedTo.Code,
-          icon: 'mci-castle',
-          locationLatitude: req.body.SimpleJobViewModel.EntityAssignedTo.Latitude,
-          locationLongitude: req.body.SimpleJobViewModel.EntityAssignedTo.Longitude,
-          primaryLocation: true,
-          event,
-        }),
-        this.creator.eventLocation({
-          name: 'scene',
-          detail: req.body.SimpleJobViewModel.Address.PrettyAddress,
-          icon: 'mci-target',
-          locationLatitude: req.body.SimpleJobViewModel.Address.Latitude,
-          locationLongitude: req.body.SimpleJobViewModel.Address.Longitude,
-          primaryLocation: false,
-          event,
-        }),
-      ],
-    )),
+    }).then((event) => {
+      Promise.all(
+        [
+          this.creator.eventLocation({
+            name: 'lhq',
+            detail: req.body.SimpleJobViewModel.EntityAssignedTo.Code,
+            icon: 'mci-castle',
+            locationLatitude: req.body.SimpleJobViewModel.EntityAssignedTo.Latitude,
+            locationLongitude: req.body.SimpleJobViewModel.EntityAssignedTo.Longitude,
+            primaryLocation: true,
+            event,
+          }),
+          this.creator.eventLocation({
+            name: 'scene',
+            detail: req.body.SimpleJobViewModel.Address.PrettyAddress,
+            icon: 'mci-target',
+            locationLatitude: req.body.SimpleJobViewModel.Address.Latitude,
+            locationLongitude: req.body.SimpleJobViewModel.Address.Longitude,
+            primaryLocation: false,
+            event,
+          }),
+        ],
+
+      ).then(() => {
+        this.push.pushEventToGroup(event);
+      });
+    }),
     )).then(() => {
       const result = {
         status: 'OK',
@@ -65,10 +70,11 @@ const SESCallback = {
   },
 };
 
-function getCallback(type, creator, models) {
+function getCallback(type, creator, models, push) {
   if (type === 'ses-hook') {
     SESCallback.creator = creator;
     SESCallback.models = models;
+    SESCallback.push = push;
 
     return SESCallback.eventCallback.bind(SESCallback);
   }

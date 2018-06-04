@@ -23,11 +23,12 @@ if (apnProvider === null) {
   console.warn('No APNS_KEY is set');
 }
 
-const sendPush = ({ token, message }) => {
+const sendPush = ({ token, message, payload }) => {
   const note = new apn.Notification();
   note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
   note.alert = message;
   note.topic = topic;
+  note.payload = payload;
 
   if (apnProvider === null) {
     console.log('Cannot send APNS push - maybe you forgot to set APNS_KEY');
