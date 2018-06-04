@@ -143,6 +143,11 @@ const updateDeviceMutation = graphql(UPDATE_DEVICE_MUTATION, {
     updateDevice: device =>
       mutate({
         variables: { device },
+        update: (store) => {
+          // read the current device object, write in the new token, save it out
+          const data = store.readQuery({ query: CURRENT_DEVICE_QUERY });
+          store.writeQuery({ query: CURRENT_DEVICE_QUERY, data });
+        },
       }),
   }),
 });

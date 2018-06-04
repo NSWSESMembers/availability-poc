@@ -56,22 +56,30 @@ class FCMClient {
   }
 
   async register() {
-    const self = this;
-
     // the FCM token might change over time so we register here for updates and push them through
     // to the pushManager
     this.refreshTokenListener = this.FCM.onTokenRefresh((token) => {
-      self.token = token;
-      self.pushManager.updateToken(self.serviceName, token);
+      this.didRegister(token);
     });
 
     // here we return a Promise that fulfills once the token becomes available but we're still
     // responsible for sending it through to the pushManager
-    return this.FCM.getToken().then((token) => {
-      self.token = token;
-      self.pushManager.updateToken(self.serviceName, token);
+    this.FCM.getToken().then((token) => {
+      this.didRegister(token);
+    });
+
+    // block until we get a push token
+    await new Promise((resolve, reject) => {
+      this.gotToken = resolve;
+      this.failedToGetToken = reject;
     });
   }
+
+  didRegister = (token) => {
+    console.log('Registered for push: ', token);
+    this.pushManager.updateToken(this.serviceName, token);
+    this.gotToken(token);
+  };
 
   // eslint-disable-next-line
   clear() {
