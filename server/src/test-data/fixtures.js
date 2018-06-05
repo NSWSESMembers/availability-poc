@@ -354,6 +354,7 @@ export const EVENTS = [
     details: '2 climbers stranded 50m from top of cliff.',
     sourceIdentifier: '654-321',
     permalink: 'https://jobssytem.com/jobs/c33367701511b4f6020ec61ded352059',
+    priority: 3,
     group: 'Kiama',
     eventLocations: [
       {
@@ -417,6 +418,7 @@ export const EVENTS = [
     details: '2 car MVA. Head on collision. 3 people trapped.',
     sourceIdentifier: '123-456',
     permalink: 'https://jobssytem.com/jobs/123456',
+    priority: 1,
     group: 'Kiama',
     eventLocations: [
       {
@@ -487,6 +489,7 @@ export const EVENTS = [
     details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
     sourceIdentifier: '111-222',
     permalink: 'https://jobssytem.com/jobs/111-222',
+    priority: 2,
     group: 'Parramatta',
     eventLocations: [
       {

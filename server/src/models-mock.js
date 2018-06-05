@@ -44,6 +44,7 @@ export const defineModels = () => {
     details: 'Details of test event',
     sourceIdentifier: '123-456',
     permalink: 'https://jobsystem.com/jobs/123456',
+    priority: 1,
     startTime: 1514860289,
     endTime: 1514860289 + (60 * 60),
   });

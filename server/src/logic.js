@@ -339,7 +339,15 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return EventLocation.findById(event.primaryLocationId);
       },
       createEvent(_, args, ctx) {
-        const { name, details, sourceIdentifier, permalink, eventLocations, groupId } = args.event;
+        const {
+          name,
+          details,
+          sourceIdentifier,
+          permalink,
+          priority,
+          eventLocations,
+          groupId,
+        } = args.event;
         return getAuthenticatedUser(ctx).then(() =>
           Group.findById(groupId).then((group) => {
             if (!group) {
@@ -350,6 +358,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
               details,
               sourceIdentifier,
               permalink,
+              priority,
               group,
             }).then((event) => {
               if (typeof eventLocations === 'undefined') return;
@@ -376,6 +385,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           details,
           sourceIdentifier,
           permalink,
+          priority,
           eventLocations,
           groupId,
         } = args.event;
@@ -390,6 +400,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                 details,
                 sourceIdentifier,
                 permalink,
+                priority,
                 groupId,
               })
               .then(() => {

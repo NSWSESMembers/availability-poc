@@ -29,7 +29,7 @@ export const getCreators = (models) => {
       });
     },
 
-    event: ({ name, details, sourceIdentifier, permalink, group }) => {
+    event: ({ name, details, sourceIdentifier, permalink, priority, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -38,6 +38,7 @@ export const getCreators = (models) => {
         details,
         sourceIdentifier,
         permalink,
+        priority,
         groupId: group.id,
         startTime: Math.floor((new Date()).getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
