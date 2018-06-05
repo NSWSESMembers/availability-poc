@@ -276,6 +276,7 @@ export const SCHEDULES = [
   {
     name: 'Wagga Wagga OOA availability',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
+    priority: 4,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
     group: 'NSW SES',
@@ -289,6 +290,7 @@ export const SCHEDULES = [
   {
     name: 'Kiama rescue availability',
     details: 'Ongoing availability for RCR, VR, GLR',
+    priority: 3,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Kiama',
@@ -301,6 +303,7 @@ export const SCHEDULES = [
   {
     name: 'Kiama storm availability',
     details: 'Non-urgent availability for storm jobs during this week',
+    priority: 5,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Kiama',
@@ -314,6 +317,7 @@ export const SCHEDULES = [
   {
     name: 'Parramatta storm availability',
     details: 'Non-urgent availability for storm jobs',
+    priority: 5,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Parramatta',
