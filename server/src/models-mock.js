@@ -51,6 +51,7 @@ export const defineModels = () => {
   const ScheduleModel = db.define('schedule', {
     name: 'Test schedule',
     details: 'Details of test schedule',
+    priority: 1,
     startTime: 1514860289,
     endTime: 1514860289 + (60 * 60),
   });

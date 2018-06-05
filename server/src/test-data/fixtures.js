@@ -328,6 +328,7 @@ export const SCHEDULES = [
   {
     name: 'Metro L3',
     details: 'Metro - Flood Rescue operator availability',
+    priority: 2,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
@@ -335,6 +336,7 @@ export const SCHEDULES = [
   {
     name: 'Metro IMT',
     details: 'Mtro - IMT operator availability',
+    priority: 3,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
@@ -342,6 +344,7 @@ export const SCHEDULES = [
   {
     name: 'OCES - Weekly Meeting',
     details: 'Weekly Monday meeting',
+    priority: 9,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 1),
     group: 'NSW SES',
