@@ -7,7 +7,10 @@
 hasRun=false
 for i in {0..10}
 do
+  echo "Getting server health via /healthcheck..."
   serverHealth=$(curl --write-out %{http_code} --silent --output /dev/null http://localhost:8080/healthcheck)
+  echo "Server healthcheck returned..."$serverHealth
+
   if [ $serverHealth -eq 200 ]
   then
     hasRun=true
