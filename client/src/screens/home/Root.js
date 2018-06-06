@@ -45,7 +45,7 @@ const userQuery = graphql(CURRENT_USER_QUERY, {
 HomeScreen.propTypes = {
   loading: PropTypes.bool,
   networkStatus: PropTypes.number,
-  refetch: PropTypes.func.isRequired,
+  refetch: PropTypes.func,
   screenProps: PropTypes.shape({
     modalNavigation: PropTypes.shape({
       push: PropTypes.func.isRequired,
