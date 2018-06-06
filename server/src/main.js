@@ -20,7 +20,7 @@ const GRAPHQL_PATH = '/graphql';
 
 const port = process.env.PORT ? process.env.PORT : GRAPHQL_PORT;
 
-const { models } = setupDb();
+const { models, db } = setupDb();
 const creators = getCreators(models);
 const { User, Device } = models;
 
@@ -80,6 +80,29 @@ app.use(
     endpointURL: GRAPHQL_PATH,
   }),
 );
+
+// Quick and simple health check endpoint that returns uptime and DB connector health
+app.use('/healthcheck', (_, res) => {
+  let status = 500;
+  const response = {};
+  response.uptime = Math.round(process.uptime());
+  try {
+    db
+      .authenticate()
+      .then(() => {
+        status = 200;
+        response.dbConnector = 'healthy';
+        res.status(status).json(response);
+      })
+      .catch(() => {
+        status = 500;
+        response.dbConnector = 'unhealthy';
+        res.status(status).json(response);
+      });
+  } catch (e) {
+    res.status(500).json(e);
+  }
+});
 
 app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators, models));
 
