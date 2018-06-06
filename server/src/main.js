@@ -90,13 +90,25 @@ app.use('/healthcheck', (_, res) => {
     db
       .authenticate()
       .then(() => {
-        status = 200;
-        response.dbConnector = 'healthy';
-        res.status(status).json(response);
+        response.dbConnected = true;
+        models.Organisation.findAll().then((orgResult) => {
+          if (orgResult.length) {
+            status = 200;
+            response.dbDataLoad = true;
+          } else {
+            status = 500;
+            response.dbDataLoad = false;
+          }
+          res.status(status).json(response);
+        }).catch((e) => {
+          status = 500;
+          response.dbDataLoad = e;
+          res.status(status).json(response);
+        });
       })
-      .catch(() => {
+      .catch((e) => {
         status = 500;
-        response.dbConnector = 'unhealthy';
+        response.dbConnector = e;
         res.status(status).json(response);
       });
   } catch (e) {
