@@ -85,7 +85,9 @@ app.use(
 app.use('/healthcheck', (_, res) => {
   let status = 500;
   const response = {};
-  response.uptime = Math.round(process.uptime());
+  response.dbConnected = false; // DB can connect
+  response.dbDataLoad = false; // DB has an Organisation
+  response.uptime = Math.round(process.uptime()); // Uptime of server
   try {
     db
       .authenticate()
@@ -95,19 +97,14 @@ app.use('/healthcheck', (_, res) => {
           if (orgResult.length) {
             status = 200;
             response.dbDataLoad = true;
-          } else {
-            status = 500;
-            response.dbDataLoad = false;
           }
           res.status(status).json(response);
         }).catch((e) => {
-          status = 500;
           response.dbDataLoad = e;
           res.status(status).json(response);
         });
       })
       .catch((e) => {
-        status = 500;
         response.dbConnector = e;
         res.status(status).json(response);
       });
