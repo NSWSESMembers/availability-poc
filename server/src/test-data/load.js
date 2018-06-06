@@ -66,8 +66,8 @@ const createTags = (Creators, organisation) => {
 
 const createSchedule = (Creators, schedule, groups) => {
   const group = groups[schedule.group];
-  const { name, details, startTime, endTime } = schedule;
-  return Creators.schedule({ name, details, startTime, endTime, group });
+  const { name, details, priority, startTime, endTime } = schedule;
+  return Creators.schedule({ name, details, priority, startTime, endTime, group });
 };
 
 const createSchedules = (Creators, groups) => {

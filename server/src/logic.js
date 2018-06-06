@@ -233,21 +233,23 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return schedule.getGroup();
       },
       createSchedule(_, args) {
-        const { name, details, startTime, endTime, groupId } = args.schedule;
+        const { name, details, priority, startTime, endTime, groupId } = args.schedule;
 
-        return Group.findById(groupId).then((group) => {
-          if (!group) {
-            return Promise.reject(Error('Invalid group'));
-          }
-          // TODO: check whether the user is a member of the group
-          return Creators.schedule({
-            name,
-            details,
-            startTime,
-            endTime,
-            group,
+        return Group.findById(groupId)
+          .then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Invalid group'));
+            }
+            // TODO: check whether the user is a member of the group
+            return Creators.schedule({
+              name,
+              details,
+              priority,
+              startTime,
+              endTime,
+              group,
+            });
           });
-        });
       },
       messages(event) {
         return event.getMessages();

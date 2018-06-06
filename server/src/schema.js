@@ -266,6 +266,7 @@ export const Schema = [
     id: Int!
     name: String!
     details: String!
+    priority: Int
     startTime: Int!
     endTime: Int!
     timeSegments: [TimeSegment]!
