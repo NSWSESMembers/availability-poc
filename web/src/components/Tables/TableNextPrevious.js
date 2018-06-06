@@ -1,22 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import styles from './TableNextPrevious.styles';
+import Button from 'material-ui/Button';
 
-const TableNextPrevious = ({ classes, children, hasNext, hasPrevious, pressNext, pressPrevious }) =>
-  (hasNext ||
-  hasPrevious) && (
-    <div className={classes.navPanel}>
-      <div>{hasPrevious && <button onClick={pressPrevious}>Previous</button>}</div>
-      <div>{children}</div>
-      <div>{hasNext && <button onClick={pressNext}>Next</button>}</div>
-    </div>
-  );
+import { withStyles } from 'material-ui/styles';
+import styles from '../../styles/AppStyle';
+
+const TableNextPrevious = ({ classes, hasNext, hasPrevious, pressNext, pressPrevious }) => (
+  <div>
+    {
+      <Button
+        size="small"
+        variant="raised"
+        color="primary"
+        className={classes.button}
+        onClick={pressPrevious}
+        disabled={!hasPrevious}
+      >
+        Previous
+      </Button>
+    }
+    {
+      <Button
+        size="small"
+        variant="raised"
+        color="primary"
+        className={classes.button}
+        onClick={pressNext}
+        disabled={!hasNext}
+      >
+        Next
+      </Button>
+    }
+  </div>
+);
 
 TableNextPrevious.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  children: PropTypes.node,
   hasNext: PropTypes.bool.isRequired,
   hasPrevious: PropTypes.bool.isRequired,
   pressNext: PropTypes.func.isRequired,

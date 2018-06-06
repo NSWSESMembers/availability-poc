@@ -6,7 +6,7 @@ import Avatar from 'material-ui/Avatar';
 import Badge from 'material-ui/Badge';
 import PersonIcon from 'material-ui-icons/Person';
 
-import { convertStatus } from '../../../selectors/status';
+import { convertStatus } from '../../../../selectors/status';
 
 import styles from './TimeCountLabel.styles';
 

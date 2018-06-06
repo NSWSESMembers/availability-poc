@@ -7,7 +7,6 @@ export const dateColumns = (startTime, endTime) => {
   const diff = endTime.diff(startTime, 'days');
 
   for (let i = 1; i <= diff; i += 1) {
-    startTime.add(1, 'days');
     columnData.push({
       id: i,
       label: startTime.format('ddd, MMM D'),
@@ -17,6 +16,7 @@ export const dateColumns = (startTime, endTime) => {
         .add(1, 'days')
         .unix(),
     });
+    startTime.add(1, 'days');
   }
   return columnData;
 };

@@ -6,7 +6,6 @@ export default theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: 10,
   },
   actionContainer: {
     padding: 20,
@@ -33,6 +32,14 @@ export default theme => ({
     overflowX: 'visible',
     maxWidth: 720,
   },
+  paperMargin: {
+    padding: 16,
+    textAlign: 'left',
+    color: theme.palette.text.secondary,
+    overflowX: 'visible',
+    minWidth: 720,
+    marginTop: 16,
+  },
   progress: {
     margin: theme.spacing.unit * 2,
   },
@@ -44,10 +51,6 @@ export default theme => ({
     justifyContent: 'space-between',
     width: '100%',
     minHeight: 40,
-  },
-  tableCell: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   card: {
     minWidth: 275,
@@ -89,5 +92,45 @@ export default theme => ({
   chip: {
     margin: theme.spacing.unit / 2,
     textAlign: 'left',
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+  buttonSmall: {
+    margin: theme.spacing.unit,
+    height: 24,
+  },
+  buttonIcon: {
+    padding: 0,
+  },
+  tableCellHeader: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    padding: 0,
+  },
+  tableCellHeaderDisabled: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    padding: 0,
+    backgroundColor: '#CCC',
+    color: 'white',
+  },
+  tableCellHeaderFirst: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+  },
+  tableCellFirst: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+  },
+  tableCellDisabled: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    backgroundColor: '#CCC',
   },
 });

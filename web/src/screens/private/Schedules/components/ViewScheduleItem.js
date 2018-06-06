@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { TableCell } from 'material-ui/Table';
 
-import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
+import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../../config';
 import styles from './ViewScheduleItem.styles';
-import TimeLabel from '../../../components/Labels/TimeLabel';
-import { statusCount } from '../../../selectors/status';
+import TimeLabel from '../../../../components/Labels/TimeLabel';
+import { statusCount } from '../../../../selectors/status';
 
 const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onOpenModal }) => {
   const currentSegments = timeSegments.filter(

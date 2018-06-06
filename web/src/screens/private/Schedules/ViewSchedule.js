@@ -8,19 +8,13 @@ import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
-import ExpansionPanel, {
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
 
 import { peopleCount, searchTimeSegments } from '../../../selectors/timeSegments';
-import { dateColumns, dateScheduleLabel } from '../../../selectors/dates';
+import { dateColumns } from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
 import {
@@ -29,17 +23,22 @@ import {
   UPDATE_TIME_SEGMENT_MUTATION,
 } from '../../../graphql/time-segment.mutation';
 
-import TimeCountLabel from './TimeCountLabel';
-import ViewScheduleItem from './ViewScheduleItem';
+import DayWeek from './components/DayWeek';
+import TimeCountLabel from './components/TimeCountLabel';
+import ViewScheduleItem from './components/ViewScheduleItem';
 import TimeModal from '../../../components/Modals/TimeModal';
 import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
+import ScheduleHeader from './components/ScheduleHeader';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
-import styles from './ViewSchedule.styles';
+import styles from '../../../styles/AppStyle';
 
 class ViewSchedule extends React.Component {
   state = {
-    startTimeRange: moment().isoWeekday(1).startOf('week').unix(),
-    endTimeRange: moment().isoWeekday(1).startOf('week').add(7, 'days')
+    startTimeRange: moment().isoWeekday(1).startOf('week')
+      .add(1, 'days')
+      .unix(),
+    endTimeRange: moment().isoWeekday(1).startOf('week').add(8, 'days')
       .unix(),
     modalOpen: false,
     modalStatus: '',
@@ -50,6 +49,11 @@ class ViewSchedule extends React.Component {
     modalTimeSegmentStartTime: 0,
     modalTimeSegmentEndTime: 0,
   };
+
+  onDay = () => {
+    const { history } = this.props;
+    history.push(`/schedules/${this.props.match.params.id}/${this.state.startTimeRange}`);
+  }
 
   onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
     // find existing segments
@@ -147,23 +151,19 @@ class ViewSchedule extends React.Component {
 
     return (
       <div className={classes.root}>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="title" className={classes.paperTitle} gutterBottom>
-              {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
-            </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Typography>{schedule.details}</Typography>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <Paper className={classes.rootPaper}>
-          <TableNextPrevious
-            hasNext={scheduleEnd > this.state.endTimeRange}
-            hasPrevious={scheduleStart < this.state.startTimeRange}
-            pressNext={this.onNextDateRange}
-            pressPrevious={this.onPreviousDateRange}
-          />
+        <ScheduleHeader schedule={schedule} />
+        <Paper className={classes.paperMargin}>
+          <SpreadPanel>
+            <DayWeek dayDisabled={false} weekDisabled onDay={this.onDay} />
+            <TableNextPrevious
+              hasNext={scheduleEnd > this.state.endTimeRange}
+              hasPrevious={scheduleStart < this.state.startTimeRange}
+              pressNext={this.onNextDateRange}
+              pressPrevious={this.onPreviousDateRange}
+            />
+          </SpreadPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
@@ -324,6 +324,7 @@ class ViewSchedule extends React.Component {
 }
 
 ViewSchedule.propTypes = {
+  history: PropTypes.shape({}).isRequired,
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
   match: PropTypes.shape({

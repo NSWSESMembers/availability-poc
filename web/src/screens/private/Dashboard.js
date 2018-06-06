@@ -12,7 +12,7 @@ import Typography from 'material-ui/Typography';
 
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
-import styles from './Dashboard.styles';
+import styles from '../../styles/AppStyle';
 import Message from '../../components/Messages/Message';
 import ScheduleTable from './Schedules/components/ScheduleTable';
 
@@ -31,21 +31,21 @@ const Dashboard = ({ classes, loading, user }) => {
           An open source availability and event response management system.
         </Typography>
       </Paper>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paperMargin}>
         <Message>
           You have no capabilities assigned for your user profile.{' '}
           <Link to="/profile">Click here to add capabilities</Link>
         </Message>
       </Paper>
       {user.groups.length === 0 ? (
-        <Paper className={classes.paper}>
+        <Paper className={classes.paperMargin}>
           <Message>
             You are currently not assigned to any groups.{' '}
             <Link to="/groups">Click here to join groups</Link>
           </Message>
         </Paper>
       ) : (
-        <Paper className={classes.paper}>
+        <Paper className={classes.paperMargin}>
           <Typography variant="title">Outstanding Requests</Typography>
           <ScheduleTable schedules={user.schedules} />
         </Paper>
@@ -74,4 +74,8 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(Dashboard);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  userQuery,
+)(Dashboard);

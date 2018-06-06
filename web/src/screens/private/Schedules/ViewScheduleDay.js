@@ -3,38 +3,64 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
-import styles from './ViewScheduleDay.styles';
+import styles from '../../../styles/AppStyle';
 
-const ViewScheduleDay = ({ classes, loading, schedule, match }) =>
-  (loading ? (
-    <CircularProgress className={classes.progress} size={50} />
-  ) : (
-    <div className={classes.root}>
-      <Paper className={classes.rootPaper}>
-        <Typography variant="title" className={classes.paperTitle} gutterBottom>
-          {schedule.name} - ({moment.unix(match.params.time).format('LL')})
-        </Typography>
-      </Paper>
-    </div>
-  ));
+import DayWeek from './components/DayWeek';
+import ScheduleHeader from './components/ScheduleHeader';
+import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
+
+class ViewScheduleDay extends React.Component {
+  onNextDateRange = () => {
+    console.log('next');
+  };
+
+  onPreviousDateRange = () => {
+    console.log('prev');
+  };
+
+  onWeek = () => {
+    const { history } = this.props;
+    history.push(`/schedules/${this.props.schedule.id.toString()}`);
+  };
+
+  render() {
+    const { classes, loading, schedule } = this.props;
+
+    return loading ? (
+      <CircularProgress className={classes.progress} size={50} />
+    ) : (
+      <div className={classes.root}>
+        <ScheduleHeader schedule={schedule} />
+        <Paper className={classes.paperMargin}>
+          <SpreadPanel>
+            <DayWeek dayDisabled weekDisabled={false} onWeek={this.onWeek} />
+            <TableNextPrevious
+              hasNext
+              hasPrevious
+              pressNext={this.onNextDateRange}
+              pressPrevious={this.onPreviousDateRange}
+            />
+          </SpreadPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
+          <div>Day Detail goes here</div>
+        </Paper>
+      </div>
+    );
+  }
+}
 
 ViewScheduleDay.propTypes = {
+  history: PropTypes.shape({}).isRequired,
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.node,
-      time: PropTypes.node,
-    }).isRequired,
-  }).isRequired,
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -79,6 +105,8 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), scheduleQuery)(
-  ViewScheduleDay,
-);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  scheduleQuery,
+)(ViewScheduleDay);
