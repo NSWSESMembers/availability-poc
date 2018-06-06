@@ -20,6 +20,9 @@ export const getCreators = (models) => {
       if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
         return Promise.reject(Error('Must pass start and end times'));
       }
+      if (endTime < startTime) {
+        return Promise.reject(Error('endTime must be greater than startTime'));
+      }
       return Schedule.create({
         name,
         details,
@@ -121,6 +124,9 @@ export const getCreators = (models) => {
       }
       if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
         return Promise.reject(Error('Must pass start and end times'));
+      }
+      if (endTime < startTime) {
+        return Promise.reject(Error('endTime must be greater than startTime'));
       }
       return TimeSegment.create({
         status,
