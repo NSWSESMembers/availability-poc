@@ -9,17 +9,7 @@ export default gql`
       email
       username
       organisation {
-        groups {
-          id
-          name
-          createdAt
-          updatedAt
-          tags {
-            id
-            name
-            type
-          }
-        }
+        id
       }
       groups {
         id

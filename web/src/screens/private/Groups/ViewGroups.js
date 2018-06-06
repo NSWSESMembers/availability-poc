@@ -3,149 +3,198 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
 import Paper from 'material-ui/Paper';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Grid from 'material-ui/Grid';
-import Select from 'material-ui/Select';
-import { MenuItem } from 'material-ui/Menu';
-import { InputLabel } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
+import Button from 'material-ui/Button';
+import Input from 'material-ui/Input';
+import { FormControl, FormControlLabel } from 'material-ui/Form';
+import Typography from 'material-ui/Typography';
 
+import Switch from 'material-ui/Switch';
 
+import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
+import JOIN_GROUP_MUTATION from '../../../graphql/join-group.mutation';
+import LEAVE_GROUP_MUTATION from '../../../graphql/leave-group.mutation';
 
-import styles from './ViewGroups.styles';
+import styles from '../../../styles/AppStyle';
 
-import DisplayGroupsTable from '../../partial/DisplayGroupsTable';
+// Components
+import Message from '../../../components/Messages/Message';
+import Tag from '../../../components/Selects/Tag';
+import GroupTable from './components/GroupTable';
+
+// Selectors
+import filterGroups from '../../../selectors/groups';
+
+import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
 
 class ViewGroups extends React.Component {
   state = {
-    tab: 0,
     locationFilter: '',
     capabilityFilter: '',
     searchFilter: '',
+    myGroups: false,
+    order: 'asc',
+    orderBy: 'name',
   };
 
-  handleSelectChange = (e, key) => {
+  handleAdd = (id) => {
+    this.props
+      .joinGroup({
+        groupId: id,
+      })
+      .catch((error) => {
+        this.setState(() => ({ message: error.message, open: true }));
+        setTimeout(() => {
+          this.setState(() => ({ message: '', open: false }));
+        }, 3000);
+      });
+  };
+
+  handleRemove = (id) => {
+    this.props
+      .leaveGroup({
+        groupId: id,
+      })
+      .catch((error) => {
+        this.setState(() => ({ message: error.message, open: true }));
+        setTimeout(() => {
+          this.setState(() => ({ message: '', open: false }));
+        }, 3000);
+      });
+  };
+
+  handleSort = (event, property) => {
+    const orderBy = property;
+    let order = 'desc';
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc';
+    }
+
+    this.setState({ order, orderBy });
+  };
+
+  handleSwitchChange = name => (event) => {
+    this.setState({ [name]: event.target.checked });
+  };
+
+  handleTagChange = name => (value) => {
+    this.setState({
+      [name]: value === null ? '' : value,
+    });
+  };
+
+  handleChange = (e, key) => {
     const { value } = e.target;
     this.setState({ [key]: value });
   };
 
-  handleTabChange = (event, tab) => {
-    this.setState({ tab });
-  };
-
   render() {
     const { classes, loading, user } = this.props;
-    const { tab, locationFilter, capabilityFilter, searchFilter } = this.state;
+    const { locationFilter, capabilityFilter, searchFilter, order, orderBy } = this.state;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
-    const allGroups = user.organisation.groups;
-    const myGroups = user.groups;
-    // data transform for getting all orgStructure tags of groups
-    const allLocations = _.keys(_.transform(allGroups, (result, group) => {
-      _.forEach(group.tags, (tag) => {
-        if (tag.type === 'orgStructure') {
-          result[tag.name] = true;
-        }
-      });
-    }, {}));
-    // data transform for getting all capability tags of groups
-    const allCapabilities = _.keys(_.transform(allGroups, (result, group) => {
-      _.forEach(group.tags, (tag) => {
-        if (tag.type === 'capability') {
-          result[tag.name] = true;
-        }
-      });
-    }, {}));
+    let groups = this.state.myGroups ? user.groups : user.organisation.groups;
+
+    groups = filterGroups(groups, user.groups, {
+      locationFilter,
+      capabilityFilter,
+      searchFilter,
+      order,
+      orderBy,
+    });
+
+    const capabilities = user.organisation.tags
+      .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
+
+    const locations = user.organisation.tags
+      .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     return (
       <div className={classes.root}>
+        <div className={classes.actionPanel}>
+          <Typography variant="title">Groups</Typography>
+          <div>
+            <Button
+              variant="raised"
+              size="small"
+              color="primary"
+              component={Link}
+              to="/groups/edit"
+            >
+              Add New Group
+            </Button>
+          </div>
+        </div>
         <Paper className={classes.paper}>
-          <Grid container spacing={0}>
-            <Grid item xs={12} sm={6}>
-              <Tabs value={tab} onChange={this.handleTabChange}>
-                <Tab label="Groups" />
-                <Tab label="My Groups" />
-              </Tabs>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <div>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="locationFilter">Select Location</InputLabel>
-                  <Select
-                    value={locationFilter}
-                    onChange={e => this.handleSelectChange(e, 'locationFilter')}
-                    inputProps={{
-                      id: 'locationFilter',
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {allLocations.map(location => (
-                      <MenuItem value={location} key={location}>
-                        {location}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="capabilityFilter">Select Capability</InputLabel>
-                  <Select
-                    value={capabilityFilter}
-                    onChange={e => this.handleSelectChange(e, 'capabilityFilter')}
-                    inputProps={{
-                      id: 'capabilityFilter',
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {allCapabilities.map(capability => (
-                      <MenuItem value={capability} key={capability}>
-                        {capability}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField
-                  id="groupSearch"
-                  label="Search groups"
-                  value={searchFilter}
-                  onChange={e => this.handleSelectChange(e, 'searchFilter')}
-                  className={classes.textField}
-                  margin="normal"
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.myGroups}
+                  value="myGroups"
+                  onChange={this.handleSwitchChange('myGroups')}
+                  color="primary"
                 />
-              </div>
-            </Grid>
-          </Grid>
-          {tab === 0 &&
-          <DisplayGroupsTable
-            classes={classes}
-            groups={allGroups}
-            locationFilter={locationFilter}
-            capabilityFilter={capabilityFilter}
-            searchFilter={searchFilter}
-          />
-          }
-          {tab === 1 &&
-          <DisplayGroupsTable
-            classes={classes}
-            groups={myGroups}
-            locationFilter={locationFilter}
-            capabilityFilter={capabilityFilter}
-            searchFilter={searchFilter}
-          />
-          }
+              }
+              label="Only My groups"
+            />
+            <div>
+              <FormControl className={classes.formControlFilter}>
+                <Tag
+                  list={locations}
+                  placeholder="Select Location"
+                  onChange={this.handleTagChange('locationFilter')}
+                  value={this.state.locationFilter}
+                  multi={false}
+                />
+              </FormControl>
+              <FormControl className={classes.formControlFilter}>
+                <Tag
+                  list={capabilities}
+                  placeholder="Select Capability"
+                  onChange={this.handleTagChange('capabilityFilter')}
+                  value={this.state.capabilityFilter}
+                  multi={false}
+                />
+              </FormControl>
+              <FormControl className={classes.formControlFilter}>
+                <Input
+                  id="groupSearch"
+                  placeholder="Search Text..."
+                  onChange={e => this.handleChange(e, 'searchFilter')}
+                />
+              </FormControl>
+            </div>
+          </div>
+          {groups.length > 0 ? (
+            <GroupTable
+              groups={groups}
+              order={order}
+              orderBy={orderBy}
+              handleAdd={this.handleAdd}
+              handleRemove={this.handleRemove}
+              handleSort={this.handleSort}
+            />
+          ) : (
+            <Message>No groups found.</Message>
+          )}
         </Paper>
       </div>
     );
@@ -155,6 +204,8 @@ class ViewGroups extends React.Component {
 ViewGroups.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  joinGroup: PropTypes.func.isRequired,
+  leaveGroup: PropTypes.func.isRequired,
   user: PropTypes.shape({
     groups: PropTypes.arrayOf(
       PropTypes.shape({
@@ -174,13 +225,52 @@ ViewGroups.propTypes = {
   }),
 };
 
-const userQuery = graphql(CURRENT_USER_QUERY, {
-  skip: ownProps => !ownProps.auth || !ownProps.auth.token,
-  props: ({ data: { loading, user, networkStatus, refetch } }) => ({
+const orgQuery = graphql(CURRENT_ORG_QUERY, {
+  options: () => ({
+    variables: {
+      nameFilter: '',
+      typeFilter: '',
+    },
+  }),
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
     loading,
-    user,
     networkStatus,
     refetch,
+    user,
+  }),
+});
+
+const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
+  props: ({ mutate }) => ({
+    joinGroup: ({ groupId }) =>
+      mutate({
+        variables: { groupUpdate: { groupId } },
+        refetchQueries: [
+          {
+            query: CURRENT_ORG_QUERY,
+          },
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
+  }),
+});
+
+const leaveGroupMutation = graphql(LEAVE_GROUP_MUTATION, {
+  props: ({ mutate }) => ({
+    leaveGroup: ({ groupId }) =>
+      mutate({
+        variables: { groupUpdate: { groupId } },
+        refetchQueries: [
+          {
+            query: CURRENT_ORG_QUERY,
+          },
+          {
+            query: CURRENT_USER_QUERY,
+          },
+        ],
+      }),
   }),
 });
 
@@ -188,4 +278,10 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewGroups);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  orgQuery,
+  joinGroupMutation,
+  leaveGroupMutation,
+)(ViewGroups);

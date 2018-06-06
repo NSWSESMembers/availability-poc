@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
 import { CircularProgress } from 'material-ui/Progress';
 import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
@@ -17,11 +16,11 @@ import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from './ViewEvents.styles';
+import styles from '../../../styles/AppStyle';
 
 const columnData = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'details', numeric: false, disablePadding: false, label: 'Details' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'details', numeric: false, disablePadding: false, label: 'Details', enabled: true },
 ];
 
 class ViewEvents extends React.Component {
@@ -52,6 +51,7 @@ class ViewEvents extends React.Component {
     return (
       <div className={classes.root}>
         <div className={classes.actionPanel}>
+          <Typography variant="title">Events</Typography>
           <div>
             <Button
               variant="raised"
@@ -65,9 +65,6 @@ class ViewEvents extends React.Component {
           </div>
         </div>
         <Paper className={classes.paper}>
-          <Toolbar className={classes.tableToolbar}>
-            <Typography variant="title">Events</Typography>
-          </Toolbar>
           <Table className={classes.table}>
             <EnhancedTableHead
               order={order}

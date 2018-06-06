@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Reboot from 'material-ui/Reboot';
+import CssBaseline from 'material-ui/CssBaseline';
 
 import LoginPage from '../screens/public/LoginPage';
 import SignupPage from '../screens/public/SignUpPage';
@@ -27,14 +27,15 @@ import PublicRoute from './PublicRoute';
 const AppRouter = () => (
   <BrowserRouter>
     <div>
-      <Reboot />
+      <CssBaseline />
       <Header />
       <Switch>
         <PublicRoute path="/" component={LoginPage} exact />
         <PublicRoute path="/signup" component={SignupPage} exact />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/groups" component={ViewGroups} exact />
-        <PrivateRoute path="/groups/edit" component={EditGroup} />
+        <PrivateRoute path="/groups/edit" component={EditGroup} exact />
+        <PrivateRoute path="/groups/edit/:id" component={EditGroup} />
         <PrivateRoute path="/schedules" component={ViewSchedules} exact />
         <PrivateRoute path="/schedules/add" component={AddSchedule} exact />
         <PrivateRoute path="/schedules/:id/:time" component={ViewScheduleDay} />
