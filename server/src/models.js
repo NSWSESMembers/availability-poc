@@ -40,6 +40,7 @@ export const defineModels = (db) => {
     details: { type: Sequelize.STRING },
     sourceIdentifier: { type: Sequelize.STRING },
     permalink: { type: Sequelize.STRING },
+    priority: { type: Sequelize.INTEGER },
     startTime: { type: Sequelize.INTEGER },
     endTime: { type: Sequelize.INTEGER },
   });

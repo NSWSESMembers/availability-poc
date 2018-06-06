@@ -133,6 +133,7 @@ export const Schema = [
     details: String!
     sourceIdentifier: String
     permalink: String
+    priority: Int
     eventLocations: [LocationInput]
     groupId: Int!
   }
@@ -223,6 +224,7 @@ export const Schema = [
     details: String!
     sourceIdentifier: String,
     permalink: String,
+    priority: Int,
     group: Group!
     responses: [EventResponse]
     messages: [Message]

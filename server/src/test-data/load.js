@@ -139,8 +139,8 @@ const createEventLocations = (Creators, event, locations) => {
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
-  const { name, details, sourceIdentifier, permalink, responses, eventLocations } = event;
-  return Creators.event({ name, details, sourceIdentifier, permalink, group })
+  const { name, details, sourceIdentifier, permalink, priority, responses, eventLocations } = event;
+  return Creators.event({ name, details, sourceIdentifier, permalink, priority, group })
     .then((e) => {
       createEventLocations(Creators, e, eventLocations).then((em) => {
         Promise.all(
