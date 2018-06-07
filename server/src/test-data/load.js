@@ -141,13 +141,9 @@ const createEvent = (Creators, event, groups, users) => {
   const group = groups[event.group];
   const { name, details, sourceIdentifier, permalink, priority, responses, eventLocations } = event;
   return Creators.event({ name, details, sourceIdentifier, permalink, priority, group })
-    .then((e) => {
-      createEventLocations(Creators, e, eventLocations).then((em) => {
-        Promise.all(
-          responses.map(r => createEventResponse(Creators, e, r, em, users)),
-        );
-      });
-    });
+    .then(e => createEventLocations(Creators, e, eventLocations).then(em => Promise.all(
+      responses.map(r => createEventResponse(Creators, e, r, em, users)),
+    )));
 };
 
 const createEvents = (Creators, groups, users) =>
