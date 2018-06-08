@@ -9,6 +9,14 @@ const EVENT_FRAGMENT = gql`
     details
     sourceIdentifier
     permalink
+    primaryLocation {
+      id
+      name
+      detail
+      icon
+      locationLatitude
+      locationLongitude
+    }
     group {
       id
     }
