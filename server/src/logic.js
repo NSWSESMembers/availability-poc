@@ -248,6 +248,9 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
               startTime,
               endTime,
               group,
+            }).then((schedule) => {
+              push.pushScheduleToGroup(schedule);
+              return schedule;
             });
           });
       },
@@ -375,7 +378,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                     event,
                   }),
                 ),
-              );
+              ).then(() => {
+                push.pushEventToGroup(event);
+                return event;
+              });
             });
           }),
         );

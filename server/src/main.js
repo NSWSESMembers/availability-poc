@@ -11,7 +11,7 @@ import { getHandlers } from './logic';
 import { getResolvers } from './resolvers';
 import { getCreators } from './creators';
 import { getCallback } from './callback';
-import * as push from './push';
+import { getPushEmitters } from './push';
 
 const cors = require('cors');
 
@@ -24,9 +24,12 @@ const { models, db } = setupDb();
 const creators = getCreators(models);
 const { User, Device } = models;
 
+const push = getPushEmitters({ models });
+
 const handlers = getHandlers({ models, creators, push });
 const resolvers = getResolvers(handlers);
 const schema = getSchema(resolvers);
+
 
 const app = express();
 
@@ -113,7 +116,7 @@ app.use('/healthcheck', (_, res) => {
   }
 });
 
-app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators, models));
+app.use('/hook', bodyParser.json(), getCallback('ses-hook', creators, models, push));
 
 const graphQLServer = createServer(app);
 
