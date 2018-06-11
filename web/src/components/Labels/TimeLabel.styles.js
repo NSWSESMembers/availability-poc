@@ -1,11 +1,11 @@
 const avatar = {
+  minWidth: 0,
+  width: '100%',
   color: 'white',
-  margin: 0,
+  marginLeft: 3,
   marginRight: 3,
-  width: 30,
-  height: 30,
-  fontSize: 16,
-  cursor: 'pointer',
+  paddingLeft: 8,
+  paddingRight: 8,
 };
 
 export default () => ({
@@ -22,4 +22,3 @@ export default () => ({
     ...avatar,
   },
 });
-

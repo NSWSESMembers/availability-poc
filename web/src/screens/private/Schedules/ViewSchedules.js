@@ -16,6 +16,7 @@ import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
 import Search from 'material-ui-icons/Search';
 
+import Message from '../../../components/Messages/Message';
 import CenterPanel from '../../../components/Panels/CenterPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import Tag from '../../../components/Selects/Tag';
@@ -144,7 +145,11 @@ class ViewSchedules extends React.Component {
           </CenterPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
-          <ScheduleTable schedules={schedules} />
+          {schedules.length > 0 ? (
+            <ScheduleTable schedules={schedules} />
+          ) : (
+            <Message>No requests found.</Message>
+          )}
         </Paper>
       </div>
     );
@@ -156,12 +161,10 @@ ViewSchedules.propTypes = {
   orgLoading: PropTypes.bool.isRequired,
   userLoading: PropTypes.bool.isRequired,
   orgUser: PropTypes.shape({
-    organisation: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-      }),
-    ),
+    organisation: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
   }),
   user: PropTypes.shape({
     schedules: PropTypes.arrayOf(

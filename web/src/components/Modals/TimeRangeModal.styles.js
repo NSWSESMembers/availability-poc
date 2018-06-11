@@ -4,5 +4,10 @@ export default theme => ({
     marginRight: theme.spacing.unit,
     width: 200,
   },
+  group: {
+    display: 'block',
+  },
+  formControl: {
+    margin: theme.spacing.unit * 3,
+  },
 });
-

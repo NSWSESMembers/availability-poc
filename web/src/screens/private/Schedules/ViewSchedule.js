@@ -12,8 +12,9 @@ import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Ta
 import Paper from 'material-ui/Paper';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
+import { DEFAULT_START_TIME, DEFAULT_END_TIME } from '../../../constants';
 
-import { peopleCount, searchTimeSegments } from '../../../selectors/timeSegments';
+import { peopleCount } from '../../../selectors/timeSegments';
 import { dateColumns } from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
@@ -25,11 +26,11 @@ import {
 
 import DayWeek from './components/DayWeek';
 import TimeCountLabel from './components/TimeCountLabel';
-import ViewScheduleItem from './components/ViewScheduleItem';
-import TimeModal from '../../../components/Modals/TimeModal';
+import ScheduleWeekItem from './components/ScheduleWeekItem';
 import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 import ScheduleHeader from './components/ScheduleHeader';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
+import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
 
 import styles from '../../../styles/AppStyle';
 
@@ -41,13 +42,13 @@ class ViewSchedule extends React.Component {
     endTimeRange: moment().isoWeekday(1).startOf('week').add(8, 'days')
       .unix(),
     modalOpen: false,
-    modalStatus: '',
-    modalStartTime: 0,
-    modalEndTime: 0,
     modalUser: undefined,
     modalTimeSegmentId: 0,
-    modalTimeSegmentStartTime: 0,
-    modalTimeSegmentEndTime: 0,
+    modalStatus: STATUS_AVAILABLE,
+    modalStartTime: DEFAULT_START_TIME,
+    modalEndTime: DEFAULT_END_TIME,
+    modalTitle: '',
+    modalTime: 0,
   };
 
   onDay = () => {
@@ -55,51 +56,79 @@ class ViewSchedule extends React.Component {
     history.push(`/schedules/${this.props.match.params.id}/${this.state.startTimeRange}`);
   }
 
-  onOpenModal = (e, modalUser, modalStatus, modalStartTime, modalEndTime) => {
-    // find existing segments
-    const modalTimeSegments = searchTimeSegments(this.props.schedule.timeSegments, {
-      status: modalStatus,
-      startTime: modalStartTime,
-      endTime: modalEndTime,
-      userId: modalUser.id,
-    });
+  onModalStartTimeChange = (e) => {
+    this.setState({ modalStartTime: e.target.value });
+  };
 
-    let modalTimeSegmentId = 0;
-    let modalTimeSegmentStartTime = 0;
-    let modalTimeSegmentEndTime = 0;
+  onModalEndTimeChange = (e) => {
+    this.setState({ modalEndTime: e.target.value });
+  };
 
-    if (modalTimeSegments.length > 0) {
-      modalTimeSegmentId = modalTimeSegments[0].id;
-      modalTimeSegmentStartTime = modalTimeSegments[0].startTime;
-      modalTimeSegmentEndTime = modalTimeSegments[0].endTime;
+  onModalStatusChange = (e) => {
+    this.setState({ modalStatus: e.target.value });
+  };
+
+  onModalOpen = (e, user, timeSegment, time, status) => {
+    if (timeSegment !== undefined) {
+      this.setState({
+        modalOpen: true,
+        modalTimeSegmentId: timeSegment.id,
+        modalTitle: moment.unix(timeSegment.startTime).format('ddd, MMM D YYYY'),
+        modalUser: user,
+        modalStatus: timeSegment.status,
+        modalStartTime: moment.unix(timeSegment.startTime).format('HH:mm'),
+        modalEndTime: moment.unix(timeSegment.endTime).format('HH:mm'),
+        modalTime: time,
+      });
+    } else {
+      this.setState({
+        modalOpen: true,
+        modalTimeSegmentId: 0,
+        modalStatus: status,
+        modalTitle: moment
+          .unix(parseInt(time, 10))
+          .format('ddd, MMM D YYYY'),
+        modalUser: user,
+        modalStartTime: DEFAULT_START_TIME,
+        modalEndTime: DEFAULT_END_TIME,
+        modalTime: time,
+      });
     }
+  };
 
-    this.setState({
-      modalOpen: true,
-      modalUser,
+  onModalClose = () => {
+    this.setState({ modalOpen: false });
+  };
+
+  onModalSave = () => {
+    const { createTimeSegment, updateTimeSegment } = this.props;
+    const {
+      modalTimeSegmentId,
       modalStatus,
       modalStartTime,
       modalEndTime,
-      modalTimeSegmentId,
-      modalTimeSegmentStartTime,
-      modalTimeSegmentEndTime,
-    });
-  };
-  onCancelModal = () => {
-    this.setState({ modalOpen: false });
-  };
-  onSaveModal = (startTime, endTime, userId, timeSegmentId) => {
-    if (timeSegmentId > 0) {
-      this.props.updateTimeSegment({
+      modalUser,
+      modalTime,
+    } = this.state;
+
+    // get start of day
+    const currentDay = moment.unix(parseInt(modalTime, 10));
+
+    // get adjusted start & end times
+    const startTime = moment(currentDay.format('MM-DD-YYYY ') + modalStartTime, 'MM-DD-YYYY HH:mm');
+    const endTime = moment(currentDay.format('MM-DD-YYYY ') + modalEndTime, 'MM-DD-YYYY HH:mm');
+
+    if (modalTimeSegmentId > 0) {
+      updateTimeSegment({
         scheduleId: parseInt(this.props.match.params.id, 10),
-        segmentId: timeSegmentId,
-        status: this.state.modalStatus,
+        segmentId: modalTimeSegmentId,
+        status: modalStatus,
         startTime: moment(startTime).unix(),
         endTime: moment(endTime).unix(),
       });
     } else {
-      this.props.createTimeSegment({
-        userId,
+      createTimeSegment({
+        userId: modalUser.id,
         scheduleId: parseInt(this.props.match.params.id, 10),
         status: this.state.modalStatus,
         startTime: moment(startTime).unix(),
@@ -109,16 +138,20 @@ class ViewSchedule extends React.Component {
 
     this.setState({ modalOpen: false });
   };
-  onDeleteModal = (timeSegmentId) => {
-    if (timeSegmentId > 0) {
+
+  onModalDelete = () => {
+    const { modalTimeSegmentId } = this.state;
+
+    if (modalTimeSegmentId > 0) {
       this.props.removeTimeSegment({
         scheduleId: parseInt(this.props.match.params.id, 10),
-        segmentId: timeSegmentId,
+        segmentId: modalTimeSegmentId,
       });
     }
 
     this.setState({ modalOpen: false });
   };
+
   onNextDateRange = () => {
     const nextStartTimeRange = moment.unix(this.state.startTimeRange).add(7, 'days').unix();
     const nextEndTimeRange = moment.unix(this.state.endTimeRange).add(7, 'days').unix();
@@ -128,6 +161,7 @@ class ViewSchedule extends React.Component {
       endTimeRange: nextEndTimeRange,
     });
   };
+
   onPreviousDateRange = () => {
     const previousStartTimeRange = moment.unix(this.state.startTimeRange).add(-7, 'days').unix();
     const previousEndTimeRange = moment.unix(this.state.endTimeRange).add(-7, 'days').unix();
@@ -137,6 +171,7 @@ class ViewSchedule extends React.Component {
       endTimeRange: previousEndTimeRange,
     });
   };
+
   render() {
     const { classes, loading, schedule } = this.props;
 
@@ -285,12 +320,12 @@ class ViewSchedule extends React.Component {
                     }
                     return column.startTime >= scheduleStart &&
                       column.startTime <= scheduleEnd ? (
-                        <ViewScheduleItem
+                        <ScheduleWeekItem
                           key={`vsi-${user.id}-${column.startTime}`}
                           user={user}
                           startTime={column.startTime}
                           endTime={column.endTime}
-                          onOpenModal={this.onOpenModal}
+                          onOpenModal={this.onModalOpen}
                           timeSegments={schedule.timeSegments}
                         />
                     ) : (
@@ -304,18 +339,20 @@ class ViewSchedule extends React.Component {
               ))}
             </TableBody>
           </Table>
-          <TimeModal
-            onCancel={this.onCancelModal}
-            onSave={this.onSaveModal}
-            onDelete={this.onDeleteModal}
+          <TimeRangeModal
             open={this.state.modalOpen}
             status={this.state.modalStatus}
             startTime={this.state.modalStartTime}
             endTime={this.state.modalEndTime}
-            user={this.state.modalUser}
             timeSegmentId={this.state.modalTimeSegmentId}
-            timeSegmentStartTime={this.state.modalTimeSegmentStartTime}
-            timeSegmentEndTime={this.state.modalTimeSegmentEndTime}
+            title={this.state.modalTitle}
+            user={this.state.modalUser}
+            onClose={this.onModalClose}
+            onSave={this.onModalSave}
+            onDelete={this.onModalDelete}
+            onStartTimeChange={this.onModalStartTimeChange}
+            onEndTimeChange={this.onModalEndTimeChange}
+            onStatusChange={this.onModalStatusChange}
           />
         </Paper>
       </div>

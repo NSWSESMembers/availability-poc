@@ -4,15 +4,21 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 
 import { withStyles } from 'material-ui/styles';
-import Avatar from 'material-ui/Avatar';
+import Button from 'material-ui/Button';
 
 import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';
 import styles from './TimeLabel.styles';
 
-const TimeLabel = ({ classes, user, status, amount, startTime, endTime, onOpenModal }) => {
+const TimeLabel = ({ classes, user, timeSegment, status, amount, time, onOpenModal }) => {
   let avatarClass = classes.avatarAV;
 
-  switch (status) {
+  let timeStatus = status === undefined ? STATUS_AVAILABILITY : status;
+
+  if (timeSegment !== undefined) {
+    timeStatus = timeSegment.status;
+  }
+
+  switch (timeStatus) {
     case STATUS_AVAILABILITY:
       avatarClass = classes.avatarAV;
       break;
@@ -27,22 +33,33 @@ const TimeLabel = ({ classes, user, status, amount, startTime, endTime, onOpenMo
   }
 
   return (
-    <Avatar
+    <Button
+      variant="raised"
+      onClick={e => onOpenModal(e, user, timeSegment, time, status)}
       className={`${avatarClass} ${amount === 0 && 'semi-opaque'}`}
-      onClick={e => onOpenModal(e, user, status, startTime, endTime)}
+      disableFocusRipple
+      disableRipple
     >
       {numeral(amount).format('0[.]0')}
-    </Avatar>
+    </Button>
   );
 };
 
 TimeLabel.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   user: PropTypes.shape({}),
-  status: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
-  startTime: PropTypes.number.isRequired,
-  endTime: PropTypes.number.isRequired,
+  status: PropTypes.string,
+  time: PropTypes.number,
+  timeSegment: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    status: PropTypes.string.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
+    users: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }),
+  }),
   onOpenModal: PropTypes.func.isRequired,
 };
 
