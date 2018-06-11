@@ -36,7 +36,7 @@ class MapModal extends Component {
           onRequestClose={this.props.closeModal}
           animationType="fade"
         >
-          <TouchableWithoutFeedback onPress={this.props.closeModal}>
+          <TouchableWithoutFeedback>
             <View style={styles.overlayStyle}>
               <View style={styles.headerContainer}>
                 <TouchableOpacity>
