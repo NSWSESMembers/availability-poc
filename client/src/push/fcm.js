@@ -1,6 +1,6 @@
 // PUSH PROVIDER for FCM (Firebase Cloud Messaging)
 
-import { Alert, NativeModules } from 'react-native';
+import { NativeModules } from 'react-native';
 // we import react-native-firebase dynamically
 
 class FCMClient {
@@ -17,42 +17,15 @@ class FCMClient {
     const self = this;
 
     self.onNotificationOpened = this.FCN.onNotificationOpened((notification) => {
-      Alert.alert(
-        notification.fcm.title,
-        notification.fcm.body,
-        [
-          { text: 'OK' },
-        ],
-        { cancelable: false },
-      );
-
-      if (notification.local_notification) {
-        // this is a local notification
-        return;
-      }
-      if (notification.opened_from_tray) {
-        // app is open/resumed because user clicked banner
-        // execute preregistered action associated with notification if exists
-        if (notification.aps &&
-            notification.aps.category &&
-            this.actions[notification.aps.category]) {
-          this.actions[notification.aps.category](notification);
-        }
-      }
+      // Listen for a Notification getting opened if we are in the background
+      // eg, tap from notification bar
+      this.pushManager.onNotificationOpened(notification);
     });
 
-    self.notificationListener = this.FCN.onNotification(
-      (notification) => {
-        Alert.alert(
-          notification.title,
-          notification.body,
-          [
-            { text: 'OK' },
-          ],
-          { cancelable: false },
-        );
-      },
-    );
+    self.notificationListener = this.FCN.onNotification((notification) => {
+      // Listen for a Notification if we are in the foreground
+      this.pushManager.onNotification(notification);
+    });
   }
 
   async register() {

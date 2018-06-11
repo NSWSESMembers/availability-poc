@@ -106,6 +106,7 @@ class MainNavigator extends Component {
           pushManager={pushManager}
           auth={auth}
           device={device}
+          navigation={this.props.navigation}
         />
         <BugSnagUserHandler
           auth={auth}

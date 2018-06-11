@@ -60,13 +60,28 @@ class PushManager {
     }
   }
 
+  // services should call this when they get a foreground notification
+  onNotification(data) {
+    this.onNotification(data);
+  }
+
+  // services should call this when they open from a background notification
+  onNotificationOpened(data) {
+    this.onNotificationOpened(data);
+  }
+
   // call this to request permission from the user (if required) and register this device with the
   // appropriate push service
   // it returns a promise that resolves when all of the registered services have attempted to get
   // a push token and the push token update callback has been called
-  register({ onTokenUpdate }) {
+  register({ onTokenUpdate, onNotification, onNotificationOpened }) {
     // whoever called this last gets to set the onTokenUpdate callback - there can be only one
     this.onTokenUpdate = onTokenUpdate;
+
+    // pass through callbacks for notificaitons handling
+    this.onNotification = onNotification;
+    this.onNotificationOpened = onNotificationOpened;
+
 
     // we make sure there is only ever one doRegister in progress at any time
     // subsequent callers will get the in-progress promise
