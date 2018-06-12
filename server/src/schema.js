@@ -23,7 +23,7 @@ export const Schema = [
     name: String,
     type: String,
   }
-  
+
   input UserInput {
     id: Int!
     displayName: String,
@@ -52,6 +52,7 @@ export const Schema = [
   input CreateScheduleInput {
     name: String!
     details: String!
+    type: String
     startTime: Int!
     endTime: Int!
     groupId: Int!
@@ -147,7 +148,7 @@ export const Schema = [
     eventLocations: [LocationInput]
     groupId: Int!
   }
-  
+
   input UpdateGroupInput {
     id: Int!
     name: String!
@@ -268,6 +269,7 @@ export const Schema = [
     id: Int!
     name: String!
     details: String!
+    type: String!,
     priority: Int
     startTime: Int!
     endTime: Int!
