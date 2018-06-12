@@ -273,7 +273,7 @@ export const Schema = [
     priority: Int
     startTime: Int!
     endTime: Int!
-    timeSegments: [TimeSegment]!
+    timeSegments(userIdFilter: Int): [TimeSegment]!
   }
 
   type TimeSegment {

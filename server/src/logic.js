@@ -226,8 +226,11 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           schedule: Schedule.findById(args.id),
         });
       },
-      timeSegments(schedule) {
-        return schedule.getTimesegments();
+      timeSegments(schedule, args) {
+        if (!args.userIdFilter) {
+          return schedule.getTimesegments();
+        }
+        return schedule.getTimesegments({ where: { userId: args.userIdFilter } });
       },
       group(schedule) {
         return schedule.getGroup();
