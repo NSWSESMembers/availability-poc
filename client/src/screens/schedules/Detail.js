@@ -73,6 +73,7 @@ class Detail extends Component {
       const timeSegments = this.getTimeSegments(day);
       timeSegments.forEach((timeSegment) => {
         this.props.removeTimeSegment({
+          scheduleId: schedule.id,
           segmentId: timeSegment.id,
         });
       });
@@ -83,6 +84,7 @@ class Detail extends Component {
       this.state.selectionSegments.forEach((segment) => {
         if (segment.status !== '') {
           this.props.createTimeSegment({
+            userId: this.props.user.id,
             scheduleId: schedule.id,
             status: segment.status,
             startTime: day + segment.startTime,
@@ -435,38 +437,47 @@ Detail.propTypes = {
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ scheduleId, status, startTime, endTime }) =>
+    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime }) =>
       mutate({
         variables: { timeSegment: { scheduleId, status, startTime, endTime } },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          createTimeSegment: {
-            __typename: 'TimeSegment',
-            id: -1,
-            status,
-            startTime,
-            endTime,
-          },
+        // eslint-disable-next-line no-shadow
+        update: (store, { data: { createTimeSegment } }) => {
+          const newTimeSegment = createTimeSegment;
+          // add the user type to the incoming data
+          newTimeSegment.user = { id: userId, __typename: 'User' };
+          // Read the data from our cache for this query.
+          const data = store.readQuery({ query: CURRENT_USER_QUERY });
+          // find this schedule in the store
+          const thisSchedule = data.user.schedules.findIndex(x => x.id === scheduleId && x);
+          // Add our comment from the mutation to the end.
+          data.user.schedules[thisSchedule].timeSegments.push(newTimeSegment);
+          // Write our data back to the cache.
+          store.writeQuery({ query: CURRENT_USER_QUERY, data });
         },
-        refetchQueries: [
-          {
-            query: CURRENT_USER_QUERY,
-          },
-        ],
       }),
   }),
 });
 
 const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    removeTimeSegment: ({ segmentId }) =>
+    removeTimeSegment: ({ scheduleId, segmentId }) =>
       mutate({
         variables: { timeSegment: { segmentId } },
-        refetchQueries: [
-          {
-            query: CURRENT_USER_QUERY,
-          },
-        ],
+        // eslint-disable-next-line no-shadow
+        update: (store) => {
+          // Read the data from our cache for this query.
+          const data = store.readQuery({ query: CURRENT_USER_QUERY });
+          // find this schedule in the store
+          const thisSchedule = data.user.schedules.findIndex(x => x.id === scheduleId && x);
+          // find the segment
+          const thisSegment = data.user.schedules[thisSchedule].timeSegments.findIndex(
+            x => x.id === segmentId && x,
+          );
+          // remove the segment
+          data.user.schedules[thisSchedule].timeSegments.splice(thisSegment, 1);
+          // Write our data back to the cache.
+          store.writeQuery({ query: CURRENT_USER_QUERY, data });
+        },
       }),
   }),
 });
