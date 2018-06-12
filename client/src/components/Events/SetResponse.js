@@ -65,7 +65,7 @@ class SetResponse extends Component {
             timeToScene: 'unknown',
           });
         },
-        { enableHighAccuracy: true, maximumAge: 60, distanceFilter: 0, timeout: 3000 },
+        { enableHighAccuracy: true, maximumAge: 60000, timeout: 15000 },
       );
     }
   }
