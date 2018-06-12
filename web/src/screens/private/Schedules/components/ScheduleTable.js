@@ -26,13 +26,9 @@ const ScheduleTable = ({ schedules }) => (
           <TableCell>
             <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
           </TableCell>
-<<<<<<< HEAD
           <TableCell>
             <Link to={`/groups/${schedule.group.id}`}>{schedule.group.name}</Link>
           </TableCell>
-=======
-          <TableCell>{schedule.group.name}</TableCell>
->>>>>>> origin/master
           <TableCell>
             {schedule.startTime === numbers.distantPast
               ? 'Ongoing'

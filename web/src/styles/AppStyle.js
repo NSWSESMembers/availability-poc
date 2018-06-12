@@ -6,20 +6,11 @@ export default theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-<<<<<<< HEAD
-=======
-    marginBottom: 10,
->>>>>>> origin/master
   },
   actionContainer: {
     padding: 20,
     display: 'flex',
-<<<<<<< HEAD
     alignItems: 'flex-start',
-=======
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
->>>>>>> origin/master
   },
   filters: {
     display: 'flex',
@@ -40,7 +31,6 @@ export default theme => ({
     overflowX: 'visible',
     maxWidth: 720,
   },
-<<<<<<< HEAD
   paperMargin: {
     padding: 16,
     textAlign: 'left',
@@ -49,8 +39,6 @@ export default theme => ({
     minWidth: 720,
     marginTop: 16,
   },
-=======
->>>>>>> origin/master
   progress: {
     margin: theme.spacing.unit * 2,
   },
@@ -63,13 +51,6 @@ export default theme => ({
     width: '100%',
     minHeight: 40,
   },
-<<<<<<< HEAD
-=======
-  tableCell: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
->>>>>>> origin/master
   card: {
     minWidth: 275,
   },
@@ -111,7 +92,6 @@ export default theme => ({
     margin: theme.spacing.unit / 2,
     textAlign: 'left',
   },
-<<<<<<< HEAD
   button: {
     margin: theme.spacing.unit,
   },
@@ -152,6 +132,4 @@ export default theme => ({
     borderStyle: 'solid',
     backgroundColor: '#CCC',
   },
-=======
->>>>>>> origin/master
 });

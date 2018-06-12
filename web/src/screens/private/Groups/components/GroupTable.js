@@ -83,11 +83,7 @@ const GroupTable = ({ classes, groups, order, orderBy, handleAdd, handleRemove, 
                   width: '200px',
                 }}
               >
-<<<<<<< HEAD
                 <Link to={`/groups/${group.id}`}>{group.name}</Link>
-=======
-                <Link to={`/groups/edit/${group.id}`}>{group.name}</Link>
->>>>>>> origin/master
               </span>
             </TableCell>
             <TableCell>

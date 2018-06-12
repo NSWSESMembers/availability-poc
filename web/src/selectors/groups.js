@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 // filters list of groups by defined filter (location, capability, search, order, orderBy)
-=======
->>>>>>> origin/master
 export default (
   groups,
   userGroups,

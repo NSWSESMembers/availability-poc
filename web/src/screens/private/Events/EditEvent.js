@@ -16,10 +16,7 @@ import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-<<<<<<< HEAD
 import ChevronLeft from 'material-ui-icons/ChevronLeft';
-=======
->>>>>>> origin/master
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';
@@ -29,11 +26,7 @@ import CREATE_EVENT_MUTATION from '../../../graphql/create-event.mutation';
 import UPDATE_EVENT_MUTATION from '../../../graphql/update-event.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-<<<<<<< HEAD
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
-=======
-import styles from '../../../styles/AppStyle';
->>>>>>> origin/master
 
 import styles from '../../../styles/AppStyle';
 
@@ -108,7 +101,6 @@ class EditEvent extends React.Component {
     this.setState(() => ({ scene }));
   };
 
-<<<<<<< HEAD
   onSave = () => {
     const { id, groupId, name, details } = this.state;
 
@@ -131,118 +123,6 @@ class EditEvent extends React.Component {
             this.setState(() => ({ message: '', open: false }));
           }, 3000);
         });
-=======
-  setInitialState(props) {
-    const event = props.user.events.find(
-      e => e.id === parseInt(props.match.params.id, 10),
-    );
-
-    if (event !== undefined) {
-      let scene = event.eventLocations.find(s => s.icon === 'scene');
-      let lhq = event.eventLocations.find(s => s.icon === 'lhq');
-      let helo = event.eventLocations.find(s => s.icon === 'helo');
-
-      const scenes = [...defaultScenes];
-      const lhqs = [...defaultLhqs];
-      const helos = [...defaultHelos];
-
-      if (scene !== undefined) {
-        const loc = scenes.find(
-          newLoc =>
-            newLoc.locationLatitude === scene.locationLatitude &&
-            newLoc.locationLongitude === scene.locationLongitude,
-        );
-        if (loc === undefined) {
-          scenes.push(scene);
-        } else {
-          scene = loc;
-        }
-      }
-
-      if (lhq !== undefined) {
-        const loc = lhqs.find(
-          newLoc =>
-            newLoc.locationLatitude === lhq.locationLatitude &&
-            newLoc.locationLongitude === lhq.locationLongitude,
-        );
-
-        if (loc === undefined) {
-          lhqs.push(lhq);
-        } else {
-          lhq = loc;
-        }
-      }
-
-      if (helo !== undefined) {
-        const loc = helos.find(
-          newLoc =>
-            newLoc.locationLatitude === helo.locationLatitude &&
-            newLoc.locationLongitude === helo.locationLongitude,
-        );
-
-        if (loc === undefined) {
-          helos.push(helo);
-        } else {
-          helo = loc;
-        }
-      }
-
-      this.setState({
-        id: event.id,
-        name: event.name,
-        details: event.details,
-        groupId: event.group.id,
-        groupName: event.group.name,
-        scene,
-        lhq,
-        helo,
-        scenesList: scenes,
-        lhqsList: lhqs,
-        helosList: helos,
-      });
-    }
-  }
-
-  handleNext = () => {
-    const steps = getSteps();
-    if (this.state.activeStep === steps.length - 1) {
-      const { id, groupId, name, details } = this.state;
-
-      const eventLocations = [];
-      pushLocation(eventLocations, this.state.scene);
-      pushLocation(eventLocations, this.state.lhq);
-      pushLocation(eventLocations, this.state.helo);
-
-      if (this.state.id === 0) {
-        // Add event
-        this.props
-          .createEvent({ name, details, eventLocations, groupId })
-          .then(() => {
-            const { history } = this.props;
-            history.push('/events');
-          })
-          .catch((error) => {
-            this.setState(() => ({ message: error.message, open: true }));
-            setTimeout(() => {
-              this.setState(() => ({ message: '', open: false }));
-            }, 3000);
-          });
-      } else {
-        // Update event
-        this.props
-          .updateEvent({ id, name, details, eventLocations, groupId })
-          .then(() => {
-            const { history } = this.props;
-            history.push('/events');
-          })
-          .catch((error) => {
-            this.setState(() => ({ message: error.message, open: true }));
-            setTimeout(() => {
-              this.setState(() => ({ message: '', open: false }));
-            }, 3000);
-          });
-      }
->>>>>>> origin/master
     } else {
       // Update event
       this.props
@@ -344,7 +224,6 @@ class EditEvent extends React.Component {
 
     return (
       <div className={classes.root}>
-<<<<<<< HEAD
         <Paper className={classes.paper}>
           <SpreadPanel>
             <div
@@ -484,166 +363,6 @@ class EditEvent extends React.Component {
               Cancel
             </Button>
           </div>
-=======
-        <div className={classes.actionPanel}>
-          <Typography variant="title">
-            {this.state.id === 0 ? 'Add New' : 'Edit'} Event
-          </Typography>
-        </div>
-        <Paper className={classes.paperForm}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((label, index) => (
-              <Step key={this.state.id}>
-                <StepLabel>
-                  {label}
-                  {
-                    index === 0 &&
-                    activeStep !== 0 &&
-                    this.state.groupId !== 0 &&
-                    <span> : {this.state.groupName}</span>
-                  }
-                  {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
-                </StepLabel>
-                <StepContent>
-                  <Typography>{getStepContent(index)}</Typography>
-                  {index === 0 && (
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="groupId" required>
-                        group
-                      </InputLabel>
-                      <Select
-                        value={this.state.groupId}
-                        onChange={this.onGroupChange}
-                        inputProps={{
-                          name: 'groupId',
-                          id: 'groupId',
-                        }}
-                        required
-                      >
-                        <MenuItem value="" key={0}>
-                          <em>none</em>
-                        </MenuItem>
-                        {this.props.user.groups.map(group => (
-                          <MenuItem value={group.id} key={group.id}>
-                            {group.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                  {index === 1 && (
-                    <div>
-                      <FormControl className={classes.formControl}>
-                        <TextField
-                          required
-                          id="name"
-                          label="name"
-                          type="text"
-                          margin="normal"
-                          value={this.state.name}
-                          onChange={this.onNameChange}
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <TextField
-                          required
-                          id="details"
-                          label="details"
-                          multiline
-                          rowsMax="4"
-                          value={this.state.details}
-                          onChange={this.onDetailsChange}
-                          className={classes.textField}
-                          margin="normal"
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                  {index === 2 && (
-                    <div>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="scene" required>
-                          Scene
-                        </InputLabel>
-                        <Select
-                          value={this.state.scene !== undefined ? this.state.scene.id : ''}
-                          onChange={this.onSceneChange}
-                          required
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.scenesList.map(option => (
-                            <MenuItem
-                              value={option.id}
-                              key={`${this.state.id}-scene-${option.id}`}
-                            >
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="lhq">Local HQ</InputLabel>
-                        <Select
-                          value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
-                          onChange={this.onLHQChange}
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.lhqsList.map(option => (
-                            <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="helo">Helo</InputLabel>
-                        <Select
-                          value={this.state.helo !== undefined ? this.state.helo.id : ''}
-                          onChange={this.onHeloChange}
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.helosList.map(option => (
-                            <MenuItem
-                              value={option.id}
-                              key={`${this.state.id}-helo-${option.id}`}
-                            >
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  )}
-                  <div className={classes.actionsContainer}>
-                    <Button disabled={activeStep === 0} onClick={this.handleBack}>
-                      Back
-                    </Button>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={this.handleNext}
-                      className={classes.button}
-                      disabled={
-                        (activeStep === 0 && this.state.groupId === '') ||
-                        (activeStep === 1 &&
-                          (this.state.name === '' || this.state.details === '')) ||
-                        (activeStep === 2 && this.state.scene === '')
-                      }
-                    >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
-                  </div>
-                </StepContent>
-              </Step>
-            ))}
-          </Stepper>
->>>>>>> origin/master
         </Paper>
       </div>
     );

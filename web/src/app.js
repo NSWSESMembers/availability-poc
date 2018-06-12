@@ -63,17 +63,12 @@ const theme = createMuiTheme({
       // Name of the component ⚛️ / style shee
       root: {
         // Name of the rule
-<<<<<<< HEAD
         padding: 10,
       },
     },
     MuiIconButton: {
       root: {
         height: 24,
-=======
-        padding: 0, // Some CSS
-        paddingRight: 10, // Some CSS
->>>>>>> origin/master
       },
     },
   },
