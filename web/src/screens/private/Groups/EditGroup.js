@@ -102,6 +102,11 @@ class EditGroup extends React.Component {
     });
   };
 
+  cancelGroup = () => {
+    const { history } = this.props;
+    history.push('/groups');
+  }
+
   saveGroup = () => {
     const { name, regions, capabilities, users } = this.state;
 
@@ -247,6 +252,12 @@ class EditGroup extends React.Component {
               disabled={this.state.name === ''}
             >
               Update
+            </Button>
+            <Button
+              onClick={this.cancelGroup}
+              className={classes.button}
+            >
+              Cancel
             </Button>
           </div>
         </Paper>

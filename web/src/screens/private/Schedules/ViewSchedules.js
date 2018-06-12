@@ -88,7 +88,7 @@ class ViewSchedules extends React.Component {
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <SpreadPanel>
-            <Typography variant="title">Availability Requests</Typography>
+            <Typography variant="title">Availability</Typography>
             <Button
               variant="raised"
               size="small"

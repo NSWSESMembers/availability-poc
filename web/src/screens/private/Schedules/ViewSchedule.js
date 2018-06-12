@@ -8,13 +8,12 @@ import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import { CircularProgress } from 'material-ui/Progress';
-import Table, { TableHead, TableBody, TableCell, TableRow } from 'material-ui/Table';
+import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 
-import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
+import { STATUS_AVAILABLE } from '../../../config';
 import { DEFAULT_START_TIME, DEFAULT_END_TIME } from '../../../constants';
 
-import { peopleCount } from '../../../selectors/timeSegments';
 import { dateColumns } from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
@@ -25,21 +24,26 @@ import {
 } from '../../../graphql/time-segment.mutation';
 
 import DayWeek from './components/DayWeek';
-import TimeCountLabel from './components/TimeCountLabel';
 import ScheduleWeekItem from './components/ScheduleWeekItem';
 import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 import ScheduleHeader from './components/ScheduleHeader';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
+import ScheduleWeekHeader from './components/ScheduleWeekHeader';
 
 import styles from '../../../styles/AppStyle';
 
 class ViewSchedule extends React.Component {
   state = {
-    startTimeRange: moment().isoWeekday(1).startOf('week')
+    startTimeRange: moment()
+      .isoWeekday(1)
+      .startOf('week')
       .add(1, 'days')
       .unix(),
-    endTimeRange: moment().isoWeekday(1).startOf('week').add(8, 'days')
+    endTimeRange: moment()
+      .isoWeekday(1)
+      .startOf('week')
+      .add(8, 'days')
       .unix(),
     modalOpen: false,
     modalUser: undefined,
@@ -54,7 +58,7 @@ class ViewSchedule extends React.Component {
   onDay = () => {
     const { history } = this.props;
     history.push(`/schedules/${this.props.match.params.id}/${this.state.startTimeRange}`);
-  }
+  };
 
   onModalStartTimeChange = (e) => {
     this.setState({ modalStartTime: e.target.value });
@@ -85,9 +89,7 @@ class ViewSchedule extends React.Component {
         modalOpen: true,
         modalTimeSegmentId: 0,
         modalStatus: status,
-        modalTitle: moment
-          .unix(parseInt(time, 10))
-          .format('ddd, MMM D YYYY'),
+        modalTitle: moment.unix(parseInt(time, 10)).format('ddd, MMM D YYYY'),
         modalUser: user,
         modalStartTime: DEFAULT_START_TIME,
         modalEndTime: DEFAULT_END_TIME,
@@ -153,8 +155,14 @@ class ViewSchedule extends React.Component {
   };
 
   onNextDateRange = () => {
-    const nextStartTimeRange = moment.unix(this.state.startTimeRange).add(7, 'days').unix();
-    const nextEndTimeRange = moment.unix(this.state.endTimeRange).add(7, 'days').unix();
+    const nextStartTimeRange = moment
+      .unix(this.state.startTimeRange)
+      .add(7, 'days')
+      .unix();
+    const nextEndTimeRange = moment
+      .unix(this.state.endTimeRange)
+      .add(7, 'days')
+      .unix();
 
     this.setState({
       startTimeRange: nextStartTimeRange,
@@ -163,8 +171,14 @@ class ViewSchedule extends React.Component {
   };
 
   onPreviousDateRange = () => {
-    const previousStartTimeRange = moment.unix(this.state.startTimeRange).add(-7, 'days').unix();
-    const previousEndTimeRange = moment.unix(this.state.endTimeRange).add(-7, 'days').unix();
+    const previousStartTimeRange = moment
+      .unix(this.state.startTimeRange)
+      .add(-7, 'days')
+      .unix();
+    const previousEndTimeRange = moment
+      .unix(this.state.endTimeRange)
+      .add(-7, 'days')
+      .unix();
 
     this.setState({
       startTimeRange: previousStartTimeRange,
@@ -178,11 +192,19 @@ class ViewSchedule extends React.Component {
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
-    const columnData = dateColumns(moment.unix(this.state.startTimeRange),
-      moment.unix(this.state.endTimeRange));
+    const columnData = dateColumns(
+      moment.unix(this.state.startTimeRange),
+      moment.unix(this.state.endTimeRange),
+    );
 
-    const scheduleStart = moment.unix(schedule.startTime).startOf('day').unix();
-    const scheduleEnd = moment.unix(schedule.endTime).startOf('day').unix();
+    const scheduleStart = moment
+      .unix(schedule.startTime)
+      .startOf('day')
+      .unix();
+    const scheduleEnd = moment
+      .unix(schedule.endTime)
+      .startOf('day')
+      .unix();
 
     return (
       <div className={classes.root}>
@@ -200,113 +222,7 @@ class ViewSchedule extends React.Component {
         </Paper>
         <Paper className={classes.paperMargin}>
           <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                {columnData.map((column) => {
-                  if (column.id === 'name') {
-                    return (
-                      <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
-                        Totals
-                      </TableCell>
-                    );
-                  }
-                  if (
-                    column.startTime < scheduleStart ||
-                    column.startTime > scheduleEnd
-                  ) {
-                    return (
-                      <TableCell key={column.id} className={classes.tableCellHeaderDisabled} />
-                    );
-                  }
-                  const amountAvailable = peopleCount(schedule.timeSegments, {
-                    status: STATUS_AVAILABLE,
-                    startTime: column.startTime,
-                    endTime: column.endTime,
-                  });
-                  const amountUnvailable = peopleCount(schedule.timeSegments, {
-                    status: STATUS_UNAVAILABLE,
-                    startTime: column.startTime,
-                    endTime: column.endTime,
-                  });
-                  const amountUrgent = peopleCount(schedule.timeSegments, {
-                    status: STATUS_UNLESS_URGENT,
-                    startTime: column.startTime,
-                    endTime: column.endTime,
-                  });
-
-                  return (
-                    <TableCell
-                      key={column.id}
-                      className={classes.tableCellHeader}
-                      style={{ paddingRight: 0 }}
-                    >
-                      <div
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                      >
-                        <TimeCountLabel
-                          status={STATUS_AVAILABLE}
-                          amount={amountAvailable.toString()}
-                        />
-                        <TimeCountLabel
-                          status={STATUS_UNAVAILABLE}
-                          amount={amountUnvailable.toString()}
-                        />
-                        <TimeCountLabel
-                          status={STATUS_UNLESS_URGENT}
-                          amount={amountUrgent.toString()}
-                        />
-                      </div>
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-              <TableRow>
-                {columnData.map(
-                  (column) => {
-                    if (column.id === 'name') {
-                      return (
-                        <TableCell key={column.id} className={classes.tableCellHeaderFirst}>
-                          {column.label}
-                        </TableCell>
-                      );
-                    }
-                    return column.startTime >= scheduleStart &&
-                      column.startTime <= scheduleEnd ? (
-                        <TableCell
-                          key={column.id}
-                          className={classes.tableCellHeader}
-                          style={{ paddingRight: 0 }}
-                        >
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Link to={`/schedules/${schedule.id}/${column.startTime}`}>{column.label}</Link>
-                          </div>
-                        </TableCell>
-                    ) : (
-                      <TableCell
-                        key={`vsi-${column.startTime}`}
-                        className={classes.tableCellHeaderDisabled}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          {column.label}
-                        </div>
-                      </TableCell>
-                    );
-                  },
-                )}
-              </TableRow>
-            </TableHead>
+            <ScheduleWeekHeader schedule={schedule} columnData={columnData} />
             <TableBody>
               {schedule.group.users.map(user => (
                 <TableRow key={user.id}>
@@ -318,16 +234,15 @@ class ViewSchedule extends React.Component {
                         </TableCell>
                       );
                     }
-                    return column.startTime >= scheduleStart &&
-                      column.startTime <= scheduleEnd ? (
-                        <ScheduleWeekItem
-                          key={`vsi-${user.id}-${column.startTime}`}
-                          user={user}
-                          startTime={column.startTime}
-                          endTime={column.endTime}
-                          onOpenModal={this.onModalOpen}
-                          timeSegments={schedule.timeSegments}
-                        />
+                    return column.startTime >= scheduleStart && column.startTime <= scheduleEnd ? (
+                      <ScheduleWeekItem
+                        key={`vsi-${user.id}-${column.startTime}`}
+                        user={user}
+                        startTime={column.startTime}
+                        endTime={column.endTime}
+                        onOpenModal={this.onModalOpen}
+                        timeSegments={schedule.timeSegments}
+                      />
                     ) : (
                       <TableCell
                         key={`vsi-${user.id}-${column.startTime}`}
@@ -404,7 +319,6 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ownProps => ({
     variables: { id: ownProps.match.params.id },
-    // fetchPolicy: 'network-only',
   }),
   props: ({ data: { loading, schedule } }) => ({
     schedule,

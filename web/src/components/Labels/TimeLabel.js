@@ -9,7 +9,7 @@ import Button from 'material-ui/Button';
 import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';
 import styles from './TimeLabel.styles';
 
-const TimeLabel = ({ classes, user, timeSegment, status, amount, time, onOpenModal }) => {
+const TimeLabel = ({ classes, user, timeSegment, status, amount, time, margin, onOpenModal }) => {
   let avatarClass = classes.avatarAV;
 
   let timeStatus = status === undefined ? STATUS_AVAILABILITY : status;
@@ -36,9 +36,8 @@ const TimeLabel = ({ classes, user, timeSegment, status, amount, time, onOpenMod
     <Button
       variant="raised"
       onClick={e => onOpenModal(e, user, timeSegment, time, status)}
-      className={`${avatarClass} ${amount === 0 && 'semi-opaque'}`}
-      disableFocusRipple
-      disableRipple
+      className={`${avatarClass} ${amount === 0 && 'semi-opaque'} ${margin &&
+        classes.avatarMargin}`}
     >
       {numeral(amount).format('0[.]0')}
     </Button>
@@ -49,6 +48,7 @@ TimeLabel.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   user: PropTypes.shape({}),
   amount: PropTypes.number.isRequired,
+  margin: PropTypes.bool,
   status: PropTypes.string,
   time: PropTypes.number,
   timeSegment: PropTypes.shape({
@@ -61,6 +61,10 @@ TimeLabel.propTypes = {
     }),
   }),
   onOpenModal: PropTypes.func.isRequired,
+};
+
+TimeLabel.defaultProps = {
+  margin: false,
 };
 
 export default withStyles(styles)(TimeLabel);

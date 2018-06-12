@@ -10,8 +10,7 @@ export default theme => ({
   actionContainer: {
     padding: 20,
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   filters: {
     display: 'flex',

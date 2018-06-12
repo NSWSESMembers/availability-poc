@@ -8,28 +8,36 @@ import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 import { CircularProgress } from 'material-ui/Progress';
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import { FormControl } from 'material-ui/Form';
+import { MenuItem } from 'material-ui/Menu';
+import Select from 'material-ui/Select';
 
-import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
+import Message from '../../../components/Messages/Message';
+import EventTable from './components/EventTable';
+import CenterPanel from '../../../components/Panels/CenterPanel';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
-import styles from '../../../styles/AppStyle';
+import filterEvents from '../../../selectors/events';
 
-const columnData = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
-  { id: 'details', numeric: false, disablePadding: false, label: 'Details', enabled: true },
-];
+import styles from '../../../styles/AppStyle';
 
 class ViewEvents extends React.Component {
   state = {
+    groupId: '',
     order: 'asc',
     orderBy: 'name',
   };
 
-  handleRequestSort = (event, property) => {
+  onGroupChange = (e) => {
+    const groupId = e.target.value;
+    this.setState({ groupId });
+  };
+
+  onSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
 
@@ -42,47 +50,59 @@ class ViewEvents extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { order, orderBy } = this.state;
+    const { groupId, order, orderBy } = this.state;
 
     if (this.props.loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
+    const filteredEvents = filterEvents(this.props.user.events, groupId, order, orderBy);
+
     return (
       <div className={classes.root}>
-        <div className={classes.actionPanel}>
-          <Typography variant="title">Events</Typography>
-          <div>
-            <Button
-              variant="raised"
-              size="small"
-              color="primary"
-              component={Link}
-              to="/events/edit"
-            >
+        <Paper className={classes.paper}>
+          <SpreadPanel>
+            <Typography variant="title">Events</Typography>
+            <Button variant="raised" size="small" color="primary" component={Link} to="/events/add">
               Add New Event
             </Button>
-          </div>
-        </div>
-        <Paper className={classes.paper}>
-          <Table className={classes.table}>
-            <EnhancedTableHead
+          </SpreadPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
+          <CenterPanel>
+            <FormControl className={classes.formControlFilter}>
+              <Select
+                value={this.state.groupId}
+                onChange={this.onGroupChange}
+                displayEmpty
+                required
+                inputProps={{
+                  id: 'groupFilter',
+                }}
+              >
+                <MenuItem value="" key={0}>
+                  <em>none</em>
+                </MenuItem>
+                {this.props.user.groups.map(group => (
+                  <MenuItem value={group.id} key={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </CenterPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
+          {filteredEvents.length > 0 ? (
+            <EventTable
+              events={filteredEvents}
               order={order}
               orderBy={orderBy}
-              onRequestSort={this.handleRequestSort}
-              columnData={columnData}
+              onSort={this.onSort}
             />
-            <TableBody>
-              {this.props.user.events.map(event => (
-                <TableRow key={event.id}>
-                  <TableCell className={classes.tableCell}>
-                    <Link to={`/events/edit/${event.id}`}>{event.name}</Link>
-                  </TableCell>
-                  <TableCell>{event.details}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          ) : (
+            <Message>No events found.</Message>
+          )}
         </Paper>
       </div>
     );
@@ -94,6 +114,12 @@ ViewEvents.propTypes = {
   loading: PropTypes.bool.isRequired,
   user: PropTypes.shape({
     events: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
+    groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
@@ -116,4 +142,8 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles), userQuery)(ViewEvents);
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+  userQuery,
+)(ViewEvents);

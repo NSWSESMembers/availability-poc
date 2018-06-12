@@ -26,7 +26,7 @@ const ScheduleDay = ({ classes, users, day, onEdit }) => {
   const headerRows = [];
   if (headerRows.length === 0) {
     headerRows.push(
-      <th key="headerDate" className={classes.tableHeader}>
+      <th key="headerDate" className={classes.tableHeaderFirst}>
         {moment.unix(day).format('ddd, MMM D')}
       </th>,
     );
@@ -83,7 +83,7 @@ const ScheduleDay = ({ classes, users, day, onEdit }) => {
 
     userRows.push(
       <tr key={`user${user.id}rowname`}>
-        <td className={classes.tableCell}>
+        <td className={classes.tableCellFirst}>
           <Link to={`/users/${user.id}`}>{user.displayName}</Link>
         </td>
         {userTimeColumns}

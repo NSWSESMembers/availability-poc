@@ -41,6 +41,7 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
           time={startTime}
           timeSegment={availableSegment}
           onOpenModal={onOpenModal}
+          margin
         />
         <TimeLabel
           user={user}
@@ -50,6 +51,7 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
           endTime={endTime}
           timeSegment={unavailableSegment}
           onOpenModal={onOpenModal}
+          margin
         />
         <TimeLabel
           user={user}
@@ -58,6 +60,7 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
           time={startTime}
           timeSegment={urgentSegment}
           onOpenModal={onOpenModal}
+          margin
         />
       </div>
     </TableCell>

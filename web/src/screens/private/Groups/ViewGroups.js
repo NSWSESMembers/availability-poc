@@ -127,13 +127,7 @@ class ViewGroups extends React.Component {
         <Paper className={classes.paper}>
           <SpreadPanel>
             <Typography variant="title">Groups</Typography>
-            <Button
-              variant="raised"
-              size="small"
-              color="primary"
-              component={Link}
-              to="/groups/edit"
-            >
+            <Button variant="raised" size="small" color="primary" component={Link} to="/groups/add">
               Add New Group
             </Button>
           </SpreadPanel>

@@ -27,7 +27,7 @@ const ScheduleTable = ({ schedules }) => (
             <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
           </TableCell>
           <TableCell>
-            <Link to={`/groups/edit/${schedule.group.id}`}>{schedule.group.name}</Link>
+            <Link to={`/groups/${schedule.group.id}`}>{schedule.group.name}</Link>
           </TableCell>
           <TableCell>
             {schedule.startTime === numbers.distantPast
