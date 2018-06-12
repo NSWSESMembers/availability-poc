@@ -1,10 +1,11 @@
+/* global navigator */
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { View, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
-
+import distance from 'react-native-google-matrix';
 import EVENT_QUERY from '../../graphql/event.query';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
@@ -22,6 +23,8 @@ class SetResponse extends Component {
     mapModal: false,
     status: null,
     destination: null,
+    dstToScene: null,
+    timeToScene: null,
     destinationName: null,
     eta: null,
     detail: null,
@@ -29,6 +32,44 @@ class SetResponse extends Component {
     etaModal: false,
     detailModal: false,
   }
+
+  componentDidMount() {
+    this.updateETAMaybe();
+  }
+
+  componentDidUpdate() {
+    this.updateETAMaybe();
+  }
+
+  updateETAMaybe = () => {
+    // calcualte distance with google only when we have the event and we havnt already run
+    if (!this.state.dstToScene && this.props.event) {
+      this.geoWatch = navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const primary = this.props.event.eventLocations.find(location => location.name === 'scene');
+          distance.get(
+            {
+              origin: `${position.coords.latitude}, ${position.coords.longitude}`,
+              destination: `${primary.locationLatitude}, ${primary.locationLongitude}`,
+            },
+            (err, data) => {
+              this.setState({
+                dstToScene: !err ? data.distance : 'Unknown distance ',
+                timeToScene: !err ? data.duration : 'unknown',
+              });
+            },
+          );
+        }, () => {
+          this.setState({
+            dstToScene: 'Unknown distance ',
+            timeToScene: 'unknown',
+          });
+        },
+        { enableHighAccuracy: true, maximumAge: 60, distanceFilter: 0, timeout: 3000 },
+      );
+    }
+  }
+
 
   submitEventResponse = () => {
     const dst = (this.state.destination !== null ?
@@ -163,7 +204,7 @@ class SetResponse extends Component {
         <ScrollView>
           <Paper title={event.name} />
           <TouchableOpacity onPress={this.showMapModal}>
-            <Paper title="Location" text={event.eventLocations[1].detail} iconRight="map" />
+            <Paper title={this.state.dstToScene ? `Location (${this.state.dstToScene} - ETA ${this.state.timeToScene})` : 'Location'} text={event.eventLocations[1].detail} iconRight="map" />
           </TouchableOpacity>
           <Paper title="Situation On Scene" text={event.details} />
           <View style={styles.buttonContainer}>
