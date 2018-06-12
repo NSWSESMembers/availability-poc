@@ -26,22 +26,23 @@ const options = {
 const fbaProvider = process.env.FBA_KEY ? admin.initializeApp({
   credential: admin.credential.cert(options),
 }) : null;
-
-
-const sendPush = ({ token, message }) => {
+const sendPush = ({ token, title, message, payload }) => {
   const bundle = {
     notification: {
-      title: 'Title',
+      title,
       body: message,
     },
     token,
+    data: payload,
   };
 
-  if (admin.auth === null) {
-    console.log('Cannot send FCM push - maybe you forgot to set FBA_KEY');
+  if (admin.auth !== null) {
+    console.log('FCM ready to send');
+    return admin.messaging().send(bundle);
   }
 
-  return admin.messaging().send(bundle);
+  return Promise.reject(Error('FCM failed'));
 };
+
 
 export { fbaProvider, admin, sendPush };

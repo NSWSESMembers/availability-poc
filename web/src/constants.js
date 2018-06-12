@@ -7,6 +7,9 @@ export default numbers;
 
 export const TAG_TYPE_ORG_STRUCTURE = 'orgStructure';
 export const TAG_TYPE_CAPABILITY = 'capability';
+<<<<<<< HEAD
 
 export const DEFAULT_START_TIME = '09:00';
 export const DEFAULT_END_TIME = '17:00';
+=======
+>>>>>>> origin/master

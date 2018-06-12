@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
+import { Alert } from 'react-native';
 
 import { isLoggedIn } from '../../selectors/auth';
 
@@ -50,14 +51,15 @@ class PushHandler extends React.Component {
     });
   }
 
+
   onMountOrUpdate() {
     const { auth, pushManager } = this.props;
-    const { onTokenUpdate } = this;
+    const { onTokenUpdate, onNotification, onNotificationOpened } = this;
 
     // we're expecting to get updated with the push token from the server
     if (isLoggedIn(auth) && !this.didRegister) {
       this.didRegister = true;
-      pushManager.register({ onTokenUpdate });
+      pushManager.register({ onTokenUpdate, onNotification, onNotificationOpened });
     }
     this.updateTokensMaybe();
   }
@@ -68,6 +70,30 @@ class PushHandler extends React.Component {
     this.updateTokensMaybe();
   }
 
+  onNotification = (data) => {
+    // FCM onNotification has slightly different data format compared to onNotificationOpened
+    console.log('onNotification', data);
+    Alert.alert(
+      data.title,
+      data.body,
+      [
+        { text: 'OK' },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  onNotificationOpened = (data) => {
+    const payload = JSON.parse(data.notification.data.data);
+    console.log('onNotificationOpened', data);
+    switch (payload.type) {
+      case 'event':
+        this.props.navigation.navigate('EventNewResponse', { eventId: payload.id });
+        break;
+      default:
+        break;
+    }
+  }
 
   updateTokensMaybe() {
     // we don't know whether we will receive which of the following we will receive first so we
@@ -118,6 +144,9 @@ PushHandler.propTypes = {
   pushManager: PropTypes.object,
   updateDevice: PropTypes.func,
   auth: PropTypes.shape().isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }),
   device: PropTypes.shape({
     pushToken: PropTypes.string,
   }),

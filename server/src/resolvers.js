@@ -147,9 +147,6 @@ export const getResolvers = (handlers) => {
       createGroup(_, args, ctx) {
         return groupHandler.createGroup(_, args, ctx);
       },
-      updateGroup(_, args, ctx) {
-        return groupHandler.updateGroup(_, args, ctx);
-      },
       addUserToGroup(_, args, ctx) {
         return groupHandler.addUserToGroup(_, args, ctx);
       },

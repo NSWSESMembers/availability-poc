@@ -1,11 +1,12 @@
 import { sendPush as apns } from './apns';
 import { sendPush as fcm } from './fcm';
-import sleep from '../utils';
 
-const sendPush = ({ devices, message }) => {
+const sendPush = ({ devices, title, message, payload }) => {
+  // FCM requires payload be "Object with string properties or undefined"
+  // so leys play it safe and use json
+  const jsonPayload = payload ? { data: JSON.stringify(payload) } : {};
   devices.forEach((device) => {
     const promises = [];
-
     if (device.pushToken) {
       try {
         const pushTokens = JSON.parse(device.pushToken);
@@ -15,6 +16,7 @@ const sendPush = ({ devices, message }) => {
             apns({
               token: pushTokens.apns,
               message,
+              payload: jsonPayload,
             }),
           );
         }
@@ -23,7 +25,9 @@ const sendPush = ({ devices, message }) => {
           promises.push(
             fcm({
               token: pushTokens.fcm,
+              title,
               message,
+              payload: jsonPayload,
             }),
           );
         }
@@ -35,15 +39,8 @@ const sendPush = ({ devices, message }) => {
       console.log('Tried to push but no valid tokens.');
       return false;
     }
-    return Promise.all(promises).then(() => true);
+    return Promise.all(promises).then(() => true).catch(e => console.log(e));
   });
 };
 
-const sendTestPush = async ({ devices, message, delay }) => {
-  if (delay) {
-    await sleep(5000);
-  }
-  return sendPush({ devices, message });
-};
-
-export { sendPush, sendTestPush };
+export default sendPush;

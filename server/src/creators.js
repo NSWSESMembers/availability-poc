@@ -13,23 +13,28 @@ export const getCreators = (models) => {
     organisation: ({ name }) =>
       Organisation.create({ name }),
 
-    schedule: ({ name, details, startTime, endTime, group }) => {
+    schedule: ({ name, details, type, priority, startTime, endTime, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
       if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
         return Promise.reject(Error('Must pass start and end times'));
       }
+      if (endTime < startTime) {
+        return Promise.reject(Error('endTime must be greater than startTime'));
+      }
       return Schedule.create({
         name,
         details,
+        type: type || 'local',
+        priority,
         startTime,
         endTime,
         groupId: group.id,
       });
     },
 
-    event: ({ name, details, sourceIdentifier, permalink, group }) => {
+    event: ({ name, details, sourceIdentifier, permalink, priority, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -38,6 +43,7 @@ export const getCreators = (models) => {
         details,
         sourceIdentifier,
         permalink,
+        priority,
         groupId: group.id,
         startTime: Math.floor((new Date()).getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
@@ -119,6 +125,9 @@ export const getCreators = (models) => {
       }
       if (typeof startTime === 'undefined' || typeof endTime === 'undefined') {
         return Promise.reject(Error('Must pass start and end times'));
+      }
+      if (endTime < startTime) {
+        return Promise.reject(Error('endTime must be greater than startTime'));
       }
       return TimeSegment.create({
         status,

@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { View, Alert, ScrollView } from 'react-native';
+import { View, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 
 import EVENT_QUERY from '../../graphql/event.query';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
-import { ListModal, TextInputModal, NumberInputModal } from '../../components/Modal';
+import { ListModal, TextInputModal, NumberInputModal, MapModal } from '../../components/Modal';
 import { Paper } from '../../components/Paper';
 import { ButtonIcon } from '../../components/Button';
 import styles from './styles';
@@ -19,6 +19,7 @@ import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 class SetResponse extends Component {
   state = {
+    mapModal: false,
     status: null,
     destination: null,
     destinationName: null,
@@ -132,9 +133,23 @@ class SetResponse extends Component {
     this.props.onClose();
   };
 
+  showMapModal = () => {
+    // Only render if there are locations
+    if (this.props.event.eventLocations.length) {
+      this.setState({
+        mapModal: true,
+      });
+    }
+  }
+
+  hideMapModal = () => {
+    this.setState({
+      mapModal: false,
+    });
+  }
+
   render() {
     const { event, loading } = this.props;
-
     if (loading && !event) {
       return (
         <Container>
@@ -147,7 +162,10 @@ class SetResponse extends Component {
       <Container>
         <ScrollView>
           <Paper title={event.name} />
-          <Paper text={event.eventLocations[1].detail} />
+          <TouchableOpacity onPress={this.showMapModal}>
+            <Paper title="Location" text={event.eventLocations[1].detail} iconRight="map" />
+          </TouchableOpacity>
+          <Paper title="Situation On Scene" text={event.details} />
           <View style={styles.buttonContainer}>
             <ButtonIcon
               onPress={() => this.handleResponse('attending')}
@@ -174,7 +192,6 @@ class SetResponse extends Component {
               icon="window-close"
             />
           </View>
-          <Paper text={event.details} />
         </ScrollView>
         <ListModal
           title="Select Your Destination"
@@ -204,6 +221,19 @@ class SetResponse extends Component {
           backModal={this.handleDetailBack}
           onChangeText={this.handleDetailChange}
           onSave={this.handleDetail}
+        />
+        <MapModal
+          title={event.eventLocations[1].detail}
+          visible={this.state.mapModal}
+          closeModal={this.hideMapModal}
+          backModal={this.hideMapModal}
+          markers={event.eventLocations.map(location => ({
+            id: location.name,
+            latitude: location.locationLatitude,
+            longitude: location.locationLongitude,
+            icon: location.icon,
+          }))}
+          initialRegion={event.eventLocations.find(location => location.name === 'scene')}
         />
       </Container>
     );

@@ -26,8 +26,11 @@ import styles from '../../../styles/AppStyle';
 import Message from '../../../components/Messages/Message';
 import Tag from '../../../components/Selects/Tag';
 import GroupTable from './components/GroupTable';
+<<<<<<< HEAD
 import CenterPanel from '../../../components/Panels/CenterPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
+=======
+>>>>>>> origin/master
 
 // Selectors
 import filterGroups from '../../../selectors/groups';
@@ -55,6 +58,7 @@ class ViewGroups extends React.Component {
           this.setState(() => ({ message: '', open: false }));
         }, 3000);
       });
+<<<<<<< HEAD
   };
 
   handleRemove = (id) => {
@@ -81,6 +85,34 @@ class ViewGroups extends React.Component {
     this.setState({ order, orderBy });
   };
 
+=======
+  };
+
+  handleRemove = (id) => {
+    this.props
+      .leaveGroup({
+        groupId: id,
+      })
+      .catch((error) => {
+        this.setState(() => ({ message: error.message, open: true }));
+        setTimeout(() => {
+          this.setState(() => ({ message: '', open: false }));
+        }, 3000);
+      });
+  };
+
+  handleSort = (event, property) => {
+    const orderBy = property;
+    let order = 'desc';
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc';
+    }
+
+    this.setState({ order, orderBy });
+  };
+
+>>>>>>> origin/master
   handleSwitchChange = name => (event) => {
     this.setState({ [name]: event.target.checked });
   };
@@ -97,16 +129,26 @@ class ViewGroups extends React.Component {
   };
 
   render() {
+<<<<<<< HEAD
     const { classes, loading, orgUser } = this.props;
+=======
+    const { classes, loading, user } = this.props;
+>>>>>>> origin/master
     const { locationFilter, capabilityFilter, searchFilter, order, orderBy } = this.state;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
+<<<<<<< HEAD
     let groups = this.state.myGroups ? orgUser.groups : orgUser.organisation.groups;
 
     groups = filterGroups(groups, orgUser.groups, {
+=======
+    let groups = this.state.myGroups ? user.groups : user.organisation.groups;
+
+    groups = filterGroups(groups, user.groups, {
+>>>>>>> origin/master
       locationFilter,
       capabilityFilter,
       searchFilter,
@@ -114,17 +156,40 @@ class ViewGroups extends React.Component {
       orderBy,
     });
 
+<<<<<<< HEAD
     const capabilities = orgUser.organisation.tags
       .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     const locations = orgUser.organisation.tags
+=======
+    const capabilities = user.organisation.tags
+      .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+      .map(tag => ({ value: tag.id.toString(), label: tag.name }));
+
+    const locations = user.organisation.tags
+>>>>>>> origin/master
       .filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
 
     return (
       <div className={classes.root}>
+        <div className={classes.actionPanel}>
+          <Typography variant="title">Groups</Typography>
+          <div>
+            <Button
+              variant="raised"
+              size="small"
+              color="primary"
+              component={Link}
+              to="/groups/edit"
+            >
+              Add New Group
+            </Button>
+          </div>
+        </div>
         <Paper className={classes.paper}>
+<<<<<<< HEAD
           <SpreadPanel>
             <Typography variant="title">Groups</Typography>
             <Button variant="raised" size="small" color="primary" component={Link} to="/groups/add">
@@ -134,6 +199,15 @@ class ViewGroups extends React.Component {
         </Paper>
         <Paper className={classes.paperMargin}>
           <CenterPanel>
+=======
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+>>>>>>> origin/master
             <FormControlLabel
               control={
                 <Switch
@@ -141,6 +215,7 @@ class ViewGroups extends React.Component {
                   value="myGroups"
                   onChange={this.handleSwitchChange('myGroups')}
                   color="primary"
+<<<<<<< HEAD
                 />
               }
               label="Only My groups"
@@ -173,6 +248,40 @@ class ViewGroups extends React.Component {
           </CenterPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
+=======
+                />
+              }
+              label="Only My groups"
+            />
+            <div>
+              <FormControl className={classes.formControlFilter}>
+                <Tag
+                  list={locations}
+                  placeholder="Select Location"
+                  onChange={this.handleTagChange('locationFilter')}
+                  value={this.state.locationFilter}
+                  multi={false}
+                />
+              </FormControl>
+              <FormControl className={classes.formControlFilter}>
+                <Tag
+                  list={capabilities}
+                  placeholder="Select Capability"
+                  onChange={this.handleTagChange('capabilityFilter')}
+                  value={this.state.capabilityFilter}
+                  multi={false}
+                />
+              </FormControl>
+              <FormControl className={classes.formControlFilter}>
+                <Input
+                  id="groupSearch"
+                  placeholder="Search Text..."
+                  onChange={e => this.handleChange(e, 'searchFilter')}
+                />
+              </FormControl>
+            </div>
+          </div>
+>>>>>>> origin/master
           {groups.length > 0 ? (
             <GroupTable
               groups={groups}
@@ -196,7 +305,11 @@ ViewGroups.propTypes = {
   loading: PropTypes.bool.isRequired,
   joinGroup: PropTypes.func.isRequired,
   leaveGroup: PropTypes.func.isRequired,
+<<<<<<< HEAD
   orgUser: PropTypes.shape({
+=======
+  user: PropTypes.shape({
+>>>>>>> origin/master
     groups: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
@@ -222,11 +335,19 @@ const orgQuery = graphql(CURRENT_ORG_QUERY, {
       typeFilter: '',
     },
   }),
+<<<<<<< HEAD
   props: ({ data: { loading, networkStatus, refetch, orgUser } }) => ({
     loading,
     networkStatus,
     refetch,
     orgUser,
+=======
+  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
+    loading,
+    networkStatus,
+    refetch,
+    user,
+>>>>>>> origin/master
   }),
 });
 

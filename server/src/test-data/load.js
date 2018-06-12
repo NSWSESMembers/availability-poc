@@ -66,8 +66,8 @@ const createTags = (Creators, organisation) => {
 
 const createSchedule = (Creators, schedule, groups) => {
   const group = groups[schedule.group];
-  const { name, details, startTime, endTime } = schedule;
-  return Creators.schedule({ name, details, startTime, endTime, group });
+  const { name, details, type, priority, startTime, endTime } = schedule;
+  return Creators.schedule({ name, details, type, priority, startTime, endTime, group });
 };
 
 const createSchedules = (Creators, groups) => {
@@ -139,15 +139,11 @@ const createEventLocations = (Creators, event, locations) => {
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
-  const { name, details, sourceIdentifier, permalink, responses, eventLocations } = event;
-  return Creators.event({ name, details, sourceIdentifier, permalink, group })
-    .then((e) => {
-      createEventLocations(Creators, e, eventLocations).then((em) => {
-        Promise.all(
-          responses.map(r => createEventResponse(Creators, e, r, em, users)),
-        );
-      });
-    });
+  const { name, details, sourceIdentifier, permalink, priority, responses, eventLocations } = event;
+  return Creators.event({ name, details, sourceIdentifier, permalink, priority, group })
+    .then(e => createEventLocations(Creators, e, eventLocations).then(em => Promise.all(
+      responses.map(r => createEventResponse(Creators, e, r, em, users)),
+    )));
 };
 
 const createEvents = (Creators, groups, users) =>

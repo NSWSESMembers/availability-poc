@@ -125,6 +125,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: FONT_SIZE,
   },
+
+  mapContainer: {
+    borderRadius: BORDER_RADIUS,
+    flexShrink: 1,
+    marginTop: 8,
+    marginBottom: 8,
+    padding: PADDING,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+
+  map: {
+    backgroundColor: '#f9f9f9',
+    zIndex: -1,
+    height: 200,
+  },
 });
 
 export default styles;

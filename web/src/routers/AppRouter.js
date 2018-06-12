@@ -34,8 +34,13 @@ const AppRouter = () => (
         <PublicRoute path="/signup" component={SignupPage} exact />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/groups" component={ViewGroups} exact />
+<<<<<<< HEAD
         <PrivateRoute path="/groups/add" component={EditGroup} exact />
         <PrivateRoute path="/groups/:id" component={EditGroup} />
+=======
+        <PrivateRoute path="/groups/edit" component={EditGroup} exact />
+        <PrivateRoute path="/groups/edit/:id" component={EditGroup} />
+>>>>>>> origin/master
         <PrivateRoute path="/schedules" component={ViewSchedules} exact />
         <PrivateRoute path="/schedules/add" component={EditSchedule} exact />
         <PrivateRoute path="/schedules/:id/:time" component={ViewScheduleDay} />

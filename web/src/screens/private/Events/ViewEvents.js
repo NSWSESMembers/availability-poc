@@ -21,9 +21,18 @@ import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
+<<<<<<< HEAD
 import filterEvents from '../../../selectors/events';
 
 import styles from '../../../styles/AppStyle';
+=======
+import styles from '../../../styles/AppStyle';
+
+const columnData = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'details', numeric: false, disablePadding: false, label: 'Details', enabled: true },
+];
+>>>>>>> origin/master
 
 class ViewEvents extends React.Component {
   state = {
@@ -60,6 +69,7 @@ class ViewEvents extends React.Component {
 
     return (
       <div className={classes.root}>
+<<<<<<< HEAD
         <Paper className={classes.paper}>
           <SpreadPanel>
             <Typography variant="title">Events</Typography>
@@ -96,6 +106,25 @@ class ViewEvents extends React.Component {
           {filteredEvents.length > 0 ? (
             <EventTable
               events={filteredEvents}
+=======
+        <div className={classes.actionPanel}>
+          <Typography variant="title">Events</Typography>
+          <div>
+            <Button
+              variant="raised"
+              size="small"
+              color="primary"
+              component={Link}
+              to="/events/edit"
+            >
+              Add New Event
+            </Button>
+          </div>
+        </div>
+        <Paper className={classes.paper}>
+          <Table className={classes.table}>
+            <EnhancedTableHead
+>>>>>>> origin/master
               order={order}
               orderBy={orderBy}
               onSort={this.onSort}

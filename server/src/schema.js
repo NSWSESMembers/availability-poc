@@ -29,6 +29,11 @@ export const Schema = [
     displayName: String,
   }
 
+  input UserInput {
+    id: Int!
+    displayName: String,
+  }
+
   input CreateGroupInput {
     name: String!
     tags: [TagInput]
@@ -52,6 +57,7 @@ export const Schema = [
   input CreateScheduleInput {
     name: String!
     details: String!
+    type: String
     startTime: Int!
     endTime: Int!
     groupId: Int!
@@ -133,6 +139,7 @@ export const Schema = [
     details: String!
     sourceIdentifier: String
     permalink: String
+    priority: Int
     eventLocations: [LocationInput]
     groupId: Int!
   }
@@ -147,6 +154,14 @@ export const Schema = [
     groupId: Int!
   }
   
+  input UpdateGroupInput {
+    id: Int!
+    name: String!
+    tags: [TagInput]
+    icon: String
+    users: [UserInput]
+  }
+
   input UpdateGroupInput {
     id: Int!
     name: String!
@@ -223,6 +238,7 @@ export const Schema = [
     details: String!
     sourceIdentifier: String,
     permalink: String,
+    priority: Int,
     group: Group!
     responses: [EventResponse]
     messages: [Message]
@@ -266,9 +282,11 @@ export const Schema = [
     id: Int!
     name: String!
     details: String!
+    type: String!,
+    priority: Int
     startTime: Int!
     endTime: Int!
-    timeSegments: [TimeSegment]!
+    timeSegments(userIdFilter: Int): [TimeSegment]!
   }
 
   type TimeSegment {

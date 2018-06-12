@@ -17,10 +17,15 @@ import Select from 'material-ui/Select';
 import Search from 'material-ui-icons/Search';
 
 import Message from '../../../components/Messages/Message';
+<<<<<<< HEAD
 import CenterPanel from '../../../components/Panels/CenterPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import Tag from '../../../components/Selects/Tag';
 import ScheduleTable from './components/ScheduleTable';
+=======
+
+import EnhancedTableHead from '../../../components/Tables/EnhancedTableHead';
+>>>>>>> origin/master
 
 import filterSchedules from '../../../selectors/schedules';
 
@@ -29,7 +34,17 @@ import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
 import { TAG_TYPE_CAPABILITY } from '../../../constants';
 
+<<<<<<< HEAD
 import styles from '../../../styles/AppStyle';
+=======
+const columnData = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'group', numeric: false, disablePadding: false, label: 'Group', enabled: true },
+  { id: 'type', numeric: false, disablePadding: false, label: 'Type', enabled: true },
+  { id: 'startTime', numeric: false, disablePadding: false, label: 'Start Date', enabled: true },
+  { id: 'endTime', numeric: false, disablePadding: false, label: 'End Date', enabled: true },
+];
+>>>>>>> origin/master
 
 class ViewSchedules extends React.Component {
   state = {
@@ -119,6 +134,59 @@ class ViewSchedules extends React.Component {
                   <MenuItem value={group.id} key={group.id}>
                     {group.name}
                   </MenuItem>
+<<<<<<< HEAD
+=======
+                  {this.props.user.groups.map(group => (
+                    <MenuItem value={group.id} key={group.id}>
+                      {group.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Input
+                  id="nameFilter"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Search color="disabled" />
+                    </InputAdornment>
+                  }
+                  onChange={this.onNameChange}
+                />
+              </FormControl>
+            </Grid>
+          </Toolbar>
+
+          {filteredItems.length === 0 ? (
+            <Message>There are no requests that match this filter.</Message>
+          ) : (
+            <Table className={classes.table}>
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={this.handleRequestSort}
+                columnData={columnData}
+              />
+              <TableBody>
+                {filteredItems.map(schedule => (
+                  <TableRow key={schedule.id}>
+                    <TableCell>
+                      <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
+                    </TableCell>
+                    <TableCell>{schedule.group}</TableCell>
+                    <TableCell>{schedule.type}</TableCell>
+                    <TableCell>
+                      {schedule.startTime === 0
+                        ? '-'
+                        : moment.unix(schedule.startTime).format('LLL')}
+                    </TableCell>
+                    <TableCell>
+                      {schedule.endTime === 2147483647
+                        ? '-'
+                        : moment.unix(schedule.endTime).format('LLL')}
+                    </TableCell>
+                  </TableRow>
+>>>>>>> origin/master
                 ))}
               </Select>
             </FormControl>

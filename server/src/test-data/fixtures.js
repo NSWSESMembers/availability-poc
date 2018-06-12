@@ -276,6 +276,8 @@ export const SCHEDULES = [
   {
     name: 'Wagga Wagga OOA availability',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
+    type: 'ooa',
+    priority: 4,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
     group: 'NSW SES',
@@ -289,6 +291,8 @@ export const SCHEDULES = [
   {
     name: 'Kiama rescue availability',
     details: 'Ongoing availability for RCR, VR, GLR',
+    type: 'local',
+    priority: 3,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Kiama',
@@ -301,6 +305,8 @@ export const SCHEDULES = [
   {
     name: 'Kiama storm availability',
     details: 'Non-urgent availability for storm jobs during this week',
+    type: 'local',
+    priority: 5,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Kiama',
@@ -314,6 +320,8 @@ export const SCHEDULES = [
   {
     name: 'Parramatta storm availability',
     details: 'Non-urgent availability for storm jobs',
+    type: 'local',
+    priority: 5,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Parramatta',
@@ -328,6 +336,8 @@ export const SCHEDULES = [
   {
     name: 'Metro L3',
     details: 'Metro - Flood Rescue operator availability',
+    type: 'local',
+    priority: 2,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
@@ -335,6 +345,8 @@ export const SCHEDULES = [
   {
     name: 'Metro IMT',
     details: 'Mtro - IMT operator availability',
+    type: 'local',
+    priority: 3,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
@@ -342,6 +354,8 @@ export const SCHEDULES = [
   {
     name: 'OCES - Weekly Meeting',
     details: 'Weekly Monday meeting',
+    type: 'local',
+    priority: 9,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 1),
     group: 'NSW SES',
@@ -354,6 +368,7 @@ export const EVENTS = [
     details: '2 climbers stranded 50m from top of cliff.',
     sourceIdentifier: '654-321',
     permalink: 'https://jobssytem.com/jobs/c33367701511b4f6020ec61ded352059',
+    priority: 3,
     group: 'Kiama',
     eventLocations: [
       {
@@ -417,6 +432,7 @@ export const EVENTS = [
     details: '2 car MVA. Head on collision. 3 people trapped.',
     sourceIdentifier: '123-456',
     permalink: 'https://jobssytem.com/jobs/123456',
+    priority: 1,
     group: 'Kiama',
     eventLocations: [
       {
@@ -487,6 +503,7 @@ export const EVENTS = [
     details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
     sourceIdentifier: '111-222',
     permalink: 'https://jobssytem.com/jobs/111-222',
+    priority: 2,
     group: 'Parramatta',
     eventLocations: [
       {

@@ -226,15 +226,19 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           schedule: Schedule.findById(args.id),
         });
       },
-      timeSegments(schedule) {
-        return schedule.getTimesegments();
+      timeSegments(schedule, args) {
+        if (!args.userIdFilter) {
+          return schedule.getTimesegments();
+        }
+        return schedule.getTimesegments({ where: { userId: args.userIdFilter } });
       },
       group(schedule) {
         return schedule.getGroup();
       },
       createSchedule(_, args) {
-        const { name, details, startTime, endTime, groupId } = args.schedule;
+        const { name, details, type, priority, startTime, endTime, groupId } = args.schedule;
 
+<<<<<<< HEAD
         return Group.findById(groupId).then((group) => {
           if (!group) {
             return Promise.reject(Error('Invalid group'));
@@ -246,6 +250,26 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             startTime,
             endTime,
             group,
+=======
+        return Group.findById(groupId)
+          .then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Invalid group'));
+            }
+            // TODO: check whether the user is a member of the group
+            return Creators.schedule({
+              name,
+              details,
+              type,
+              priority,
+              startTime,
+              endTime,
+              group,
+            }).then((schedule) => {
+              push.pushScheduleToGroup(schedule);
+              return schedule;
+            });
+>>>>>>> origin/master
           });
         });
       },
@@ -339,7 +363,15 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return EventLocation.findById(event.primaryLocationId);
       },
       createEvent(_, args, ctx) {
-        const { name, details, sourceIdentifier, permalink, eventLocations, groupId } = args.event;
+        const {
+          name,
+          details,
+          sourceIdentifier,
+          permalink,
+          priority,
+          eventLocations,
+          groupId,
+        } = args.event;
         return getAuthenticatedUser(ctx).then(() =>
           Group.findById(groupId).then((group) => {
             if (!group) {
@@ -350,6 +382,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
               details,
               sourceIdentifier,
               permalink,
+              priority,
               group,
             }).then((event) => {
               if (typeof eventLocations === 'undefined') return;
@@ -364,7 +397,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                     event,
                   }),
                 ),
-              );
+              ).then(() => {
+                push.pushEventToGroup(event);
+                return event;
+              });
             });
           }),
         );
@@ -376,6 +412,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           details,
           sourceIdentifier,
           permalink,
+          priority,
           eventLocations,
           groupId,
         } = args.event;
@@ -390,6 +427,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                 details,
                 sourceIdentifier,
                 permalink,
+                priority,
                 groupId,
               })
               .then(() => {
