@@ -23,7 +23,7 @@ export const Schema = [
     name: String,
     type: String,
   }
-  
+
   input UserInput {
     id: Int!
     displayName: String,
@@ -147,7 +147,7 @@ export const Schema = [
     eventLocations: [LocationInput]
     groupId: Int!
   }
-  
+
   input UpdateGroupInput {
     id: Int!
     name: String!
@@ -271,7 +271,7 @@ export const Schema = [
     priority: Int
     startTime: Int!
     endTime: Int!
-    timeSegments: [TimeSegment]!
+    timeSegments(userIdFilter: Int): [TimeSegment]!
   }
 
   type TimeSegment {
