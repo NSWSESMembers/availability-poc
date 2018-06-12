@@ -13,7 +13,7 @@ export const getCreators = (models) => {
     organisation: ({ name }) =>
       Organisation.create({ name }),
 
-    schedule: ({ name, details, priority, startTime, endTime, group }) => {
+    schedule: ({ name, details, type, priority, startTime, endTime, group }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -26,6 +26,7 @@ export const getCreators = (models) => {
       return Schedule.create({
         name,
         details,
+        type: type || 'local',
         priority,
         startTime,
         endTime,

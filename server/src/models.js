@@ -48,6 +48,7 @@ export const defineModels = (db) => {
   const ScheduleModel = db.define('schedule', {
     name: { type: Sequelize.STRING },
     details: { type: Sequelize.STRING },
+    type: { type: Sequelize.STRING },
     priority: { type: Sequelize.INTEGER },
     startTime: { type: Sequelize.INTEGER },
     endTime: { type: Sequelize.INTEGER },

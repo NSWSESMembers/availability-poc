@@ -233,7 +233,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         return schedule.getGroup();
       },
       createSchedule(_, args) {
-        const { name, details, priority, startTime, endTime, groupId } = args.schedule;
+        const { name, details, type, priority, startTime, endTime, groupId } = args.schedule;
 
         return Group.findById(groupId)
           .then((group) => {
@@ -244,6 +244,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             return Creators.schedule({
               name,
               details,
+              type,
               priority,
               startTime,
               endTime,

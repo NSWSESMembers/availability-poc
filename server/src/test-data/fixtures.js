@@ -276,6 +276,7 @@ export const SCHEDULES = [
   {
     name: 'Wagga Wagga OOA availability',
     details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
+    type: 'ooa',
     priority: 4,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
@@ -290,6 +291,7 @@ export const SCHEDULES = [
   {
     name: 'Kiama rescue availability',
     details: 'Ongoing availability for RCR, VR, GLR',
+    type: 'local',
     priority: 3,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -303,6 +305,7 @@ export const SCHEDULES = [
   {
     name: 'Kiama storm availability',
     details: 'Non-urgent availability for storm jobs during this week',
+    type: 'local',
     priority: 5,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
@@ -317,6 +320,7 @@ export const SCHEDULES = [
   {
     name: 'Parramatta storm availability',
     details: 'Non-urgent availability for storm jobs',
+    type: 'local',
     priority: 5,
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
@@ -332,6 +336,7 @@ export const SCHEDULES = [
   {
     name: 'Metro L3',
     details: 'Metro - Flood Rescue operator availability',
+    type: 'local',
     priority: 2,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
@@ -340,6 +345,7 @@ export const SCHEDULES = [
   {
     name: 'Metro IMT',
     details: 'Mtro - IMT operator availability',
+    type: 'local',
     priority: 3,
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
@@ -348,6 +354,7 @@ export const SCHEDULES = [
   {
     name: 'OCES - Weekly Meeting',
     details: 'Weekly Monday meeting',
+    type: 'local',
     priority: 9,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 1),
