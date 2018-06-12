@@ -3,10 +3,11 @@ import gql from 'graphql-tag';
 // get the orgs tags
 export default gql`
   query tag {
-    user {
+    orgUser: user {
       id
       organisation {
         id
+        name
         tags {
           id
           name

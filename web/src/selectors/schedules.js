@@ -8,10 +8,13 @@ export default (schedules, { groupId, name, order, orderBy }) => {
       filteredItems.push({
         id: schedule.id,
         name: schedule.name,
-        group: schedule.group.name,
         type: schedule.startTime === 0 ? 'Ongoing' : 'Date Range',
         startTime: schedule.startTime,
         endTime: schedule.endTime,
+        group: {
+          id: schedule.group.id,
+          name: schedule.group.name,
+        },
       });
     }
   });

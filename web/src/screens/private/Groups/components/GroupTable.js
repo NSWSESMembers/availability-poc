@@ -83,7 +83,7 @@ const GroupTable = ({ classes, groups, order, orderBy, handleAdd, handleRemove, 
                   width: '200px',
                 }}
               >
-                <Link to={`/groups/edit/${group.id}`}>{group.name}</Link>
+                <Link to={`/groups/${group.id}`}>{group.name}</Link>
               </span>
             </TableCell>
             <TableCell>

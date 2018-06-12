@@ -1,3 +1,4 @@
+// filters list of groups by defined filter (location, capability, search, order, orderBy)
 export default (
   groups,
   userGroups,

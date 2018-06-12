@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 
@@ -12,10 +13,10 @@ import { FormControl } from 'material-ui/Form';
 import { CircularProgress } from 'material-ui/Progress';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
-import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
+import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';
@@ -25,23 +26,9 @@ import CREATE_EVENT_MUTATION from '../../../graphql/create-event.mutation';
 import UPDATE_EVENT_MUTATION from '../../../graphql/update-event.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
+
 import styles from '../../../styles/AppStyle';
-
-function getSteps() {
-  return ['Select Group', 'Event Information', 'Locations'];
-}
-
-function getStepContent(step) {
-  const steps = [
-    'Who will the event target?',
-    'Details about the event',
-    'Specify the locations for the event',
-  ];
-  if (step >= steps.length) {
-    return 'Unknown step';
-  }
-  return steps[step];
-}
 
 function pushLocation(locations, locationToAdd) {
   if (locationToAdd !== undefined) {
@@ -61,10 +48,8 @@ class EditEvent extends React.Component {
   state = {
     id: 0,
     groupId: '',
-    groupName: '',
     name: '',
     details: '',
-    activeStep: 0,
     scenesList: defaultScenes,
     lhqsList: defaultLhqs,
     helosList: defaultHelos,
@@ -88,12 +73,7 @@ class EditEvent extends React.Component {
 
   onGroupChange = (e) => {
     const groupId = e.target.value;
-    let name = '';
-
-    const group = this.props.user.groups.find(g => g.id === parseInt(groupId, 10));
-    if (group !== undefined) ({ name } = group);
-
-    this.setState({ groupId, groupName: name });
+    this.setState({ groupId });
   };
 
   onNameChange = (e) => {
@@ -120,6 +100,50 @@ class EditEvent extends React.Component {
     const scene = this.state.scenesList.find(s => s.id === parseInt(event.target.value, 10));
     this.setState(() => ({ scene }));
   };
+
+  onSave = () => {
+    const { id, groupId, name, details } = this.state;
+
+    const eventLocations = [];
+    pushLocation(eventLocations, this.state.scene);
+    pushLocation(eventLocations, this.state.lhq);
+    pushLocation(eventLocations, this.state.helo);
+
+    if (this.state.id === 0) {
+      // Add event
+      this.props
+        .createEvent({ name, details, eventLocations, groupId })
+        .then(() => {
+          const { history } = this.props;
+          history.push('/events');
+        })
+        .catch((error) => {
+          this.setState(() => ({ message: error.message, open: true }));
+          setTimeout(() => {
+            this.setState(() => ({ message: '', open: false }));
+          }, 3000);
+        });
+    } else {
+      // Update event
+      this.props
+        .updateEvent({ id, name, details, eventLocations, groupId })
+        .then(() => {
+          const { history } = this.props;
+          history.push('/events');
+        })
+        .catch((error) => {
+          this.setState(() => ({ message: error.message, open: true }));
+          setTimeout(() => {
+            this.setState(() => ({ message: '', open: false }));
+          }, 3000);
+        });
+    }
+  };
+
+  onCancel = () => {
+    const { history } = this.props;
+    history.push('/events');
+  }
 
   setInitialState(props) {
     const event = props.user.events.find(
@@ -181,7 +205,6 @@ class EditEvent extends React.Component {
         name: event.name,
         details: event.details,
         groupId: event.group.id,
-        groupName: event.group.name,
         scene,
         lhq,
         helo,
@@ -192,62 +215,8 @@ class EditEvent extends React.Component {
     }
   }
 
-  handleNext = () => {
-    const steps = getSteps();
-    if (this.state.activeStep === steps.length - 1) {
-      const { id, groupId, name, details } = this.state;
-
-      const eventLocations = [];
-      pushLocation(eventLocations, this.state.scene);
-      pushLocation(eventLocations, this.state.lhq);
-      pushLocation(eventLocations, this.state.helo);
-
-      if (this.state.id === 0) {
-        // Add event
-        this.props
-          .createEvent({ name, details, eventLocations, groupId })
-          .then(() => {
-            const { history } = this.props;
-            history.push('/events');
-          })
-          .catch((error) => {
-            this.setState(() => ({ message: error.message, open: true }));
-            setTimeout(() => {
-              this.setState(() => ({ message: '', open: false }));
-            }, 3000);
-          });
-      } else {
-        // Update event
-        this.props
-          .updateEvent({ id, name, details, eventLocations, groupId })
-          .then(() => {
-            const { history } = this.props;
-            history.push('/events');
-          })
-          .catch((error) => {
-            this.setState(() => ({ message: error.message, open: true }));
-            setTimeout(() => {
-              this.setState(() => ({ message: '', open: false }));
-            }, 3000);
-          });
-      }
-    } else {
-      this.setState({
-        activeStep: this.state.activeStep + 1,
-      });
-    }
-  };
-
-  handleBack = () => {
-    this.setState({
-      activeStep: this.state.activeStep - 1,
-    });
-  };
-
   render() {
     const { classes } = this.props;
-    const steps = getSteps();
-    const { activeStep } = this.state;
 
     if (this.props.loading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -255,164 +224,145 @@ class EditEvent extends React.Component {
 
     return (
       <div className={classes.root}>
-        <div className={classes.actionPanel}>
-          <Typography variant="title">
-            {this.state.id === 0 ? 'Add New' : 'Edit'} Event
-          </Typography>
-        </div>
-        <Paper className={classes.paperForm}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((label, index) => (
-              <Step key={this.state.id}>
-                <StepLabel>
-                  {label}
-                  {
-                    index === 0 &&
-                    activeStep !== 0 &&
-                    this.state.groupId !== 0 &&
-                    <span> : {this.state.groupName}</span>
-                  }
-                  {index === 1 && activeStep !== 1 && this.state.name !== '' && <span> : {this.state.name}</span>}
-                </StepLabel>
-                <StepContent>
-                  <Typography>{getStepContent(index)}</Typography>
-                  {index === 0 && (
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="groupId" required>
-                        group
-                      </InputLabel>
-                      <Select
-                        value={this.state.groupId}
-                        onChange={this.onGroupChange}
-                        inputProps={{
-                          name: 'groupId',
-                          id: 'groupId',
-                        }}
-                        required
-                      >
-                        <MenuItem value="" key={0}>
-                          <em>none</em>
-                        </MenuItem>
-                        {this.props.user.groups.map(group => (
-                          <MenuItem value={group.id} key={group.id}>
-                            {group.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                  {index === 1 && (
-                    <div>
-                      <FormControl className={classes.formControl}>
-                        <TextField
-                          required
-                          id="name"
-                          label="name"
-                          type="text"
-                          margin="normal"
-                          value={this.state.name}
-                          onChange={this.onNameChange}
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <TextField
-                          required
-                          id="details"
-                          label="details"
-                          multiline
-                          rowsMax="4"
-                          value={this.state.details}
-                          onChange={this.onDetailsChange}
-                          className={classes.textField}
-                          margin="normal"
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                  {index === 2 && (
-                    <div>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="scene" required>
-                          Scene
-                        </InputLabel>
-                        <Select
-                          value={this.state.scene !== undefined ? this.state.scene.id : ''}
-                          onChange={this.onSceneChange}
-                          required
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.scenesList.map(option => (
-                            <MenuItem
-                              value={option.id}
-                              key={`${this.state.id}-scene-${option.id}`}
-                            >
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="lhq">Local HQ</InputLabel>
-                        <Select
-                          value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
-                          onChange={this.onLHQChange}
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.lhqsList.map(option => (
-                            <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="helo">Helo</InputLabel>
-                        <Select
-                          value={this.state.helo !== undefined ? this.state.helo.id : ''}
-                          onChange={this.onHeloChange}
-                        >
-                          <MenuItem value={0}>
-                            <em>none</em>
-                          </MenuItem>
-                          {this.state.helosList.map(option => (
-                            <MenuItem
-                              value={option.id}
-                              key={`${this.state.id}-helo-${option.id}`}
-                            >
-                              {option.detail}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  )}
-                  <div className={classes.actionsContainer}>
-                    <Button disabled={activeStep === 0} onClick={this.handleBack}>
-                      Back
-                    </Button>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={this.handleNext}
-                      className={classes.button}
-                      disabled={
-                        (activeStep === 0 && this.state.groupId === '') ||
-                        (activeStep === 1 &&
-                          (this.state.name === '' || this.state.details === '')) ||
-                        (activeStep === 2 && this.state.scene === '')
-                      }
-                    >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
-                  </div>
-                </StepContent>
-              </Step>
-            ))}
-          </Stepper>
+        <Paper className={classes.paper}>
+          <SpreadPanel>
+            <div
+              style={{
+                display: 'flex',
+              }}
+            >
+              <Link to="/events">
+                <ChevronLeft fontSize={20} spacing={3} />
+              </Link>
+              <Typography variant="title">
+                {this.state.id === 0 ? 'Add New' : 'Edit'} Event
+              </Typography>
+            </div>
+          </SpreadPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="groupId" required>
+              group
+            </InputLabel>
+            <Select
+              value={this.state.groupId}
+              onChange={this.onGroupChange}
+              inputProps={{
+                name: 'groupId',
+                id: 'groupId',
+              }}
+              required
+            >
+              <MenuItem value="" key={0}>
+                <em>none</em>
+              </MenuItem>
+              {this.props.user.groups.map(group => (
+                <MenuItem value={group.id} key={group.id}>
+                  {group.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <TextField
+              required
+              id="name"
+              label="name"
+              type="text"
+              margin="normal"
+              value={this.state.name}
+              onChange={this.onNameChange}
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <TextField
+              required
+              id="details"
+              label="details"
+              multiline
+              rowsMax="4"
+              value={this.state.details}
+              onChange={this.onDetailsChange}
+              className={classes.textField}
+              margin="normal"
+            />
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="scene" required>
+              Scene
+            </InputLabel>
+            <Select
+              value={this.state.scene !== undefined ? this.state.scene.id : ''}
+              onChange={this.onSceneChange}
+              required
+            >
+              <MenuItem value={0}>
+                <em>none</em>
+              </MenuItem>
+              {this.state.scenesList.map(option => (
+                <MenuItem
+                  value={option.id}
+                  key={`${this.state.id}-scene-${option.id}`}
+                >
+                  {option.detail}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="lhq">Local HQ</InputLabel>
+            <Select
+              value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
+              onChange={this.onLHQChange}
+            >
+              <MenuItem value={0}>
+                <em>none</em>
+              </MenuItem>
+              {this.state.lhqsList.map(option => (
+                <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
+                  {option.detail}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor="helo">Helo</InputLabel>
+            <Select
+              value={this.state.helo !== undefined ? this.state.helo.id : ''}
+              onChange={this.onHeloChange}
+            >
+              <MenuItem value={0}>
+                <em>none</em>
+              </MenuItem>
+              {this.state.helosList.map(option => (
+                <MenuItem
+                  value={option.id}
+                  key={`${this.state.id}-helo-${option.id}`}
+                >
+                  {option.detail}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <div className={classes.actionContainer}>
+            <Button
+              variant="raised"
+              color="primary"
+              onClick={this.onSave}
+              className={classes.button}
+              disabled={this.state.groupId === '' || this.state.name === ''}
+            >
+              Update
+            </Button>
+            <Button
+              onClick={this.onCancel}
+              className={classes.button}
+            >
+              Cancel
+            </Button>
+          </div>
         </Paper>
       </div>
     );

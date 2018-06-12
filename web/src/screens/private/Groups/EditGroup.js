@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 // material ui
@@ -14,6 +14,7 @@ import TextField from 'material-ui/TextField';
 import { FormControl } from 'material-ui/Form';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
+import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 // gql
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
@@ -22,6 +23,7 @@ import UPDATE_GROUP_MUTATION from '../../../graphql/update-group.mutation';
 
 // components
 import Tag from '../../../components/Selects/Tag';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
 // constants
 import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
@@ -99,6 +101,11 @@ class EditGroup extends React.Component {
       [name]: value,
     });
   };
+
+  cancelGroup = () => {
+    const { history } = this.props;
+    history.push('/groups');
+  }
 
   saveGroup = () => {
     const { name, regions, capabilities, users } = this.state;
@@ -179,10 +186,23 @@ class EditGroup extends React.Component {
 
     return (
       <div className={classes.root}>
-        <div className={classes.actionPanel}>
-          <Typography variant="title">{this.state.id === 0 ? 'Add New' : 'Edit'} Group</Typography>
-        </div>
-        <Paper className={classes.paperForm}>
+        <Paper className={classes.paper}>
+          <SpreadPanel>
+            <div
+              style={{
+                display: 'flex',
+              }}
+            >
+              <Link to="/groups">
+                <ChevronLeft fontSize={20} spacing={3} />
+              </Link>
+              <Typography variant="title">
+                {this.state.id === 0 ? 'Add New' : 'Edit'} Group
+              </Typography>
+            </div>
+          </SpreadPanel>
+        </Paper>
+        <Paper className={classes.paperMargin}>
           <FormControl className={classes.formControl}>
             <TextField
               id="name"
@@ -233,7 +253,12 @@ class EditGroup extends React.Component {
             >
               Update
             </Button>
-            <NavLink to="/groups">Cancel</NavLink>
+            <Button
+              onClick={this.cancelGroup}
+              className={classes.button}
+            >
+              Cancel
+            </Button>
           </div>
         </Paper>
       </div>
@@ -309,11 +334,11 @@ const tagsQuery = graphql(CURRENT_ORG_QUERY, {
       typeFilter: '',
     },
   }),
-  props: ({ data: { loading, networkStatus, refetch, user } }) => ({
+  props: ({ data: { loading, networkStatus, refetch, orgUser } }) => ({
     loading,
     networkStatus,
     refetch,
-    user,
+    user: orgUser,
   }),
 });
 

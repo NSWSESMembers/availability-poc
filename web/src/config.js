@@ -6,7 +6,7 @@ const isDev = () => {
   return false;
 };
 
-export const STATUS_AVAILABILITY = 'Available';
+export const STATUS_AVAILABLE = 'Available';
 export const STATUS_UNAVAILABLE = 'Unavailable';
 export const STATUS_UNLESS_URGENT = 'Urgent';
 

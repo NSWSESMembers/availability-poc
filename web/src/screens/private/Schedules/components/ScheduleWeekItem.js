@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { TableCell } from 'material-ui/Table';
 
-import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../config';
-import styles from './ViewScheduleItem.styles';
-import TimeLabel from '../../../components/Labels/TimeLabel';
-import { statusCount } from '../../../selectors/status';
+import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../../config';
+import styles from './ScheduleWeekItem.styles';
+import TimeLabel from '../../../../components/Labels/TimeLabel';
+import { statusCount } from '../../../../selectors/status';
 
 const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onOpenModal }) => {
   const currentSegments = timeSegments.filter(
@@ -16,9 +16,14 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
       timeSegment.user.id === user.id,
   );
 
-  const availableCount = statusCount(currentSegments, STATUS_AVAILABILITY);
+  const availableCount = statusCount(currentSegments, STATUS_AVAILABLE);
   const unavailableCount = statusCount(currentSegments, STATUS_UNAVAILABLE);
   const urgentCount = statusCount(currentSegments, STATUS_UNLESS_URGENT);
+
+  // get first segment
+  const availableSegment = currentSegments.find(segment => segment.status === STATUS_AVAILABLE);
+  const unavailableSegment = currentSegments.find(segment => segment.status === STATUS_UNAVAILABLE);
+  const urgentSegment = currentSegments.find(segment => segment.status === STATUS_UNLESS_URGENT);
 
   return (
     <TableCell
@@ -31,32 +36,38 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
       <div className={classes.flexCenter}>
         <TimeLabel
           user={user}
-          status={STATUS_AVAILABILITY}
+          status={STATUS_AVAILABLE}
           amount={availableCount}
-          startTime={startTime}
-          endTime={endTime}
+          time={startTime}
+          timeSegment={availableSegment}
           onOpenModal={onOpenModal}
+          margin
         />
         <TimeLabel
           user={user}
           status={STATUS_UNAVAILABLE}
           amount={unavailableCount}
-          startTime={startTime}
+          time={startTime}
           endTime={endTime}
+          timeSegment={unavailableSegment}
           onOpenModal={onOpenModal}
+          margin
         />
         <TimeLabel
           user={user}
           status={STATUS_UNLESS_URGENT}
           amount={urgentCount}
-          startTime={startTime}
-          endTime={endTime}
+          time={startTime}
+          timeSegment={urgentSegment}
           onOpenModal={onOpenModal}
+          margin
         />
       </div>
     </TableCell>
   );
 };
+
+// <TimeLabel user={user} timeSegment={segment} amount={colSpan} onOpenModal={onEdit} />
 
 ViewScheduleItem.propTypes = {
   classes: PropTypes.shape({}).isRequired,
