@@ -23,11 +23,6 @@ export const Schema = [
     name: String,
     type: String,
   }
-  
-  input UserInput {
-    id: Int!
-    displayName: String,
-  }
 
   input UserInput {
     id: Int!
@@ -152,14 +147,6 @@ export const Schema = [
     permalink: String
     eventLocations: [LocationInput]
     groupId: Int!
-  }
-  
-  input UpdateGroupInput {
-    id: Int!
-    name: String!
-    tags: [TagInput]
-    icon: String
-    users: [UserInput]
   }
 
   input UpdateGroupInput {
