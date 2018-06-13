@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { graphql, compose } from 'react-apollo';
@@ -46,6 +46,7 @@ class Detail extends Component {
     modalVisible: false,
     modalStartTime: 0,
     modalEndTime: 0,
+    refreshing: false,
   };
 
   componentDidMount() {
@@ -164,7 +165,7 @@ class Detail extends Component {
               return { ...selectionSegment, status: select[0].status };
             }
 
-            return selectionSegment;
+            return { ...selectionSegment, status: '' };
           });
 
           // Are any not part of the default stack of segments?
@@ -201,6 +202,10 @@ class Detail extends Component {
     });
   };
 
+  onRefresh = () => {
+    this.props.refetch();
+  }
+
   getNextSegment = (segment) => {
     switch (segment) {
       case EMPTY:
@@ -224,31 +229,31 @@ class Detail extends Component {
   getTimeSegments = (day) => {
     const schedule = this.getSchedule();
 
-    if (day !== undefined) {
-      const dayTime = 60 * 60 * 24;
-      const endOfDay = day + dayTime;
-      const filtered = schedule.timeSegments.filter(
-        x => day <= x.startTime && endOfDay >= x.endTime,
-      );
-      return filtered;
-    }
-    const momentStartDate = moment.unix(schedule.startTime);
-
-    const startTime = momentStartDate
+    let startTime = moment.unix(schedule.startTime)
       .clone()
       .isoWeekday(1)
       .startOf('isoweek')
       .unix();
 
-    const momentEndDate = moment.unix(schedule.endTime);
-
-    const endTime = momentEndDate
+    let endTime = moment.unix(schedule.endTime)
       .clone()
       .isoWeekday(1)
       .endOf('isoweek')
       .unix();
 
-    return selectSchedules([schedule], { startTime, endTime });
+    if (day !== undefined) {
+      const dayTime = 60 * 60 * 24;
+      const endOfDay = day + dayTime;
+      startTime = day;
+      endTime = endOfDay;
+    }
+
+    let userId = 0;
+    if (this.props.user !== undefined) {
+      userId = this.props.user.id;
+    }
+
+    return selectSchedules([schedule], { userId, startTime, endTime });
   };
 
   render() {
@@ -326,7 +331,14 @@ class Detail extends Component {
             />
           </Holder>
         </Modal>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
+        >
           {schedule.startTime > 0 && (
             <View>
               <Holder marginTop paddingVertical>
@@ -407,6 +419,7 @@ Detail.propTypes = {
       params: PropTypes.object,
     }),
   }),
+  refetch: PropTypes.func,
   user: PropTypes.shape({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
