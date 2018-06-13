@@ -14,6 +14,8 @@ import { Paper } from '../../components/Paper';
 import { ButtonIcon } from '../../components/Button';
 import styles from './styles';
 
+import { GOOGLEMAPS_API_KEY } from '../../config/apis';
+
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
@@ -22,6 +24,8 @@ class SetResponse extends Component {
   state = {
     mapModal: false,
     status: null,
+    userLat: null,
+    userLong: null,
     destination: null,
     dstToScene: null,
     timeToScene: null,
@@ -53,11 +57,16 @@ class SetResponse extends Component {
     if (!this.state.dstToScene && this.props.event) {
       this.geoWatch = navigator.geolocation.getCurrentPosition(
         (position) => {
+          this.setState({
+            userLat: position.coords.latitude,
+            userLong: position.coords.longitude,
+          });
           const primary = this.props.event.eventLocations.find(location => location.name === 'scene');
           distance.get(
             {
               origin: `${position.coords.latitude}, ${position.coords.longitude}`,
               destination: `${primary.locationLatitude}, ${primary.locationLongitude}`,
+              apiKey: GOOGLEMAPS_API_KEY,
             },
             (err, data) => {
               this.setState({
@@ -272,9 +281,11 @@ class SetResponse extends Component {
         />
         <MapModal
           title={event.eventLocations[1].detail}
+          distance={`${this.state.dstToScene} by road taking ~${this.state.timeToScene}`}
           visible={this.state.mapModal}
           closeModal={this.hideMapModal}
           backModal={this.hideMapModal}
+          userLocation={{ latitude: this.state.userLat, longitude: this.state.userLong }}
           markers={event.eventLocations.map(location => ({
             id: location.name,
             latitude: location.locationLatitude,

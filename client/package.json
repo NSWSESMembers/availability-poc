@@ -42,6 +42,7 @@
     "react-native-firebase": "^4.0.5",
     "react-native-google-matrix": "^0.0.3",
     "react-native-maps": "^0.18.2",
+    "react-native-maps-directions": "^1.6.0",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-modal-selector": "0.0.24",
     "react-native-prompt": "https://github.com/OSPFNeighbour/react-native-prompt.git",

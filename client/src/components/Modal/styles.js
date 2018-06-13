@@ -69,6 +69,12 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE,
   },
 
+  headerSubTextStyle: {
+    textAlign: 'center',
+    color: '#333',
+    fontSize: FONT_SIZE - 4,
+  },
+
   etaInput: {
     height: 100,
     fontSize: 20,
