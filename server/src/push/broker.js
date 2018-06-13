@@ -17,6 +17,7 @@ const sendPush = ({ devices, title, message, payload }) => {
               token: pushTokens.apns,
               message,
               payload: jsonPayload,
+              sound: 'default',
             }),
           );
         }
@@ -28,6 +29,7 @@ const sendPush = ({ devices, title, message, payload }) => {
               title,
               message,
               payload: jsonPayload,
+              sound: 'default',
             }),
           );
         }
