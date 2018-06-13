@@ -7,7 +7,7 @@ const SESCallback = {
   eventCallback(req, res) {
     const job = {
       name: `${req.body.SimpleJobViewModel.JobType.Name} - ${req.body.SimpleJobViewModel.Address.PrettyAddress}`,
-      identifier: req.body.Identifier,
+      identifier: req.body.SimpleJobViewModel.Identifier,
       description: req.body.SimpleJobViewModel.JobType.Description,
       SituationOnScene: req.body.SimpleJobViewModel.SituationOnScene,
       tags: req.body.SimpleJobViewModel.Tags,
