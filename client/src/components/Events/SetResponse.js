@@ -41,6 +41,13 @@ class SetResponse extends Component {
     this.updateETAMaybe();
   }
 
+  componentWillUnmount() {
+    if (this.geoWatch !== null) {
+      navigator.geolocation.clearWatch(this.geoWatch);
+      this.geoWatch = null;
+    }
+  }
+
   updateETAMaybe = () => {
     // calcualte distance with google only when we have the event and we havnt already run
     if (!this.state.dstToScene && this.props.event) {
