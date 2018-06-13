@@ -11,7 +11,8 @@ test('should return timeSegments for the week', () => {
     .isoWeekday(1)
     .endOf('isoweek')
     .unix();
-  const result = selectSchedules(schedules, { startTime, endTime });
+  const userId = 0;
+  const result = selectSchedules(schedules, { userId, startTime, endTime });
   expect(result).toEqual([
     {
       scheduleId: schedules[0].id,
@@ -28,7 +29,8 @@ test('should return timeSegments for the week', () => {
 test('should return all segments', () => {
   const startTime = 0;
   const endTime = 2147483647;
-  const result = selectSchedules(schedules, { startTime, endTime });
+  const userId = 0;
+  const result = selectSchedules(schedules, { userId, startTime, endTime });
   expect(result).toEqual([
     {
       scheduleId: schedules[0].id,
