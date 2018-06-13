@@ -4519,6 +4519,10 @@ lodash.isempty@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+
 lodash.isobject@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/lodash.isobject/-/lodash.isobject-3.0.2.tgz#3c8fb8d5b5bf4bf90ae06e14f2a530a4ed935e1d"
@@ -5840,6 +5844,13 @@ react-native-gesture-handler@1.0.0-alpha.30:
 react-native-google-matrix@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/react-native-google-matrix/-/react-native-google-matrix-0.0.3.tgz#0951b623fa9a51b4d111c7f8f6230c0c0bd4bd82"
+
+react-native-maps-directions@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-maps-directions/-/react-native-maps-directions-1.6.0.tgz#d56e6119fd9ca9984e408970ae150fea3f9863c3"
+  dependencies:
+    lodash.isequal "^4.5.0"
+    prop-types "^15.6.0"
 
 react-native-maps@0.17.1:
   version "0.17.1"

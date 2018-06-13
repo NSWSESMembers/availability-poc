@@ -3,8 +3,13 @@ import PropTypes from 'prop-types';
 import { View, Modal, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Text } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
-import { IconMarker } from '../../components/MapMarker/';
+import MapViewDirections from 'react-native-maps-directions';
+import { IconMarker, MyLocationMarker } from '../../components/MapMarker/';
+
 import MapDelta from '../../selectors/MapDelta';
+
+import { GOOGLEMAPS_API_KEY } from '../../config/apis';
+
 
 import styles from './styles';
 
@@ -42,6 +47,7 @@ class MapModal extends Component {
                 <TouchableOpacity>
                   <View style={styles.headerStyle}>
                     <Text style={styles.headerTextStyle}>{this.props.title}</Text>
+                    <Text style={styles.headerSubTextStyle}>{this.props.distance}</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -75,6 +81,18 @@ class MapModal extends Component {
                             />
                           </Marker>
                         ))}
+                        { this.props.userLocation.latitude && this.props.userLocation.longitude && (
+                          <MapViewDirections
+                            origin={`${this.props.userLocation.latitude}, ${this.props.userLocation.longitude}`}
+                            destination={`${this.props.initialRegion.locationLatitude}, ${this.props.initialRegion.locationLongitude}`}
+                            apikey={GOOGLEMAPS_API_KEY}
+                            strokeWidth={3}
+                            strokeColor="hotpink"
+                          />
+                      )}
+                        <MyLocationMarker
+                          myPosition={this.props.userLocation}
+                        />
                       </MapView>
                     </TouchableWithoutFeedback>
                   </View>
@@ -98,6 +116,11 @@ class MapModal extends Component {
 
 MapModal.propTypes = {
   title: PropTypes.string.isRequired,
+  distance: PropTypes.string,
+  userLocation: PropTypes.shape({
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+  }),
   markers: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   initialRegion: PropTypes.shape({
     locationLatitude: PropTypes.number,
