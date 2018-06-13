@@ -291,8 +291,7 @@ class Detail extends Component {
   render() {
     const { event, loading } = this.props;
 
-
-    if (loading) {
+    if (loading && !event) {
       return (
         <Container>
           <Progress />
@@ -300,9 +299,10 @@ class Detail extends Component {
       );
     }
 
-    if (!event) {
+    if (!event && !loading) {
       return (
         <Center>
+          <Progress />
           <Text>Unable to load event, or event no longer exists</Text>
         </Center>
       );
