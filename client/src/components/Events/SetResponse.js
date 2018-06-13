@@ -14,6 +14,8 @@ import { Paper } from '../../components/Paper';
 import { ButtonIcon } from '../../components/Button';
 import styles from './styles';
 
+import { GOOGLEMAPS_API_KEY } from '../../config/apis';
+
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
@@ -64,7 +66,7 @@ class SetResponse extends Component {
             {
               origin: `${position.coords.latitude}, ${position.coords.longitude}`,
               destination: `${primary.locationLatitude}, ${primary.locationLongitude}`,
-              apiKey: 'AIzaSyCsYLUZTuw9bEjK-Ps4W42HiwvF7gE8rgw',
+              apiKey: GOOGLEMAPS_API_KEY,
             },
             (err, data) => {
               this.setState({
