@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mapDelta 1`] = `
+Object {
+  "latitude": 0,
+  "latitudeDelta": 0.00000898311174991017,
+  "longitude": 0,
+  "longitudeDelta": 0.00000898311174991017,
+}
+`;
