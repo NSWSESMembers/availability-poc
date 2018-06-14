@@ -56,12 +56,9 @@ class Header extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar className={classes.flex}>
-            <PhonelinkRingIcon className={classes.icon} />
-            <Typography variant="headline" color="inherit" className={classes.flexGrow}>
-              <NavLink to="/dashboard" className={classes.link}>
-                Callout
-              </NavLink>
-            </Typography>
+            <NavLink to="/dashboard">
+              <img src="/logo.jpg" />
+            </NavLink>
             {isAuthenticated && (
               <Button color="inherit" onClick={this.handleLogout}>
                 Logout
@@ -96,4 +93,7 @@ const mapStateToProps = state => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default compose(connect(mapStateToProps), withStyles(styles))(withRouter(Header));
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+)(withRouter(Header));
