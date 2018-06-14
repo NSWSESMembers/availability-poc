@@ -46,7 +46,6 @@ class Detail extends Component {
     modalVisible: false,
     modalStartTime: 0,
     modalEndTime: 0,
-    refreshing: false,
   };
 
   componentDidMount() {
@@ -55,7 +54,7 @@ class Detail extends Component {
     });
   }
 
-  onCloseModal = () => {
+  onModalClose = () => {
     this.setState({ modalVisible: false });
   };
 
@@ -69,6 +68,7 @@ class Detail extends Component {
 
   onPressEdit = () => {
     const schedule = this.getSchedule();
+
     // clear existing timeSegments in selected days
     this.state.selectedDays.forEach((day) => {
       const timeSegments = this.getTimeSegments(day);
@@ -203,6 +203,11 @@ class Detail extends Component {
   };
 
   onRefresh = () => {
+    // reset state on refetch
+    this.setState({
+      selectedDays: [],
+      selectionSegments: defaultSegmentState,
+    });
     this.props.refetch();
   }
 
@@ -291,7 +296,7 @@ class Detail extends Component {
 
     return (
       <Container>
-        <Modal visible={this.state.modalVisible} closeModal={this.onCloseModal}>
+        <Modal visible={this.state.modalVisible} closeModal={this.onModalClose}>
           <View
             style={{
               flex: 1,
@@ -334,7 +339,7 @@ class Detail extends Component {
         <ScrollView
           refreshControl={
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={this.props.loading}
               onRefresh={this.onRefresh}
             />
           }
