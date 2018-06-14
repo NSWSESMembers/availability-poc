@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 // material ui
@@ -14,7 +13,6 @@ import TextField from 'material-ui/TextField';
 import { FormControl } from 'material-ui/Form';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 // gql
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
@@ -22,8 +20,9 @@ import CREATE_GROUP_MUTATION from '../../../graphql/create-group.mutation';
 import UPDATE_GROUP_MUTATION from '../../../graphql/update-group.mutation';
 
 // components
-import Tag from '../../../components/Selects/Tag';
+import FormPanel from '../../../components/Panels/FormPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
+import Tag from '../../../components/Selects/Tag';
 
 // constants
 import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../constants';
@@ -105,7 +104,7 @@ class EditGroup extends React.Component {
   cancelGroup = () => {
     const { history } = this.props;
     history.push('/groups');
-  }
+  };
 
   saveGroup = () => {
     const { name, regions, capabilities, users } = this.state;
@@ -186,80 +185,70 @@ class EditGroup extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paperHeader}>
           <SpreadPanel>
-            <div
-              style={{
-                display: 'flex',
-              }}
-            >
-              <Link to="/groups">
-                <ChevronLeft fontSize={20} spacing={3} />
-              </Link>
-              <Typography variant="title">
-                {this.state.id === 0 ? 'Add New' : 'Edit'} Group
-              </Typography>
-            </div>
+            <Typography variant="title">
+              {this.state.id === 0 ? 'Add New' : 'Edit'} Group
+            </Typography>
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
-          <FormControl className={classes.formControl}>
-            <TextField
-              id="name"
-              className={classes.textField}
-              value={name}
-              onChange={e => this.handleChange(e, 'name')}
-              margin="normal"
-              placeholder="Enter Group..."
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Tag
-              list={regions}
-              label="Regions"
-              placeholder="Select..."
-              onChange={this.handleTagChange('regions')}
-              value={this.state.regions}
-              multi
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Tag
-              list={capabilities}
-              label="Capabilities"
-              placeholder="Select..."
-              onChange={this.handleTagChange('capabilities')}
-              value={this.state.capabilities}
-              multi
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Tag
-              list={users}
-              label="Users"
-              placeholder="Select..."
-              onChange={this.handleTagChange('users')}
-              value={this.state.users}
-              multi
-            />
-          </FormControl>
-          <div className={classes.actionContainer}>
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={this.saveGroup}
-              className={classes.button}
-              disabled={this.state.name === ''}
-            >
-              Update
-            </Button>
-            <Button
-              onClick={this.cancelGroup}
-              className={classes.button}
-            >
-              Cancel
-            </Button>
-          </div>
+          <FormPanel>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="name"
+                className={classes.textField}
+                value={name}
+                onChange={e => this.handleChange(e, 'name')}
+                margin="normal"
+                placeholder="Enter Group..."
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Tag
+                list={regions}
+                label="Regions"
+                placeholder="Select..."
+                onChange={this.handleTagChange('regions')}
+                value={this.state.regions}
+                multi
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Tag
+                list={capabilities}
+                label="Capabilities"
+                placeholder="Select..."
+                onChange={this.handleTagChange('capabilities')}
+                value={this.state.capabilities}
+                multi
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Tag
+                list={users}
+                label="Users"
+                placeholder="Select..."
+                onChange={this.handleTagChange('users')}
+                value={this.state.users}
+                multi
+              />
+            </FormControl>
+            <div className={classes.actionContainer}>
+              <Button
+                variant="raised"
+                color="primary"
+                onClick={this.saveGroup}
+                className={classes.button}
+                disabled={this.state.name === ''}
+              >
+                Update
+              </Button>
+              <Button onClick={this.cancelGroup} className={classes.button}>
+                Cancel
+              </Button>
+            </div>
+          </FormPanel>
         </Paper>
       </div>
     );

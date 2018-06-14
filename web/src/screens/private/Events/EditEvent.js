@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 
@@ -16,7 +15,6 @@ import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';
@@ -26,6 +24,7 @@ import CREATE_EVENT_MUTATION from '../../../graphql/create-event.mutation';
 import UPDATE_EVENT_MUTATION from '../../../graphql/update-event.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 
+import FormPanel from '../../../components/Panels/FormPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
 import styles from '../../../styles/AppStyle';
@@ -224,145 +223,138 @@ class EditEvent extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paperHeader}>
           <SpreadPanel>
-            <div
-              style={{
-                display: 'flex',
-              }}
-            >
-              <Link to="/events">
-                <ChevronLeft fontSize={20} spacing={3} />
-              </Link>
-              <Typography variant="title">
-                {this.state.id === 0 ? 'Add New' : 'Edit'} Event
-              </Typography>
-            </div>
+            <Typography variant="title">
+              {this.state.id === 0 ? 'Add New' : 'Edit'} Event
+            </Typography>
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="groupId" required>
-              group
-            </InputLabel>
-            <Select
-              value={this.state.groupId}
-              onChange={this.onGroupChange}
-              inputProps={{
-                name: 'groupId',
-                id: 'groupId',
-              }}
-              required
-            >
-              <MenuItem value="" key={0}>
-                <em>none</em>
-              </MenuItem>
-              {this.props.user.groups.map(group => (
-                <MenuItem value={group.id} key={group.id}>
-                  {group.name}
+          <FormPanel>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="groupId" required>
+                group
+              </InputLabel>
+              <Select
+                value={this.state.groupId}
+                onChange={this.onGroupChange}
+                inputProps={{
+                  name: 'groupId',
+                  id: 'groupId',
+                }}
+                required
+              >
+                <MenuItem value="" key={0}>
+                  <em>none</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <TextField
-              required
-              id="name"
-              label="name"
-              type="text"
-              margin="normal"
-              value={this.state.name}
-              onChange={this.onNameChange}
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <TextField
-              required
-              id="details"
-              label="details"
-              multiline
-              rowsMax="4"
-              value={this.state.details}
-              onChange={this.onDetailsChange}
-              className={classes.textField}
-              margin="normal"
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="scene" required>
-              Scene
-            </InputLabel>
-            <Select
-              value={this.state.scene !== undefined ? this.state.scene.id : ''}
-              onChange={this.onSceneChange}
-              required
-            >
-              <MenuItem value={0}>
-                <em>none</em>
-              </MenuItem>
-              {this.state.scenesList.map(option => (
-                <MenuItem
-                  value={option.id}
-                  key={`${this.state.id}-scene-${option.id}`}
-                >
-                  {option.detail}
+                {this.props.user.groups.map(group => (
+                  <MenuItem value={group.id} key={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                required
+                id="name"
+                label="name"
+                type="text"
+                margin="normal"
+                value={this.state.name}
+                onChange={this.onNameChange}
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                required
+                id="details"
+                label="details"
+                multiline
+                rowsMax="4"
+                value={this.state.details}
+                onChange={this.onDetailsChange}
+                className={classes.textField}
+                margin="normal"
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="scene" required>
+                Scene
+              </InputLabel>
+              <Select
+                value={this.state.scene !== undefined ? this.state.scene.id : ''}
+                onChange={this.onSceneChange}
+                required
+              >
+                <MenuItem value={0}>
+                  <em>none</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="lhq">Local HQ</InputLabel>
-            <Select
-              value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
-              onChange={this.onLHQChange}
-            >
-              <MenuItem value={0}>
-                <em>none</em>
-              </MenuItem>
-              {this.state.lhqsList.map(option => (
-                <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
-                  {option.detail}
+                {this.state.scenesList.map(option => (
+                  <MenuItem
+                    value={option.id}
+                    key={`${this.state.id}-scene-${option.id}`}
+                  >
+                    {option.detail}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="lhq">Local HQ</InputLabel>
+              <Select
+                value={this.state.lhq !== undefined ? this.state.lhq.id : ''}
+                onChange={this.onLHQChange}
+              >
+                <MenuItem value={0}>
+                  <em>none</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="helo">Helo</InputLabel>
-            <Select
-              value={this.state.helo !== undefined ? this.state.helo.id : ''}
-              onChange={this.onHeloChange}
-            >
-              <MenuItem value={0}>
-                <em>none</em>
-              </MenuItem>
-              {this.state.helosList.map(option => (
-                <MenuItem
-                  value={option.id}
-                  key={`${this.state.id}-helo-${option.id}`}
-                >
-                  {option.detail}
+                {this.state.lhqsList.map(option => (
+                  <MenuItem value={option.id} key={`${this.state.id}-lhq-${option.id}`}>
+                    {option.detail}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="helo">Helo</InputLabel>
+              <Select
+                value={this.state.helo !== undefined ? this.state.helo.id : ''}
+                onChange={this.onHeloChange}
+              >
+                <MenuItem value={0}>
+                  <em>none</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                {this.state.helosList.map(option => (
+                  <MenuItem
+                    value={option.id}
+                    key={`${this.state.id}-helo-${option.id}`}
+                  >
+                    {option.detail}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <div className={classes.actionContainer}>
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={this.onSave}
-              className={classes.button}
-              disabled={this.state.groupId === '' || this.state.name === ''}
-            >
-              Update
-            </Button>
-            <Button
-              onClick={this.onCancel}
-              className={classes.button}
-            >
-              Cancel
-            </Button>
-          </div>
+            <div className={classes.actionContainer}>
+              <Button
+                variant="raised"
+                color="primary"
+                onClick={this.onSave}
+                className={classes.button}
+                disabled={this.state.groupId === '' || this.state.name === ''}
+              >
+                Update
+              </Button>
+              <Button
+                onClick={this.onCancel}
+                className={classes.button}
+              >
+                Cancel
+              </Button>
+            </div>
+          </FormPanel>
         </Paper>
       </div>
     );

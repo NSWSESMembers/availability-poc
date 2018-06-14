@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
@@ -19,7 +19,6 @@ import Switch from 'material-ui/Switch';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 import CREATE_SCHEDULE_MUTATION from '../../../graphql/create-schedule.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
@@ -27,6 +26,7 @@ import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 
 import { TAG_TYPE_CAPABILITY } from '../../../constants';
 
+import FormPanel from '../../../components/Panels/FormPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import Tag from '../../../components/Selects/Tag';
 
@@ -120,9 +120,9 @@ class AddSchedule extends React.Component {
   };
 
   render() {
-    const { classes, orgUser } = this.props;
+    const { classes, loading, orgLoading, orgUser } = this.props;
 
-    if (this.props.loading) {
+    if (loading || orgLoading) {
       return <CircularProgress className={classes.progress} size={50} />;
     }
 
@@ -132,143 +132,136 @@ class AddSchedule extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paperHeader}>
           <SpreadPanel>
-            <div
-              style={{
-                display: 'flex',
-              }}
-            >
-              <Link to="/schedules">
-                <ChevronLeft fontSize={20} spacing={3} />
-              </Link>
-              <Typography variant="title">
-                {this.state.id === 0 ? 'Add New' : 'Edit'} Request
-              </Typography>
-            </div>
+            <Typography variant="title">
+              {this.state.id === 0 ? 'Add New' : 'Edit'} Request
+            </Typography>
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="groupId" required>
-              group
-            </InputLabel>
-            <Select
-              value={this.state.groupId}
-              onChange={this.onGroupChange}
-              inputProps={{
-                name: 'groupId',
-                id: 'groupId',
-              }}
-              required
-            >
-              <MenuItem value="" key={0}>
-                <em>none</em>
-              </MenuItem>
-              {this.props.user.groups.map(group => (
-                <MenuItem value={group.id} key={group.id}>
-                  {group.name}
+          <FormPanel>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="groupId" required>
+                group
+              </InputLabel>
+              <Select
+                value={this.state.groupId}
+                onChange={this.onGroupChange}
+                inputProps={{
+                  name: 'groupId',
+                  id: 'groupId',
+                }}
+                required
+              >
+                <MenuItem value="" key={0}>
+                  <em>none</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <TextField
-              required
-              id="name"
-              label="title"
-              type="text"
-              margin="normal"
-              value={this.state.name}
-              onChange={this.onNameChange}
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <TextField
-              id="details"
-              label="details"
-              multiline
-              rowsMax="4"
-              value={this.state.details}
-              onChange={this.onDetailsChange}
-              className={classes.textField}
-              margin="normal"
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <Tag
-              list={capabilities}
-              placeholder="Select Capability"
-              onChange={this.onCapabilityChange}
-              value={this.state.capability}
-              multi
-            />
-          </FormControl>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="priority">priority</InputLabel>
-            <Select value={this.state.priority} onChange={this.onPriorityChange}>
-              <MenuItem value="1" key={1}>
-                High
-              </MenuItem>
-              <MenuItem value="2" key={2}>
-                Medium
-              </MenuItem>
-              <MenuItem value="3" key={3}>
-                Low
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <div>
-            <FormControlLabel
-              control={<Switch checked={this.state.useDates} onChange={this.onUseDatesChange} />}
-              label="Use Dates?"
-              style={{ width: '100%' }}
-            />
-            {this.state.useDates && (
-              <div>
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    id="starttime-local"
-                    label="start time"
-                    type="datetime-local"
-                    value={this.state.startTime}
-                    onChange={this.onStartTimeChange}
-                    className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <TextField
-                    id="endtime-local"
-                    label="end time"
-                    type="datetime-local"
-                    onChange={this.onEndTimeChange}
-                    value={this.state.endTime}
-                    className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </FormControl>
-              </div>
-            )}
-          </div>
-          <div className={classes.actionContainer}>
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={this.onSave}
-              className={classes.button}
-              disabled={this.state.name === '' || this.state.groupId === ''}
-            >
-              Update
-            </Button>
-            <Button onClick={this.onCancel} className={classes.button}>
-              Cancel
-            </Button>
-          </div>
+                {this.props.user.groups.map(group => (
+                  <MenuItem value={group.id} key={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                required
+                id="name"
+                label="title"
+                type="text"
+                margin="normal"
+                value={this.state.name}
+                onChange={this.onNameChange}
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <TextField
+                id="details"
+                label="details"
+                multiline
+                rowsMax="4"
+                value={this.state.details}
+                onChange={this.onDetailsChange}
+                className={classes.textField}
+                margin="normal"
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Tag
+                list={capabilities}
+                placeholder="Select Capability"
+                onChange={this.onCapabilityChange}
+                value={this.state.capability}
+                multi
+              />
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="priority">priority</InputLabel>
+              <Select value={this.state.priority} onChange={this.onPriorityChange}>
+                <MenuItem value="1" key={1}>
+                  High
+                </MenuItem>
+                <MenuItem value="2" key={2}>
+                  Medium
+                </MenuItem>
+                <MenuItem value="3" key={3}>
+                  Low
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <div>
+              <FormControlLabel
+                control={<Switch checked={this.state.useDates} onChange={this.onUseDatesChange} />}
+                label="Use Dates?"
+                style={{ width: '100%' }}
+              />
+              {this.state.useDates && (
+                <div>
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      id="starttime-local"
+                      label="start time"
+                      type="datetime-local"
+                      value={this.state.startTime}
+                      onChange={this.onStartTimeChange}
+                      className={classes.textField}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl className={classes.formControl}>
+                    <TextField
+                      id="endtime-local"
+                      label="end time"
+                      type="datetime-local"
+                      onChange={this.onEndTimeChange}
+                      value={this.state.endTime}
+                      className={classes.textField}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </FormControl>
+                </div>
+              )}
+            </div>
+            <div className={classes.actionContainer}>
+              <Button
+                variant="raised"
+                color="primary"
+                onClick={this.onSave}
+                className={classes.button}
+                disabled={this.state.name === '' || this.state.groupId === ''}
+              >
+                Update
+              </Button>
+              <Button onClick={this.onCancel} className={classes.button}>
+                Cancel
+              </Button>
+            </div>
+          </FormPanel>
         </Paper>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -287,6 +280,7 @@ AddSchedule.propTypes = {
   createSchedule: PropTypes.func.isRequired,
   history: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
+  orgLoading: PropTypes.bool.isRequired,
   orgUser: PropTypes.shape({
     organisation: PropTypes.shape({
       id: PropTypes.number.isRequired,

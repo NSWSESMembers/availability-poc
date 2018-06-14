@@ -4,7 +4,8 @@ export default () => ({
   },
   flex: {
     flex: 1,
-    height: 30,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   flexGrow: {
     flexGrow: 1,
