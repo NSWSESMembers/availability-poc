@@ -6,7 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { IconMarker, MyLocationMarker } from '../../components/MapMarker/';
 
-import MapDelta from '../../selectors/MapDelta';
+import { getMapDelta } from '../../selectors/mapDelta';
 
 import { GOOGLEMAPS_API_KEY } from '../../config/apis';
 
@@ -23,7 +23,7 @@ class MapModal extends Component {
   zoomMap = () => {
     if (this.props.initialRegion) {
       this.map.animateToRegion(
-        MapDelta(
+        getMapDelta(
           this.props.initialRegion.locationLatitude,
           this.props.initialRegion.locationLongitude,
           2000, // 2000m height
