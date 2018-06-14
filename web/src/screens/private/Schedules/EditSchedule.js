@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
@@ -19,7 +19,6 @@ import Switch from 'material-ui/Switch';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 import CREATE_SCHEDULE_MUTATION from '../../../graphql/create-schedule.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';

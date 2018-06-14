@@ -5,9 +5,7 @@ import { withStyles } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 
 import Typography from 'material-ui/Typography';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 import Button from 'material-ui/Button';
-import { Link } from 'react-router-dom';
 
 import styles from '../../../../styles/AppStyle';
 

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 
@@ -16,7 +15,6 @@ import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';
