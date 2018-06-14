@@ -35,12 +35,6 @@ class Detail extends Component {
     headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="mi-my-location" />,
   });
 
-  state = {
-    myPosition: null,
-    eventMarkers: null,
-    responseMarkers: null,
-  };
-
   static getDerivedStateFromProps(newProps) {
     // catch incoming props and generate the marker states
     const { event, loading, auth } = newProps;
@@ -58,6 +52,13 @@ class Detail extends Component {
     }
     return null;
   }
+
+  state = {
+    myPosition: null,
+    eventMarkers: null,
+    responseMarkers: null,
+  };
+
 
   componentDidMount() {
     this.props.navigation.setParams({
