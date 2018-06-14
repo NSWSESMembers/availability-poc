@@ -29,18 +29,9 @@ class ScheduleHeader extends React.Component {
     return (
       <Paper className={classes.paper}>
         <SpreadPanel>
-          <div
-            style={{
-              display: 'flex',
-            }}
-          >
-            <Link to="/schedules">
-              <ChevronLeft fontSize={20} spacing={3} />
-            </Link>
-            <Typography variant="title" className={classes.paperTitle} gutterBottom>
-              {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
-            </Typography>
-          </div>
+          <Typography variant="title" className={classes.paperTitle} gutterBottom>
+            {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
+          </Typography>
           <Button variant="raised" size="small" onClick={this.changeState}>
             {this.state.isOpen ? '- detail' : '+ detail'}
           </Button>

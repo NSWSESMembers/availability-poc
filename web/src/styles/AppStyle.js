@@ -24,6 +24,15 @@ export default theme => ({
     overflowX: 'visible',
     minWidth: 720,
   },
+  paperHeader: {
+    padding: 16,
+    textAlign: 'left',
+    color: theme.palette.text.secondary,
+    overflowX: 'visible',
+    minHeight: 64,
+    display: 'flex',
+    alignItems: 'center',
+  },
   paperForm: {
     padding: 16,
     textAlign: 'left',
