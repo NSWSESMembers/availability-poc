@@ -302,7 +302,6 @@ class Detail extends Component {
     if (!event && !loading) {
       return (
         <Center>
-          <Progress />
           <Text>Unable to load event, or event no longer exists</Text>
         </Center>
       );
