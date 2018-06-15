@@ -202,6 +202,20 @@ export const getResolvers = (handlers) => {
         return pushHandler.sendTestPush(ctx, args);
       },
     },
+    Subscription: {
+      message: {
+        resolve: payload => payload,
+        subscribe: messageHandler.subscribe(),
+      },
+      eventResponse: {
+        resolve: payload => payload,
+        subscribe: eventHandler.eventResponseSubscribe(),
+      },
+      event: {
+        resolve: payload => payload,
+        subscribe: eventHandler.subscribe(),
+      },
+    },
   };
 };
 
