@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import distantFuture from '../constants';
+
 import Colors from '../themes/Colors';
 
 export const isSelectorDisabled = (selectionSegments, status, startTime, endTime) => {
@@ -27,13 +29,14 @@ export const isSelectorDisabled = (selectionSegments, status, startTime, endTime
   return disabled;
 };
 
-export const selectSchedules = (schedules, { startTime, endTime }) => {
+export const selectSchedules = (schedules, { userId, startTime, endTime }) => {
   const filteredItems = [];
   schedules.map(schedule =>
     schedule.timeSegments.map((timeSegment) => {
       if (
         (timeSegment.startTime === 0 || timeSegment.startTime >= startTime) &&
-        (timeSegment.endTime === 2147483647 || timeSegment.endTime <= endTime)
+        (timeSegment.endTime === distantFuture || timeSegment.endTime <= endTime) &&
+        (userId === 0 || timeSegment.user.id === userId)
       ) {
         filteredItems.push({
           scheduleId: schedule.id,
