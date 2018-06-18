@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 const EVENT_RESPONSE_FRAGMENT = gql`
   fragment EventResponseFragment on EventResponse {
+    id
     status
     detail
     destination {

@@ -243,6 +243,7 @@ export const Schema = [
   }
 
   type EventResponse {
+    id: Int!
     event: Event!
     user: User!
     status: String!

@@ -4,12 +4,17 @@ import React, { Component } from 'react';
 import { Text, View, Dimensions, StyleSheet, PermissionsAndroid, Platform, Alert, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { graphql, compose } from 'react-apollo';
+import update from 'immutability-helper';
+
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
 
+import { wsLink } from '../../app';
+
 import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
+import EVENT_RESPONSE_SUBSCRIPTION from '../../graphql/event-response.subscription';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
 import { Container, Holder, Center } from '../../components/Container';
@@ -73,9 +78,47 @@ class Detail extends Component {
 
   static getDerivedStateFromProps(newProps) {
     // catch incoming props and generate the marker states
-    const { event, loading, auth } = newProps;
+    const { event, loading, auth, subscribeToMore, navigation } = newProps;
     let responseMarkers = {};
     let eventMarkers = {};
+
+    if (newProps.event) {
+      if (!this.subscription) {
+        console.log('SPINNING UP NEW SUBSCRIPTION');
+        this.subscription = subscribeToMore({
+          document: EVENT_RESPONSE_SUBSCRIPTION,
+          variables: { eventId: navigation.state.params.eventId },
+          updateQuery: (previousResult, { subscriptionData }) => {
+            const newData = subscriptionData.data.eventResponse;
+            // find the old data if it exists
+            const prevItemIndex = previousResult.event.responses.findIndex(
+              x => x.id === newData.id,
+            );
+            // TODO handle deleted event responses
+            if (prevItemIndex !== -1) { // its an update to an existing response
+              return update(previousResult, {
+                event: {
+                  responses: {
+                    [prevItemIndex]: {
+                      $set: newData,
+                    },
+                  },
+                },
+              });
+            } // its new data, push
+            return update(previousResult, {
+              event: {
+                responses: { $push: [newData] },
+              },
+            });
+          },
+        });
+      }
+    } else if (this.reconnected) {
+    // remove event subscription
+      this.reconnected();
+    }
+
     if (!loading && event) {
       responseMarkers = Detail.makeResponseMarkers(
         auth.id, event.responses,
@@ -99,7 +142,7 @@ class Detail extends Component {
     this.props.navigation.setParams({
       handleThis: this.mapZoomMe,
     });
-    this.refetchTimer = setInterval(this.onRefresh, 5000);
+    // this.refetchTimer = setInterval(this.onRefresh, 5000);
     this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
       this.androidLocationPermission().then((answer) => {
@@ -109,6 +152,13 @@ class Detail extends Component {
       });
     } else {
       this.watchLocation();
+    }
+
+    // reconnect websocket if it drops, refetch all data
+    if (!this.reconnected) {
+      this.reconnected = wsLink.onReconnected(() => {
+        this.props.refetch(); // check for any data lost during disconnect
+      }, this);
     }
   }
 
@@ -477,10 +527,11 @@ Detail.propTypes = {
 const eventQuery = graphql(EVENT_QUERY, {
   skip: ownProps => !ownProps.auth || !ownProps.auth.token,
   options: ({ navigation }) => ({ variables: { eventId: navigation.state.params.eventId } }),
-  props: ({ data: { loading, event, refetch } }) => ({
+  props: ({ data: { loading, event, refetch, subscribeToMore } }) => ({
     loading,
     event,
     refetch,
+    subscribeToMore,
   }),
 });
 
