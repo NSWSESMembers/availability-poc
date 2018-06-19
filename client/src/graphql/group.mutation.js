@@ -24,7 +24,8 @@ export const JOIN_GROUP_MUTATION = gql`
 export const LEAVE_GROUP_MUTATION = gql`
   mutation removeUserFromGroup($groupUpdate: RemoveUserFromGroupInput!) {
     removeUserFromGroup(groupUpdate: $groupUpdate) {
-      id
+      ...GroupFragment
     }
   }
+  ${GROUP_FRAGMENT}
 `;
