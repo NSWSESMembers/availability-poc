@@ -735,14 +735,30 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         return message.getUser();
       },
       createMessage(_, args, ctx) {
-        const { text, eventId, scheduleId, groupId } = args.message;
+        const { text, image, eventId, scheduleId, groupId } = args.message;
         return getAuthenticatedUser(ctx).then(user =>
           Creators.message({
             text,
+            image,
             eventId,
             scheduleId,
             groupId,
             user,
+          })).then((msg) => {
+          pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
+          return msg;
+        });
+      },
+      createSystemMessage(_, args, ctx) {
+        const { text, image, eventId, scheduleId, groupId } = args.message;
+        return getAuthenticatedUser(ctx).then(() =>
+          Creators.message({
+            text,
+            image,
+            eventId,
+            scheduleId,
+            groupId,
+            systemMessage: true,
           })).then((msg) => {
           pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
           return msg;

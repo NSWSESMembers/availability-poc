@@ -37,7 +37,12 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 class Detail extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Event Detail',
-    headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="mi-my-location" />,
+    headerRight: (
+      <View style={{ flexDirection: 'row' }}>
+        <ButtonNavBar onPress={() => navigation.navigate('EventMessages', { eventId: navigation.state.params.eventId })} icon="fa-comments" />
+        <ButtonNavBar onPress={() => navigation.state.params.navBarZoomButton()} icon="mi-my-location" />
+      </View>
+    ),
   });
 
   static getDerivedStateFromProps(newProps) {
@@ -81,7 +86,7 @@ class Detail extends Component {
 
   componentDidMount() {
     this.props.navigation.setParams({
-      handleThis: this.mapZoomMe,
+      navBarZoomButton: this.mapZoomMe,
     });
     this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {

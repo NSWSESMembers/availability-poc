@@ -116,6 +116,15 @@ export const Schema = [
 
   input CreateMessageInput {
     text: String
+    image: String
+    eventId: Int
+    scheduleId: Int
+    groupId: Int
+  }
+
+  input CreateSystemMessageInput {
+    text: String
+    image: String
     eventId: Int
     scheduleId: Int
     groupId: Int
@@ -239,8 +248,9 @@ export const Schema = [
     id: Int!
     text: String
     edited: Boolean
+    image: String
     createdAt: Date # sequelize managed field
-    user: User!
+    user: User
   }
 
   type EventResponse {
@@ -312,6 +322,7 @@ export const Schema = [
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
     createMessage(message: CreateMessageInput!): Message
+    createSystemMessage(message: CreateSystemMessageInput!): Message
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
     updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
     removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean
@@ -325,6 +336,7 @@ export const Schema = [
     setEventResponse(response: SetEventResponseInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
+<<<<<<< HEAD
 
   type Subscription {
     message(eventId: Int,groupId: Int): Message
@@ -332,6 +344,9 @@ export const Schema = [
     event(eventId: Int!): Event
   }
 
+=======
+  
+>>>>>>> First push with working UI. no GQL
   schema {
     query: Query,
     mutation: Mutation

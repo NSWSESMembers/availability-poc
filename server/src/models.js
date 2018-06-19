@@ -81,6 +81,7 @@ export const defineModels = (db) => {
   const MessageModel = db.define('message', {
     text: { type: Sequelize.STRING },
     edited: { type: Sequelize.BOOLEAN },
+    image: { type: Sequelize.STRING },
   });
 
   // UserModel has many messages

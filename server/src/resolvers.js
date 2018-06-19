@@ -198,6 +198,9 @@ export const getResolvers = (handlers) => {
       createMessage(_, args, ctx) {
         return messageHandler.createMessage(_, args, ctx);
       },
+      createSystemMessage(_, args, ctx) {
+        return messageHandler.createSystemMessage(_, args, ctx);
+      },
       sendTestPush(_, args, ctx) {
         return pushHandler.sendTestPush(ctx, args);
       },
