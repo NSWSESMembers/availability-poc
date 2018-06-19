@@ -9,29 +9,16 @@ export default gql`
       organisation {
         id
         name
-         groups {
-            name
-            icon
-            id
-            tags {
-              id
-              name
-              type
-            }
-            users {
-             id
-             username
-            }
-            schedules {
-              id
-              name
-              details
-            }
-         }
+        groups {
+          id
+          name
+          icon
+        }
       }
       groups {
         id
         name
+        icon
       }
     }
   }

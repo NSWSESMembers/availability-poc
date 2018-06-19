@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import TAG_FRAGMENT from './tag.fragment';
+
 // get the user and all user's groups
 export default gql`
   query {
@@ -14,12 +16,11 @@ export default gql`
             username
           }
           tags {
-            id
-            name
-            type
+            ...TagFragment
           }
         }
       }
     }
   }
+  ${TAG_FRAGMENT}
 `;

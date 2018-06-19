@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import GROUP_FRAGMENT from './group.fragment';
+
 // get the user and all user's groups
 export default gql`
   query group($filter: String,$groupId: Int){
@@ -10,33 +12,10 @@ export default gql`
       organisation {
         id
          groups(filter: $filter,id: $groupId) {
-            name
-            icon
-            id
-            tags {
-              id
-              name
-              type
-            }
-            users {
-             id
-             username
-             displayName
-            }
-            schedules {
-              id
-              name
-              details
-              startTime
-              endTime
-            }
-            events {
-              id
-              name
-              details
-            }
+            ...GroupFragment
          }
       }
     }
   }
+  ${GROUP_FRAGMENT}
 `;

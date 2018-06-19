@@ -14,8 +14,7 @@ import { Segment } from '../../components/Segment';
 
 
 import SEARCH_GROUP_QUERY from '../../graphql/search-group.query';
-import JOIN_GROUP_MUTATION from '../../graphql/join-group.mutation';
-import LEAVE_GROUP_MUTATION from '../../graphql/leave-group.mutation';
+import { JOIN_GROUP_MUTATION, LEAVE_GROUP_MUTATION } from '../../graphql/group.mutation';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 
 import GroupDetailsHeader from './components/GroupDetailsHeader';

@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import TAG_FRAGMENT from './tag.fragment';
+
 // get the orgs tags
 export default gql`
   query tag($nameFilter: String,$typeFilter: String){
@@ -8,11 +10,10 @@ export default gql`
       organisation {
         id
         tags(nameFilter: $nameFilter,typeFilter: $typeFilter) {
-            id
-            name
-            type
+          ...TagFragment
         }
       }
     }
   }
+  ${TAG_FRAGMENT}
 `;
