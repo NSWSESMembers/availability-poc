@@ -239,6 +239,7 @@ export const Schema = [
     id: Int!
     text: String
     edited: Boolean
+    createdAt: Date # sequelize managed field
     user: User!
   }
 
@@ -324,9 +325,16 @@ export const Schema = [
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
 
+  type Subscription {
+    message(eventId: Int,groupId: Int): Message
+    eventResponse(eventId: Int!): EventResponse
+    event(eventId: Int!): Event
+  }
+
   schema {
     query: Query,
     mutation: Mutation
+    subscription: Subscription
   }
 `,
 ];

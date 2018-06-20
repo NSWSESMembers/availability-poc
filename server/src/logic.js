@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
+import { withFilter } from 'graphql-subscriptions';
+import { PUBSUBS } from './constants';
 
 import { JWT_SECRET } from './config';
 import { schedulePerms, eventPerms } from './perms';
@@ -25,7 +27,7 @@ const getAuthenticatedDevice = ctx =>
     return device;
   });
 
-export const getHandlers = ({ models, creators: Creators, push }) => {
+export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
   const { Group, User, Organisation, Schedule, Event, TimeSegment, EventLocation, Tag } = models;
 
   const handlers = {
@@ -258,8 +260,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             });
           });
       },
-      messages(event) {
-        return event.getMessages();
+      messages(schedule) {
+        return schedule.getMessages({
+          order: [['createdAt', 'DESC']],
+        });
       },
     },
 
@@ -416,6 +420,7 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                 groupId,
               })
               .then(() => {
+                // TODO connect pubsub push for updated event
                 event.getEventlocations().then((existingLocations) => {
                   if (eventLocations === undefined) return;
 
@@ -454,6 +459,27 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
           }),
         );
       },
+      subscribe() {
+        return withFilter(
+          () => pubsub.asyncIterator(PUBSUBS.EVENT.UPDATED),
+          (payload, args) =>
+            // filter is on the OUTBOUND so check there is outbound data,
+            // check its not the users own update, check its for the correct event
+            // return TRUE to send to the subscriber FALSE to not
+            payload && payload.id === args.eventId,
+        );
+      },
+      eventResponseSubscribe() {
+        return withFilter(
+          () => pubsub.asyncIterator(PUBSUBS.EVENTRESPONSE.UPDATED),
+          (payload, args, ctx) => getAuthenticatedUser(ctx).then(user =>
+            // filter is on the OUTBOUND so check there is outbound data,
+            // check its not the users own update, check its for the correct event
+            // return TRUE to send to the subscriber FALSE to not
+            payload && user.id !== payload.userId && payload.eventId === args.eventId,
+          ),
+        );
+      },
       setResponse(args, ctx) {
         const { id } = args.response;
         return eventPerms
@@ -465,8 +491,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             event.getEventresponses({ where: { userId: user.id } }).then((result) => {
               const updateArgs = { ...args.response };
               delete updateArgs.id;
+              // destination not defined (not part of the update)
               if (typeof updateArgs.destination !== 'undefined') {
                 // null is truthy so we need this
+                // defined but null (as in no destination)
                 if (updateArgs.destination !== null) {
                   return event
                     .getEventlocations({ where: { id: updateArgs.destination.id } })
@@ -476,42 +504,79 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
                       }
                       updateArgs.eventlocationId = destination[0].id;
                       delete updateArgs.destination;
-                      if (result.length > 0) {
-                        return result[0].update(updateArgs);
+                      if (result.length > 0) { // updating an existing response
+                        return result[0].update(updateArgs).then((eventResponse) => {
+                          pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                          event.reload().then((reloadedEvent) => {
+                            pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                          });
+                        });
                       }
+                      // create a new response with a destination
                       return Creators.eventResponse({
                         event,
                         user,
                         destination: destination[0],
                         ...updateArgs,
+                      }).then((eventResponse) => {
+                        pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                        event.reload().then((reloadedEvent) => {
+                          pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                        });
                       });
                     });
                 }
-                // destination passed is null
+                // destination passed is null (but defined)
+                // (remove the location from an existing response)
                 if (result.length) {
                   updateArgs.eventlocationId = null;
-                  return result[0].update(updateArgs);
+                  // update an existing response but no destination
+                  return result[0].update(updateArgs).then((eventResponse) => {
+                    pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                    event.reload().then((reloadedEvent) => {
+                      pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                    });
+                  });
                 }
+                // create a new response WITH a destination
                 return Creators.eventResponse({
                   event,
                   user,
                   ...updateArgs,
+                }).then((eventResponse) => {
+                  pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                  event.reload().then((reloadedEvent) => {
+                    pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                  });
                 });
               }
-              // no destination passed
+
+              // create a new response WITHOUT a destination
               if (result.length) {
-                return result[0].update(updateArgs);
+                return result[0].update(updateArgs).then((eventResponse) => {
+                  pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                  event.reload().then((reloadedEvent) => {
+                    pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                  });
+                });
               }
               return Creators.eventResponse({
                 event,
                 user,
                 ...updateArgs,
+              }).then((eventResponse) => {
+                pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                event.reload().then((reloadedEvent) => {
+                  pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                });
               });
             }),
           );
       },
       messages(event) {
-        return event.getMessages();
+        return event.getMessages({
+          order: [['createdAt', 'DESC']],
+        });
       },
     },
 
@@ -659,8 +724,10 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
       tags(group) {
         return group.getTags();
       },
-      messages(event) {
-        return event.getMessages();
+      messages(group) { // NYI
+        return group.getMessages({
+          order: [['createdAt', 'DESC']],
+        });
       },
     },
     message: {
@@ -676,7 +743,20 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
             scheduleId,
             groupId,
             user,
-          }),
+          })).then((msg) => {
+          pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
+          return msg;
+        });
+      },
+      subscribe() {
+        return withFilter(
+          () => pubsub.asyncIterator(PUBSUBS.MESSAGE.CREATED),
+          (payload, args, ctx) => getAuthenticatedUser(ctx).then(user =>
+            // filter is on the OUTBOUND so check there is outbound data,
+            // check its not the users own message, check its for the correct event
+            // return TRUE to send to the subscriber FALSE to not
+            payload && user.id !== payload.userId && payload.eventId === args.eventId,
+          ),
         );
       },
     },
@@ -690,6 +770,23 @@ export const getHandlers = ({ models, creators: Creators, push }) => {
         });
 
         return result;
+      },
+    },
+    subscription: {
+      // Handles logic for incoming sub connections. (User validity only so far)
+      // NOT the actual data return for the subs they are under each respective
+      // object in the main logic
+      defaultOnOperation(baseParams, args, ctx) {
+        const newBaseParams = Object.assign({}, baseParams); // clone object
+        return getAuthenticatedUser(ctx)
+          .then((user) => {
+            if (!user.id) {
+              return Promise.reject(Error('Unauthorized!'));
+            }
+
+            newBaseParams.context = ctx;
+            return newBaseParams;
+          });
       },
     },
   };
