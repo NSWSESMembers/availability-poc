@@ -14,7 +14,7 @@ import { wsLink } from '../../app';
 
 import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
-import EVENT_RESPONSE_SUBSCRIPTION from '../../graphql/event-response.subscription';
+import EVENT_SUBSCRIPTION from '../../graphql/event.subscription';
 import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
 import { Container, Holder, Center } from '../../components/Container';
@@ -84,39 +84,17 @@ class Detail extends Component {
 
     if (newProps.event) {
       if (!this.subscription) {
-        console.log('SPINNING UP NEW SUBSCRIPTION');
         this.subscription = subscribeToMore({
-          document: EVENT_RESPONSE_SUBSCRIPTION,
+          document: EVENT_SUBSCRIPTION,
           variables: { eventId: navigation.state.params.eventId },
           updateQuery: (previousResult, { subscriptionData }) => {
-            const newData = subscriptionData.data.eventResponse;
-            // find the old data if it exists
-            const prevItemIndex = previousResult.event.responses.findIndex(
-              x => x.id === newData.id,
-            );
-            // TODO handle deleted event responses
-            if (prevItemIndex !== -1) { // its an update to an existing response
-              return update(previousResult, {
-                event: {
-                  responses: {
-                    [prevItemIndex]: {
-                      $set: newData,
-                    },
-                  },
-                },
-              });
-            } // its new data, push
+            const newData = subscriptionData.data;
             return update(previousResult, {
-              event: {
-                responses: { $push: [newData] },
-              },
+              $set: newData,
             });
           },
         });
       }
-    } else if (this.reconnected) {
-    // remove event subscription
-      this.reconnected();
     }
 
     if (!loading && event) {
