@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`user marker 1`] = `
+Array [
+  Object {
+    "icon": "icon",
+    "id": "markera",
+    "latitude": 0,
+    "longitude": 0,
+  },
+]
+`;
+
+exports[`user marker 2`] = `
+Array [
+  Object {
+    "icon": "icon",
+    "id": "markera",
+    "latitude": 0,
+    "longitude": 0,
+  },
+  Object {
+    "icon": "icon",
+    "id": "markerb",
+    "latitude": 0,
+    "longitude": 0,
+  },
+]
+`;

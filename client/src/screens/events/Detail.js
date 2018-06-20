@@ -16,7 +16,9 @@ import { Container, Holder, Center } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
 import { Progress } from '../../components/Progress';
 import { ButtonNavBar } from '../../components/Button';
-import MapDelta from '../../selectors/MapDelta';
+import { getMapDelta } from '../../selectors/mapDelta';
+import { eventLocationMapMarkers } from '../../selectors/eventLocationMapMarkers';
+import { userResponseMapMarkers } from '../../selectors/userResponseMapMarkers';
 
 const screen = Dimensions.get('window');
 
@@ -33,54 +35,16 @@ class Detail extends Component {
     headerRight: <ButtonNavBar onPress={() => navigation.state.params.handleThis()} icon="mi-my-location" />,
   });
 
-
-  static makeEventLocations(eventLocations) {
-    const mapMarkers = [];
-
-    eventLocations.forEach((r) => {
-      if (r.locationLatitude !== null && r.locationLongitude !== null) {
-        mapMarkers.push({
-          id: r.name,
-          latitude: r.locationLatitude,
-          longitude: r.locationLongitude,
-          icon: r.icon,
-        });
-      }
-    });
-    return mapMarkers;
-  }
-  static makeResponseMarkers(userid, responses) {
-    const mapMarkers = [];
-    if (responses) {
-      responses.forEach((r) => {
-        if (r.locationLatitude !== null && r.locationLongitude !== null) {
-          if (r.user.id !== userid) {
-            mapMarkers.push({
-              displayName: r.user.displayName,
-              status: r.status,
-              destination: r.destination && r.destination.name,
-              locationTime: moment.unix(r.locationTime).fromNow(),
-              id: r.user.username,
-              latitude: r.locationLatitude,
-              longitude: r.locationLongitude,
-            });
-          }
-        }
-      });
-    }
-    return mapMarkers;
-  }
-
   static getDerivedStateFromProps(newProps) {
     // catch incoming props and generate the marker states
     const { event, loading, auth } = newProps;
     let responseMarkers = {};
     let eventMarkers = {};
     if (!loading && event) {
-      responseMarkers = Detail.makeResponseMarkers(
+      responseMarkers = userResponseMapMarkers(
         auth.id, event.responses,
       );
-      eventMarkers = Detail.makeEventLocations(event.eventLocations);
+      eventMarkers = eventLocationMapMarkers(event.eventLocations);
       return {
         responseMarkers,
         eventMarkers,
@@ -94,6 +58,7 @@ class Detail extends Component {
     eventMarkers: null,
     responseMarkers: null,
   };
+
 
   componentDidMount() {
     this.props.navigation.setParams({
@@ -156,7 +121,7 @@ class Detail extends Component {
   mapZoomMe = () => {
     if (this.state.myPosition) {
       const { longitude, latitude } = this.state.myPosition;
-      const myLocation = MapDelta(
+      const myLocation = getMapDelta(
         latitude,
         longitude,
         500, // 500m height

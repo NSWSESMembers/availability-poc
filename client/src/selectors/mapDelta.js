@@ -4,7 +4,8 @@
   cover the given distance
 */
 
-const getDelta = (lat, lon, distance) => {
+// eslint-disable-next-line import/prefer-default-export
+export const getMapDelta = (lat, lon, distance) => {
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
 
   const latitudeDelta = distance / oneDegreeOfLatitudeInMeters;
@@ -17,5 +18,3 @@ const getDelta = (lat, lon, distance) => {
     longitudeDelta,
   };
 };
-
-export default getDelta;
