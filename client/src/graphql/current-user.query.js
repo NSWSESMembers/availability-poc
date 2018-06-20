@@ -1,5 +1,9 @@
 import gql from 'graphql-tag';
 
+import EVENT_FRAGMENT from './event.fragment';
+import SCHEDULE_FRAGMENT from './schedule.fragment';
+import GROUP_FRAGMENT from './group.fragment';
+
 // get the user and all user's groups
 export default gql`
   query {
@@ -9,45 +13,17 @@ export default gql`
       email
       username
       groups {
-        id
-        name
-        icon
-        tags {
-          id
-          name
-          type
-        }
+        ...GroupFragment
       }
       events {
-        id
-        name
-        details
-        sourceIdentifier
-        group {
-          id
-          name
-        }
+        ...EventFragment
       }
       schedules {
-        id
-        name
-        details
-        startTime
-        endTime
-        group {
-          id
-          name
-        }
-        timeSegments {
-          user {
-            id
-          }
-          id
-          status
-          startTime
-          endTime
-        }
+        ...ScheduleFragment
       }
     }
   }
+  ${EVENT_FRAGMENT}
+  ${SCHEDULE_FRAGMENT}
+  ${GROUP_FRAGMENT}
 `;

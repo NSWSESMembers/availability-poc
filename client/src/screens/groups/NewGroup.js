@@ -18,7 +18,7 @@ import IconModal from './IconModal';
 import TagModal from './TagModal';
 import groupIcons from '../../fixtures/icons';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
-import CREATE_GROUP_MUTATION from '../../graphql/create-group.mutation';
+import { CREATE_GROUP_MUTATION } from '../../graphql/group.mutation';
 import ORGANISATION_TAGS from '../../graphql/organisation-tags.query';
 import Icon from '../../components/Icon';
 import styles from './styles';

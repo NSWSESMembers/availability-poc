@@ -19,6 +19,7 @@ const EVENT_FRAGMENT = gql`
     }
     group {
       id
+      name
     }
     eventLocations {
       id
@@ -29,7 +30,7 @@ const EVENT_FRAGMENT = gql`
       locationLongitude
     }
     responses {
-      ... EventResponseFragment
+      ...EventResponseFragment
     }
   }
   ${EVENT_RESPONSE_FRAGMENT}
