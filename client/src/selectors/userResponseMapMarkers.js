@@ -9,18 +9,16 @@ import moment from 'moment';
 export const userResponseMapMarkers = (filter, responses) => {
   const mapMarkers = [];
   responses.forEach((r) => {
-    if (r.locationLatitude !== null && r.locationLongitude !== null) {
-      if (r.user.id !== filter) {
-        mapMarkers.push({
-          displayName: r.user.displayName,
-          status: r.status,
-          destination: r.destination && r.destination.name,
-          locationTime: moment.unix(r.locationTime).fromNow(),
-          id: r.user.username,
-          latitude: r.locationLatitude,
-          longitude: r.locationLongitude,
-        });
-      }
+    if (r.locationLatitude !== null && r.locationLongitude !== null && r.user.id !== filter) {
+      mapMarkers.push({
+        displayName: r.user.displayName,
+        status: r.status,
+        destination: r.destination && r.destination.name,
+        locationTime: moment.unix(r.locationTime).fromNow(),
+        id: r.user.username,
+        latitude: r.locationLatitude,
+        longitude: r.locationLongitude,
+      });
     }
   });
   return mapMarkers;
