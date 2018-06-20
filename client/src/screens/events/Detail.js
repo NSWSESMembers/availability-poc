@@ -120,7 +120,6 @@ class Detail extends Component {
     this.props.navigation.setParams({
       handleThis: this.mapZoomMe,
     });
-    // this.refetchTimer = setInterval(this.onRefresh, 5000);
     this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
       this.androidLocationPermission().then((answer) => {
