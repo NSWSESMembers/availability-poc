@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Table, { TableBody, TableCell, TableRow, TableHead } from 'material-ui/Table';
+import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
@@ -8,24 +8,29 @@ import { withStyles } from 'material-ui/styles';
 
 import styles from '../../../../styles/AppStyle';
 
+import EnhancedTableHead from '../../../../components/Tables/EnhancedTableHead';
+
 import numbers from '../../../../constants';
 
-const ScheduleTable = ({ schedules }) => (
+const columnData = [
+  { id: 'type', numeric: false, disablePadding: false, label: 'Type', enabled: true },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name', enabled: true },
+  { id: 'group', numeric: false, disablePadding: false, label: 'Group', enabled: false },
+  { id: 'date', numeric: false, disablePadding: false, label: 'Date', enabled: false },
+];
+
+const ScheduleTable = ({ onSort, order, orderBy, schedules }) => (
   <Table>
-    <TableHead>
-      <TableRow>
-        <TableCell>Type</TableCell>
-        <TableCell>Name</TableCell>
-        <TableCell>Group</TableCell>
-        <TableCell>Date</TableCell>
-      </TableRow>
-    </TableHead>
+    <EnhancedTableHead
+      order={order}
+      orderBy={orderBy}
+      onRequestSort={onSort}
+      columnData={columnData}
+    />
     <TableBody>
       {schedules.map(schedule => (
         <TableRow key={schedule.id}>
-          <TableCell>
-            {schedule.type}
-          </TableCell>
+          <TableCell>{schedule.type}</TableCell>
           <TableCell>
             <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
           </TableCell>
@@ -36,8 +41,8 @@ const ScheduleTable = ({ schedules }) => (
             {schedule.startTime === numbers.distantPast
               ? 'Ongoing'
               : moment.unix(schedule.startTime).format('LL')}
-            {schedule.endTime !== numbers.distantFuture
-              && ` - ${moment.unix(schedule.endTime).format('LL')}`}
+            {schedule.endTime !== numbers.distantFuture &&
+              ` - ${moment.unix(schedule.endTime).format('LL')}`}
           </TableCell>
         </TableRow>
       ))}
@@ -54,6 +59,9 @@ ScheduleTable.propTypes = {
       endTime: PropTypes.number.isRequired,
     }),
   ),
+  order: PropTypes.string.isRequired,
+  orderBy: PropTypes.string.isRequired,
+  onSort: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ScheduleTable);

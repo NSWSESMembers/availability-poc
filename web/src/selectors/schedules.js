@@ -4,7 +4,7 @@ export default (schedules, { groupId, name, order, orderBy }) => {
   const filteredItems = [];
   schedules.forEach((schedule) => {
     if (
-      (groupId === '' || groupId === schedule.group.id) &&
+      (groupId === '' || parseInt(groupId, 10) === schedule.group.id) &&
       (name === '' || schedule.name.toUpperCase().includes(name.toUpperCase()))
     ) {
       filteredItems.push({

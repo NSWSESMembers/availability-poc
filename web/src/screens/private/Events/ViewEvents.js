@@ -11,12 +11,11 @@ import { CircularProgress } from 'material-ui/Progress';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import { FormControl } from 'material-ui/Form';
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
 
-import Message from '../../../components/Messages/Message';
-import EventTable from './components/EventTable';
 import CenterPanel from '../../../components/Panels/CenterPanel';
+import EventTable from './components/EventTable';
+import GroupSelect from '../Groups/components/GroupSelect';
+import Message from '../../../components/Messages/Message';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
@@ -48,6 +47,12 @@ class ViewEvents extends React.Component {
     this.setState({ order, orderBy });
   };
 
+  onTagChange = name => (value) => {
+    this.setState({
+      [name]: value === null ? '' : value,
+    });
+  };
+
   render() {
     const { classes } = this.props;
     const { groupId, order, orderBy } = this.state;
@@ -71,24 +76,7 @@ class ViewEvents extends React.Component {
         <Paper className={classes.paperMargin}>
           <CenterPanel>
             <FormControl className={classes.formControlFilter}>
-              <Select
-                value={this.state.groupId}
-                onChange={this.onGroupChange}
-                displayEmpty
-                required
-                inputProps={{
-                  id: 'groupFilter',
-                }}
-              >
-                <MenuItem value="" key={0}>
-                  <em>none</em>
-                </MenuItem>
-                {this.props.user.groups.map(group => (
-                  <MenuItem value={group.id} key={group.id}>
-                    {group.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <GroupSelect onChange={this.onTagChange('groupId')} value={this.state.groupId} />
             </FormControl>
           </CenterPanel>
         </Paper>

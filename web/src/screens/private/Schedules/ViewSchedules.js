@@ -12,10 +12,9 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import Input, { InputAdornment } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
 import Search from 'material-ui-icons/Search';
 
+import GroupSelect from '../Groups/components/GroupSelect';
 import Message from '../../../components/Messages/Message';
 import CenterPanel from '../../../components/Panels/CenterPanel';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
@@ -33,28 +32,20 @@ import styles from '../../../styles/AppStyle';
 
 class ViewSchedules extends React.Component {
   state = {
-    capabilityFilter: '',
+    capability: '',
     groupId: '',
     name: '',
     order: 'asc',
     orderBy: 'name',
   };
 
-  onGroupChange = (e) => {
-    const groupId = e.target.value;
-    this.setState({ groupId });
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
   };
 
-  onNameChange = (e) => {
-    const name = e.target.value;
-    this.setState({ name });
-  };
-
-  handleCapabilityFilter = (value) => {
-    this.setState({ capabilityFilter: value });
-  };
-
-  handleRequestSort = (event, property) => {
+  onSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
 
@@ -63,6 +54,12 @@ class ViewSchedules extends React.Component {
     }
 
     this.setState({ order, orderBy });
+  };
+
+  onTagChange = name => (value) => {
+    this.setState({
+      [name]: value === null ? '' : value,
+    });
   };
 
   render() {
@@ -103,50 +100,37 @@ class ViewSchedules extends React.Component {
         <Paper className={classes.paperMargin}>
           <CenterPanel>
             <FormControl className={classes.formControlFilter}>
-              <Select
-                value={this.state.groupId}
-                onChange={this.onGroupChange}
-                displayEmpty
-                required
-                inputProps={{
-                  id: 'groupFilter',
-                }}
-              >
-                <MenuItem value="" key={0}>
-                  <em>none</em>
-                </MenuItem>
-                {this.props.user.groups.map(group => (
-                  <MenuItem value={group.id} key={group.id}>
-                    {group.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <GroupSelect onChange={this.onTagChange('groupId')} value={this.state.groupId} />
             </FormControl>
             <FormControl className={classes.formControlFilter}>
               <Tag
                 list={capabilities}
                 placeholder="Select Capability"
-                onChange={this.handleCapabilityFilter}
-                value={this.state.capabilityFilter}
-                multi={false}
+                onChange={this.onTagChange('capability')}
+                value={this.state.capability}
               />
             </FormControl>
             <FormControl className={classes.formControlFilter}>
               <Input
-                id="nameFilter"
+                name="name"
                 startAdornment={
                   <InputAdornment position="start">
                     <Search color="disabled" />
                   </InputAdornment>
                 }
-                onChange={this.onNameChange}
+                onChange={this.onChange}
               />
             </FormControl>
           </CenterPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
           {schedules.length > 0 ? (
-            <ScheduleTable schedules={schedules} />
+            <ScheduleTable
+              schedules={schedules}
+              order={order}
+              orderBy={orderBy}
+              onSort={this.onSort}
+            />
           ) : (
             <Message>No requests found.</Message>
           )}
