@@ -54,7 +54,6 @@ const postJWTAuth = ({ id, device }) => {
       },
     });
   } else {
-    // If we didnt allow anon access we would reject the promise here
     returnUser = User.findById(DEFAULT_USER_ID);
     returnDevice = Device.findOne({
       where: {
@@ -63,7 +62,6 @@ const postJWTAuth = ({ id, device }) => {
       },
     });
   }
-
   return Promise.resolve({ user: returnUser, device: returnDevice });
 };
 
@@ -75,7 +73,7 @@ app.use(
   // used by later middleware for authorization and access control.
   jwt({
     secret: JWT_SECRET,
-    credentialsRequired: false,
+    credentialsRequired: !process.env.ALLOW_ANON,
   }),
   graphqlExpress(req => postJWTAuth(
     req.user ? { id: req.user.id, device: req.user.device } : { id: null, device: null },
@@ -85,8 +83,9 @@ app.use(
       user,
       device,
     },
-  })).catch(() => Promise.reject(Error('Unauthorised'))),
-  ));
+  })).catch(() => false),
+  ),
+);
 
 app.use('/graphiql', graphiqlExpress(req => ({
   endpointURL: '/graphql',
@@ -105,11 +104,15 @@ SubscriptionServer.create({
   subscribe,
   onConnect(connectionParams) {
     // theres no standard auth header in WS so we use jwt connection param
+    if (!connectionParams.jwt && !process.env.ALLOW_ANON) {
+      return Promise.reject(Error('Unauthorised'));
+    }
     return jsonwebtoken.verify(connectionParams.jwt || null, JWT_SECRET,
       (err, decoded) =>
         postJWTAuth(!err ? { id: decoded.id, device: decoded.device } : { id: null, device: null })
           .then(({ user, device }) => ({ user, device }))
-          .catch(() => Promise.error('Unauthorised')),
+          .catch(() => Promise.reject(Error('Unauthorised')),
+          ),
     );
   },
   // unpack the subscription request and load it into context
