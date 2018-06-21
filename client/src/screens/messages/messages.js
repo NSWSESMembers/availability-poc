@@ -1,37 +1,29 @@
-import {
-  ActivityIndicator,
-  Image,
-  KeyboardAvoidingView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import randomColor from 'randomcolor';
+import { View, Text } from 'react-native';
+
 import { graphql, compose } from 'react-apollo';
-import ReversedFlatList from 'react-native-reversed-flat-list';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
-
-import Message from './components/Message';
-import MessageInput from './components/MessageInput';
-
-import styles from './styles';
-
+import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
+import { Container } from '../../components/Container';
+import { Progress } from '../../components/Progress';
 import EVENT_MESSAGES_QUERY from '../../graphql/event-messages.query';
 import MESSAGE_SUBSCRIPTION from '../../graphql/message.subscription';
 
 import CREATE_MESSAGE_MUTATION from '../../graphql/create-message.mutation';
-
+import styles from './styles';
 
 class Messages extends Component {
   static navigationOptions = {
     title: 'Event Messages',
   };
 
+  state = {
+    messages: [],
+  }
+
   componentWillReceiveProps(nextProps) {
-    // check for new messages
     if (nextProps.event) {
       // we don't resubscribe on changed props
       // because it never happens in our app
@@ -60,30 +52,120 @@ class Messages extends Component {
           },
         });
       }
+      if (nextProps.event.messages) {
+        this.setState({
+          messages: nextProps.event.messages.map(m => ({
+            _id: m.id,
+            text: m.text,
+            createdAt: new Date(m.createdAt * 1000), // Date(milliseconds)
+            system: !m.user,
+            user: m.user ? {
+              _id: m.user.id,
+              name: m.user.displayName,
+            } : {
+              _id: 0,
+            },
+            image: m.image,
+          })),
+        });
+        console.log(this.state.messages);
+      }
     }
   }
 
-
-  send = (text) => {
+  onSend(messages = []) {
     this.props.createMessage({
       eventId: this.props.navigation.state.params.eventId,
-      text,
-    }).then(() => {
-      this.flatList.scrollToBottom({ animated: true });
+      text: messages[0].text,
+      image: messages[0].image,
     });
+    // TODO: Opertunistic cache
   }
+
 
   isDuplicateMessage = (newMessage, existingMessages) => newMessage.id !== null &&
       existingMessages.some(message => newMessage.id === message.id)
 
-  keyExtractor = item => `${item.id}`;
-
-  renderItem = ({ item: message }) => (
-    <Message
-      isCurrentUser={message.user.id === this.props.auth.id} // for now until we implement auth
-      message={message}
+renderSystemMessage = props => (
+  <View>
+    <Text style={styles.systemMessageHeader}>System Message</Text>
+    <SystemMessage
+      {...props}
+      containerStyle={{
+        flex: 1,
+        alignItems: 'center',
+      }}
+      wrapperStyle={{
+        borderRadius: 15,
+        backgroundColor: 'black',
+        marginRight: 10,
+        marginLeft: 10,
+        minHeight: 20,
+        justifyContent: 'flex-end',
+      }}
+      textStyle={{
+          color: 'white',
+          textAlign: 'center',
+          fontSize: 16,
+          lineHeight: 20,
+          marginTop: 5,
+          marginBottom: 5,
+          marginLeft: 10,
+          marginRight: 10,
+      }}
     />
-  )
+  </View>
+)
+
+  // Custom message bubble with name above bubble if not a message from current username
+  // and custom color on left messages
+  renderBubble = (props) => {
+    // if its  follow on message dont print name
+    if (props.isSameUser(props.currentMessage, props.previousMessage) &&
+    props.isSameDay(props.currentMessage, props.previousMessage)) {
+      return (
+        <Bubble
+          {...props}
+          wrapperStyle={{
+        left: {
+          backgroundColor: '#d8d8d8',
+        },
+      }}
+        />
+      );
+    }
+    // if its not from me print name
+    // eslint-disable-next-line no-underscore-dangle
+    if (props.user._id !== props.currentMessage.user._id) {
+      return (
+        <View>
+          <Text style={styles.name}>{props.currentMessage.user.name}</Text>
+          <Bubble
+            {...props}
+            wrapperStyle={{
+        left: {
+          backgroundColor: '#d8d8d8',
+        },
+      }}
+          />
+        </View>
+      );
+    }
+    // otherwise dont print name
+    return (
+      <View>
+        <Bubble
+          {...props}
+          wrapperStyle={{
+      left: {
+        backgroundColor: '#d8d8d8',
+      },
+    }}
+        />
+      </View>
+    );
+  }
+
 
   render() {
     const { loading, event } = this.props;
@@ -91,29 +173,23 @@ class Messages extends Component {
     // render loading placeholder while we fetch messages
     if (loading && !event) {
       return (
-        <View style={[styles.loading, styles.container]}>
-          <ActivityIndicator />
-        </View>
+        <Container>
+          <Progress />
+        </Container>
       );
     }
 
     // render list of messages for group
     return (
-      <KeyboardAvoidingView
-        behavior="position"
-        contentContainerStyle={styles.container}
-        keyboardVerticalOffset={64}
-        style={styles.container}
-      >
-        <ReversedFlatList
-          ref={(ref) => { this.flatList = ref; }}
-          data={event.messages && event.messages.slice().reverse()}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderItem}
-          onEndReached={this.onEndReached}
-        />
-        <MessageInput send={this.send} />
-      </KeyboardAvoidingView>
+      <GiftedChat
+        messages={this.state.messages}
+        onSend={messages => this.onSend(messages)}
+        renderBubble={this.renderBubble}
+        renderSystemMessage={this.renderSystemMessage}
+        user={{
+          _id: this.props.auth.id,
+        }}
+      />
     );
   }
 }
@@ -139,6 +215,7 @@ Messages.propTypes = {
         text: PropTypes.string,
         edited: PropTypes.boolean,
         createdAt: PropTypes.number,
+        image: PropTypes.string,
         user: PropTypes.shape({
           username: PropTypes.string.isRequired,
           displayName: PropTypes.string.isRequired,

@@ -5,6 +5,7 @@ const MESSAGE_FRAGMENT = gql`
     id
     text
     edited
+    image
     user {
       id
       username

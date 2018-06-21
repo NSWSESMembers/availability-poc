@@ -39,7 +39,8 @@ class Detail extends Component {
     title: 'Event Detail',
     headerRight: (
       <View style={{ flexDirection: 'row' }}>
-        <ButtonNavBar onPress={() => navigation.navigate('EventMessages', { eventId: navigation.state.params.eventId })} icon="fa-comments" />
+        {/* catch weird undefined just after loading race condition */}
+        <ButtonNavBar onPress={() => navigation.state.params && navigation.navigate('EventMessages', { eventId: navigation.state.params.eventId })} icon="fa-comments" />
         <ButtonNavBar onPress={() => navigation.state.params.navBarZoomButton()} icon="mi-my-location" />
       </View>
     ),

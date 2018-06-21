@@ -5951,10 +5951,6 @@ react-native-parsed-text@^0.0.20:
   dependencies:
     prop-types "^15.6.0"
 
-react-native-reversed-flat-list@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-reversed-flat-list/-/react-native-reversed-flat-list-1.0.2.tgz#390d2e90fa04ea08405ee91e75126d09a2cdbd35"
-
 react-native-safe-area-view@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.7.0.tgz#38f5ab9368d6ef9e5d18ab64212938af3ec39421"
