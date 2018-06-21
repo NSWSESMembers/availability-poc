@@ -14,6 +14,8 @@ env:
     - AWS_ACCESS_KEY_ID=AKIAIJKCIEXQV7AKWAXA
     - secure: jaDeAzMUjWsjjFS43zCIYKi/z6kmzfRSs4/1vYXvSkZM/Hx2YtvHcVONdR/eZpzjv4g49Q/lRtghOjSw+I9FpE6XQgSE8BgpU2VY+55iNXKp1kviJXYAfB/OE2601Dpa8/phaRy7esNoxOCEg7rR51Y2TbSZKGLTjOVRUBl5v1JUQ8f5FbxX5lJzaorve3zALv/VKytZPT/8+8eAXKBtUDb6dm8eWHIsoEqcdl7sw+UswGCrK2dZXp0He+Qh3O1DOxXQ6lTFJF0+Chif1ag0DdOMjlfSvc6ohIGwUDS9F++YbdmEkGLbWsGkyKCwfZTSahXVW26LwgdcUD6rXHJUP+qKRz3wJfWTsOM1s0ZrQmRUsXM0p3sB+e5+pncDiPvDk+24JOLFdPI3hyTbX9fmEYOV1fzWdQ3Ju+vImtKH4HmJ68vkyutN/7TkBDskjaMaqiFOlfjiudZHGvETSFgPGu53a27MUo3uVYYEnLjOxynv0GxXvuQycPA1P4udBrJ8ppsiQ/BJF8YDq25ImfVJHTyVwKMShOPBhpUMMyI04I141dzxZS8mrO/KuNkwvUlSgbJIiHImUxnCTJWQRDAs4WC+QJwuYK2pO5MppTiAbiD0BLlidz4qztS1CKinhRtttDOlNs9EDziGYR2Jbeb+qQTQoopYydmP0nKm4bz8b4M=
 
+    #Allow GQL Anon (No JWT Tokens)
+    - ALLOW_ANON=true
 # list of build stages to run. Stages with the same name get run in parallel.
 jobs:
   include:
@@ -42,7 +44,7 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
-    env: COMPONENT=server CMD=test-integration ALLOW_ANON=true
+    env: COMPONENT=server CMD=test-integration
     before_install: cd server
     script: bash ../scripts/travis-yarn.sh
   - stage: run tests and linters
