@@ -3,7 +3,9 @@ import { AsyncStorage, Alert } from 'react-native';
 import { Client as BugSnagClient } from 'bugsnag-react-native';
 import ApolloClient from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink, split } from 'apollo-link';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { getMainDefinition } from 'apollo-utilities';
 
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
@@ -17,7 +19,7 @@ import auth from './state/auth.reducer';
 import local from './state/local.reducer';
 import { PushManager } from './push';
 import { logout } from './state/auth.actions';
-import { GRAPHQL_ENDPOINT } from './config';
+import { GRAPHQL_HTTP_ENDPOINT, GRAPHQL_WS_ENDPOINT } from './config';
 
 function noop() {}
 
@@ -27,14 +29,36 @@ if (!__DEV__) {
   console.error = noop;
 }
 
-console.log(`Using GraphQL endpoint: ${GRAPHQL_ENDPOINT}`);
+console.log(`Using GraphQL endpoint: ${GRAPHQL_HTTP_ENDPOINT}`);
 
 let store;
 
 export const bugsnag = !__DEV__ ? new BugSnagClient() : undefined;
 export const pushManager = new PushManager();
 
-const httpLink = new HttpLink({ uri: GRAPHQL_ENDPOINT });
+const httpLink = new HttpLink({ uri: GRAPHQL_HTTP_ENDPOINT });
+
+// Create WebSocket client
+export const wsLink = new SubscriptionClient(GRAPHQL_WS_ENDPOINT, {
+  reconnect: true,
+  connectionParams() {
+    // get the authentication token from local storage if it exists
+    return { jwt: store.getState().auth.token ? `${store.getState().auth.token}` : null };
+  },
+  lazy: true,
+});
+
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const mixedLink = split(
+  // split based on operation type
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === 'OperationDefinition' && operation === 'subscription';
+  },
+  wsLink,
+  httpLink,
+);
 
 // replaces networkInterface.use(applyMiddleware...)
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -102,7 +126,7 @@ const logoutLink = onError(({ graphQLErrors }) => {
 });
 
 export const client = new ApolloClient({
-  link: ApolloLink.from([ErrorLink, LoggerLink, logoutLink, authMiddleware, httpLink]),
+  link: ApolloLink.from([ErrorLink, LoggerLink, logoutLink, authMiddleware, mixedLink]),
   cache: new InMemoryCache(),
 });
 
