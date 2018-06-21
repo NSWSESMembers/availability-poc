@@ -82,19 +82,17 @@ class Detail extends Component {
     let responseMarkers = {};
     let eventMarkers = {};
 
-    if (newProps.event) {
-      if (!this.subscription) {
-        this.subscription = subscribeToMore({
-          document: EVENT_SUBSCRIPTION,
-          variables: { eventId: navigation.state.params.eventId },
-          updateQuery: (previousResult, { subscriptionData }) => {
-            const newData = subscriptionData.data;
-            return update(previousResult, {
-              $set: newData,
-            });
-          },
-        });
-      }
+    if (newProps.event && !this.subscription) {
+      this.subscription = subscribeToMore({
+        document: EVENT_SUBSCRIPTION,
+        variables: { eventId: navigation.state.params.eventId },
+        updateQuery: (previousResult, { subscriptionData }) => {
+          const newData = subscriptionData.data;
+          return update(previousResult, {
+            $set: newData,
+          });
+        },
+      });
     }
 
     if (!loading && event) {
