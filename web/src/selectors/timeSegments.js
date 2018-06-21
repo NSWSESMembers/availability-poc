@@ -18,7 +18,9 @@ export const peopleCount = (timeSegments, { status = 'Available', startTime, end
       timeSegment.startTime < endTime &&
       timeSegment.status === status
     ) {
-      people.push(timeSegment.user.id);
+      if (people.indexOf(timeSegment.user.id) === -1) {
+        people.push(timeSegment.user.id);
+      }
     }
   });
   return people.length;
@@ -27,9 +29,8 @@ export const peopleCount = (timeSegments, { status = 'Available', startTime, end
 export const searchTimeSegments = (timeSegments, { status, startTime, endTime, userId }) =>
   timeSegments.filter(
     timeSegment =>
-      (timeSegment.startTime >= startTime &&
+      timeSegment.startTime >= startTime &&
       timeSegment.startTime < endTime &&
       timeSegment.status === status &&
-      timeSegment.user.id === userId),
+      timeSegment.user.id === userId,
   );
-
