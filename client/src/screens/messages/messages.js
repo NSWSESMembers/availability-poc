@@ -68,7 +68,6 @@ class Messages extends Component {
             image: m.image,
           })),
         });
-        console.log(this.state.messages);
       }
     }
   }
