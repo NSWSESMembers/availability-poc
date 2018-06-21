@@ -42,7 +42,7 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
-    env: COMPONENT=server CMD=test-integration
+    env: COMPONENT=server CMD=test-integration ALLOW_ANON=true
     before_install: cd server
     script: bash ../scripts/travis-yarn.sh
   - stage: run tests and linters
