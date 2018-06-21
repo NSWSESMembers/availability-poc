@@ -17,19 +17,32 @@ import styles from './Header.styles';
 class Header extends React.Component {
   constructor(props) {
     super(props);
-    let route = 'Home';
-    if (props.location.pathname.startsWith('/groups')) route = 'Groups';
-    if (props.location.pathname.startsWith('/schedules')) route = 'Availability';
-    if (props.location.pathname.startsWith('/events')) route = 'Events';
-
+    const route = this.convertPathToRoute(props.location.pathname);
     this.state = {
       route,
     };
   }
 
-  handleChange = (event, value) => {
-    this.setState({ route: value });
+  componentWillMount() {
+    this.unlisten = this.props.history.listen((location) => {
+      const route = this.convertPathToRoute(location.pathname);
+      this.setState({ route });
+    });
+  }
 
+  componentWillUnmount() {
+    this.unlisten();
+  }
+
+  convertPathToRoute = (pathname) => {
+    let route = 'Home';
+    if (pathname.startsWith('/groups')) route = 'Groups';
+    if (pathname.startsWith('/schedules')) route = 'Availability';
+    if (pathname.startsWith('/events')) route = 'Events';
+    return route;
+  };
+
+  handleChange = (event, value) => {
     const paths = {
       Home: '/dashboard',
       Groups: '/groups',
@@ -79,7 +92,9 @@ class Header extends React.Component {
 
 Header.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  history: PropTypes.shape({}),
+  history: PropTypes.shape({
+    listen: PropTypes.func.isRequired,
+  }),
   dispatch: PropTypes.func,
   isAuthenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape({
