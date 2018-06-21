@@ -1,3 +1,5 @@
+import { SCHEDULE_TYPE_REMOTE } from '../config';
+
 export default (schedules, { groupId, name, order, orderBy }) => {
   const filteredItems = [];
   schedules.forEach((schedule) => {
@@ -8,7 +10,7 @@ export default (schedules, { groupId, name, order, orderBy }) => {
       filteredItems.push({
         id: schedule.id,
         name: schedule.name,
-        type: schedule.startTime === 0 ? 'Ongoing' : 'Date Range',
+        type: schedule.type,
         startTime: schedule.startTime,
         endTime: schedule.endTime,
         group: {
@@ -22,4 +24,11 @@ export default (schedules, { groupId, name, order, orderBy }) => {
   return order === 'desc'
     ? filteredItems.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
     : filteredItems.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+};
+
+export const scheduleLabel = (text) => {
+  if (text === SCHEDULE_TYPE_REMOTE) {
+    return text.toUpperCase();
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
 };

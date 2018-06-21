@@ -14,15 +14,18 @@ const ScheduleTable = ({ schedules }) => (
   <Table>
     <TableHead>
       <TableRow>
+        <TableCell>Type</TableCell>
         <TableCell>Name</TableCell>
         <TableCell>Group</TableCell>
-        <TableCell>Start Date</TableCell>
-        <TableCell>End Date</TableCell>
+        <TableCell>Date</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
       {schedules.map(schedule => (
         <TableRow key={schedule.id}>
+          <TableCell>
+            {schedule.type}
+          </TableCell>
           <TableCell>
             <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
           </TableCell>
@@ -32,12 +35,9 @@ const ScheduleTable = ({ schedules }) => (
           <TableCell>
             {schedule.startTime === numbers.distantPast
               ? 'Ongoing'
-              : moment.unix(schedule.startTime).format('LLL')}
-          </TableCell>
-          <TableCell>
-            {schedule.endTime === numbers.distantFuture
-              ? '-'
-              : moment.unix(schedule.endTime).format('LLL')}
+              : moment.unix(schedule.startTime).format('LL')}
+            {schedule.endTime !== numbers.distantFuture
+              && ` - ${moment.unix(schedule.endTime).format('LL')}`}
           </TableCell>
         </TableRow>
       ))}

@@ -46,6 +46,7 @@ export default gql`
         }
         id
         name
+        type
         details
         startTime
         endTime

@@ -111,6 +111,11 @@ export default theme => ({
   buttonIcon: {
     padding: 0,
   },
+  radioButtonGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
   tableCellHeader: {
     border: 1,
     borderColor: '#E0E0E0',

@@ -9,14 +9,10 @@ import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 
 import Button from 'material-ui/Button';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form';
 import { CircularProgress } from 'material-ui/Progress';
-import Select from 'material-ui/Select';
 import Snackbar from 'material-ui/Snackbar';
 import Switch from 'material-ui/Switch';
-import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
 
@@ -24,11 +20,17 @@ import CREATE_SCHEDULE_MUTATION from '../../../graphql/create-schedule.mutation'
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 
-import { TAG_TYPE_CAPABILITY } from '../../../constants';
+import numbers, { TAG_TYPE_CAPABILITY } from '../../../constants';
+import { SCHEDULE_TYPE_LOCAL } from '../../../config';
 
+import DatePicker from '../../../components/Forms/DatePicker';
+import FormGroupPanel from '../../../components/Panels/FormGroupPanel';
 import FormPanel from '../../../components/Panels/FormPanel';
+import SchedulePriority from './components/SchedulePriority';
+import ScheduleType from './components/ScheduleType';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import Tag from '../../../components/Selects/Tag';
+import Text from '../../../components/Forms/Text';
 
 import styles from '../../../styles/AppStyle';
 
@@ -37,54 +39,21 @@ class AddSchedule extends React.Component {
     id: 0,
     open: false,
     message: '',
+    type: SCHEDULE_TYPE_LOCAL,
     name: '',
     groupId: '',
     details: '',
-    priority: 2,
+    priority: '2',
     capability: '',
     startTime: moment()
       .add(1, 'day')
       .startOf('day')
-      .format('YYYY-MM-DD[T]HH:mm'),
+      .format('YYYY-MM-DD'),
     endTime: moment()
       .add(3, 'day')
       .startOf('day')
-      .format('YYYY-MM-DD[T]HH:mm'),
-    useDates: false,
-  };
-
-  onGroupChange = (e) => {
-    const groupId = e.target.value;
-    this.setState(() => ({ groupId }));
-  };
-
-  onPriorityChange = (e) => {
-    const priority = e.target.value;
-    this.setState(() => ({ priority }));
-  };
-
-  onCapabilityChange = (value) => {
-    this.setState({ capability: value });
-  };
-
-  onNameChange = (e) => {
-    const name = e.target.value;
-    this.setState(() => ({ name }));
-  };
-
-  onDetailsChange = (e) => {
-    const details = e.target.value;
-    this.setState(() => ({ details }));
-  };
-
-  onStartTimeChange = (e) => {
-    const startTime = e.target.value;
-    this.setState(() => ({ startTime }));
-  };
-
-  onEndTimeChange = (e) => {
-    const endTime = e.target.value;
-    this.setState(() => ({ endTime }));
+      .format('YYYY-MM-DD'),
+    useDates: true,
   };
 
   onUseDatesChange = () => {
@@ -93,23 +62,25 @@ class AddSchedule extends React.Component {
   };
 
   onSave = () => {
-    const { name, details, useDates, startTime, endTime, groupId } = this.state;
-    let startTimeUnix = 0;
-    let endTimeUnix = 2147483647;
+    const { type, name, details, useDates, startTime, endTime, groupId } = this.state;
+    let startTimeUnix = numbers.distantPast;
+    let endTimeUnix = numbers.distantFuture;
     if (useDates) {
       startTimeUnix = moment(startTime).unix();
       endTimeUnix = moment(endTime).unix();
     }
     this.props
-      .createSchedule({ name, details, startTime: startTimeUnix, endTime: endTimeUnix, groupId })
+      .createSchedule({
+        type, name, details, startTime: startTimeUnix, endTime: endTimeUnix, groupId,
+      })
       .then(() => {
         const { history } = this.props;
-        history.push('/dashboard');
+        history.push('/schedules');
       })
       .catch((error) => {
-        this.setState(() => ({ message: error.message, open: true }));
+        this.setState({ message: error.message, open: true });
         setTimeout(() => {
-          this.setState(() => ({ message: '', open: false }));
+          this.setState({ message: '', open: false });
         }, 3000);
       });
   };
@@ -119,8 +90,20 @@ class AddSchedule extends React.Component {
     history.push('/schedules');
   };
 
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  onTagChange = name => (value) => {
+    this.setState({
+      [name]: value,
+    });
+  };
+
   render() {
-    const { classes, loading, orgLoading, orgUser } = this.props;
+    const { classes, loading, orgLoading, user, orgUser } = this.props;
 
     if (loading || orgLoading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -129,6 +112,9 @@ class AddSchedule extends React.Component {
     const capabilities = orgUser.organisation.tags
       .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
       .map(tag => ({ value: tag.id.toString(), label: tag.name }));
+
+    const groups = user.groups
+      .map(group => ({ value: group.id.toString(), label: group.name }));
 
     return (
       <div className={classes.root}>
@@ -141,112 +127,83 @@ class AddSchedule extends React.Component {
         </Paper>
         <Paper className={classes.paperMargin}>
           <FormPanel>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="groupId" required>
-                group
-              </InputLabel>
-              <Select
-                value={this.state.groupId}
-                onChange={this.onGroupChange}
-                inputProps={{
-                  name: 'groupId',
-                  id: 'groupId',
-                }}
-                required
-              >
-                <MenuItem value="" key={0}>
-                  <em>none</em>
-                </MenuItem>
-                {this.props.user.groups.map(group => (
-                  <MenuItem value={group.id} key={group.id}>
-                    {group.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <TextField
-                required
-                id="name"
-                label="title"
-                type="text"
-                margin="normal"
-                value={this.state.name}
-                onChange={this.onNameChange}
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <TextField
-                id="details"
-                label="details"
-                multiline
-                rowsMax="4"
-                value={this.state.details}
-                onChange={this.onDetailsChange}
-                className={classes.textField}
-                margin="normal"
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Tag
-                list={capabilities}
-                placeholder="Select Capability"
-                onChange={this.onCapabilityChange}
-                value={this.state.capability}
-                multi
-              />
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="priority">priority</InputLabel>
-              <Select value={this.state.priority} onChange={this.onPriorityChange}>
-                <MenuItem value="1" key={1}>
-                  High
-                </MenuItem>
-                <MenuItem value="2" key={2}>
-                  Medium
-                </MenuItem>
-                <MenuItem value="3" key={3}>
-                  Low
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <div>
+            <FormGroupPanel label="Type">
+              <FormControl className={classes.formControl}>
+                <ScheduleType onChange={this.onChange} value={this.state.type} />
+              </FormControl>
+            </FormGroupPanel>
+            <FormGroupPanel label="Priority">
+              <FormControl className={classes.formControl}>
+                <SchedulePriority onChange={this.onChange} value={this.state.priority} />
+              </FormControl>
+            </FormGroupPanel>
+            <FormGroupPanel label="Details">
+              <FormControl className={classes.formControl}>
+                <Text
+                  required
+                  label="Title*"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.onChange}
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Text
+                  required
+                  label="Details*"
+                  name="details"
+                  value={this.state.details}
+                  onChange={this.onChange}
+                />
+              </FormControl>
+            </FormGroupPanel>
+            <FormGroupPanel label="Targets">
+              <FormControl className={classes.formControl}>
+                <Tag
+                  list={groups}
+                  placeholder="Select Group*"
+                  onChange={this.onTagChange('groupId')}
+                  value={this.state.groupId}
+                  name="groupId"
+                />
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <Tag
+                  list={capabilities}
+                  placeholder="Select Capability"
+                  onChange={this.onTagChange('capability')}
+                  value={this.state.capability}
+                  multi
+                />
+              </FormControl>
+            </FormGroupPanel>
+            <FormLabel component="legend">Request Date Range
               <FormControlLabel
                 control={<Switch checked={this.state.useDates} onChange={this.onUseDatesChange} />}
                 label="Use Dates?"
-                style={{ width: '100%' }}
+                className={classes.formControl}
               />
               {this.state.useDates && (
                 <div>
                   <FormControl className={classes.formControl}>
-                    <TextField
-                      id="starttime-local"
+                    <DatePicker
                       label="start time"
-                      type="datetime-local"
+                      name="startTime"
                       value={this.state.startTime}
-                      onChange={this.onStartTimeChange}
-                      className={classes.textField}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
+                      onChange={this.onChange}
                     />
                   </FormControl>
                   <FormControl className={classes.formControl}>
-                    <TextField
-                      id="endtime-local"
+                    <DatePicker
                       label="end time"
-                      type="datetime-local"
-                      onChange={this.onEndTimeChange}
+                      name="endTime"
                       value={this.state.endTime}
-                      className={classes.textField}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
+                      onChange={this.onChange}
                     />
                   </FormControl>
                 </div>
               )}
-            </div>
+            </FormLabel>
             <div className={classes.actionContainer}>
               <Button
                 variant="raised"
@@ -264,7 +221,7 @@ class AddSchedule extends React.Component {
           </FormPanel>
         </Paper>
         <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={this.state.open}
           onClose={this.handleClose}
           autoHideDuration={3000}
@@ -299,9 +256,9 @@ AddSchedule.propTypes = {
 
 const createSchedule = graphql(CREATE_SCHEDULE_MUTATION, {
   props: ({ mutate }) => ({
-    createSchedule: ({ name, details, startTime, endTime, groupId }) =>
+    createSchedule: ({ type, name, details, startTime, endTime, groupId }) =>
       mutate({
-        variables: { schedule: { name, details, startTime, endTime, groupId } },
+        variables: { schedule: { type, name, details, startTime, endTime, groupId } },
         refetchQueries: [
           {
             query: CURRENT_USER_QUERY,
@@ -312,12 +269,6 @@ const createSchedule = graphql(CREATE_SCHEDULE_MUTATION, {
 });
 
 const orgQuery = graphql(CURRENT_ORG_QUERY, {
-  options: () => ({
-    variables: {
-      nameFilter: '',
-      typeFilter: '',
-    },
-  }),
   props: ({ data: { loading, networkStatus, refetch, orgUser } }) => ({
     orgLoading: loading,
     networkStatus,

@@ -62,10 +62,10 @@ SelectWrapped.propTypes = {
 const Tag = ({ classes, label, list, placeholder, multi, onChange, value }) => (
   <TextField
     fullWidth
+    name="react-select-chip-label"
     value={value}
     onChange={onChange}
     placeholder={placeholder}
-    name="react-select-chip-label"
     label={label}
     InputLabelProps={{
       shrink: true,
