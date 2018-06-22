@@ -195,6 +195,9 @@ export const getResolvers = (handlers) => {
       setEventResponse(_, args, ctx) {
         return eventHandler.setResponse(args, ctx);
       },
+      setEventResponseLocation(_, args, ctx) {
+        return eventHandler.setResponseLocation(args, ctx);
+      },
       createMessage(_, args, ctx) {
         return messageHandler.createMessage(_, args, ctx);
       },

@@ -112,6 +112,10 @@ export const defineModels = (db) => {
   UserModel.belongsToMany(EventModel, { through: 'event_user' });
   EventModel.belongsToMany(UserModel, { through: 'event_user' });
 
+  // users <-> events (many-to-many)
+  UserModel.belongsToMany(EventModel, { as: 'usersWithEventNotificationEnabled', through: 'eventNotification_user' });
+  EventModel.belongsToMany(UserModel, { as: 'usersWithEventNotificationEnabled', through: 'eventNotification_user' });
+
   // users can only belong to one organisation for now
   UserModel.belongsTo(OrganisationModel);
   OrganisationModel.hasMany(UserModel);

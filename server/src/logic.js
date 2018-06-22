@@ -27,6 +27,16 @@ const getAuthenticatedDevice = ctx =>
     return device;
   });
 
+const areEventNotificationsEnableForUser = (event, user) =>
+  event.getUsersWithEventNotificationEnabled(
+    { where: { id: user.id } },
+  ).then((result) => {
+    if (result.length) {
+      return true;
+    }
+    return false;
+  });
+
 export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
   const { Group, User, Organisation, Schedule, Event, TimeSegment, EventLocation, Tag } = models;
 
@@ -334,7 +344,13 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             user: getAuthenticatedUser(ctx),
             event: Event.findById(args.id),
           })
-          .then(({ event }) => event);
+          .then(({ user, event }) => {
+            const intirimEventObject = event;
+            return areEventNotificationsEnableForUser(event, user).then((result) => {
+              intirimEventObject.notificationsEnabled = result;
+              return intirimEventObject;
+            });
+          });
       },
       group(event) {
         return event.getGroup();
@@ -480,7 +496,93 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
           ),
         );
       },
+      setResponseLocation(args, ctx) {
+        const { eventId } = args.location;
+        return eventPerms
+          .userWantsToWrite({
+            user: getAuthenticatedUser(ctx),
+            event: Event.findById(eventId),
+          })
+          .then(({ event, user }) =>
+            event.getEventresponses({ where: { userId: user.id } }).then((result) => {
+              const updateArgs = { ...args.location };
+
+              if (result.length) {
+                updateArgs.eventId = null;
+                // update an existing response
+                return result[0].update(
+                  updateArgs,
+                  { fields: ['locationLatitude', 'locationLongitude', 'locationTime'] },
+                ).then((eventResponse) => {
+                  pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                  event.reload().then((reloadedEvent) => {
+                    const intirimEventObject = reloadedEvent;
+                    areEventNotificationsEnableForUser(event, user).then((subresult) => {
+                      intirimEventObject.notificationsEnabled = subresult;
+                      pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                    });
+                  });
+                });
+              }
+
+              // create a new response with no destination set
+              return Creators.eventResponse({
+                event,
+                user,
+                ...updateArgs,
+              }).then((eventResponse) => {
+                areEventNotificationsEnableForUser(event, user).then((subResult) => {
+                  if (!subResult) {
+                    event.addUsersWithEventNotificationEnabled(user);
+                  }
+                }); pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+                event.reload().then((reloadedEvent) => {
+                  const intirimEventObject = reloadedEvent;
+                  areEventNotificationsEnableForUser(event, user).then((subresult) => {
+                    intirimEventObject.notificationsEnabled = subresult;
+                    pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                  });
+                });
+              });
+            }),
+          );
+      },
       setResponse(args, ctx) {
+        // Make the passed boolean match the db state for user event notifs
+        const syncNotificationStatus = (shouldBeEnabled, event, user) =>
+          areEventNotificationsEnableForUser(event, user).then((subresult) => {
+            if (subresult && !shouldBeEnabled) {
+              event.removeUsersWithEventNotificationEnabled(user).then(() => false);
+            } else if (!subresult && shouldBeEnabled) {
+              event.addUsersWithEventNotificationEnabled(user).then(() => true);
+            }
+          });
+
+        // publish the new event and event response, set notification boolean inflight
+        // reload event if eventNeedsReload
+        const pubSubActions = (
+          eventResponse,
+          event,
+          eventsNeedReload,
+          user,
+          notificationAnswer,
+        ) => {
+          pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
+          if (eventsNeedReload) {
+            event.reload().then((reloadedEvent) => {
+              const intirimEventObject = reloadedEvent;
+              intirimEventObject.notificationsEnabled = notificationAnswer;
+              pubsub.publish(PUBSUBS.EVENT.UPDATED, intirimEventObject);
+            });
+          } else {
+            const intirimEventObject = event;
+            intirimEventObject.notificationsEnabled = notificationAnswer;
+            pubsub.publish(PUBSUBS.EVENT.UPDATED, intirimEventObject);
+          }
+        };
+
+        // Destination will be undefined if user picked unavailable or it doesnt need to change
+        // destination will be null to indicate that destination should be removed
         const { id } = args.response;
         return eventPerms
           .userWantsToWrite({
@@ -506,9 +608,8 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                       delete updateArgs.destination;
                       if (result.length > 0) { // updating an existing response
                         return result[0].update(updateArgs).then((eventResponse) => {
-                          pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                          event.reload().then((reloadedEvent) => {
-                            pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                          syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                            pubSubActions(eventResponse, event, true, user, answer);
                           });
                         });
                       }
@@ -519,55 +620,52 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                         destination: destination[0],
                         ...updateArgs,
                       }).then((eventResponse) => {
-                        pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                        event.reload().then((reloadedEvent) => {
-                          pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                        syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                          pubSubActions(eventResponse, event, false, user, answer);
                         });
                       });
                     });
                 }
                 // destination passed is null (but defined)
-                // (remove the location from an existing response)
                 if (result.length) {
+                  // (remove the location from an existing response)
                   updateArgs.eventlocationId = null;
                   // update an existing response but no destination
                   return result[0].update(updateArgs).then((eventResponse) => {
-                    pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                    event.reload().then((reloadedEvent) => {
-                      pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                    syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                      pubSubActions(eventResponse, event, true, user, answer);
                     });
                   });
                 }
-                // create a new response WITH a destination
+                // create a new response with no destination set
                 return Creators.eventResponse({
                   event,
                   user,
                   ...updateArgs,
                 }).then((eventResponse) => {
-                  pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                  event.reload().then((reloadedEvent) => {
-                    pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                  syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                    pubSubActions(eventResponse, event, false, user, answer);
                   });
                 });
               }
 
-              // create a new response WITHOUT a destination
+              // update a response with undefined destination
               if (result.length) {
                 return result[0].update(updateArgs).then((eventResponse) => {
-                  pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                  event.reload().then((reloadedEvent) => {
-                    pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                  syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                    pubSubActions(eventResponse, event, true, user, answer);
                   });
                 });
               }
+
+              // create a new response with undefined destination
               return Creators.eventResponse({
                 event,
                 user,
                 ...updateArgs,
               }).then((eventResponse) => {
-                pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
-                event.reload().then((reloadedEvent) => {
-                  pubsub.publish(PUBSUBS.EVENT.UPDATED, reloadedEvent);
+                syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
+                  pubSubActions(eventResponse, event, false, user, answer);
                 });
               });
             }),
@@ -744,9 +842,10 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             scheduleId,
             groupId,
             user,
-          })).then((msg) => {
-          pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
-          return msg;
+          })).then((message) => {
+          pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
+          push.pushMessage({ message, eventId, scheduleId, groupId });
+          return message;
         });
       },
       createSystemMessage(_, args, ctx) {
@@ -761,6 +860,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             systemMessage: true,
           })).then((msg) => {
           pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
+          push.pushMessage(msg, eventId, scheduleId, groupId);
           return msg;
         });
       },

@@ -4,6 +4,7 @@ import { sendPush } from './index';
 const getPushEmitters = ({ models }) => {
   const {
     Group,
+    Event,
   } = models;
 
   const emitters = {
@@ -57,6 +58,31 @@ const getPushEmitters = ({ models }) => {
           });
         });
       });
+    },
+    pushMessage({ message, eventId }) {
+      if (eventId) {
+        // // TODO: Single joined query
+        Event.findById(eventId).then((event) => {
+          event.getUsersWithEventNotificationEnabled().then((users) => {
+            const results = [];
+            return Promise.all(
+              users.map(usr =>
+                usr.getDevices().then((dvc) => {
+                // unpack the array into the new array
+                  results.push(...dvc);
+                }),
+              ),
+            ).then(() => {
+              sendPush({
+                devices: results,
+                title: `New Event Message - ${event.name}`,
+                message: `${message.text}`,
+                payload: { type: 'eventMessage', eventId },
+              });
+            });
+          });
+        });
+      }
     },
   };
   return emitters;

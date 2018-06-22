@@ -90,6 +90,9 @@ class PushHandler extends React.Component {
       case 'event':
         this.props.navigation.navigate('EventNewResponse', { eventId: payload.id });
         break;
+      case 'eventMessage':
+        this.props.navigation.navigate('EventNewResponse', { eventId: payload.id });
+        break;
       default:
         break;
     }

@@ -15,7 +15,7 @@ import { wsLink } from '../../app';
 import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
 import EVENT_SUBSCRIPTION from '../../graphql/event.subscription';
-import SET_EVENT_RESPONSE_MUTATION from '../../graphql/set-event-response.mutation';
+import SET_EVENT_RESPONSE_LOCATION_MUTATION from '../../graphql/set-event-response-location.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
 import { Container, Holder, Center } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
@@ -39,6 +39,10 @@ class Detail extends Component {
     title: 'Event Detail',
     headerRight: (
       <View style={{ flexDirection: 'row' }}>
+        <ButtonNavBar
+          onPress={() => Alert.alert('not yet')}
+          icon={navigation.state.params.notificationSub ? 'mi-notifications' : 'mi-notifications-off'}
+        />
         {/* catch weird undefined just after loading race condition */}
         <ButtonNavBar onPress={() => navigation.state.params && navigation.navigate('EventMessages', { eventId: navigation.state.params.eventId })} icon="fa-comments" />
         <ButtonNavBar onPress={() => navigation.state.params.navBarZoomButton()} icon="mi-my-location" />
@@ -66,6 +70,13 @@ class Detail extends Component {
     }
 
     if (!loading && event) {
+      if (newProps.navigation.state.params.notificationSub !== event.notificationsEnabled) {
+        if (event.notificationsEnabled !== null) {
+          newProps.navigation.setParams({
+            notificationSub: event.notificationsEnabled,
+          });
+        }
+      }
       responseMarkers = userResponseMapMarkers(
         auth.id, event.responses,
       );
@@ -127,7 +138,6 @@ class Detail extends Component {
   };
 
   geoWatch = null
-
 
   locationTimeout = () => {
   // if we dont have a location yet, give some feedback to the user
@@ -252,8 +262,8 @@ class Detail extends Component {
   updateLocation = _.throttle((props, position) => {
     const { latitude, longitude } = position.coords;
     props
-      .setEventResponseQuery({
-        id: props.event.id,
+      .setEventResponseLocationQuery({
+        eventId: props.event.id,
         locationLatitude: latitude,
         locationLongitude: longitude,
         locationTime: Math.floor(position.timestamp / 1000), // seconds not milliseconds
@@ -446,6 +456,7 @@ Detail.propTypes = {
     details: PropTypes.string.isRequired,
     sourceIdentifier: PropTypes.string,
     permalink: PropTypes.string,
+    notificationsEnabled: PropTypes.bool,
     eventLocations: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
@@ -481,15 +492,15 @@ const eventQuery = graphql(EVENT_QUERY, {
   }),
 });
 
-const setEventResponse = graphql(SET_EVENT_RESPONSE_MUTATION, {
+const setEventResponseLocation = graphql(SET_EVENT_RESPONSE_LOCATION_MUTATION, {
   props: ({ mutate }) => ({
-    setEventResponseQuery: response =>
+    setEventResponseLocationQuery: location =>
       mutate({
-        variables: { response },
+        variables: { location },
         refetchQueries: [
           {
             query: EVENT_QUERY,
-            variables: { eventId: response.id },
+            variables: { eventId: location.eventId },
           },
         ],
       }),
@@ -500,4 +511,4 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), eventQuery, setEventResponse)(Detail);
+export default compose(connect(mapStateToProps), eventQuery, setEventResponseLocation)(Detail);

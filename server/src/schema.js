@@ -114,6 +114,13 @@ export const Schema = [
     eta: Int
   }
 
+  input SetEventResponseLocationInput {
+    eventId: Int!
+    locationLatitude: Float
+    locationLongitude: Float
+    locationTime: Int
+  }
+
   input CreateMessageInput {
     text: String
     image: String
@@ -236,6 +243,7 @@ export const Schema = [
     permalink: String,
     priority: Int,
     group: Group!
+    notificationsEnabled: Boolean,
     responses: [EventResponse]
     messages: [Message]
     eventLocations: [EventLocation]
@@ -334,6 +342,7 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Device
     setEventResponse(response: SetEventResponseInput!): EventResponse
+    setEventResponseLocation(location:SetEventResponseLocationInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
 
