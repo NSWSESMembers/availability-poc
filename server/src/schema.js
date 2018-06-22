@@ -336,7 +336,6 @@ export const Schema = [
     setEventResponse(response: SetEventResponseInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
   }
-<<<<<<< HEAD
 
   type Subscription {
     message(eventId: Int,groupId: Int): Message
@@ -344,9 +343,6 @@ export const Schema = [
     event(eventId: Int!): Event
   }
 
-=======
-  
->>>>>>> First push with working UI. no GQL
   schema {
     query: Query,
     mutation: Mutation
