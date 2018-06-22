@@ -131,7 +131,7 @@ export const defineModels = (db) => {
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
-  // groups -> tags
+  // schedules -> tags
   ScheduleModel.belongsToMany(TagModel, { through: 'schedule_tag' });
   TagModel.belongsToMany(ScheduleModel, { through: 'schedule_tag' });
 

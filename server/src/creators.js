@@ -32,7 +32,6 @@ export const getCreators = (models) => {
         endTime,
         groupId: group.id,
       }).then(schedule => Promise.all([
-        console.log(tags),
         tags && tags.map(
           t => Tag.findById(t.id).then((foundTag) => {
             foundTag.addSchedule(schedule);
