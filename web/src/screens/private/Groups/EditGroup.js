@@ -6,13 +6,13 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 // material ui
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
-import { FormControl } from 'material-ui/Form';
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 // gql
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';

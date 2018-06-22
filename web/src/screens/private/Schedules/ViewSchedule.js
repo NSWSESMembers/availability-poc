@@ -6,10 +6,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 
 import { STATUS_AVAILABLE } from '../../../config';
 import { DEFAULT_START_TIME, DEFAULT_END_TIME } from '../../../constants';

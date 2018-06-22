@@ -1,12 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import TextField from '@material-ui/core/TextField';
 
 import { statusColor } from '../../selectors/status';
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';

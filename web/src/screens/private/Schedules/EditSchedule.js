@@ -6,15 +6,17 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import Button from 'material-ui/Button';
-import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form';
-import { CircularProgress } from 'material-ui/Progress';
-import Snackbar from 'material-ui/Snackbar';
-import Switch from 'material-ui/Switch';
-import Typography from 'material-ui/Typography';
-import Paper from 'material-ui/Paper';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Paper from '@material-ui/core/Paper';
+import Snackbar from '@material-ui/core/Snackbar';
+import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
 
 import CREATE_SCHEDULE_MUTATION from '../../../graphql/create-schedule.mutation';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';

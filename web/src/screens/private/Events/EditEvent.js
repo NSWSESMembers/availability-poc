@@ -4,17 +4,17 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import Button from 'material-ui/Button';
-import { InputLabel } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
-import { CircularProgress } from 'material-ui/Progress';
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import Paper from 'material-ui/Paper';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import defaultHelos from '../../../fixtures/helos';
 import defaultLhqs from '../../../fixtures/lhqs';

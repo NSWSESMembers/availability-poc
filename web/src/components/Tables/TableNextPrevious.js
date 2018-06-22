@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/AppStyle';
 
 const TableNextPrevious = ({ classes, hasNext, hasPrevious, pressNext, pressPrevious }) => (

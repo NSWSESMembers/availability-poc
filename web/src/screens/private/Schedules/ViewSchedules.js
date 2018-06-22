@@ -5,14 +5,15 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
-import { CircularProgress } from 'material-ui/Progress';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import Input, { InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
-import Search from 'material-ui-icons/Search';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Paper from '@material-ui/core/Paper';
+import Search from '@material-ui/icons/Search';
+import Typography from '@material-ui/core/Typography';
 
 import GroupSelect from '../Groups/components/GroupSelect';
 import Message from '../../../components/Messages/Message';

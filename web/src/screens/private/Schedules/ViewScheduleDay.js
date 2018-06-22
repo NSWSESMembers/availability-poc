@@ -5,9 +5,9 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import Paper from 'material-ui/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 
 import styles from '../../../styles/AppStyle';
 

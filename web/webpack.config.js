@@ -22,6 +22,8 @@ module.exports = (env) => {
     entry: {
       main: ['babel-polyfill', './src/app.js'],
       vendor: [
+        '@material-ui/core',
+        '@material-ui/icons',
         'babel-polyfill',
         'apollo-cache-inmemory',
         'apollo-client',
@@ -30,8 +32,6 @@ module.exports = (env) => {
         'apollo-link-http',
         'graphql',
         'graphql-tag',
-        'material-ui',
-        'material-ui-icons',
         'moment',
         'numeral',
         'prop-types',

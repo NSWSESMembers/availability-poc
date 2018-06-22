@@ -4,11 +4,12 @@ import { NavLink, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 
-import { withStyles } from 'material-ui/styles';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
 
 import { logout } from '../../actions/auth';
 

@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
-import ArrowDropDownIcon from 'material-ui-icons/ArrowDropDown';
-import CancelIcon from 'material-ui-icons/Cancel';
-import ArrowDropUpIcon from 'material-ui-icons/ArrowDropUp';
-import ClearIcon from 'material-ui-icons/Clear';
-import Chip from 'material-ui/Chip';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import CancelIcon from '@material-ui/icons/Cancel';
+import ClearIcon from '@material-ui/icons/Clear';
+import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import styles from './Tag.styles';
 
 import SelectOption from './SelectOption';

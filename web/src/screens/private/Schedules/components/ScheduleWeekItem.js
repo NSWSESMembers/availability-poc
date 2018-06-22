@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { TableCell } from 'material-ui/Table';
+
+import { withStyles } from '@material-ui/core/styles';
+import TableCell from '@material-ui/core/TableCell';
 
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../../config';
 import styles from './ScheduleWeekItem.styles';
@@ -66,8 +67,6 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
     </TableCell>
   );
 };
-
-// <TimeLabel user={user} timeSegment={segment} amount={colSpan} onOpenModal={onEdit} />
 
 ViewScheduleItem.propTypes = {
   classes: PropTypes.shape({}).isRequired,

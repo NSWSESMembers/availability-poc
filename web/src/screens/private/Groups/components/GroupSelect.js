@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { graphql } from 'react-apollo';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import styles from '../../../../styles/AppStyle';
 

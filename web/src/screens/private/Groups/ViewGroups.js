@@ -5,15 +5,15 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
-import Paper from 'material-ui/Paper';
-import Button from 'material-ui/Button';
-import Input from 'material-ui/Input';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
-import Typography from 'material-ui/Typography';
-
-import Switch from 'material-ui/Switch';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Input from '@material-ui/core/Input';
+import Paper from '@material-ui/core/Paper';
+import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
 
 import CURRENT_ORG_QUERY from '../../../graphql/current-org.query';
 import CURRENT_USER_QUERY from '../../../graphql/current-user.query';
