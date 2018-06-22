@@ -105,6 +105,18 @@ const createEventResponse = (Creators, event, response, markers, users) => {
   });
 };
 
+const createEventSystemMessage = (Creators, event, message) => {
+  const {
+    text,
+  } = message;
+  // lets assume LHQ is the default for now
+  return Creators.message({
+    text,
+    eventId: event.id,
+    systemMessage: true,
+  });
+};
+
 const createEventLocation = (Creators, event, location) => {
   const {
     name,
@@ -139,11 +151,23 @@ const createEventLocations = (Creators, event, locations) => {
 const createEvent = (Creators, event, groups, users) => {
   // create an event from EVENTS. Add each event response as well.
   const group = groups[event.group];
-  const { name, details, sourceIdentifier, permalink, priority, responses, eventLocations } = event;
+  const {
+    name,
+    details,
+    sourceIdentifier,
+    permalink,
+    priority,
+    responses,
+    eventLocations,
+    messages,
+  } = event;
   return Creators.event({ name, details, sourceIdentifier, permalink, priority, group })
-    .then(e => createEventLocations(Creators, e, eventLocations).then(em => Promise.all(
-      responses.map(r => createEventResponse(Creators, e, r, em, users)),
-    )));
+    .then(e => Promise.all([
+      createEventLocations(Creators, e, eventLocations).then(em => Promise.all(
+        responses.map(r => createEventResponse(Creators, e, r, em, users)),
+      )),
+      messages.map(m => createEventSystemMessage(Creators, e, m)),
+    ]));
 };
 
 const createEvents = (Creators, groups, users) =>
