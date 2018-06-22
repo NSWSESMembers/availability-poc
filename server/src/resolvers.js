@@ -79,6 +79,9 @@ export const getResolvers = (handlers) => {
       group(schedule, args, ctx) {
         return scheduleHandler.group(schedule, args, ctx);
       },
+      tags(user, args, ctx) {
+        return scheduleHandler.tags(user, args, ctx);
+      },
     },
     TimeSegment: {
       user(timesegment, args, ctx) {

@@ -56,6 +56,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     groupId: Int!
+    tags: [TagInput]
   }
 
   input createTimeSegmentInput {
@@ -276,6 +277,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     timeSegments(userIdFilter: Int): [TimeSegment]!
+    tags: [Tag]! # tags associdated with this group
   }
 
   type TimeSegment {

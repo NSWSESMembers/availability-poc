@@ -13,7 +13,7 @@ export const getCreators = (models) => {
     organisation: ({ name }) =>
       Organisation.create({ name }),
 
-    schedule: ({ name, details, type, priority, startTime, endTime, group }) => {
+    schedule: ({ name, details, type, priority, startTime, endTime, group, tags }) => {
       if (!group || !group.id) {
         return Promise.reject(Error('Must pass group'));
       }
@@ -31,7 +31,14 @@ export const getCreators = (models) => {
         startTime,
         endTime,
         groupId: group.id,
-      });
+      }).then(schedule => Promise.all([
+        console.log(tags),
+        tags && tags.map(
+          t => Tag.findById(t.id).then((foundTag) => {
+            foundTag.addSchedule(schedule);
+          }),
+        ),
+      ]).then(() => schedule.reload()));
     },
 
     event: ({ name, details, sourceIdentifier, permalink, priority, group }) => {

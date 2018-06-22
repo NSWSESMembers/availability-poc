@@ -64,16 +64,26 @@ const createTags = (Creators, organisation) => {
   ).then(() => results);
 };
 
-const createSchedule = (Creators, schedule, groups) => {
+const createSchedule = (Creators, schedule, groups, allTags) => {
   const group = groups[schedule.group];
-  const { name, details, type, priority, startTime, endTime } = schedule;
-  return Creators.schedule({ name, details, type, priority, startTime, endTime, group });
+  const { name, details, type, priority, startTime, endTime, tags } = schedule;
+  const neededTags = tags.map(t => allTags[t] && { id: allTags[t].id });
+  return Creators.schedule({ 
+    name,
+    details,
+    type,
+    priority,
+    startTime,
+    endTime,
+    group,
+    tags: neededTags,
+  });
 };
 
-const createSchedules = (Creators, groups) => {
+const createSchedules = (Creators, groups, tags) => {
   const results = {};
   return Promise.all(
-    SCHEDULES.map(schedule => createSchedule(Creators, schedule, groups)
+    SCHEDULES.map(schedule => createSchedule(Creators, schedule, groups, tags)
       .then((s) => {
         results[s.name] = s;
       })),
@@ -159,7 +169,7 @@ export const loadTestData = Creators =>
     const tags = await createTags(Creators, org);
     const users = await createUsers(Creators, org, tags);
     const groups = await createGroups(Creators, org, users, tags);
-    await createSchedules(Creators, groups, users);
+    await createSchedules(Creators, groups, tags);
     await createEvents(Creators, groups, users);
   });
 

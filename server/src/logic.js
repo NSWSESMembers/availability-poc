@@ -238,7 +238,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         return schedule.getGroup();
       },
       createSchedule(_, args) {
-        const { name, details, type, priority, startTime, endTime, groupId } = args.schedule;
+        const { name, details, type, priority, startTime, endTime, groupId, tags } = args.schedule;
 
         return Group.findById(groupId)
           .then((group) => {
@@ -254,6 +254,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               startTime,
               endTime,
               group,
+              tags,
             }).then((schedule) => {
               push.pushScheduleToGroup(schedule);
               return schedule;
@@ -264,6 +265,9 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         return schedule.getMessages({
           order: [['createdAt', 'DESC']],
         });
+      },
+      tags(schedule) {
+        return schedule.getTags();
       },
     },
 
