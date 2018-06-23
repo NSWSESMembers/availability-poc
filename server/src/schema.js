@@ -177,6 +177,11 @@ export const Schema = [
     delay: Boolean
   }
 
+  input SetEventNotificationsInput {
+    enabled: Boolean!
+    eventId: Int!
+  }
+
   type Organisation {
     id: Int! # unique id for the organisation
     name: String!
@@ -344,6 +349,7 @@ export const Schema = [
     setEventResponse(response: SetEventResponseInput!): EventResponse
     setEventResponseLocation(location:SetEventResponseLocationInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
+    setEventNotifications(notifications: SetEventNotificationsInput): Boolean
   }
 
   type Subscription {

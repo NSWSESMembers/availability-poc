@@ -205,7 +205,10 @@ export const getResolvers = (handlers) => {
         return messageHandler.createSystemMessage(_, args, ctx);
       },
       sendTestPush(_, args, ctx) {
-        return pushHandler.sendTestPush(ctx, args);
+        return pushHandler.sendTestPush(args, ctx);
+      },
+      setEventNotifications(_, args, ctx) {
+        return eventHandler.setEventNotifications(args, ctx);
       },
     },
     Subscription: {

@@ -16,6 +16,7 @@ import styles from './styles';
 import EVENT_QUERY from '../../graphql/event.query';
 import EVENT_SUBSCRIPTION from '../../graphql/event.subscription';
 import SET_EVENT_RESPONSE_LOCATION_MUTATION from '../../graphql/set-event-response-location.mutation';
+import SET_EVENT_NOTIFICATIONS_MUTATION from '../../graphql/set-event-notifications.mutation';
 import { UserMarker, IconMarker, MyLocationMarker, AccuracyHalo } from '../../components/MapMarker/';
 import { Container, Holder, Center } from '../../components/Container';
 import { ListItemHighlight } from '../../components/List';
@@ -40,7 +41,7 @@ class Detail extends Component {
     headerRight: (
       <View style={{ flexDirection: 'row' }}>
         <ButtonNavBar
-          onPress={() => Alert.alert('not yet')}
+          onPress={() => navigation.state.params.toggleNotifications()}
           icon={navigation.state.params.notificationSub ? 'mi-notifications' : 'mi-notifications-off'}
         />
         {/* catch weird undefined just after loading race condition */}
@@ -99,6 +100,7 @@ class Detail extends Component {
   componentDidMount() {
     this.props.navigation.setParams({
       navBarZoomButton: this.mapZoomMe,
+      toggleNotifications: this.toggleNotifications,
     });
     this.locationTimeoutTimer = setTimeout(this.locationTimeout, 10000); // 10s
     if (Platform.OS === 'android') {
@@ -157,6 +159,39 @@ class Detail extends Component {
     );
     console.log('permissions:', granted);
     return granted === PermissionsAndroid.RESULTS.GRANTED;
+  }
+
+
+  toggleNotifications = () => {
+    const toggle = (areEnabled) => {
+      this.props
+        .setEventNotificationsQuery({
+          eventId: this.props.event.id,
+          enabled: areEnabled,
+        });
+    };
+
+    if (this.props.event.notificationsEnabled) {
+      Alert.alert(
+        'Disable Notifications',
+        'Are you sure?',
+        [
+          { text: 'No' },
+          { text: 'Yes', onPress: () => toggle(false) },
+        ],
+        { cancelable: false },
+      );
+    } else {
+      Alert.alert(
+        'Enable Notifications',
+        'Are you sure?',
+        [
+          { text: 'No' },
+          { text: 'Yes', onPress: () => toggle(true) },
+        ],
+        { cancelable: false },
+      );
+    }
   }
 
   mapZoomMe = () => {
@@ -438,6 +473,7 @@ class Detail extends Component {
   }
 }
 Detail.propTypes = {
+  setEventNotificationsQuery: PropTypes.func,
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
     setParams: PropTypes.func,
@@ -507,8 +543,22 @@ const setEventResponseLocation = graphql(SET_EVENT_RESPONSE_LOCATION_MUTATION, {
   }),
 });
 
+const setEventNotifications = graphql(SET_EVENT_NOTIFICATIONS_MUTATION, {
+  props: ({ mutate }) => ({
+    setEventNotificationsQuery: notifications =>
+      mutate({
+        variables: { notifications },
+      }),
+  }),
+});
+
 const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-export default compose(connect(mapStateToProps), eventQuery, setEventResponseLocation)(Detail);
+export default compose(
+  connect(mapStateToProps),
+  eventQuery,
+  setEventResponseLocation,
+  setEventNotifications,
+)(Detail);

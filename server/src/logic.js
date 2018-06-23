@@ -676,6 +676,31 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
           order: [['createdAt', 'DESC']],
         });
       },
+      setEventNotifications(args, ctx) {
+        console.log(args);
+        const { eventId, enabled } = args.notifications;
+        getAuthenticatedUser(ctx).then(user =>
+          Event.findById(eventId).then((event) => {
+            if (!event) {
+              return Promise.reject(Error('Unknown event passed'));
+            }
+            if (!enabled) {
+              event.reload().then((reloadedEvent) => {
+                const intirimEventObject = reloadedEvent;
+                intirimEventObject.notificationsEnabled = enabled;
+                pubsub.publish(PUBSUBS.EVENT.UPDATED, intirimEventObject);
+              });
+              return event.removeUsersWithEventNotificationEnabled(user).then(() => false);
+            }
+            event.reload().then((reloadedEvent) => {
+              const intirimEventObject = reloadedEvent;
+              intirimEventObject.notificationsEnabled = enabled;
+              pubsub.publish(PUBSUBS.EVENT.UPDATED, intirimEventObject);
+            });
+            return event.addUsersWithEventNotificationEnabled(user).then(() => true);
+          }),
+        );
+      },
     },
 
     eventResponse: {
@@ -877,7 +902,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       },
     },
     push: {
-      async sendTestPush(ctx, args) {
+      async sendTestPush(args, ctx) {
         const device = await getAuthenticatedDevice(ctx);
         const result = await push.sendTestPush({
           devices: [device],
