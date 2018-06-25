@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import moment from 'moment/moment';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import IconButton from 'material-ui/IconButton';
-import Chip from 'material-ui/Chip';
-import AddCircle from 'material-ui-icons/AddCircle';
-import RemoveCircle from 'material-ui-icons/RemoveCircle';
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
+import { withStyles } from '@material-ui/core/styles';
+import AddCircle from '@material-ui/icons/AddCircle';
+import Chip from '@material-ui/core/Chip';
+import IconButton from '@material-ui/core/IconButton';
+import RemoveCircle from '@material-ui/icons/RemoveCircle';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 
 import EnhancedTableHead from '../../../../components/Tables/EnhancedTableHead';
 

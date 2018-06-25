@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Avatar from 'material-ui/Avatar';
-import Badge from 'material-ui/Badge';
-import PersonIcon from 'material-ui-icons/Person';
+import { withStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
+import PersonIcon from '@material-ui/icons/Person';
 
 import { convertStatus } from '../../../../selectors/status';
 

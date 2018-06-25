@@ -6,12 +6,12 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
-import Snackbar from 'material-ui/Snackbar';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Snackbar from '@material-ui/core/Snackbar';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import { setCurrentUser } from '../../actions/auth';
 import { uuidv4 } from '../../utils';
@@ -41,17 +41,17 @@ class SignupPage extends React.Component {
 
   onUsernameChange = (e) => {
     const username = e.target.value;
-    this.setState(() => ({ username }));
+    this.setState({ username });
   };
 
   onEmailChange = (e) => {
     const email = e.target.value;
-    this.setState(() => ({ email }));
+    this.setState({ email });
   };
 
   onPasswordChange = (e) => {
     const password = e.target.value;
-    this.setState(() => ({ password }));
+    this.setState({ password });
   };
 
   onSubmit = (e) => {

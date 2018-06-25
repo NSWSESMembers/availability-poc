@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import styles from '../../../../styles/AppStyle';
 
@@ -21,12 +25,38 @@ const columnData = [
 
 const ScheduleTable = ({ onSort, order, orderBy, schedules }) => (
   <Table>
-    <EnhancedTableHead
-      order={order}
-      orderBy={orderBy}
-      onRequestSort={onSort}
-      columnData={columnData}
-    />
+    {
+      onSort !== undefined && order !== undefined && orderBy !== undefined ?
+        (
+          <EnhancedTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={onSort}
+            columnData={columnData}
+          />
+        )
+        :
+        (
+          <TableHead>
+            <TableRow>
+              {
+            columnData.map(
+              column => (
+                <TableCell
+                  key={column.id}
+                  numeric={column.numeric}
+                  padding={column.disablePadding ? 'none' : 'default'}
+                >
+                  {column.label}
+                </TableCell>
+              ),
+              this,
+            )
+          }
+            </TableRow>
+          </TableHead>
+        )
+    }
     <TableBody>
       {schedules.map(schedule => (
         <TableRow key={schedule.id}>
@@ -59,9 +89,9 @@ ScheduleTable.propTypes = {
       endTime: PropTypes.number.isRequired,
     }),
   ),
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  onSort: PropTypes.func.isRequired,
+  order: PropTypes.string,
+  orderBy: PropTypes.string,
+  onSort: PropTypes.func,
 };
 
 export default withStyles(styles)(ScheduleTable);

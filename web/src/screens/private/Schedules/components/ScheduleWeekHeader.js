@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-import { withStyles } from 'material-ui/styles';
-import { TableHead, TableCell, TableRow } from 'material-ui/Table';
+import { withStyles } from '@material-ui/core/styles';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import styles from '../../../../styles/AppStyle';
 

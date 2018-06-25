@@ -9,7 +9,7 @@ import { ApolloLink, concat } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { GRAPHQL_ENDPOINT } from './config';
 

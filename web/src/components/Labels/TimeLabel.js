@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import numeral from 'numeral';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 import { STATUS_AVAILABILITY, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';
 import styles from './TimeLabel.styles';
