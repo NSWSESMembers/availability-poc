@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 
 import styles from '../../../../styles/AppStyle';
 
@@ -19,13 +19,14 @@ class ScheduleHeader extends React.Component {
     isOpen: false,
   };
 
-  changeState = () => {
+  onEdit = () => {
+    const { history, schedule } = this.props;
+    history.push(`/schedules/edit/${schedule.id}`);
+  }
+
+  onShowDetail = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
-
-  onEdit = () => {
-    const { schedule } = this.props;
-  }
 
   render() {
     const { classes, schedule } = this.props;
@@ -36,10 +37,12 @@ class ScheduleHeader extends React.Component {
             {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
           </Typography>
           <div>
-            <Button variant="raised" size="small" onClick={this.changeState}>
-              {this.state.isOpen ? '- detail' : '+ detail'}
-            </Button>
-            <IconButton label="Edit" icon="edit" onClick={this.onEdit} />
+            <IconButton
+              label="Detail"
+              icon={this.state.isOpen ? 'remove' : 'add'}
+              onClick={this.onShowDetail}
+            />
+            <IconButton color="primary" label="Edit" icon="edit" onClick={this.onEdit} />
           </div>
         </SpreadPanel>
         {this.state.isOpen && (
@@ -53,6 +56,8 @@ class ScheduleHeader extends React.Component {
 }
 
 ScheduleHeader.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({}).isRequired,
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -60,7 +65,6 @@ ScheduleHeader.propTypes = {
     startTime: PropTypes.number.isRequired,
     endTime: PropTypes.number.isRequired,
   }),
-  classes: PropTypes.shape({}).isRequired,
 };
 
-export default withStyles(styles)(ScheduleHeader);
+export default withStyles(styles)(withRouter(ScheduleHeader));

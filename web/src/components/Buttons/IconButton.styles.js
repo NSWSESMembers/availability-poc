@@ -3,12 +3,12 @@ export default theme => ({
     margin: theme.spacing.unit,
   },
   leftIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit / 2,
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing.unit / 2,
   },
   iconSmall: {
-    fontSize: 10,
+    fontSize: 12,
   },
 });

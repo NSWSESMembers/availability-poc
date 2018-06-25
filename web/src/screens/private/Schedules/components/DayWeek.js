@@ -2,32 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 
 import styles from '../../../../styles/AppStyle';
 
-const DayWeek = ({ classes, dayDisabled, weekDisabled, onDay, onWeek }) => (
+import IconButton from '../../../../components/Buttons/IconButton';
+
+const DayWeek = ({ dayDisabled, weekDisabled, onDay, onWeek }) => (
   <div>
-    <Button
-      size="small"
-      variant="raised"
-      color="primary"
+    <IconButton
       disabled={dayDisabled}
-      className={classes.button}
-      onClick={onDay !== undefined ? onDay : () => {}}
-    >
-      Day
-    </Button>
-    <Button
-      size="small"
-      variant="raised"
-      color="primary"
+      label="Day"
+      icon="calendar_today"
+      onClick={onDay !== undefined ? onDay : (() => {})}
+    />
+    <IconButton
       disabled={weekDisabled}
-      className={classes.button}
-      onClick={onWeek !== undefined ? onWeek : () => {}}
-    >
-      Week
-    </Button>
+      label="Week"
+      icon="date_range"
+      onClick={onWeek !== undefined ? onWeek : (() => {})}
+    />
   </div>
 );
 
@@ -36,7 +29,6 @@ DayWeek.propTypes = {
   onWeek: PropTypes.func,
   dayDisabled: PropTypes.bool.isRequired,
   weekDisabled: PropTypes.bool.isRequired,
-  classes: PropTypes.shape({}).isRequired,
 };
 
 export default withStyles(styles)(DayWeek);

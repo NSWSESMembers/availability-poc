@@ -58,6 +58,22 @@ class AddSchedule extends React.Component {
     useDates: true,
   };
 
+  componentDidMount() {
+    if (this.props.loading === false && this.props.match.params.id !== undefined) {
+      this.setInitialState(this.props);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.loading === false &&
+      this.props.match.params.id !== undefined &&
+      this.state.id === 0
+    ) {
+      this.setInitialState(nextProps);
+    }
+  }
+
   onUseDatesChange = () => {
     const useDates = !this.state.useDates;
     this.setState(() => ({ useDates }));
@@ -103,6 +119,30 @@ class AddSchedule extends React.Component {
       [name]: value,
     });
   };
+
+  setInitialState(props) {
+    const schedule = props.user.schedules.find(
+      s => s.id === parseInt(props.match.params.id, 10),
+    );
+    if (schedule !== undefined) {
+      let capabilities = '';
+      if (schedule.tags !== undefined) {
+        capabilities = schedule.tags
+          .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+          .map(tag => tag.id.toString())
+          .join(',');
+      }
+
+      this.setState({
+        id: schedule.id,
+        name: schedule.name,
+        groupId: schedule.group.id.toString(),
+        details: schedule.details,
+        priority: schedule.priority.toString(),
+        capability: capabilities,
+      });
+    }
+  }
 
   render() {
     const { classes, loading, orgLoading, user, orgUser } = this.props;
