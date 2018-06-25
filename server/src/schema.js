@@ -277,7 +277,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     timeSegments(userIdFilter: Int): [TimeSegment]!
-    tags: [Tag]! # tags associdated with this schedule
+    tags: [Tag] # tags associated with this schedule
   }
 
   type TimeSegment {

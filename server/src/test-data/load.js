@@ -68,7 +68,7 @@ const createSchedule = (Creators, schedule, groups, allTags) => {
   const group = groups[schedule.group];
   const { name, details, type, priority, startTime, endTime, tags } = schedule;
   const neededTags = tags.map(t => allTags[t] && { id: allTags[t].id });
-  return Creators.schedule({ 
+  return Creators.schedule({
     name,
     details,
     type,
