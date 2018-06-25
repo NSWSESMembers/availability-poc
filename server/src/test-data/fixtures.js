@@ -287,6 +287,7 @@ export const SCHEDULES = [
       'parramatta1',
       'parramatta2',
     ],
+    tags: [],
   },
   {
     name: 'Kiama rescue availability',
@@ -300,6 +301,9 @@ export const SCHEDULES = [
       'kiama1',
       'kiama2',
       'kiama3',
+    ],
+    tags: [
+      'KMA',
     ],
   },
   {
@@ -315,6 +319,9 @@ export const SCHEDULES = [
       'kiama4',
       'kiama5',
       'kiama8',
+    ],
+    tags: [
+      'KMA',
     ],
   },
   {
@@ -332,6 +339,9 @@ export const SCHEDULES = [
       'parramatta4',
       'parramatta5',
     ],
+    tags: [
+      'PAR',
+    ],
   },
   {
     name: 'Metro L3',
@@ -341,6 +351,7 @@ export const SCHEDULES = [
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
+    tags: [],
   },
   {
     name: 'Metro IMT',
@@ -350,6 +361,7 @@ export const SCHEDULES = [
     startTime: MONDAY + (60 * 60 * 24 * 3),
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
+    tags: [],
   },
   {
     name: 'OCES - Weekly Meeting',
@@ -359,6 +371,7 @@ export const SCHEDULES = [
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 1),
     group: 'NSW SES',
+    tags: [],
   },
 ];
 
