@@ -27,12 +27,12 @@ import {
 } from '../../../graphql/time-segment.mutation';
 
 import DayWeek from './components/DayWeek';
-import ScheduleWeekItem from './components/ScheduleWeekItem';
-import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 import ScheduleHeader from './components/ScheduleHeader';
-import SpreadPanel from '../../../components/Panels/SpreadPanel';
-import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
 import ScheduleWeekHeader from './components/ScheduleWeekHeader';
+import ScheduleWeekItem from './components/ScheduleWeekItem';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
+import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
+import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
 
 import styles from '../../../styles/AppStyle';
 

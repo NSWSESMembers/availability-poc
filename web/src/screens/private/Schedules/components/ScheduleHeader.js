@@ -11,6 +11,7 @@ import styles from '../../../../styles/AppStyle';
 
 import { dateScheduleLabel } from '../../../../selectors/dates';
 
+import IconButton from '../../../../components/Buttons/IconButton';
 import SpreadPanel from '../../../../components/Panels/SpreadPanel';
 
 class ScheduleHeader extends React.Component {
@@ -22,6 +23,10 @@ class ScheduleHeader extends React.Component {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
+  onEdit = () => {
+    const { schedule } = this.props;
+  }
+
   render() {
     const { classes, schedule } = this.props;
     return (
@@ -30,9 +35,12 @@ class ScheduleHeader extends React.Component {
           <Typography variant="title" className={classes.paperTitle} gutterBottom>
             {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
           </Typography>
-          <Button variant="raised" size="small" onClick={this.changeState}>
-            {this.state.isOpen ? '- detail' : '+ detail'}
-          </Button>
+          <div>
+            <Button variant="raised" size="small" onClick={this.changeState}>
+              {this.state.isOpen ? '- detail' : '+ detail'}
+            </Button>
+            <IconButton label="Edit" icon="edit" onClick={this.onEdit} />
+          </div>
         </SpreadPanel>
         {this.state.isOpen && (
           <Typography variant="caption" gutterBottom align="center">
