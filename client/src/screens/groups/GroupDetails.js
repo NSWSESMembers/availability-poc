@@ -198,8 +198,9 @@ const joinGroupMutation = graphql(JOIN_GROUP_MUTATION, {
           });
           // add new data to the cache
           data.user.groups.push(addUserToGroup);
-          data.user.schedules = _.merge(data.user.schedules, addUserToGroup.schedules);
-          data.user.events = _.merge(data.user.events, addUserToGroup.events);
+          data.user.schedules = _.concat(data.user.schedules, addUserToGroup.schedules);
+          data.user.events = _.concat(data.user.events, addUserToGroup.events);
+
           // write out cache
           store.writeQuery({
             query: CURRENT_USER_QUERY,
