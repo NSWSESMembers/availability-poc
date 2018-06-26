@@ -201,10 +201,10 @@ export const getCreators = (models) => {
         return location;
       });
     },
-    message: ({ text, user, groupId, eventId, scheduleId }) => {
+    message: ({ text, image, user, groupId, eventId, scheduleId, systemMessage }) => {
       const futs = [];
 
-      if (!user || !user.id) {
+      if (!systemMessage && (!user || !user.id)) {
         return Promise.reject(Error('Must pass user'));
       }
 
@@ -232,17 +232,17 @@ export const getCreators = (models) => {
           return schedule;
         }));
       }
-
       if (futs.length !== 1) {
         return Promise.reject(Error('must pass exactly one of groupId, eventId, scheduleId'));
       }
 
       return Promise.all(futs).then(() => Message.create({
         text,
+        image,
         groupId,
         eventId,
         scheduleId,
-        userId: user.id,
+        userId: user && user.id,
         edited: false,
       }));
     },

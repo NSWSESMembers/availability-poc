@@ -383,6 +383,11 @@ export const EVENTS = [
     permalink: 'https://jobssytem.com/jobs/c33367701511b4f6020ec61ded352059',
     priority: 3,
     group: 'Kiama',
+    messages: [
+      {
+        text: 'Details : Inft is currently stuck half way up a cliff face. Inft was cut off by a rising tide and climbed the cliff however is unable to climb back down',
+      },
+    ],
     eventLocations: [
       {
         name: 'lhq',
@@ -447,6 +452,11 @@ export const EVENTS = [
     permalink: 'https://jobssytem.com/jobs/123456',
     priority: 1,
     group: 'Kiama',
+    messages: [
+      {
+        text: 'A CAR IS SIDEWAYS IN A DITCH AA FM IS INSIDE VEH AND HAS TOLD IFT SHE IS NOT HURT FM IS HYSTERICAL',
+      },
+    ],
     eventLocations: [
       {
         name: 'lhq',
@@ -518,6 +528,11 @@ export const EVENTS = [
     permalink: 'https://jobssytem.com/jobs/111-222',
     priority: 2,
     group: 'Parramatta',
+    messages: [
+      {
+        text: 'Detail: WHITE BMW AND WHITE LEXUS. 5 POB',
+      },
+    ],
     eventLocations: [
       {
         name: 'lhq',

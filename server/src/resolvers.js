@@ -198,11 +198,20 @@ export const getResolvers = (handlers) => {
       setEventResponse(_, args, ctx) {
         return eventHandler.setResponse(args, ctx);
       },
+      setEventResponseLocation(_, args, ctx) {
+        return eventHandler.setResponseLocation(args, ctx);
+      },
       createMessage(_, args, ctx) {
         return messageHandler.createMessage(_, args, ctx);
       },
+      createSystemMessage(_, args, ctx) {
+        return messageHandler.createSystemMessage(_, args, ctx);
+      },
       sendTestPush(_, args, ctx) {
-        return pushHandler.sendTestPush(ctx, args);
+        return pushHandler.sendTestPush(args, ctx);
+      },
+      setEventNotifications(_, args, ctx) {
+        return eventHandler.setEventNotifications(args, ctx);
       },
     },
     Subscription: {
