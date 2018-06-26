@@ -65,6 +65,12 @@ const theme = createMuiTheme({
         // Name of the rule
         padding: 10,
       },
+      body: {
+        fontSize: '0.95rem',
+      },
+      head: {
+        fontSize: '0.95rem',
+      },
     },
     MuiIconButton: {
       root: {

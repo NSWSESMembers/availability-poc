@@ -15,21 +15,9 @@ const SchedulePriority = ({ classes, value, onChange }) => (
     onChange={onChange}
     className={classes.radioButtonGroup}
   >
-    <FormControlLabel
-      value="1"
-      control={<Radio />}
-      label="High"
-    />
-    <FormControlLabel
-      value="2"
-      control={<Radio />}
-      label="Medium"
-    />
-    <FormControlLabel
-      value="3"
-      control={<Radio />}
-      label="Low"
-    />
+    <FormControlLabel value="1" control={<Radio />} label="Low" />
+    <FormControlLabel value="5" control={<Radio />} label="Medium" />
+    <FormControlLabel value="10" control={<Radio />} label="High" />
   </RadioGroup>
 );
 
@@ -40,4 +28,3 @@ SchedulePriority.propTypes = {
 };
 
 export default withStyles(styles)(SchedulePriority);
-

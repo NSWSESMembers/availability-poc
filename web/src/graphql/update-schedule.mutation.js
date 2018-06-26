@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation createSchedule($schedule: CreateScheduleInput!) {
-    createSchedule(schedule: $schedule) {
+  mutation updateSchedule($schedule: UpdateScheduleInput!) {
+    updateSchedule(schedule: $schedule) {
       group {
         id
         name

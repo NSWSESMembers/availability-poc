@@ -2,34 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Search from '@material-ui/icons/Search';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import styles from '../../styles/AppStyle';
 
-const Text = ({ classes, label, name, value, required, onChange }) => (
+const TextSearch = ({ classes, name, value, onChange }) => (
   <Input
-    required={required}
     name={name}
-    placeholder={label}
     type="text"
     value={value}
     onChange={onChange}
     className={classes.textField}
+    startAdornment={
+      <InputAdornment position="start">
+        <Search color="disabled" />
+      </InputAdornment>
+    }
   />
 );
 
-Text.propTypes = {
+TextSearch.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  label: PropTypes.string,
   name: PropTypes.string.isRequired,
-  required: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
 
-Text.defaultProps = {
-  required: false,
-};
-
-export default withStyles(styles)(Text);
+export default withStyles(styles)(TextSearch);

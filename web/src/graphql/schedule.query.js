@@ -17,6 +17,11 @@ const SCHEDULE_QUERY = gql`
           displayName
         }
       }
+      tags {
+        id
+        name
+        type
+      }
       timeSegments {
         id
         status

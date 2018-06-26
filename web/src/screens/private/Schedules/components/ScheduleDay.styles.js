@@ -18,7 +18,7 @@ export default () => ({
     paddingRight: 2,
     fontWeight: 500,
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: '0.8rem',
     height: 60,
     minWidth: 40,
   },
@@ -28,7 +28,7 @@ export default () => ({
     borderColor: '#E0E0E0',
     padding: 10,
     fontWeight: 500,
-    fontSize: 12,
+    fontSize: '0.95rem',
     height: 60,
   },
   tableCell: {
@@ -39,7 +39,7 @@ export default () => ({
     paddingLeft: 2,
     paddingBottom: 10,
     paddingRight: 2,
-    fontSize: 13,
+    fontSize: '0.95rem',
     textAlign: 'center',
   },
   tableCellFirst: {
@@ -47,6 +47,6 @@ export default () => ({
     borderStyle: 'solid',
     borderColor: '#E0E0E0',
     padding: 10,
-    fontSize: 13,
+    fontSize: '0.95rem',
   },
 });

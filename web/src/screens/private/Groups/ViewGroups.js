@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
@@ -23,11 +20,13 @@ import LEAVE_GROUP_MUTATION from '../../../graphql/leave-group.mutation';
 import styles from '../../../styles/AppStyle';
 
 // Components
-import Message from '../../../components/Messages/Message';
-import Tag from '../../../components/Selects/Tag';
-import GroupTable from './components/GroupTable';
 import CenterPanel from '../../../components/Panels/CenterPanel';
+import GroupTable from './components/GroupTable';
+import LinkButton from '../../../components/Buttons/LinkButton';
+import Message from '../../../components/Messages/Message';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
+import Tag from '../../../components/Selects/Tag';
+import TextSearch from '../../../components/Forms/TextSearch';
 
 // Selectors
 import filterGroups from '../../../selectors/groups';
@@ -42,6 +41,12 @@ class ViewGroups extends React.Component {
     myGroups: false,
     order: 'asc',
     orderBy: 'name',
+  };
+
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
   };
 
   handleAdd = (id) => {
@@ -127,9 +132,7 @@ class ViewGroups extends React.Component {
         <Paper className={classes.paper}>
           <SpreadPanel>
             <Typography variant="title">Groups</Typography>
-            <Button variant="raised" size="small" color="primary" component={Link} to="/groups/add">
-              Add New Group
-            </Button>
+            <LinkButton label="Add New Group" linkTo="/groups/add" />
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
@@ -164,11 +167,7 @@ class ViewGroups extends React.Component {
               />
             </FormControl>
             <FormControl className={classes.formControlFilter}>
-              <Input
-                id="groupSearch"
-                placeholder="Search Text..."
-                onChange={e => this.handleChange(e, 'searchFilter')}
-              />
+              <TextSearch name="searchFilter" onChange={this.onChange} value={searchFilter} />
             </FormControl>
           </CenterPanel>
         </Paper>
