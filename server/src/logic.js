@@ -340,10 +340,10 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             event: Event.findById(args.id),
           })
           .then(({ user, event }) => {
-            const intirimEventObject = event;
+            const interimEventObject = event;
             return areEventNotificationsEnableForUser(event, user).then((result) => {
-              intirimEventObject.notificationsEnabled = result;
-              return intirimEventObject;
+              interimEventObject.notificationsEnabled = result;
+              return interimEventObject;
             });
           });
       },
@@ -672,9 +672,8 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         });
       },
       setEventNotifications(args, ctx) {
-        console.log(args);
         const { eventId, enabled } = args.notifications;
-        getAuthenticatedUser(ctx).then(user =>
+        return getAuthenticatedUser(ctx).then(user =>
           Event.findById(eventId).then((event) => {
             if (!event) {
               return Promise.reject(Error('Unknown event passed'));
