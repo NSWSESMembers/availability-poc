@@ -19,68 +19,67 @@ class Messages extends Component {
     title: 'Event Messages',
   };
 
-    state = {
-      messages: [],
-    }
+  state = {
+    messages: [],
+  }
 
-
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.event) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.event) {
       // we don't resubscribe on changed props
       // because it never happens in our app
-        if (!this.subscription) {
-          this.subscription = nextProps.subscribeToMore({
-            document: MESSAGE_SUBSCRIPTION,
-            variables: { eventId: [nextProps.navigation.state.params.eventId] },
-            updateQuery: (previousResult, { subscriptionData }) => {
-              const newMessage = subscriptionData.data.message;
-              // if it's our own mutation
-              // we might get the subscription result
-              // after the mutation result.
-              if (this.isDuplicateMessage(
-                newMessage, previousResult.event.messages,
-              )
-              ) {
-                return previousResult;
-              }
-              return update(previousResult, {
-                event: {
-                  messages: {
-                    $unshift: [newMessage],
-                  },
+      if (!this.subscription) {
+        this.subscription = nextProps.subscribeToMore({
+          document: MESSAGE_SUBSCRIPTION,
+          variables: { eventId: [nextProps.navigation.state.params.eventId] },
+          updateQuery: (previousResult, { subscriptionData }) => {
+            const newMessage = subscriptionData.data.message;
+            // if it's our own mutation
+            // we might get the subscription result
+            // after the mutation result.
+            if (this.isDuplicateMessage(
+              newMessage, previousResult.event.messages,
+            )
+            ) {
+              return previousResult;
+            }
+            return update(previousResult, {
+              event: {
+                messages: {
+                  $unshift: [newMessage],
                 },
-              });
-            },
-          });
-        }
-        if (nextProps.event.messages) {
-          this.setState({
-            messages: nextProps.event.messages.map(m => ({
-              _id: m.id,
-              text: m.text,
-              createdAt: new Date(m.createdAt * 1000), // Date(milliseconds)
-              system: !m.user,
-              user: m.user ? {
-                _id: m.user.id,
-                name: m.user.displayName,
-              } : {
-                _id: 0,
               },
-              image: m.image,
-            })),
-          });
-        }
+            });
+          },
+        });
+      }
+      if (nextProps.event.messages) {
+        this.setState({
+          messages: nextProps.event.messages.map(m => ({
+            _id: m.id,
+            text: m.text,
+            createdAt: new Date(m.createdAt * 1000), // Date(milliseconds)
+            system: !m.user,
+            user: m.user ? {
+              _id: m.user.id,
+              name: m.user.displayName,
+            } : {
+              _id: 0,
+            },
+            image: m.image,
+          })),
+        });
       }
     }
+  }
 
-    onSend(messages = []) {
-      this.props.createMessage({
-        eventId: this.props.navigation.state.params.eventId,
-        text: messages[0].text,
-        image: messages[0].image,
-      });
+  onSend(messages = []) {
+    this.props.createMessage({
+      eventId: this.props.navigation.state.params.eventId,
+      text: messages[0].text,
+      image: messages[0].image,
+    });
     // TODO: Opertunistic cache
-    }
+  }
 
 
   isDuplicateMessage = (newMessage, existingMessages) => newMessage.id !== null &&
