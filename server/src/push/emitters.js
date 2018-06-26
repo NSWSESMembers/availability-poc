@@ -16,30 +16,48 @@ const getPushEmitters = ({ models }) => {
     },
 
     pushScheduleToGroup(schedule) {
-      // // TODO: Single joined query
-      Group.findById(schedule.groupId).then((group) => {
-        group.getUsers().then((users) => {
-          const results = [];
-          return Promise.all(
-            users.map(usr =>
-              usr.getDevices().then((dvc) => {
-                // unpack the array into the new array
-                results.push(...dvc);
-              }),
-            ),
-          ).then(() => {
-            sendPush({
-              devices: results,
-              message: `Schedule #${schedule.id} Created\n${schedule.name}`,
-            });
-          });
-        });
-      });
+      // TODO: Single joined query
+      return Group.findById(schedule.groupId).then(group => group.getUsers().then((users) => {
+        const results = [];
+        return Promise.all(
+          users.map(usr =>
+            usr.getDevices().then((dvc) => {
+              // unpack the array into the new array
+              results.push(...dvc);
+            }),
+          ),
+        ).then(() => sendPush({
+          devices: results,
+          message: `Schedule #${schedule.id} Created\n${schedule.name}`,
+        }));
+      }));
     },
     pushEventToGroup(event) {
-      // // TODO: Single joined query
-      Group.findById(event.groupId).then((group) => {
-        group.getUsers().then((users) => {
+      // TODO: Single joined query
+      return Group.findById(event.groupId).then(group => group.getUsers().then((users) => {
+        const results = [];
+        return Promise.all(
+          users.map(usr =>
+            usr.getDevices().then((dvc) => {
+              // unpack the array into the new array
+              results.push(...dvc);
+            }),
+          ),
+        ).then(() => sendPush({
+          devices: results,
+          title: 'New Event',
+          message: `Event #${event.id} Created\n${event.name}`,
+          payload: { type: 'event', id: event.id, name: event.name, detail: event.detail },
+        }));
+      }));
+    },
+    pushMessage({ message, eventId }) {
+      if (!eventId) {
+        return Promise.reject(Error('No eventId passed'));
+      }
+      // TODO: Single joined query
+      return Event.findById(eventId).then(event =>
+        event.getUsersWithEventNotificationEnabled().then((users) => {
           const results = [];
           return Promise.all(
             users.map(usr =>
@@ -48,41 +66,13 @@ const getPushEmitters = ({ models }) => {
                 results.push(...dvc);
               }),
             ),
-          ).then(() => {
-            sendPush({
-              devices: results,
-              title: 'New Event',
-              message: `Event #${event.id} Created\n${event.name}`,
-              payload: { type: 'event', id: event.id, name: event.name, detail: event.detail },
-            });
-          });
-        });
-      });
-    },
-    pushMessage({ message, eventId }) {
-      if (eventId) {
-        // // TODO: Single joined query
-        Event.findById(eventId).then((event) => {
-          event.getUsersWithEventNotificationEnabled().then((users) => {
-            const results = [];
-            return Promise.all(
-              users.map(usr =>
-                usr.getDevices().then((dvc) => {
-                // unpack the array into the new array
-                  results.push(...dvc);
-                }),
-              ),
-            ).then(() => {
-              sendPush({
-                devices: results,
-                title: `New Event Message - ${event.name}`,
-                message: `${message.text}`,
-                payload: { type: 'eventMessage', eventId },
-              });
-            });
-          });
-        });
-      }
+          ).then(() => sendPush({
+            devices: results,
+            title: `New Event Message - ${event.name}`,
+            message: `${message.text}`,
+            payload: { type: 'eventMessage', eventId },
+          }));
+        }));
     },
   };
   return emitters;
