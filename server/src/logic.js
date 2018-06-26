@@ -30,12 +30,7 @@ const getAuthenticatedDevice = ctx =>
 const areEventNotificationsEnableForUser = (event, user) =>
   event.getUsersWithEventNotificationEnabled(
     { where: { id: user.id } },
-  ).then((result) => {
-    if (result.length) {
-      return true;
-    }
-    return false;
-  });
+  ).then(result => !!result.length);
 
 export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
   const { Group, User, Organisation, Schedule, Event, TimeSegment, EventLocation, Tag } = models;
