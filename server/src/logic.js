@@ -261,6 +261,41 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             });
           });
       },
+      updateSchedule(_, args, ctx) {
+        const { id, name, details, type, priority, startTime, endTime, groupId, tags } = args.schedule;
+        return getAuthenticatedUser(ctx).then(() =>
+          Schedule.findById(id).then((schedule) => {
+            if (!schedule) {
+              return Promise.reject(Error('Invalid schedule!'));
+            }
+            return schedule
+              .update({
+                name,
+                details,
+                type,
+                priority,
+                startTime,
+                endTime,
+                groupId,
+              })
+              .then(() =>
+                Promise.all([
+                  tags &&
+                    schedule.getTags().then(ts =>
+                      ts.forEach((t) => {
+                        const tagRemove = tags.find(tag => tag.id === t.id);
+                        if (tagRemove === undefined) {
+                          t.removeSchedule(schedule);
+                        }
+                      }),
+                    ),
+                  tags &&
+                    tags.map(t => Tag.findById(t.id).then(foundTag => foundTag.addSchedule(schedule))),
+                ]).then(() => schedule.reload()),
+              );
+          }),
+        );
+      },
       messages(schedule) {
         return schedule.getMessages({
           order: [['createdAt', 'DESC']],

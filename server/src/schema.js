@@ -50,6 +50,19 @@ export const Schema = [
   }
 
   input CreateScheduleInput {
+    priority: Int
+    name: String!
+    details: String!
+    type: String
+    startTime: Int!
+    endTime: Int!
+    groupId: Int!
+    tags: [TagInput]
+  }
+
+  input UpdateScheduleInput {
+    id: Int!
+    priority: Int
     name: String!
     details: String!
     type: String
@@ -313,6 +326,7 @@ export const Schema = [
     updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
+    updateSchedule(schedule: UpdateScheduleInput!): Schedule
     createMessage(message: CreateMessageInput!): Message
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
     updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment

@@ -186,6 +186,9 @@ export const getResolvers = (handlers) => {
       createSchedule(_, args, ctx) {
         return scheduleHandler.createSchedule(_, args, ctx);
       },
+      updateSchedule(_, args, ctx) {
+        return scheduleHandler.updateSchedule(_, args, ctx);
+      },
       createTimeSegment(_, args, ctx) {
         return timeSegmentHandler.createTimeSegment(_, args, ctx);
       },
