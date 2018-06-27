@@ -881,10 +881,10 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             scheduleId,
             groupId,
             systemMessage: true,
-          })).then((msg) => {
-          pubsub.publish(PUBSUBS.MESSAGE.CREATED, msg);
-          push.pushMessage(msg, eventId, scheduleId, groupId);
-          return msg;
+          })).then((message) => {
+          pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
+          push.pushMessage({ message, eventId, scheduleId, groupId });
+          return message;
         });
       },
       subscribe() {
