@@ -5,10 +5,9 @@ import { View, Text } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
+import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
 
 import { wsLink } from '../../app';
-
-import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
 import { Container } from '../../components/Container';
 import { Progress } from '../../components/Progress';
 import EVENT_MESSAGES_QUERY from '../../graphql/event-messages.query';
