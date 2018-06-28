@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
-import { Alert } from 'react-native';
 
 import { isLoggedIn } from '../../selectors/auth';
 
