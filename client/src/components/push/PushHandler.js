@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
-import { Alert } from 'react-native';
 
 import { isLoggedIn } from '../../selectors/auth';
 
@@ -73,14 +72,6 @@ class PushHandler extends React.Component {
   onNotification = (data) => {
     // FCM onNotification has slightly different data format compared to onNotificationOpened
     console.log('onNotification', data);
-    Alert.alert(
-      data.title,
-      data.body,
-      [
-        { text: 'OK' },
-      ],
-      { cancelable: false },
-    );
   }
 
   onNotificationOpened = (data) => {
