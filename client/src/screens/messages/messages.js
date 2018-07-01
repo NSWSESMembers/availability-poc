@@ -21,9 +21,6 @@ class Messages extends Component {
     title: 'Event Messages',
   };
 
-  state = {
-    messages: [],
-  }
   componentDidMount() {
     // reconnect websocket if it drops, refetch all data
     if (!this.reconnected) {
@@ -60,23 +57,6 @@ class Messages extends Component {
               },
             });
           },
-        });
-      }
-      if (nextProps.event.messages) {
-        this.setState({
-          messages: nextProps.event.messages.map(m => ({
-            _id: m.id,
-            text: m.text,
-            createdAt: new Date(m.createdAt * 1000), // Date(milliseconds)
-            system: !m.user,
-            user: m.user ? {
-              _id: m.user.id,
-              name: m.user.displayName,
-            } : {
-              _id: 0,
-            },
-            image: m.image,
-          })),
         });
       }
     }
@@ -191,7 +171,19 @@ renderSystemMessage = props => (
     // render list of messages for group
     return (
       <GiftedChat
-        messages={this.state.messages}
+        messages={event.messages && event.messages.map(m => ({
+          _id: m.id,
+          text: m.text,
+          createdAt: new Date(m.createdAt * 1000), // Date(milliseconds)
+          system: !m.user,
+          user: m.user ? {
+            _id: m.user.id,
+            name: m.user.displayName,
+          } : {
+            _id: '0',
+          },
+          image: m.image,
+        }))}
         onSend={messages => this.onSend(messages)}
         renderBubble={this.renderBubble}
         renderSystemMessage={this.renderSystemMessage}
