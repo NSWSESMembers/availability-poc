@@ -7,6 +7,16 @@ const user = {
   username: 'username',
   email: 'email',
   displayName: 'displayName',
+  tags: [
+    {
+      name: 'tag1',
+      id: 1,
+    },
+    {
+      name: 'tag2',
+      id: 2,
+    },
+  ],
 };
 
 test('renders correctly', () => {

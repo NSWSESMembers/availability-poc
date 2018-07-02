@@ -41,6 +41,14 @@ const styles = {
     paddingTop: 5,
     fontSize: 16,
   },
+  tagsHeader: {
+    backgroundColor: '#dbdbdb',
+    color: '#000000',
+    paddingHorizontal: 8,
+    paddingBottom: 2,
+    paddingTop: 5,
+    fontSize: 16,
+  },
   imageContainer: {
     paddingRight: 20,
     alignItems: 'center',
@@ -137,6 +145,8 @@ class Profile extends Component {
         <Text style={styles.username}>{user.username}</Text>
         <Text style={styles.emailHeader}>Email Address</Text>
         <Text style={styles.email}>{user.email}</Text>
+        <Text style={styles.tagsHeader}>Tags</Text>
+        <Text style={styles.email}>{user.tags.map(t => t.name).join(', ')}</Text>
       </Container>
     );
   }
@@ -149,6 +159,12 @@ Profile.propTypes = {
     username: PropTypes.string.isRequired,
     email: PropTypes.string,
     displayName: PropTypes.string.isRequired,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 
