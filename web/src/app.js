@@ -55,8 +55,15 @@ const theme = createMuiTheme({
     },
     secondary: {
       main: '#f48603',
+      contrastText: 'white',
+    },
+    alternate: {
+      main: '#1c87c9',
     },
     // error: will use the default color
+  },
+  typography: {
+    fontSize: 16,
   },
   overrides: {
     MuiTableCell: {
@@ -64,12 +71,6 @@ const theme = createMuiTheme({
       root: {
         // Name of the rule
         padding: 10,
-      },
-      body: {
-        fontSize: '0.95rem',
-      },
-      head: {
-        fontSize: '0.95rem',
       },
     },
     MuiIconButton: {

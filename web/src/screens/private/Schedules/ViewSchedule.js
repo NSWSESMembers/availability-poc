@@ -7,6 +7,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -14,8 +15,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import { STATUS_AVAILABLE } from '../../../config';
+import { STATUS_AVAILABLE, SCHEDULE_TYPE_DEPLOYMENT } from '../../../config';
 import { DEFAULT_START_TIME, DEFAULT_END_TIME } from '../../../constants';
+import { addDeployPerson, removeDeployPerson, openTimeSegmentModal } from '../../../actions/schedule';
 
 import { dateColumns } from '../../../selectors/dates';
 
@@ -27,12 +29,14 @@ import {
 } from '../../../graphql/time-segment.mutation';
 
 import DayWeek from './components/DayWeek';
+import DeployToolbar from './components/DeployToolbar';
 import ScheduleHeader from './components/ScheduleHeader';
 import ScheduleWeekHeader from './components/ScheduleWeekHeader';
 import ScheduleWeekItem from './components/ScheduleWeekItem';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
+import TimeSegmentModal from './components/TimeSegmentModal';
 
 import styles from '../../../styles/AppStyle';
 
@@ -41,12 +45,11 @@ class ViewSchedule extends React.Component {
     startTimeRange: moment()
       .isoWeekday(1)
       .startOf('week')
-      .add(1, 'days')
       .unix(),
     endTimeRange: moment()
       .isoWeekday(1)
       .startOf('week')
-      .add(8, 'days')
+      .add(7, 'days')
       .unix(),
     modalOpen: false,
     modalUser: undefined,
@@ -75,7 +78,9 @@ class ViewSchedule extends React.Component {
     this.setState({ modalStatus: e.target.value });
   };
 
-  onModalOpen = (e, user, timeSegment, time, status) => {
+  onModalOpen = (e, user, timeSegment, day, status) => {
+    this.props.dispatch(openTimeSegmentModal(day, status, user));
+    /*
     if (timeSegment !== undefined) {
       this.setState({
         modalOpen: true,
@@ -99,6 +104,7 @@ class ViewSchedule extends React.Component {
         modalTime: time,
       });
     }
+    */
   };
 
   onModalClose = () => {
@@ -189,8 +195,16 @@ class ViewSchedule extends React.Component {
     });
   };
 
+  onSelectPerson = (e, id) => {
+    if (e.target.checked) {
+      this.props.dispatch(addDeployPerson(id));
+    } else {
+      this.props.dispatch(removeDeployPerson(id));
+    }
+  };
+
   render() {
-    const { classes, loading, schedule } = this.props;
+    const { classes, loading, schedule, deploy } = this.props;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -224,16 +238,28 @@ class ViewSchedule extends React.Component {
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
+          {schedule.type === SCHEDULE_TYPE_DEPLOYMENT && <DeployToolbar schedule={schedule} />}
           <Table className={classes.table}>
             <ScheduleWeekHeader schedule={schedule} columnData={columnData} />
             <TableBody>
-              {schedule.group.users.map(user => (
-                <TableRow key={user.id}>
-                  {columnData.map((column) => {
+              {schedule.group.users.map((user) => {
+                const selected = deploy.peopleSelected.indexOf(user.id) > -1;
+                return (
+                  <TableRow key={user.id} hover>
+                    {schedule.type === 'deployment' && (
+                    <TableCell className={classes.tableCellCheckbox}>
+                      <Checkbox
+                        checked={selected}
+                        className={classes.tableCheckbox}
+                        onChange={e => this.onSelectPerson(e, user.id)}
+                      />
+                    </TableCell>
+                  )}
+                    {columnData.map((column) => {
                     if (column.id === 'name') {
                       return (
                         <TableCell key={user.id} className={classes.tableCellFirst}>
-                          <Link to="/dashboard">{user.displayName}</Link>
+                          <Link to={`/users/${user.id}`}>{user.displayName}</Link>
                         </TableCell>
                       );
                     }
@@ -253,8 +279,9 @@ class ViewSchedule extends React.Component {
                       />
                     );
                   })}
-                </TableRow>
-              ))}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           <TimeRangeModal
@@ -272,6 +299,7 @@ class ViewSchedule extends React.Component {
             onEndTimeChange={this.onModalEndTimeChange}
             onStatusChange={this.onModalStatusChange}
           />
+          <TimeSegmentModal />
         </Paper>
       </div>
     );
@@ -279,6 +307,7 @@ class ViewSchedule extends React.Component {
 }
 
 ViewSchedule.propTypes = {
+  dispatch: PropTypes.func,
   history: PropTypes.shape({}).isRequired,
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
@@ -312,6 +341,9 @@ ViewSchedule.propTypes = {
         }),
       }),
     ),
+  }),
+  deploy: PropTypes.shape({
+    peopleSelected: PropTypes.arrayOf(PropTypes.number),
   }),
   createTimeSegment: PropTypes.func.isRequired,
   removeTimeSegment: PropTypes.func.isRequired,
@@ -374,8 +406,9 @@ const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
   }),
 });
 
-const mapStateToProps = ({ auth }) => ({
+const mapStateToProps = ({ auth, schedule }) => ({
   auth,
+  deploy: schedule.deploy,
 });
 
 export default compose(

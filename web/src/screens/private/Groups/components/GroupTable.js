@@ -56,7 +56,7 @@ const GroupTable = ({ classes, groups, order, orderBy, handleAdd, handleRemove, 
       <TableBody>
         {groups.map(group => (
           <TableRow key={group.id}>
-            <TableCell>
+            <TableCell style={{ width: 40 }}>
               {group.isMember ? (
                 <IconButton
                   color="primary"

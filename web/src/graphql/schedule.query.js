@@ -4,6 +4,7 @@ const SCHEDULE_QUERY = gql`
   query schedule($id: Int!) {
     schedule(id: $id) {
       id
+      type
       name
       details
       startTime

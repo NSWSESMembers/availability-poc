@@ -15,7 +15,7 @@ import styles from '../../../../styles/AppStyle';
 
 import EnhancedTableHead from '../../../../components/Tables/EnhancedTableHead';
 
-import numbers, { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../../constants';
+import numbers, { TAG_TYPE_CAPABILITY } from '../../../../constants';
 
 const columnData = [
   { id: 'type', numeric: false, disablePadding: false, label: 'Type', enabled: true },
@@ -36,8 +36,6 @@ const ScheduleTable = ({ classes, onSort, order, orderBy, schedules }) => {
     tag.type === type && (
       <Chip key={`${schedule.id}-${tag.id}`} label={tag.name} className={classes.chip} />
     );
-
-  console.log(schedules);
 
   return (
     <Table>
@@ -69,7 +67,9 @@ const ScheduleTable = ({ classes, onSort, order, orderBy, schedules }) => {
       <TableBody>
         {schedules.map(schedule => (
           <TableRow key={schedule.id}>
-            <TableCell>{schedule.type}</TableCell>
+            <TableCell>
+              <Chip label={schedule.type} className={classes.chipType} />
+            </TableCell>
             <TableCell>
               <Link to={`/schedules/${schedule.id}`}>{schedule.name}</Link>
             </TableCell>

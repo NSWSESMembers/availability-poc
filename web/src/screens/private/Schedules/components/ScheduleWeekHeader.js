@@ -10,7 +10,12 @@ import TableRow from '@material-ui/core/TableRow';
 
 import styles from '../../../../styles/AppStyle';
 
-import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../../config';
+import {
+  SCHEDULE_TYPE_DEPLOYMENT,
+  STATUS_AVAILABLE,
+  STATUS_UNAVAILABLE,
+  STATUS_UNLESS_URGENT,
+} from '../../../../config';
 
 import { peopleCount } from '../../../../selectors/timeSegments';
 
@@ -29,6 +34,9 @@ const ScheduleWeekHeader = ({ classes, schedule, columnData }) => {
   return (
     <TableHead>
       <TableRow>
+        {schedule.type === SCHEDULE_TYPE_DEPLOYMENT && (
+          <TableCell className={classes.tableCellHeaderFirst} />
+        )}
         {columnData.map((column) => {
           if (column.id === 'name') {
             return (
@@ -76,6 +84,9 @@ const ScheduleWeekHeader = ({ classes, schedule, columnData }) => {
         })}
       </TableRow>
       <TableRow>
+        {schedule.type === SCHEDULE_TYPE_DEPLOYMENT && (
+          <TableCell className={classes.tableCellHeaderFirst} />
+        )}
         {columnData.map((column) => {
           if (column.id === 'name') {
             return (
@@ -130,6 +141,7 @@ ScheduleWeekHeader.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     details: PropTypes.string,
+    type: PropTypes.string.isRequired,
     group: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,

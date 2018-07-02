@@ -101,6 +101,12 @@ export default theme => ({
     margin: theme.spacing.unit / 2,
     textAlign: 'left',
   },
+  chipType: {
+    margin: theme.spacing.unit / 2,
+    textAlign: 'left',
+    backgroundColor: theme.palette.secondary.main,
+    color: 'white',
+  },
   button: {
     margin: theme.spacing.unit,
   },
@@ -127,8 +133,7 @@ export default theme => ({
     borderColor: '#E0E0E0',
     borderStyle: 'solid',
     padding: 0,
-    backgroundColor: '#CCC',
-    color: 'white',
+    backgroundColor: '#EDEDED',
   },
   tableCellHeaderFirst: {
     border: 1,
@@ -144,6 +149,38 @@ export default theme => ({
     border: 1,
     borderColor: '#E0E0E0',
     borderStyle: 'solid',
-    backgroundColor: '#CCC',
+    backgroundColor: '#EDEDED',
+  },
+  tableCellCheckbox: {
+    border: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+    textAlign: 'center',
+  },
+  tableCheckbox: {
+    width: 24,
+  },
+  tableHighlight: {
+    color: 'white',
+    backgroundColor: theme.palette.alternate.main,
+    margin: 0,
+    borderTop: 1,
+    borderLeft: 1,
+    borderRight: 1,
+    borderBottom: 0,
+    borderColor: '#E0E0E0',
+  },
+  tableStandard: {
+    backgroundColor: '#EDEDED',
+    margin: 0,
+    borderTop: 1,
+    borderLeft: 1,
+    borderRight: 1,
+    borderBottom: 0,
+    borderColor: '#E0E0E0',
+    borderStyle: 'solid',
+  },
+  tableNoHighlight: {
+    margin: 0,
   },
 });

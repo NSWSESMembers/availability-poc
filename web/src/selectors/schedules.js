@@ -1,4 +1,4 @@
-import { SCHEDULE_TYPE_REMOTE } from '../config';
+import { SCHEDULE_TYPE_DEPLOYMENT } from '../config';
 
 export default (schedules, { capability, groupId, name, order, orderBy }) => {
   let filterSchedules = schedules;
@@ -26,7 +26,7 @@ export default (schedules, { capability, groupId, name, order, orderBy }) => {
 };
 
 export const scheduleLabel = (text) => {
-  if (text === SCHEDULE_TYPE_REMOTE) {
+  if (text === SCHEDULE_TYPE_DEPLOYMENT) {
     return text.toUpperCase();
   }
   return text.charAt(0).toUpperCase() + text.slice(1);

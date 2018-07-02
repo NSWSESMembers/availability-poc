@@ -28,7 +28,7 @@ import numbers, {
   TAG_TYPE_ORG_STRUCTURE,
   TAG_TYPE_ORG_STRUCTURE_REQUEST,
 } from '../../../constants';
-import { SCHEDULE_TYPE_LOCAL, SCHEDULE_TYPE_REMOTE } from '../../../config';
+import { SCHEDULE_TYPE_LOCAL, SCHEDULE_TYPE_DEPLOYMENT } from '../../../config';
 
 import DatePicker from '../../../components/Forms/DatePicker';
 import FormGroupPanel from '../../../components/Panels/FormGroupPanel';
@@ -119,7 +119,6 @@ class AddSchedule extends React.Component {
     if (requestingHQ !== '') {
       tags = tags.concat(requestingHQ.split(',').map(tag => ({ id: parseInt(tag, 10) })));
     }
-    console.log(type);
 
     if (id === 0) {
       this.props
@@ -297,7 +296,7 @@ class AddSchedule extends React.Component {
                 />
               </FormControl>
             </FormGroupPanel>
-            {this.state.type === SCHEDULE_TYPE_REMOTE && (
+            {this.state.type === SCHEDULE_TYPE_DEPLOYMENT && (
               <FormGroupPanel label="Deployment">
                 <FormControl className={classes.formControl}>
                   <SchedulePriority onChange={this.onChange} value={this.state.priority} />

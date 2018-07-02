@@ -5,5 +5,7 @@ export default () => ({
   formLabel: {
     color: '#232E4E',
     fontSize: '1.4rem',
+    marginBottom: 15,
+    marginTop: 15,
   },
 });

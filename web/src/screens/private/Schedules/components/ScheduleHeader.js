@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
-
 import Typography from '@material-ui/core/Typography';
 
 import styles from '../../../../styles/AppStyle';
@@ -22,7 +22,7 @@ class ScheduleHeader extends React.Component {
   onEdit = () => {
     const { history, schedule } = this.props;
     history.push(`/schedules/edit/${schedule.id}`);
-  }
+  };
 
   onShowDetail = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -33,9 +33,15 @@ class ScheduleHeader extends React.Component {
     return (
       <Paper className={classes.paper}>
         <SpreadPanel>
-          <Typography variant="title" className={classes.paperTitle} gutterBottom>
-            {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
-          </Typography>
+          <div>
+            <Typography variant="title" className={classes.paperTitle} gutterBottom>
+              {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
+            </Typography>
+            <Chip label={schedule.type} className={classes.chipType} />
+            {schedule.tags.map(tag => (
+              <Chip key={`${tag.id}-chip`} label={tag.name} className={classes.chip} />
+            ))}
+          </div>
           <div>
             <IconButton
               label="Detail"
@@ -60,6 +66,7 @@ ScheduleHeader.propTypes = {
   history: PropTypes.shape({}).isRequired,
   schedule: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     details: PropTypes.string.isRequired,
     startTime: PropTypes.number.isRequired,
