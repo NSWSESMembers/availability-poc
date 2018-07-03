@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -12,7 +13,7 @@ const TimePicker = ({ classes, label, name, value, onChange }) => (
     name={name}
     label={label}
     type="time"
-    value={value}
+    value={moment.unix(value).format('HH:mm')}
     onChange={onChange}
     className={classes.textField}
   />
@@ -23,7 +24,7 @@ TimePicker.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
 export default withStyles(styles)(TimePicker);

@@ -14,8 +14,8 @@ import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../.
 const Status = ({ value, onChange }) => (
   <FormGroup row>
     <RadioGroup
-      aria-label="available"
-      name="available"
+      aria-label="status"
+      name="status"
       style={{ display: 'block' }}
       value={value}
       onChange={onChange}

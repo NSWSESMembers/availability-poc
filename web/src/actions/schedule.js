@@ -54,18 +54,22 @@ export const removeDeployTag = id => ({
 
 // Time Segments
 
-export const openTimeSegmentModal = (day, status, user) => ({
+export const openTimeSegmentModal = (scheduleId, day, status, user, timeSegment) => ({
   type: OPEN_TIME_SEGMENTS_MODAL,
+  scheduleId,
   day,
   status,
   user,
+  timeSegment,
 });
 
 export const closeTimeSegmentModal = () => ({
   type: CLOSE_TIME_SEGMENTS_MODAL,
 });
 
-export const setModalTimeSegment = status => ({
+export const setModalTimeSegment = (status, startTime, endTime) => ({
   type: SET_MODAL_TIME_SEGMENT,
   status,
+  startTime,
+  endTime,
 });

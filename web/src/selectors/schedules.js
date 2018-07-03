@@ -1,5 +1,3 @@
-import { SCHEDULE_TYPE_DEPLOYMENT } from '../config';
-
 export default (schedules, { capability, groupId, name, order, orderBy }) => {
   let filterSchedules = schedules;
   if (capability !== '') {
@@ -25,9 +23,4 @@ export default (schedules, { capability, groupId, name, order, orderBy }) => {
     : filteredItems.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 };
 
-export const scheduleLabel = (text) => {
-  if (text === SCHEDULE_TYPE_DEPLOYMENT) {
-    return text.toUpperCase();
-  }
-  return text.charAt(0).toUpperCase() + text.slice(1);
-};
+export const scheduleLabel = text => text.charAt(0).toUpperCase() + text.slice(1);

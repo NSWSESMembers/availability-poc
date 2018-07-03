@@ -22,6 +22,8 @@ import {
   removeDeployTag,
 } from '../../../../actions/schedule';
 
+import { TAG_TYPE_CAPABILITY } from '../../../../constants';
+
 import DatePicker from '../../../../components/Forms/DatePicker';
 import FormGroupPanel from '../../../../components/Panels/FormGroupPanel';
 
@@ -65,19 +67,21 @@ const DeployModal = ({ deploy, dispatch }) => {
         {deploy.tags.length > 0 && (
           <FormGroupPanel label="Capabilities">
             <FormGroup row>
-              {deploy.tags.map(tag => (
-                <FormControlLabel
-                  key={`tag-${tag.id}`}
-                  control={
-                    <Checkbox
-                      checked={deploy.tagsSelected.indexOf(tag.id) > -1}
-                      onChange={e => onSelectTag(e, tag.id)}
-                      value={tag.id.toString()}
-                    />
-                  }
-                  label={tag.name}
-                />
-              ))}
+              {deploy.tags
+                .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+                .map(tag => (
+                  <FormControlLabel
+                    key={`tag-${tag.id}`}
+                    control={
+                      <Checkbox
+                        checked={deploy.tagsSelected.indexOf(tag.id) > -1}
+                        onChange={e => onSelectTag(e, tag.id)}
+                        value={tag.id.toString()}
+                      />
+                    }
+                    label={tag.name}
+                  />
+                ))}
             </FormGroup>
           </FormGroupPanel>
         )}

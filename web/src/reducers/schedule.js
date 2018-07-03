@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   OPEN_DEPLOY_MODAL,
   CLOSE_DEPLOY_MODAL,
@@ -13,10 +14,15 @@ import {
 } from '../actions/schedule';
 
 const initialState = {
-  timeSegment: {
+  timeSegments: {
     open: false,
     day: 0,
-    status: '',
+    timeSegment: {
+      id: 0,
+      status: '',
+      startTime: 0,
+      endTime: 0,
+    },
   },
   deploy: {
     open: false,
@@ -101,10 +107,28 @@ export default (state = initialState, action) => {
     case OPEN_TIME_SEGMENTS_MODAL:
       return {
         ...state,
-        timeSegment: {
+        timeSegments: {
+          scheduleId: action.scheduleId,
           open: true,
           day: action.day,
-          status: action.status,
+          timeSegment: {
+            id: action.timeSegment !== undefined ? action.timeSegment.id : 0,
+            status: action.status,
+            startTime:
+              action.timeSegment !== undefined
+                ? action.timeSegment.startTime
+                : moment
+                  .unix(action.day)
+                  .add(9, 'hours')
+                  .unix(),
+            endTime:
+              action.timeSegment !== undefined
+                ? action.timeSegment.endTime
+                : moment
+                  .unix(action.day)
+                  .add(17, 'hours')
+                  .unix(),
+          },
           user: {
             ...action.user,
           },
@@ -113,17 +137,23 @@ export default (state = initialState, action) => {
     case CLOSE_TIME_SEGMENTS_MODAL:
       return {
         ...state,
-        timeSegment: {
-          ...state.timeSegment,
+        timeSegments: {
+          ...state.timeSegments,
+          scheduleId: 0,
           open: false,
         },
       };
     case SET_MODAL_TIME_SEGMENT:
       return {
         ...state,
-        timeSegment: {
-          ...state.timeSegment,
-          status: action.status,
+        timeSegments: {
+          ...state.timeSegments,
+          timeSegment: {
+            ...state.timeSegments.timeSegment,
+            status: action.status,
+            startTime: action.startTime,
+            endTime: action.endTime,
+          },
         },
       };
     default:

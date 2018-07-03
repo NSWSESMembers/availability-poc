@@ -11,6 +11,8 @@ import styles from '../../../../styles/AppStyle';
 
 import { dateScheduleLabel } from '../../../../selectors/dates';
 
+import { TAG_TYPE_CAPABILITY } from '../../../../constants';
+
 import IconButton from '../../../../components/Buttons/IconButton';
 import SpreadPanel from '../../../../components/Panels/SpreadPanel';
 
@@ -38,9 +40,11 @@ class ScheduleHeader extends React.Component {
               {schedule.name} - ({dateScheduleLabel(schedule.startTime, schedule.endTime)})
             </Typography>
             <Chip label={schedule.type} className={classes.chipType} />
-            {schedule.tags.map(tag => (
-              <Chip key={`${tag.id}-chip`} label={tag.name} className={classes.chip} />
-            ))}
+            {schedule.tags
+              .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
+              .map(tag => (
+                <Chip key={`${tag.id}-chip`} label={tag.name} className={classes.chip} />
+              ))}
           </div>
           <div>
             <IconButton
