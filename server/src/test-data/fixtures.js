@@ -259,7 +259,7 @@ export const SCHEDULES = [
     name: 'Wagga Wagga OOA availability',
     details:
       'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
-    type: 'ooa',
+    type: 'deployment',
     priority: 4,
     startTime: MONDAY,
     endTime: MONDAY + 60 * 60 * 24 * 3,
