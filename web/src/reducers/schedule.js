@@ -22,6 +22,7 @@ const initialState = {
       status: '',
       startTime: 0,
       endTime: 0,
+      note: '',
     },
   },
   deploy: {
@@ -128,6 +129,7 @@ export default (state = initialState, action) => {
                   .unix(action.day)
                   .add(17, 'hours')
                   .unix(),
+            note: action.timeSegment !== undefined ? action.timeSegment.note : '',
           },
           user: {
             ...action.user,
@@ -153,6 +155,7 @@ export default (state = initialState, action) => {
             status: action.status,
             startTime: action.startTime,
             endTime: action.endTime,
+            note: action.note,
           },
         },
       };

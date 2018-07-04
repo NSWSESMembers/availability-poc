@@ -11,10 +11,7 @@ import { statusCount } from '../../../../selectors/status';
 
 const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onOpenModal }) => {
   const currentSegments = timeSegments.filter(
-    timeSegment =>
-      timeSegment.startTime >= startTime &&
-      timeSegment.endTime <= endTime &&
-      timeSegment.user.id === user.id,
+    timeSegment => timeSegment.startTime >= startTime && timeSegment.endTime <= endTime,
   );
 
   const availableCount = statusCount(currentSegments, STATUS_AVAILABLE);

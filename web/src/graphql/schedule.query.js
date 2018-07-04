@@ -28,6 +28,7 @@ const SCHEDULE_QUERY = gql`
         status
         startTime
         endTime
+        note
         user {
           id
         }

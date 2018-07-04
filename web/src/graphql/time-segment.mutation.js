@@ -7,6 +7,7 @@ export const CREATE_TIME_SEGMENT_MUTATION = gql`
       status
       startTime
       endTime
+      note
     }
   }
 `;
@@ -24,6 +25,7 @@ export const UPDATE_TIME_SEGMENT_MUTATION = gql`
       status
       startTime
       endTime
+      note
     }
   }
 `;

@@ -59,6 +59,7 @@ export const defineModels = (db) => {
     startTime: { type: Sequelize.INTEGER },
     endTime: { type: Sequelize.INTEGER },
     lastUpdate: { type: Sequelize.INTEGER },
+    note: { type: Sequelize.STRING },
   });
 
   const EventResponseModel = db.define('eventresponse', {

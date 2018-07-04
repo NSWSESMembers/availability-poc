@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import styles from './ScheduleDay.styles';
 
 import TimeLabel from '../../../../components/Labels/TimeLabel';
+import UserLink from './UserLink';
 
 const timeIncrement = 3600;
 const timeLength = 24;
@@ -84,7 +84,7 @@ const ScheduleDay = ({ classes, users, day, onEdit }) => {
     userRows.push(
       <tr key={`user${user.id}rowname`}>
         <td className={classes.tableCellFirst}>
-          <Link to={`/users/${user.id}`}>{user.displayName}</Link>
+          <UserLink timeSegments={user.timeSegments} user={user} />
         </td>
         {userTimeColumns}
       </tr>,

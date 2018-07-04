@@ -19,4 +19,8 @@ export default () => ({
     height: 24,
     marginRight: 5,
   },
+  button: {
+    borderRadius: 0,
+    margin: 0,
+  },
 });

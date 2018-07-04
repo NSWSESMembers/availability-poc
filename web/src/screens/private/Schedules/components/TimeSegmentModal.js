@@ -12,6 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
 
 import SCHEDULE_QUERY from '../../../../graphql/schedule.query';
 import {
@@ -31,6 +32,7 @@ import { statusColor } from '../../../../selectors/status';
 import styles from '../../../../styles/AppStyle';
 
 const TimeSegmentModal = ({
+  classes,
   createTimeSegment,
   dispatch,
   removeTimeSegment,
@@ -38,9 +40,12 @@ const TimeSegmentModal = ({
   updateTimeSegment,
 }) => {
   const onChange = (e) => {
-    const { status, startTime, endTime } = timeSegments.timeSegment;
+    const { status, startTime, endTime, note } = timeSegments.timeSegment;
+    if (e.target.name === 'note') {
+      dispatch(setModalTimeSegment(status, startTime, endTime, e.target.value));
+    }
     if (e.target.name === 'status') {
-      dispatch(setModalTimeSegment(e.target.value, startTime, endTime));
+      dispatch(setModalTimeSegment(e.target.value, startTime, endTime, note));
     }
     if (e.target.name === 'startTime' || e.target.name === 'endTime') {
       const currentDay = moment.unix(timeSegments.day);
@@ -49,9 +54,9 @@ const TimeSegmentModal = ({
         'MM-DD-YYYY HH:mm',
       ).unix();
       if (e.target.name === 'startTime') {
-        dispatch(setModalTimeSegment(status, updateTime, endTime));
+        dispatch(setModalTimeSegment(status, updateTime, endTime, note));
       } else {
-        dispatch(setModalTimeSegment(status, startTime, updateTime));
+        dispatch(setModalTimeSegment(status, startTime, updateTime, note));
       }
     }
   };
@@ -63,7 +68,7 @@ const TimeSegmentModal = ({
   };
   const onSave = () => {
     const { scheduleId } = timeSegments;
-    const { id: segmentId, status, startTime, endTime } = timeSegments.timeSegment;
+    const { id: segmentId, status, startTime, endTime, note } = timeSegments.timeSegment;
     const { id } = timeSegments.user;
 
     const segment = {
@@ -73,6 +78,7 @@ const TimeSegmentModal = ({
       status,
       startTime,
       endTime,
+      note,
     };
 
     if (segmentId === 0) {
@@ -82,7 +88,7 @@ const TimeSegmentModal = ({
     }
   };
   const day = moment.unix(timeSegments.day);
-  const { id, status, startTime, endTime } = timeSegments.timeSegment;
+  const { id, status, startTime, endTime, note } = timeSegments.timeSegment;
 
   return (
     <Dialog
@@ -106,6 +112,17 @@ const TimeSegmentModal = ({
             <TimePicker label="End Time" name="endTime" value={endTime} onChange={onChange} />
           </FormGroup>
         </FormGroupPanel>
+        <FormGroupPanel>
+          <TextField
+            name="note"
+            label="Additional notes"
+            className={classes.textField}
+            value={note}
+            onChange={onChange}
+            margin="normal"
+            multiline
+          />
+        </FormGroupPanel>
       </DialogContent>
       <DialogActions>
         {id > 0 && (
@@ -126,9 +143,9 @@ const TimeSegmentModal = ({
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime }) =>
+    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime, note }) =>
       mutate({
-        variables: { timeSegment: { userId, scheduleId, status, startTime, endTime } },
+        variables: { timeSegment: { userId, scheduleId, status, startTime, endTime, note } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -156,9 +173,9 @@ const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
 
 const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    updateTimeSegment: ({ segmentId, status, startTime, endTime, scheduleId }) =>
+    updateTimeSegment: ({ segmentId, status, startTime, endTime, scheduleId, note }) =>
       mutate({
-        variables: { timeSegment: { segmentId, status, startTime, endTime } },
+        variables: { timeSegment: { segmentId, status, startTime, endTime, note } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -170,6 +187,7 @@ const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
 });
 
 TimeSegmentModal.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
   createTimeSegment: PropTypes.func,
   dispatch: PropTypes.func,
   removeTimeSegment: PropTypes.func,

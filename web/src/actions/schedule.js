@@ -67,9 +67,10 @@ export const closeTimeSegmentModal = () => ({
   type: CLOSE_TIME_SEGMENTS_MODAL,
 });
 
-export const setModalTimeSegment = (status, startTime, endTime) => ({
+export const setModalTimeSegment = (status, startTime, endTime, note) => ({
   type: SET_MODAL_TIME_SEGMENT,
   status,
   startTime,
   endTime,
+  note,
 });

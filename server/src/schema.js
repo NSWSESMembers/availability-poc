@@ -78,6 +78,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     userId: Int
+    note: String
   }
 
   input updateTimeSegmentInput {
@@ -85,6 +86,7 @@ export const Schema = [
     status: String!
     startTime: Int!
     endTime: Int!
+    note: String
   }
 
   input removeTimeSegmentInput {
@@ -300,6 +302,7 @@ export const Schema = [
     status: String
     startTime: Int!
     endTime: Int!
+    note: String
   }
 
   # query for types

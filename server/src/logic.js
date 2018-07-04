@@ -262,7 +262,10 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
           });
       },
       updateSchedule(_, args, ctx) {
-        const { id, name, details, type, priority, startTime, endTime, groupId, tags } = args.schedule;
+        const {
+          id, name, details, type, priority,
+          startTime, endTime, groupId, tags,
+        } = args.schedule;
         return getAuthenticatedUser(ctx).then(() =>
           Schedule.findById(id).then((schedule) => {
             if (!schedule) {
@@ -290,7 +293,8 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                       }),
                     ),
                   tags &&
-                    tags.map(t => Tag.findById(t.id).then(foundTag => foundTag.addSchedule(schedule))),
+                    tags.map(t => Tag.findById(t.id)
+                      .then(foundTag => foundTag.addSchedule(schedule))),
                 ]).then(() => schedule.reload()),
               );
           }),
@@ -311,7 +315,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         return timesegment.getUser();
       },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
+        const { scheduleId, status, startTime, endTime, userId, note } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(user =>
           Schedule.findById(scheduleId).then((schedule) => {
             if (!schedule) {
@@ -323,6 +327,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               startTime,
               endTime,
               user: userId === undefined ? user : { id: userId },
+              note,
             });
           }),
         );
@@ -344,7 +349,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         );
       },
       updateTimeSegment(_, args, ctx) {
-        const { segmentId, status, startTime, endTime } = args.timeSegment;
+        const { segmentId, status, startTime, endTime, note } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(() =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
@@ -354,6 +359,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               status,
               startTime,
               endTime,
+              note,
             });
           }),
         );

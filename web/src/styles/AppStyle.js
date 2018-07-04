@@ -183,4 +183,16 @@ export default theme => ({
   tableNoHighlight: {
     margin: 0,
   },
+  popover: {
+    pointerEvents: 'none',
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit / 2,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit / 2,
+  },
+  iconSmall: {
+    fontSize: 18,
+  },
 });

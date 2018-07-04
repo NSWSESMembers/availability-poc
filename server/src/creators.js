@@ -122,7 +122,7 @@ export const getCreators = (models) => {
       );
     },
 
-    timeSegment: ({ status, startTime, endTime, schedule, user }) => {
+    timeSegment: ({ status, startTime, endTime, schedule, user, note }) => {
       if (!user || !user.id) {
         return Promise.reject(Error('Must pass user'));
       }
@@ -135,12 +135,14 @@ export const getCreators = (models) => {
       if (endTime < startTime) {
         return Promise.reject(Error('endTime must be greater than startTime'));
       }
+
       return TimeSegment.create({
         status,
         startTime,
         endTime,
         scheduleId: schedule.id,
         userId: user.id,
+        note,
       });
     },
 

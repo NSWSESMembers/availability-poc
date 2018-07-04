@@ -4,7 +4,6 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -34,6 +33,7 @@ import ScheduleWeekItem from './components/ScheduleWeekItem';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
 import TimeSegmentModal from './components/TimeSegmentModal';
+import UserLink from './components/UserLink';
 
 import styles from '../../../styles/AppStyle';
 
@@ -141,6 +141,9 @@ class ViewSchedule extends React.Component {
             <TableBody>
               {schedule.group.users.map((user) => {
                 const selected = deploy.peopleSelected.indexOf(user.id) > -1;
+                const userSegments = schedule.timeSegments.filter(
+                  timeSegment => timeSegment.user.id === user.id,
+                );
                 return (
                   <TableRow key={user.id} hover>
                     {schedule.type === 'deployment' && (
@@ -156,21 +159,25 @@ class ViewSchedule extends React.Component {
                       if (column.id === 'name') {
                         return (
                           <TableCell key={user.id} className={classes.tableCellFirst}>
-                            <Link to={`/users/${user.id}`}>{user.displayName}</Link>
+                            <UserLink timeSegments={userSegments} user={user} />
                           </TableCell>
                         );
                       }
-                      return column.startTime >= scheduleStart &&
-                        column.startTime <= scheduleEnd ? (
+
+                      if (column.startTime >= scheduleStart && column.startTime <= scheduleEnd) {
+                        return (
                           <ScheduleWeekItem
                             key={`vsi-${user.id}-${column.startTime}`}
                             user={user}
                             startTime={column.startTime}
                             endTime={column.endTime}
                             onOpenModal={this.onEdit}
-                            timeSegments={schedule.timeSegments}
+                            timeSegments={userSegments}
                           />
-                      ) : (
+                        );
+                      }
+
+                      return (
                         <TableCell
                           key={`vsi-${user.id}-${column.startTime}`}
                           className={classes.tableCellDisabled}
