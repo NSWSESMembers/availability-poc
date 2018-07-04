@@ -133,6 +133,10 @@ export const defineModels = () => {
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
 
+  // schedules -> tags
+  ScheduleModel.belongsToMany(TagModel, { through: 'schedule_tag' });
+  TagModel.belongsToMany(ScheduleModel, { through: 'schedule_tag' });
+
   // events are created for a single group
   EventModel.belongsTo(GroupModel);
   GroupModel.hasMany(EventModel);
