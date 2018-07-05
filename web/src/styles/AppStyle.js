@@ -122,6 +122,9 @@ export default theme => ({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
+  tableCell: {
+    textAlign: 'center',
+  },
   tableCellHeader: {
     border: 1,
     borderColor: '#E0E0E0',

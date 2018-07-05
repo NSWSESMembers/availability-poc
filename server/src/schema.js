@@ -74,6 +74,7 @@ export const Schema = [
 
   input createTimeSegmentInput {
     scheduleId: Int!
+    type: String!
     status: String!
     startTime: Int!
     endTime: Int!
@@ -83,6 +84,7 @@ export const Schema = [
 
   input updateTimeSegmentInput {
     segmentId: Int!
+    type: String!
     status: String!
     startTime: Int!
     endTime: Int!
@@ -297,6 +299,7 @@ export const Schema = [
 
   type TimeSegment {
     id: Int!
+    type: String!
     schedule: Schedule!
     user: User!
     status: String

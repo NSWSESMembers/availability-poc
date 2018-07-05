@@ -46,7 +46,7 @@ export const defineModels = () => {
     permalink: 'https://jobsystem.com/jobs/123456',
     priority: 1,
     startTime: 1514860289,
-    endTime: 1514860289 + (60 * 60),
+    endTime: 1514860289 + 60 * 60,
   });
 
   const ScheduleModel = db.define('schedule', {
@@ -55,13 +55,14 @@ export const defineModels = () => {
     type: 'local',
     priority: 1,
     startTime: 1514860289,
-    endTime: 1514860289 + (60 * 60),
+    endTime: 1514860289 + 60 * 60,
   });
 
   const TimeSegmentModel = db.define('timesegment', {
+    type: 'availability',
     status: 'available',
     startTime: 1514860289,
-    endTime: 1514860289 + (60 * 60),
+    endTime: 1514860289 + 60 * 60,
     lastUpdate: 1514860289,
   });
 
@@ -132,6 +133,10 @@ export const defineModels = () => {
   // groups -> tags
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
+
+  // timeSegments > tags
+  TimeSegmentModel.belongsToMany(TagModel, { through: 'timesegment_tag' });
+  TagModel.belongsToMany(TimeSegmentModel, { through: 'timesegment_tag' });
 
   // events are created for a single group
   EventModel.belongsTo(GroupModel);

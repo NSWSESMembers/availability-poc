@@ -9,26 +9,43 @@ import Icon from '@material-ui/core/Icon';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
+import { TIME_SEGMENT_TYPE_AVAILABILITY, TIME_SEGMENT_TYPE_DEPLOYMENT } from '../../../../config';
+
 import styles from '../../../../styles/AppStyle';
 
 class UserLink extends React.Component {
   state = {
-    anchorEl: null,
+    anchorDeploy: null,
+    anchorNote: null,
   };
 
-  handlePopoverOpen = (event) => {
-    this.setState({ anchorEl: event.target });
+  onDeployOpen = (event) => {
+    this.setState({ anchorDeploy: event.target });
   };
 
-  handlePopoverClose = () => {
-    this.setState({ anchorEl: null });
+  onDeployClose = () => {
+    this.setState({ anchorDeploy: null });
+  };
+
+  onNoteOpen = (event) => {
+    this.setState({ anchorNote: event.target });
+  };
+
+  onNoteClose = () => {
+    this.setState({ anchorNote: null });
   };
 
   render() {
     const { classes, timeSegments, user } = this.props;
-    const { anchorEl } = this.state;
-    const open = !!anchorEl;
-    const notes = timeSegments.filter(timeSegment => timeSegment.note !== '');
+    const { anchorNote, anchorDeploy } = this.state;
+    const openNote = !!anchorNote;
+    const openDeploy = !!anchorDeploy;
+    const notes = timeSegments.filter(
+      timeSegment => timeSegment.type === TIME_SEGMENT_TYPE_AVAILABILITY && timeSegment.note !== '',
+    );
+    const deploys = timeSegments.filter(
+      timeSegment => timeSegment.type === TIME_SEGMENT_TYPE_DEPLOYMENT,
+    );
     return (
       <React.Fragment>
         <Link to={`/users/${user.id}`}>{user.displayName}</Link>
@@ -36,10 +53,10 @@ class UserLink extends React.Component {
           <React.Fragment>
             <Icon
               className={classNames(classes.rightIcon, classes.iconSmall)}
-              onMouseOver={this.handlePopoverOpen}
-              onFocus={this.handlePopoverOpen}
-              onMouseOut={this.handlePopoverClose}
-              onBlur={this.handlePopoverClose}
+              onMouseOver={this.onNoteOpen}
+              onFocus={this.onNoteOpen}
+              onMouseOut={this.onNoteClose}
+              onBlur={this.onNoteClose}
             >
               event_note
             </Icon>
@@ -48,8 +65,8 @@ class UserLink extends React.Component {
               classes={{
                 paper: classes.paper,
               }}
-              open={open}
-              anchorEl={anchorEl}
+              open={openNote}
+              anchorEl={anchorNote}
               anchorOrigin={{
                 vertical: 'center',
                 horizontal: 'right',
@@ -58,14 +75,69 @@ class UserLink extends React.Component {
                 vertical: 'top',
                 horizontal: 'left',
               }}
-              onClose={this.handlePopoverClose}
+              onClose={this.onNoteClose}
               disableRestoreFocus
             >
+              <Typography variant="title" gutterBottom>
+                Notes
+              </Typography>
               {notes.map(timeSegment => (
-                <Typography key={timeSegment.startTime}>
+                <Typography variant="body1" gutterBottom key={`note${timeSegment.startTime}`}>
+                  <b>{moment.unix(timeSegment.startTime).format('LLL')}</b>
+                  &nbsp;to&nbsp;
+                  <b>{moment.unix(timeSegment.endTime).format('LLL')}</b>
+                  {timeSegment.note !== '' && (
+                    <Typography variant="caption" gutterBottom>
+                      {timeSegment.note}
+                    </Typography>
+                  )}
+                </Typography>
+              ))}
+            </Popover>
+          </React.Fragment>
+        )}
+        {deploys.length > 0 && (
+          <React.Fragment>
+            <Icon
+              className={classNames(classes.rightIcon, classes.iconSmall)}
+              onMouseOver={this.onDeployOpen}
+              onFocus={this.onDeployOpen}
+              onMouseOut={this.onDeployClose}
+              onBlur={this.onDeployClose}
+            >
+              local_airport
+            </Icon>
+            <Popover
+              className={classes.popover}
+              classes={{
+                paper: classes.paper,
+              }}
+              open={openDeploy}
+              anchorEl={anchorDeploy}
+              anchorOrigin={{
+                vertical: 'center',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              onClose={this.onDeployClose}
+              disableRestoreFocus
+            >
+              <Typography variant="title" gutterBottom>
+                On Deployment
+              </Typography>
+              {deploys.map(timeSegment => (
+                <Typography variant="body1" gutterBottom key={`deploy${timeSegment.startTime}`}>
                   <b>{moment.unix(timeSegment.startTime).format('LL')}</b>
-                  <br />
-                  {timeSegment.note}
+                  &nbsp;to&nbsp;
+                  <b>{moment.unix(timeSegment.endTime).format('LL')}</b>
+                  {timeSegment.note !== '' && (
+                    <Typography variant="caption" gutterBottom>
+                      {timeSegment.note}
+                    </Typography>
+                  )}
                 </Typography>
               ))}
             </Popover>

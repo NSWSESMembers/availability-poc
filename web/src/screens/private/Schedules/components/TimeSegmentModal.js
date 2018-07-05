@@ -23,6 +23,8 @@ import {
 
 import { closeTimeSegmentModal, setModalTimeSegment } from '../../../../actions/schedule';
 
+import { TIME_SEGMENT_TYPE_AVAILABILITY } from '../../../../config';
+
 import FormGroupPanel from '../../../../components/Panels/FormGroupPanel';
 import Status from './Status';
 import TimePicker from '../../../../components/Forms/TimePicker';
@@ -73,6 +75,7 @@ const TimeSegmentModal = ({
 
     const segment = {
       segmentId,
+      type: TIME_SEGMENT_TYPE_AVAILABILITY,
       userId: id,
       scheduleId,
       status,
@@ -143,9 +146,9 @@ const TimeSegmentModal = ({
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime, note }) =>
+    createTimeSegment: ({ type, userId, scheduleId, status, startTime, endTime, note }) =>
       mutate({
-        variables: { timeSegment: { userId, scheduleId, status, startTime, endTime, note } },
+        variables: { timeSegment: { type, userId, scheduleId, status, startTime, endTime, note } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -173,9 +176,9 @@ const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
 
 const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    updateTimeSegment: ({ segmentId, status, startTime, endTime, scheduleId, note }) =>
+    updateTimeSegment: ({ type, segmentId, status, startTime, endTime, scheduleId, note }) =>
       mutate({
-        variables: { timeSegment: { segmentId, status, startTime, endTime, note } },
+        variables: { timeSegment: { type, segmentId, status, startTime, endTime, note } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,

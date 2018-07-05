@@ -66,7 +66,7 @@ class Header extends React.Component {
 
   handleProfile = () => {
     const { auth, history } = this.props;
-    history.push(`users/${auth.id}`);
+    history.push(`/users/${auth.id}`);
   };
 
   render() {

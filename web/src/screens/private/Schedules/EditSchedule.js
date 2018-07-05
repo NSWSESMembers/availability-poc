@@ -206,6 +206,9 @@ class AddSchedule extends React.Component {
           .join(',');
       }
 
+      const startTime = moment.unix(schedule.startTime).format('YYYY-MM-DD');
+      const endTime = moment.unix(schedule.startTime).format('YYYY-MM-DD');
+
       const priority = [1, 5, 10].indexOf(schedule.priority) > -1 ? schedule.priority : 5;
       this.setState({
         id: schedule.id,
@@ -217,6 +220,8 @@ class AddSchedule extends React.Component {
         capabilities,
         locations,
         requestingHQ,
+        startTime,
+        endTime,
       });
     }
   }

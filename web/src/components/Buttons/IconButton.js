@@ -18,15 +18,11 @@ const IconButton = ({ classes, color, disabled, label, icon, position, onClick }
     disabled={disabled}
     onClick={onClick}
   >
-    {
-        position === 'left' && icon &&
-        <Icon className={classNames(classes.leftIcon, classes.iconSmall)}>{icon}</Icon>
-    }
+    {position === 'left' &&
+      icon && <Icon className={classNames(classes.leftIcon, classes.iconSmall)}>{icon}</Icon>}
     {label}
-    {
-        position === 'right' && icon &&
-        <Icon className={classNames(classes.rightIcon, classes.iconSmall)}>{icon}</Icon>
-    }
+    {position === 'right' &&
+      icon && <Icon className={classNames(classes.rightIcon, classes.iconSmall)}>{icon}</Icon>}
   </Button>
 );
 
@@ -47,4 +43,3 @@ IconButton.defaultProps = {
 };
 
 export default withStyles(styles)(IconButton);
-

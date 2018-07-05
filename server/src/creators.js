@@ -5,13 +5,21 @@ import { DISTANT_FUTURE } from './constants';
 // returns a set of creators bound to the given models
 export const getCreators = (models) => {
   const {
-    Organisation, Group, User, Tag, Device, Event,
-    Schedule, TimeSegment, EventResponse, EventLocation, Message,
+    Organisation,
+    Group,
+    User,
+    Tag,
+    Device,
+    Event,
+    Schedule,
+    TimeSegment,
+    EventResponse,
+    EventLocation,
+    Message,
   } = models;
 
   return {
-    organisation: ({ name }) =>
-      Organisation.create({ name }),
+    organisation: ({ name }) => Organisation.create({ name }),
 
     schedule: ({ name, details, type, priority, startTime, endTime, group, tags }) => {
       if (!group || !group.id) {
@@ -31,13 +39,16 @@ export const getCreators = (models) => {
         startTime,
         endTime,
         groupId: group.id,
-      }).then(schedule => Promise.all([
-        tags && tags.map(
-          t => Tag.findById(t.id).then((foundTag) => {
-            foundTag.addSchedule(schedule);
-          }),
-        ),
-      ]).then(() => schedule.reload()));
+      }).then(schedule =>
+        Promise.all([
+          tags &&
+            tags.map(t =>
+              Tag.findById(t.id).then((foundTag) => {
+                foundTag.addSchedule(schedule);
+              }),
+            ),
+        ]).then(() => schedule.reload()),
+      );
     },
 
     event: ({ name, details, sourceIdentifier, permalink, priority, group }) => {
@@ -51,7 +62,7 @@ export const getCreators = (models) => {
         permalink,
         priority,
         groupId: group.id,
-        startTime: Math.floor((new Date()).getTime() / 1000),
+        startTime: Math.floor(new Date().getTime() / 1000),
         endTime: DISTANT_FUTURE, // no end time
       });
     },
@@ -91,12 +102,12 @@ export const getCreators = (models) => {
         name,
         icon: icon || 'group',
         organisationId: organisation.id,
-      }).then(group => Promise.all([
-        group.addUsers(users),
-        tags && tags.map(
-          t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group)),
-        ),
-      ]).then(() => group.reload()));
+      }).then(group =>
+        Promise.all([
+          group.addUsers(users),
+          tags && tags.map(t => Tag.findById(t.id).then(foundTag => foundTag.addGroup(group))),
+        ]).then(() => group.reload()),
+      );
     },
 
     user: ({ id, username, password, email, displayName, version, organisation, tags }) => {
@@ -113,16 +124,15 @@ export const getCreators = (models) => {
           email,
           version,
           organisationId: organisation.id,
-        }).then(user => Promise.all([
-          tags && tags.map(
-            t => Tag.findById(t.id).then(foundTag => foundTag.addUser(user)),
-          ),
-        ]).then(() => user.reload()),
+        }).then(user =>
+          Promise.all([
+            tags && tags.map(t => Tag.findById(t.id).then(foundTag => foundTag.addUser(user))),
+          ]).then(() => user.reload()),
         ),
       );
     },
 
-    timeSegment: ({ status, startTime, endTime, schedule, user, note }) => {
+    timeSegment: ({ type, status, startTime, endTime, schedule, user, note }) => {
       if (!user || !user.id) {
         return Promise.reject(Error('Must pass user'));
       }
@@ -136,7 +146,10 @@ export const getCreators = (models) => {
         return Promise.reject(Error('endTime must be greater than startTime'));
       }
 
+      console.log('TYPE: ', type);
+
       return TimeSegment.create({
+        type,
         status,
         startTime,
         endTime,
@@ -172,7 +185,7 @@ export const getCreators = (models) => {
         locationTime,
         userId: user.id,
         eventId: event.id,
-        eventlocationId: (destination ? destination.id : null),
+        eventlocationId: destination ? destination.id : null,
       });
     },
     eventLocation: ({
@@ -194,7 +207,7 @@ export const getCreators = (models) => {
         icon,
         locationLatitude,
         locationLongitude,
-        locationTime: locationTime || (new Date()).getTime() / 1000,
+        locationTime: locationTime || new Date().getTime() / 1000,
         eventId: event.id,
       }).then((location) => {
         if (primaryLocation) {
@@ -211,42 +224,50 @@ export const getCreators = (models) => {
       }
 
       if (groupId) {
-        futs.push(Group.findById(groupId).then((group) => {
-          if (!group) {
-            return Promise.reject(Error('Must pass valid group ID'));
-          }
-          return group;
-        }));
+        futs.push(
+          Group.findById(groupId).then((group) => {
+            if (!group) {
+              return Promise.reject(Error('Must pass valid group ID'));
+            }
+            return group;
+          }),
+        );
       }
       if (eventId) {
-        futs.push(Event.findById(eventId).then((event) => {
-          if (!event) {
-            return Promise.reject(Error('Must pass valid event ID'));
-          }
-          return event;
-        }));
+        futs.push(
+          Event.findById(eventId).then((event) => {
+            if (!event) {
+              return Promise.reject(Error('Must pass valid event ID'));
+            }
+            return event;
+          }),
+        );
       }
       if (scheduleId) {
-        futs.push(Schedule.findById(scheduleId).then((schedule) => {
-          if (!schedule) {
-            return Promise.reject(Error('Must pass valid schedule ID'));
-          }
-          return schedule;
-        }));
+        futs.push(
+          Schedule.findById(scheduleId).then((schedule) => {
+            if (!schedule) {
+              return Promise.reject(Error('Must pass valid schedule ID'));
+            }
+            return schedule;
+          }),
+        );
       }
 
       if (futs.length !== 1) {
         return Promise.reject(Error('must pass exactly one of groupId, eventId, scheduleId'));
       }
 
-      return Promise.all(futs).then(() => Message.create({
-        text,
-        groupId,
-        eventId,
-        scheduleId,
-        userId: user.id,
-        edited: false,
-      }));
+      return Promise.all(futs).then(() =>
+        Message.create({
+          text,
+          groupId,
+          eventId,
+          scheduleId,
+          userId: user.id,
+          edited: false,
+        }),
+      );
     },
   };
 };

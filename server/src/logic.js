@@ -315,7 +315,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         return timesegment.getUser();
       },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, status, startTime, endTime, userId, note } = args.timeSegment;
+        const { scheduleId, type, status, startTime, endTime, userId, note } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(user =>
           Schedule.findById(scheduleId).then((schedule) => {
             if (!schedule) {
@@ -323,6 +323,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             }
             return Creators.timeSegment({
               schedule,
+              type,
               status,
               startTime,
               endTime,
@@ -349,13 +350,14 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         );
       },
       updateTimeSegment(_, args, ctx) {
-        const { segmentId, status, startTime, endTime, note } = args.timeSegment;
+        const { segmentId, type, status, startTime, endTime, note } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(() =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
               return Promise.reject(Error('Invalid segment!'));
             }
             return segment.update({
+              type,
               status,
               startTime,
               endTime,

@@ -1,11 +1,12 @@
 import moment from 'moment';
 import {
   OPEN_DEPLOY_MODAL,
+  EDIT_DEPLOY_MODAL,
   CLOSE_DEPLOY_MODAL,
-  SET_DEPLOY_START_TIME,
-  SET_DEPLOY_END_TIME,
+  SET_DEPLOY,
   ADD_DEPLOY_PERSON,
   REMOVE_DEPLOY_PERSON,
+  CLEAR_DEPLOY_PERSON,
   ADD_DEPLOY_TAG,
   REMOVE_DEPLOY_TAG,
   OPEN_TIME_SEGMENTS_MODAL,
@@ -27,8 +28,12 @@ const initialState = {
   },
   deploy: {
     open: false,
+    id: 0,
+    scheduleId: 0,
+    userId: 0,
     startTime: 0,
     endTime: 0,
+    note: '',
     tags: [],
     tagsSelected: [],
     peopleSelected: [],
@@ -43,8 +48,26 @@ export default (state = initialState, action) => {
         deploy: {
           ...state.deploy,
           open: true,
+          id: 0,
+          scheduleId: action.schedule.id,
           startTime: action.schedule.startTime,
           endTime: action.schedule.endTime,
+          userId: 0,
+          tags: action.schedule.tags,
+          tagsSelected: [],
+        },
+      };
+    case EDIT_DEPLOY_MODAL:
+      return {
+        ...state,
+        deploy: {
+          ...state.deploy,
+          open: true,
+          id: action.timeSegment.id,
+          scheduleId: action.schedule.id,
+          startTime: action.timeSegment.startTime,
+          endTime: action.timeSegment.endTime,
+          userId: action.timeSegment.user.id,
           tags: action.schedule.tags,
           tagsSelected: [],
         },
@@ -57,20 +80,14 @@ export default (state = initialState, action) => {
           open: false,
         },
       };
-    case SET_DEPLOY_START_TIME:
+    case SET_DEPLOY:
       return {
         ...state,
         deploy: {
           ...state.deploy,
           startTime: action.startTime,
-        },
-      };
-    case SET_DEPLOY_END_TIME:
-      return {
-        ...state,
-        deploy: {
-          ...state.deploy,
           endTime: action.endTime,
+          note: action.note,
         },
       };
     case ADD_DEPLOY_PERSON:
@@ -95,6 +112,14 @@ export default (state = initialState, action) => {
         deploy: {
           ...state.deploy,
           peopleSelected: state.deploy.peopleSelected.filter(item => item !== action.id),
+        },
+      };
+    case CLEAR_DEPLOY_PERSON:
+      return {
+        ...state,
+        deploy: {
+          ...state.deploy,
+          peopleSelected: [],
         },
       };
     case REMOVE_DEPLOY_TAG:

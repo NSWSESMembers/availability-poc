@@ -1,9 +1,10 @@
 export const OPEN_DEPLOY_MODAL = 'OPEN_DEPLOY_MODAL';
+export const EDIT_DEPLOY_MODAL = 'EDIT_DEPLOY_MODAL';
 export const CLOSE_DEPLOY_MODAL = 'CLOSE_DEPLOY_MODAL';
-export const SET_DEPLOY_START_TIME = 'SET_DEPLOY_START_TIME';
-export const SET_DEPLOY_END_TIME = 'SET_DEPLOY_END_TIME';
+export const SET_DEPLOY = 'SET_DEPLOY';
 export const ADD_DEPLOY_PERSON = 'ADD_DEPLOY_PERSON';
 export const REMOVE_DEPLOY_PERSON = 'REMOVE_DEPLOY_PERSON';
+export const CLEAR_DEPLOY_PERSON = 'CLEAR_DEPLOY_PERSON';
 export const ADD_DEPLOY_TAG = 'ADD_DEPLOY_TAG';
 export const REMOVE_DEPLOY_TAG = 'REMOVE_DEPLOY_TAG';
 
@@ -18,18 +19,21 @@ export const openDeployModal = schedule => ({
   schedule,
 });
 
+export const editDeployModal = (schedule, timeSegment) => ({
+  type: EDIT_DEPLOY_MODAL,
+  schedule,
+  timeSegment,
+});
+
 export const closeDeployModal = () => ({
   type: CLOSE_DEPLOY_MODAL,
 });
 
-export const setDeployStartTime = startTime => ({
-  type: SET_DEPLOY_START_TIME,
+export const setDeploy = (startTime, endTime, note) => ({
+  type: SET_DEPLOY,
   startTime,
-});
-
-export const setDeployEndTime = endTime => ({
-  type: SET_DEPLOY_END_TIME,
   endTime,
+  note,
 });
 
 export const addDeployPerson = id => ({
@@ -40,6 +44,10 @@ export const addDeployPerson = id => ({
 export const removeDeployPerson = id => ({
   type: REMOVE_DEPLOY_PERSON,
   id,
+});
+
+export const clearDeployPerson = () => ({
+  type: CLEAR_DEPLOY_PERSON,
 });
 
 export const addDeployTag = id => ({

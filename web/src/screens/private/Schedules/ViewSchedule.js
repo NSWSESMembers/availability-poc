@@ -151,6 +151,13 @@ class ViewSchedule extends React.Component {
                         <Checkbox
                           checked={selected}
                           className={classes.tableCheckbox}
+                          disabled={
+                            schedule.timeSegments.filter(
+                              timeSegment =>
+                                timeSegment.type === 'deployment' &&
+                                timeSegment.user.id === user.id,
+                            ).length > 0
+                          }
                           onChange={e => this.onSelectPerson(e, user.id)}
                         />
                       </TableCell>
@@ -169,6 +176,7 @@ class ViewSchedule extends React.Component {
                           <ScheduleWeekItem
                             key={`vsi-${user.id}-${column.startTime}`}
                             user={user}
+                            schedule={schedule}
                             startTime={column.startTime}
                             endTime={column.endTime}
                             onOpenModal={this.onEdit}

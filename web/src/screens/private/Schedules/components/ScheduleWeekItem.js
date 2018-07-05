@@ -1,17 +1,70 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 
-import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../../../config';
+import { editDeployModal } from '../../../../actions/schedule';
+
+import {
+  STATUS_AVAILABLE,
+  STATUS_UNAVAILABLE,
+  STATUS_UNLESS_URGENT,
+  TIME_SEGMENT_TYPE_AVAILABILITY,
+  TIME_SEGMENT_TYPE_DEPLOYMENT,
+} from '../../../../config';
+
 import styles from './ScheduleWeekItem.styles';
+
+import IconButton from '../../../../components/Buttons/IconButton';
 import TimeLabel from '../../../../components/Labels/TimeLabel';
+
 import { statusCount } from '../../../../selectors/status';
 
-const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onOpenModal }) => {
+const ViewScheduleItem = ({
+  classes,
+  dispatch,
+  user,
+  schedule,
+  startTime,
+  endTime,
+  timeSegments,
+  onOpenModal,
+}) => {
+  const onEditDeployment = (timeSegment) => {
+    dispatch(editDeployModal(schedule, timeSegment));
+  };
+
+  const deployments = timeSegments.filter(
+    timeSegment =>
+      timeSegment.type === TIME_SEGMENT_TYPE_DEPLOYMENT &&
+      ((timeSegment.startTime >= startTime && timeSegment.startTime < endTime) ||
+        (timeSegment.startTime < startTime && timeSegment.endTime >= endTime) ||
+        (timeSegment.endTime >= startTime && timeSegment.endTime <= endTime)),
+  );
+
+  if (deployments.length > 0) {
+    return (
+      <TableCell className={`${classes.tableCell}`} style={{ paddingRight: 0 }}>
+        <div className={classes.flexCenter}>
+          <IconButton
+            color="secondary"
+            label="deployed"
+            onClick={() => onEditDeployment(deployments[0])}
+            icon="local_airport"
+          />
+        </div>
+      </TableCell>
+    );
+  }
+
   const currentSegments = timeSegments.filter(
-    timeSegment => timeSegment.startTime >= startTime && timeSegment.endTime <= endTime,
+    timeSegment =>
+      timeSegment.type === TIME_SEGMENT_TYPE_AVAILABILITY &&
+      timeSegment.startTime >= startTime &&
+      timeSegment.endTime <= endTime,
   );
 
   const availableCount = statusCount(currentSegments, STATUS_AVAILABLE);
@@ -67,12 +120,18 @@ const ViewScheduleItem = ({ classes, user, startTime, endTime, timeSegments, onO
 
 ViewScheduleItem.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-  }),
+  dispatch: PropTypes.func,
   startTime: PropTypes.number.isRequired,
   endTime: PropTypes.number.isRequired,
   onOpenModal: PropTypes.func.isRequired,
+  schedule: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    details: PropTypes.string.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
+  }),
   timeSegments: PropTypes.arrayOf(
     PropTypes.shape({
       status: PropTypes.string.isRequired,
@@ -83,6 +142,16 @@ ViewScheduleItem.propTypes = {
       }),
     }),
   ),
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
 };
 
-export default withStyles(styles)(ViewScheduleItem);
+const mapStateToProps = ({ auth }) => ({
+  auth,
+});
+
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles),
+)(ViewScheduleItem);
