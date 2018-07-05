@@ -124,6 +124,7 @@ SubscriptionServer.create({
     }
     return handlers.subscription.defaultOnOperation(baseParams, args, baseParams.context);
   },
+  keepAlive: 30000,
 }, {
   server: graphQLServer,
   path: SUBSCRIPTIONS_PATH,

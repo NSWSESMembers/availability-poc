@@ -132,8 +132,24 @@ export const Schema = [
     eta: Int
   }
 
+  input SetEventResponseLocationInput {
+    eventId: Int!
+    locationLatitude: Float
+    locationLongitude: Float
+    locationTime: Int
+  }
+
   input CreateMessageInput {
     text: String
+    image: String
+    eventId: Int
+    scheduleId: Int
+    groupId: Int
+  }
+
+  input CreateSystemMessageInput {
+    text: String
+    image: String
     eventId: Int
     scheduleId: Int
     groupId: Int
@@ -177,6 +193,11 @@ export const Schema = [
 
   input SendTestPushInput {
     delay: Boolean
+  }
+
+  input SetEventNotificationsInput {
+    enabled: Boolean!
+    eventId: Int!
   }
 
   type Organisation {
@@ -245,6 +266,7 @@ export const Schema = [
     permalink: String,
     priority: Int,
     group: Group!
+    notificationsEnabled: Boolean,
     responses: [EventResponse]
     messages: [Message]
     eventLocations: [EventLocation]
@@ -257,8 +279,9 @@ export const Schema = [
     id: Int!
     text: String
     edited: Boolean
+    image: String
     createdAt: Date # sequelize managed field
-    user: User!
+    user: User
   }
 
   type EventResponse {
@@ -334,6 +357,7 @@ export const Schema = [
     createSchedule(schedule: CreateScheduleInput!): Schedule
     updateSchedule(schedule: UpdateScheduleInput!): Schedule
     createMessage(message: CreateMessageInput!): Message
+    createSystemMessage(message: CreateSystemMessageInput!): Message
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment
     updateTimeSegment(timeSegment: updateTimeSegmentInput!): TimeSegment
     removeTimeSegment(timeSegment: removeTimeSegmentInput!): Boolean
@@ -345,7 +369,9 @@ export const Schema = [
     updateLocation(location: LocationUpdateInput!): Boolean
     updateDevice(device: DeviceUpdateInput!): Device
     setEventResponse(response: SetEventResponseInput!): EventResponse
+    setEventResponseLocation(location:SetEventResponseLocationInput!): EventResponse
     sendTestPush(vars: SendTestPushInput): Boolean  # send a push notification to the requesting device
+    setEventNotifications(notifications: SetEventNotificationsInput): Boolean
   }
 
   type Subscription {
