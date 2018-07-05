@@ -92,11 +92,11 @@ class ViewSchedule extends React.Component {
     });
   };
 
-  onSelectPerson = (e, id) => {
+  onSelectPerson = (e, user) => {
     if (e.target.checked) {
-      this.props.dispatch(addDeployPerson(id));
+      this.props.dispatch(addDeployPerson(user));
     } else {
-      this.props.dispatch(removeDeployPerson(id));
+      this.props.dispatch(removeDeployPerson(user.id));
     }
   };
 
@@ -140,7 +140,7 @@ class ViewSchedule extends React.Component {
             <ScheduleWeekHeader schedule={schedule} columnData={columnData} />
             <TableBody>
               {schedule.group.users.map((user) => {
-                const selected = deploy.peopleSelected.indexOf(user.id) > -1;
+                const selected = deploy.peopleSelected.filter(u => u.id === user.id).length > 0;
                 const userSegments = schedule.timeSegments.filter(
                   timeSegment => timeSegment.user.id === user.id,
                 );
@@ -158,7 +158,7 @@ class ViewSchedule extends React.Component {
                                 timeSegment.user.id === user.id,
                             ).length > 0
                           }
-                          onChange={e => this.onSelectPerson(e, user.id)}
+                          onChange={e => this.onSelectPerson(e, user)}
                         />
                       </TableCell>
                     )}
@@ -241,7 +241,12 @@ ViewSchedule.propTypes = {
     ),
   }),
   deploy: PropTypes.shape({
-    peopleSelected: PropTypes.arrayOf(PropTypes.number),
+    peopleSelected: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        displayName: PropTypes.string.isRequired,
+      }),
+    ),
   }),
 };
 

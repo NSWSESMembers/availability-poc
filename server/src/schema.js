@@ -80,6 +80,7 @@ export const Schema = [
     endTime: Int!
     userId: Int
     note: String
+    tags: [TagInput]
   }
 
   input updateTimeSegmentInput {
@@ -89,6 +90,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     note: String
+    tags: [TagInput]
   }
 
   input removeTimeSegmentInput {
@@ -329,6 +331,7 @@ export const Schema = [
     startTime: Int!
     endTime: Int!
     note: String
+    tags: [Tag] # tags associated with this timeSegment
   }
 
   # query for types

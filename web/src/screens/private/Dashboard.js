@@ -16,7 +16,7 @@ import styles from '../../styles/AppStyle';
 import Message from '../../components/Messages/Message';
 import ScheduleTable from './Schedules/components/ScheduleTable';
 
-const Dashboard = ({ classes, loading, user }) => {
+const Dashboard = ({ auth, classes, loading, user }) => {
   if (loading) {
     return <CircularProgress className={classes.progress} size={50} />;
   }
@@ -34,7 +34,7 @@ const Dashboard = ({ classes, loading, user }) => {
       <Paper className={classes.paperMargin}>
         <Message>
           You have no capabilities assigned for your user profile.{' '}
-          <Link to="/profile">Click here to add capabilities</Link>
+          <Link to={`/users/${auth.id}`}>Click here to add capabilities</Link>
         </Message>
       </Paper>
       {user.groups.length === 0 ? (
@@ -55,6 +55,7 @@ const Dashboard = ({ classes, loading, user }) => {
 };
 
 Dashboard.propTypes = {
+  auth: PropTypes.shape({}).isRequired,
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
   user: PropTypes.shape({}),

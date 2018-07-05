@@ -207,7 +207,7 @@ class AddSchedule extends React.Component {
       }
 
       const startTime = moment.unix(schedule.startTime).format('YYYY-MM-DD');
-      const endTime = moment.unix(schedule.startTime).format('YYYY-MM-DD');
+      const endTime = moment.unix(schedule.endTime).format('YYYY-MM-DD');
 
       const priority = [1, 5, 10].indexOf(schedule.priority) > -1 ? schedule.priority : 5;
       this.setState({
@@ -308,19 +308,19 @@ class AddSchedule extends React.Component {
                 </FormControl>
                 <FormControl className={classes.formControl}>
                   <Tag
-                    list={locations}
-                    placeholder="Select Location"
-                    onChange={this.onTagChange('locations')}
-                    value={this.state.locations}
-                    multi
-                  />
-                </FormControl>
-                <FormControl className={classes.formControl}>
-                  <Tag
                     list={locationsRequest}
                     placeholder="Select Requesting HQ"
                     onChange={this.onTagChange('requestingHQ')}
                     value={this.state.requestingHQ}
+                  />
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <Tag
+                    list={locations}
+                    placeholder="Select Location(s)"
+                    onChange={this.onTagChange('locations')}
+                    value={this.state.locations}
+                    multi
                   />
                 </FormControl>
               </FormGroupPanel>

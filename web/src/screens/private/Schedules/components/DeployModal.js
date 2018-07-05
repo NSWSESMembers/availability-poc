@@ -32,7 +32,7 @@ import {
 } from '../../../../actions/schedule';
 
 import { TIME_SEGMENT_TYPE_DEPLOYMENT } from '../../../../config';
-import { TAG_TYPE_CAPABILITY } from '../../../../constants';
+import { TAG_TYPE_CAPABILITY, TAG_TYPE_ORG_STRUCTURE } from '../../../../constants';
 
 import DatePicker from '../../../../components/Forms/DatePicker';
 import FormGroupPanel from '../../../../components/Panels/FormGroupPanel';
@@ -62,16 +62,17 @@ const DeployModal = ({
   };
   const onSave = () => {
     if (deploy.id === 0) {
-      deploy.peopleSelected.forEach((id) => {
+      deploy.peopleSelected.forEach((user) => {
         const segment = {
           type: TIME_SEGMENT_TYPE_DEPLOYMENT,
           segmentId: deploy.id,
-          userId: id,
+          userId: user.id,
           scheduleId: deploy.scheduleId,
           status: 'deployed',
           startTime: deploy.startTime,
           endTime: deploy.endTime,
           note: deploy.note,
+          tags: deploy.tagsSelected.map(tag => ({ id: tag })),
         };
         createTimeSegment(segment);
       });
@@ -86,6 +87,7 @@ const DeployModal = ({
         startTime: deploy.startTime,
         endTime: deploy.endTime,
         note: deploy.note,
+        tags: deploy.tagsSelected.map(tag => ({ id: tag })),
       };
       updateTimeSegment(segment);
     }
@@ -102,6 +104,8 @@ const DeployModal = ({
       dispatch(removeDeployTag(id));
     }
   };
+  const capabilities = deploy.tags.filter(tag => tag.type === TAG_TYPE_CAPABILITY);
+  const locations = deploy.tags.filter(tag => tag.type === TAG_TYPE_ORG_STRUCTURE);
   return (
     <Dialog
       open={deploy.open}
@@ -128,24 +132,41 @@ const DeployModal = ({
             onChange={onChange}
           />
         </FormGroupPanel>
-        {deploy.tags.length > 0 && (
+        {capabilities.length > 0 && (
           <FormGroupPanel label="Capabilities">
             <FormGroup row>
-              {deploy.tags
-                .filter(tag => tag.type === TAG_TYPE_CAPABILITY)
-                .map(tag => (
-                  <FormControlLabel
-                    key={`tag-${tag.id}`}
-                    control={
-                      <Checkbox
-                        checked={deploy.tagsSelected.indexOf(tag.id) > -1}
-                        onChange={e => onSelectTag(e, tag.id)}
-                        value={tag.id.toString()}
-                      />
-                    }
-                    label={tag.name}
-                  />
-                ))}
+              {capabilities.map(tag => (
+                <FormControlLabel
+                  key={`tag-${tag.id}`}
+                  control={
+                    <Checkbox
+                      checked={deploy.tagsSelected.indexOf(tag.id) > -1}
+                      onChange={e => onSelectTag(e, tag.id)}
+                      value={tag.id.toString()}
+                    />
+                  }
+                  label={tag.name}
+                />
+              ))}
+            </FormGroup>
+          </FormGroupPanel>
+        )}
+        {locations.length > 0 && (
+          <FormGroupPanel label="Locations">
+            <FormGroup row>
+              {locations.map(tag => (
+                <FormControlLabel
+                  key={`tag-${tag.id}`}
+                  control={
+                    <Checkbox
+                      checked={deploy.tagsSelected.indexOf(tag.id) > -1}
+                      onChange={e => onSelectTag(e, tag.id)}
+                      value={tag.id.toString()}
+                    />
+                  }
+                  label={tag.name}
+                />
+              ))}
             </FormGroup>
           </FormGroupPanel>
         )}
@@ -180,9 +201,11 @@ const DeployModal = ({
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ type, userId, scheduleId, status, startTime, endTime, note }) =>
+    createTimeSegment: ({ type, userId, scheduleId, status, startTime, endTime, note, tags }) =>
       mutate({
-        variables: { timeSegment: { type, userId, scheduleId, status, startTime, endTime, note } },
+        variables: {
+          timeSegment: { type, userId, scheduleId, status, startTime, endTime, note, tags },
+        },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -210,9 +233,9 @@ const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
 
 const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    updateTimeSegment: ({ type, segmentId, status, startTime, endTime, scheduleId, note }) =>
+    updateTimeSegment: ({ type, segmentId, status, startTime, endTime, scheduleId, note, tags }) =>
       mutate({
-        variables: { timeSegment: { type, segmentId, status, startTime, endTime, note } },
+        variables: { timeSegment: { type, segmentId, status, startTime, endTime, note, tags } },
         refetchQueries: [
           {
             query: SCHEDULE_QUERY,
@@ -234,7 +257,12 @@ DeployModal.propTypes = {
     startTime: PropTypes.number.isRequired,
     endTime: PropTypes.number.isRequired,
     note: PropTypes.string.isRequired,
-    peopleSelected: PropTypes.arrayOf(PropTypes.number),
+    peopleSelected: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        displayName: PropTypes.string.isRequired,
+      }),
+    ),
   }),
   removeTimeSegment: PropTypes.func,
   updateTimeSegment: PropTypes.func,

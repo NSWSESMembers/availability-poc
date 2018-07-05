@@ -132,7 +132,7 @@ export const getCreators = (models) => {
       );
     },
 
-    timeSegment: ({ type, status, startTime, endTime, schedule, user, note }) => {
+    timeSegment: ({ type, status, startTime, endTime, schedule, user, note, tags }) => {
       if (!user || !user.id) {
         return Promise.reject(Error('Must pass user'));
       }
@@ -146,8 +146,6 @@ export const getCreators = (models) => {
         return Promise.reject(Error('endTime must be greater than startTime'));
       }
 
-      console.log('TYPE: ', type);
-
       return TimeSegment.create({
         type,
         status,
@@ -156,7 +154,14 @@ export const getCreators = (models) => {
         scheduleId: schedule.id,
         userId: user.id,
         note,
-      });
+      }).then(timeSegment =>
+        Promise.all([
+          tags &&
+            tags.map(t =>
+              Tag.findById(t.id).then(foundTag => foundTag.addTimesegment(timeSegment)),
+            ),
+        ]).then(() => timeSegment.reload()),
+      );
     },
 
     eventResponse: ({
@@ -257,15 +262,17 @@ export const getCreators = (models) => {
         return Promise.reject(Error('must pass exactly one of groupId, eventId, scheduleId'));
       }
 
-      return Promise.all(futs).then(() => Message.create({
-        text,
-        image,
-        groupId,
-        eventId,
-        scheduleId,
-        userId: user && user.id,
-        edited: false,
-      }));
+      return Promise.all(futs).then(() =>
+        Message.create({
+          text,
+          image,
+          groupId,
+          eventId,
+          scheduleId,
+          userId: user && user.id,
+          edited: false,
+        }),
+      );
     },
   };
 };

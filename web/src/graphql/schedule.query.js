@@ -30,6 +30,10 @@ const SCHEDULE_QUERY = gql`
         startTime
         endTime
         note
+        tags {
+          id
+          name
+        }
         user {
           id
         }

@@ -69,7 +69,7 @@ export default (state = initialState, action) => {
           endTime: action.timeSegment.endTime,
           userId: action.timeSegment.user.id,
           tags: action.schedule.tags,
-          tagsSelected: [],
+          tagsSelected: action.timeSegment.tags.map(tag => tag.id),
         },
       };
     case CLOSE_DEPLOY_MODAL:
@@ -95,7 +95,7 @@ export default (state = initialState, action) => {
         ...state,
         deploy: {
           ...state.deploy,
-          peopleSelected: [...state.deploy.peopleSelected, action.id],
+          peopleSelected: [...state.deploy.peopleSelected, action.user],
         },
       };
     case ADD_DEPLOY_TAG:
@@ -111,7 +111,7 @@ export default (state = initialState, action) => {
         ...state,
         deploy: {
           ...state.deploy,
-          peopleSelected: state.deploy.peopleSelected.filter(item => item !== action.id),
+          peopleSelected: state.deploy.peopleSelected.filter(user => user.id !== action.id),
         },
       };
     case CLEAR_DEPLOY_PERSON:

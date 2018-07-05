@@ -84,6 +84,9 @@ export const getResolvers = (handlers) => {
       },
     },
     TimeSegment: {
+      tags(timesegment, args, ctx) {
+        return timeSegmentHandler.tags(timesegment, args, ctx);
+      },
       user(timesegment, args, ctx) {
         return timeSegmentHandler.user(timesegment, args, ctx);
       },

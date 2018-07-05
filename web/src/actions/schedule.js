@@ -36,9 +36,9 @@ export const setDeploy = (startTime, endTime, note) => ({
   note,
 });
 
-export const addDeployPerson = id => ({
+export const addDeployPerson = user => ({
   type: ADD_DEPLOY_PERSON,
-  id,
+  user,
 });
 
 export const removeDeployPerson = id => ({

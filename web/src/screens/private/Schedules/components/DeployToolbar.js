@@ -44,7 +44,12 @@ const DeployToolbar = ({ classes, dispatch, deploy, schedule }) => {
 DeployToolbar.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   deploy: PropTypes.shape({
-    peopleSelected: PropTypes.arrayOf(PropTypes.number),
+    peopleSelected: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        displayName: PropTypes.string.isRequired,
+      }),
+    ),
   }),
   dispatch: PropTypes.func,
   schedule: PropTypes.shape({

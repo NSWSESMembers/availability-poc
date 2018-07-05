@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
 import Icon from '@material-ui/core/Icon';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -129,16 +130,25 @@ class UserLink extends React.Component {
                 On Deployment
               </Typography>
               {deploys.map(timeSegment => (
-                <Typography variant="body1" gutterBottom key={`deploy${timeSegment.startTime}`}>
-                  <b>{moment.unix(timeSegment.startTime).format('LL')}</b>
-                  &nbsp;to&nbsp;
-                  <b>{moment.unix(timeSegment.endTime).format('LL')}</b>
-                  {timeSegment.note !== '' && (
-                    <Typography variant="caption" gutterBottom>
-                      {timeSegment.note}
-                    </Typography>
-                  )}
-                </Typography>
+                <React.Fragment key={`deploy${timeSegment.startTime}`}>
+                  <Typography variant="body1" gutterBottom>
+                    <b>{moment.unix(timeSegment.startTime).format('LL')}</b>
+                    &nbsp;to&nbsp;
+                    <b>{moment.unix(timeSegment.endTime).format('LL')}</b>&nbsp;
+                    {timeSegment.note !== '' && (
+                      <Typography variant="caption" gutterBottom>
+                        {timeSegment.note}
+                      </Typography>
+                    )}
+                  </Typography>
+                  {timeSegment.tags.map(tag => (
+                    <Chip
+                      key={`chiphover-${timeSegment.user.id}-${timeSegment.id}-${tag.id}`}
+                      label={tag.name}
+                      className={classes.chip}
+                    />
+                  ))}
+                </React.Fragment>
               ))}
             </Popover>
           </React.Fragment>

@@ -319,8 +319,13 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       user(timesegment) {
         return timesegment.getUser();
       },
+      tags(timesegment) {
+        return timesegment.getTags();
+      },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, type, status, startTime, endTime, userId, note } = args.timeSegment;
+        const {
+          scheduleId, type, status, startTime, endTime, userId, note, tags,
+        } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(user =>
           Schedule.findById(scheduleId).then((schedule) => {
             if (!schedule) {
@@ -334,6 +339,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               endTime,
               user: userId === undefined ? user : { id: userId },
               note,
+              tags,
             });
           }),
         );
@@ -355,7 +361,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         );
       },
       updateTimeSegment(_, args, ctx) {
-        const { segmentId, type, status, startTime, endTime, note } = args.timeSegment;
+        const { segmentId, type, status, startTime, endTime, note, tags } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(() =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
@@ -367,7 +373,22 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               startTime,
               endTime,
               note,
-            });
+            }).then(() =>
+              Promise.all([
+                tags &&
+              segment.getTags().then(ts =>
+                ts.forEach((t) => {
+                  const tagRemove = tags.find(tag => tag.id === t.id);
+                  if (tagRemove === undefined) {
+                    t.removeTimesegment(segment);
+                  }
+                }),
+              ),
+                tags &&
+                tags.map(t => Tag.findById(t.id)
+                  .then(foundTag => foundTag.addTimesegment(segment))),
+              ]).then(() => segment.reload()),
+            );
           }),
         );
       },
