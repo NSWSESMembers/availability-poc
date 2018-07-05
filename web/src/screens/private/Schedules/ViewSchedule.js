@@ -101,7 +101,7 @@ class ViewSchedule extends React.Component {
   };
 
   render() {
-    const { classes, loading, schedule, deploy } = this.props;
+    const { classes, loading, schedule, peopleSelected } = this.props;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -140,7 +140,7 @@ class ViewSchedule extends React.Component {
             <ScheduleWeekHeader schedule={schedule} columnData={columnData} />
             <TableBody>
               {schedule.group.users.map((user) => {
-                const selected = deploy.peopleSelected.filter(u => u.id === user.id).length > 0;
+                const selected = peopleSelected.filter(u => u.id === user.id).length > 0;
                 const userSegments = schedule.timeSegments.filter(
                   timeSegment => timeSegment.user.id === user.id,
                 );
@@ -263,7 +263,7 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
 
 const mapStateToProps = ({ auth, schedule }) => ({
   auth,
-  deploy: schedule.deploy,
+  peopleSelected: schedule.deploy.peopleSelected,
 });
 
 export default compose(
