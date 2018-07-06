@@ -224,18 +224,20 @@ class Detail extends Component {
   }
 
   zoomMap(fitToTheseCoordinates) {
-    this.map.fitToCoordinates(
-      fitToTheseCoordinates,
-      {
-        edgePadding: {
-          top: 300,
-          right: 100,
-          bottom: 300,
-          left: 100,
+    if (fitToTheseCoordinates.length) {
+      this.map.fitToCoordinates(
+        fitToTheseCoordinates,
+        {
+          edgePadding: {
+            top: 300,
+            right: 100,
+            bottom: 300,
+            left: 100,
+          },
+          animated: true,
         },
-        animated: true,
-      },
-    );
+      );
+    }
   }
 
   zoomToRegionMap(fitToTheseCoordinates) {
