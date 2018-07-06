@@ -240,14 +240,12 @@ ViewSchedule.propTypes = {
       }),
     ),
   }),
-  deploy: PropTypes.shape({
-    peopleSelected: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        displayName: PropTypes.string.isRequired,
-      }),
-    ),
-  }),
+  peopleSelected: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      displayName: PropTypes.string.isRequired,
+    }),
+  ),
 };
 
 const scheduleQuery = graphql(SCHEDULE_QUERY, {

@@ -42,6 +42,7 @@ class Header extends React.Component {
     if (pathname.startsWith('/groups')) route = 'Groups';
     if (pathname.startsWith('/schedules')) route = 'Availability';
     if (pathname.startsWith('/events')) route = 'Events';
+    if (pathname.startsWith('/users')) route = 'Users';
     return route;
   };
 
@@ -51,6 +52,7 @@ class Header extends React.Component {
       Groups: '/groups',
       Availability: '/schedules',
       Events: '/events',
+      Users: '/users',
     };
     let path = paths[value];
     if (typeof path === 'undefined') {
@@ -101,6 +103,7 @@ class Header extends React.Component {
             <Tab value="Groups" label="Groups" />
             <Tab value="Availability" label="Availability" />
             <Tab value="Events" label="Events" />
+            <Tab value="Users" label="Users" />
           </Tabs>
         </AppBar>
       </div>

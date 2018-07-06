@@ -14,7 +14,7 @@ const getMonday = () => {
 
 const minFromNow = (min) => {
   const now = new Date();
-  return Math.floor(now.getTime() / 1000) + 60 * min;
+  return Math.floor(now.getTime() / 1000) + (60 * min);
 };
 
 const MONDAY = getMonday();
@@ -262,7 +262,7 @@ export const SCHEDULES = [
     type: 'deployment',
     priority: 4,
     startTime: MONDAY,
-    endTime: MONDAY + 60 * 60 * 24 * 3,
+    endTime: MONDAY + (60 * 60 * 24 * 3),
     group: 'NSW SES',
     timeSegmentUsers: ['kiama1', 'kiama2', 'parramatta1', 'parramatta2'],
     tags: [],
@@ -284,7 +284,7 @@ export const SCHEDULES = [
     type: 'local',
     priority: 5,
     startTime: MONDAY,
-    endTime: MONDAY + 60 * 60 * 24 * 6,
+    endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Kiama',
     timeSegmentUsers: ['kiama3', 'kiama4', 'kiama5', 'kiama8'],
     tags: ['KMA'],
@@ -305,8 +305,8 @@ export const SCHEDULES = [
     details: 'Metro - Flood Rescue operator availability',
     type: 'local',
     priority: 2,
-    startTime: MONDAY + 60 * 60 * 24 * 3,
-    endTime: MONDAY + 60 * 60 * 24 * 6,
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
     tags: [],
   },
@@ -315,8 +315,8 @@ export const SCHEDULES = [
     details: 'Mtro - IMT operator availability',
     type: 'local',
     priority: 3,
-    startTime: MONDAY + 60 * 60 * 24 * 3,
-    endTime: MONDAY + 60 * 60 * 24 * 6,
+    startTime: MONDAY + (60 * 60 * 24 * 3),
+    endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Metro Zone',
     tags: [],
   },
@@ -326,7 +326,7 @@ export const SCHEDULES = [
     type: 'local',
     priority: 9,
     startTime: MONDAY,
-    endTime: MONDAY + 60 * 60 * 24 * 1,
+    endTime: MONDAY + (60 * 60 * 24 * 1),
     group: 'NSW SES',
     tags: [],
   },
