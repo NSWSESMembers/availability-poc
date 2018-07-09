@@ -54,9 +54,16 @@ const theme = createMuiTheme({
       // contrastText: will be calculated to contast with palette.primary.main
     },
     secondary: {
-      main: '#f48603',
+      main: '#1c87c9',
+      contrastText: 'white',
+    },
+    alternate: {
+      main: '#1c87c9',
     },
     // error: will use the default color
+  },
+  typography: {
+    fontSize: 16,
   },
   overrides: {
     MuiTableCell: {

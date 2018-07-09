@@ -3,24 +3,21 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Paper from '@material-ui/core/Paper';
-import Search from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 
 import GroupSelect from '../Groups/components/GroupSelect';
+import LinkButton from '../../../components/Buttons/LinkButton';
 import Message from '../../../components/Messages/Message';
 import CenterPanel from '../../../components/Panels/CenterPanel';
+import ScheduleTable from './components/ScheduleTable';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 import Tag from '../../../components/Selects/Tag';
-import ScheduleTable from './components/ScheduleTable';
+import TextSearch from '../../../components/Forms/TextSearch';
 
 import filterSchedules from '../../../selectors/schedules';
 
@@ -65,7 +62,7 @@ class ViewSchedules extends React.Component {
 
   render() {
     const { classes, orgLoading, orgUser, user, userLoading } = this.props;
-    const { groupId, name, order, orderBy } = this.state;
+    const { capability, groupId, name, order, orderBy } = this.state;
 
     if (orgLoading || userLoading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -74,6 +71,7 @@ class ViewSchedules extends React.Component {
     const schedules = filterSchedules(user.schedules, {
       groupId,
       name,
+      capability,
       order,
       orderBy,
     });
@@ -87,15 +85,7 @@ class ViewSchedules extends React.Component {
         <Paper className={classes.paper}>
           <SpreadPanel>
             <Typography variant="title">Availability</Typography>
-            <Button
-              variant="raised"
-              size="small"
-              color="primary"
-              component={Link}
-              to="/schedules/add"
-            >
-              Add New Request
-            </Button>
+            <LinkButton label="Add New Request" linkTo="/schedules/add" />
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
@@ -112,15 +102,7 @@ class ViewSchedules extends React.Component {
               />
             </FormControl>
             <FormControl className={classes.formControlFilter}>
-              <Input
-                name="name"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Search color="disabled" />
-                  </InputAdornment>
-                }
-                onChange={this.onChange}
-              />
+              <TextSearch name="name" onChange={this.onChange} value={name} />
             </FormControl>
           </CenterPanel>
         </Paper>

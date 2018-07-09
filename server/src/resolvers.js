@@ -84,6 +84,9 @@ export const getResolvers = (handlers) => {
       },
     },
     TimeSegment: {
+      tags(timesegment, args, ctx) {
+        return timeSegmentHandler.tags(timesegment, args, ctx);
+      },
       user(timesegment, args, ctx) {
         return timeSegmentHandler.user(timesegment, args, ctx);
       },
@@ -185,6 +188,9 @@ export const getResolvers = (handlers) => {
       },
       createSchedule(_, args, ctx) {
         return scheduleHandler.createSchedule(_, args, ctx);
+      },
+      updateSchedule(_, args, ctx) {
+        return scheduleHandler.updateSchedule(_, args, ctx);
       },
       createTimeSegment(_, args, ctx) {
         return timeSegmentHandler.createTimeSegment(_, args, ctx);

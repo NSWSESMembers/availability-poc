@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import CenterPanel from '../../../components/Panels/CenterPanel';
 import EventTable from './components/EventTable';
 import GroupSelect from '../Groups/components/GroupSelect';
+import LinkButton from '../../../components/Buttons/LinkButton';
 import Message from '../../../components/Messages/Message';
 import SpreadPanel from '../../../components/Panels/SpreadPanel';
 
@@ -68,9 +67,7 @@ class ViewEvents extends React.Component {
         <Paper className={classes.paper}>
           <SpreadPanel>
             <Typography variant="title">Events</Typography>
-            <Button variant="raised" size="small" color="primary" component={Link} to="/events/add">
-              Add New Event
-            </Button>
+            <LinkButton label="Add New Event" linkTo="/events/add" />
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>

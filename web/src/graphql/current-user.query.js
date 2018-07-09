@@ -44,10 +44,16 @@ export default gql`
           id
           name
         }
+        tags {
+          id
+          name
+          type
+        }
         id
         name
         type
         details
+        priority
         startTime
         endTime
       }

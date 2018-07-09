@@ -14,7 +14,10 @@ export const GRAPHQL_ENDPOINT_PROD = 'https://ses-availability-api.herokuapp.com
 export const GRAPHQL_ENDPOINT_LOCAL = 'http://localhost:8080/graphql';
 
 export const SCHEDULE_TYPE_LOCAL = 'local';
-export const SCHEDULE_TYPE_REMOTE = 'ooa';
+export const SCHEDULE_TYPE_DEPLOYMENT = 'deployment';
+
+export const TIME_SEGMENT_TYPE_AVAILABILITY = 'availability';
+export const TIME_SEGMENT_TYPE_DEPLOYMENT = 'deployment';
 
 export const GRAPHQL_ENDPOINT = isDev() ? GRAPHQL_ENDPOINT_LOCAL : GRAPHQL_ENDPOINT_PROD;
 export default GRAPHQL_ENDPOINT;

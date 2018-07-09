@@ -6,6 +6,7 @@ export default () => ({
     width: '100%',
     textAlign: 'left',
     borderCollapse: 'collapse',
+    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
   },
   tableHeader: {
     borderWidth: 1,
@@ -15,9 +16,9 @@ export default () => ({
     paddingLeft: 2,
     paddingBottom: 10,
     paddingRight: 2,
-    fontWeight: 600,
+    fontWeight: 500,
     textAlign: 'center',
-    fontSize: 13,
+    fontSize: '0.8rem',
     height: 60,
     minWidth: 40,
   },
@@ -26,8 +27,8 @@ export default () => ({
     borderStyle: 'solid',
     borderColor: '#E0E0E0',
     padding: 10,
-    fontWeight: 600,
-    fontSize: 13,
+    fontWeight: 500,
+    fontSize: '0.95rem',
     height: 60,
   },
   tableCell: {
@@ -38,7 +39,7 @@ export default () => ({
     paddingLeft: 2,
     paddingBottom: 10,
     paddingRight: 2,
-    fontSize: 13,
+    fontSize: '0.95rem',
     textAlign: 'center',
   },
   tableCellFirst: {
@@ -46,6 +47,6 @@ export default () => ({
     borderStyle: 'solid',
     borderColor: '#E0E0E0',
     padding: 10,
-    fontSize: 13,
+    fontSize: '0.95rem',
   },
 });

@@ -6,6 +6,7 @@ const numbers = {
 export default numbers;
 
 export const TAG_TYPE_ORG_STRUCTURE = 'orgStructure';
+export const TAG_TYPE_ORG_STRUCTURE_REQUEST = 'orgStructureRequest';
 export const TAG_TYPE_CAPABILITY = 'capability';
 
 export const DEFAULT_START_TIME = '09:00';

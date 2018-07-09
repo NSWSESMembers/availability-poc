@@ -4,9 +4,9 @@ import { compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -14,25 +14,26 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import { STATUS_AVAILABLE } from '../../../config';
-import { DEFAULT_START_TIME, DEFAULT_END_TIME } from '../../../constants';
+import { SCHEDULE_TYPE_DEPLOYMENT } from '../../../config';
+import {
+  addDeployPerson,
+  removeDeployPerson,
+  openTimeSegmentModal,
+} from '../../../actions/schedule';
 
 import { dateColumns } from '../../../selectors/dates';
 
 import SCHEDULE_QUERY from '../../../graphql/schedule.query';
-import {
-  CREATE_TIME_SEGMENT_MUTATION,
-  REMOVE_TIME_SEGMENT_MUTATION,
-  UPDATE_TIME_SEGMENT_MUTATION,
-} from '../../../graphql/time-segment.mutation';
 
 import DayWeek from './components/DayWeek';
-import ScheduleWeekItem from './components/ScheduleWeekItem';
-import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
+import DeployToolbar from './components/DeployToolbar';
 import ScheduleHeader from './components/ScheduleHeader';
-import SpreadPanel from '../../../components/Panels/SpreadPanel';
-import TimeRangeModal from '../../../components/Modals/TimeRangeModal';
 import ScheduleWeekHeader from './components/ScheduleWeekHeader';
+import ScheduleWeekItem from './components/ScheduleWeekItem';
+import SpreadPanel from '../../../components/Panels/SpreadPanel';
+import TableNextPrevious from '../../../components/Tables/TableNextPrevious';
+import TimeSegmentModal from './components/TimeSegmentModal';
+import UserLink from './components/UserLink';
 
 import styles from '../../../styles/AppStyle';
 
@@ -41,21 +42,12 @@ class ViewSchedule extends React.Component {
     startTimeRange: moment()
       .isoWeekday(1)
       .startOf('week')
-      .add(1, 'days')
       .unix(),
     endTimeRange: moment()
       .isoWeekday(1)
       .startOf('week')
-      .add(8, 'days')
+      .add(7, 'days')
       .unix(),
-    modalOpen: false,
-    modalUser: undefined,
-    modalTimeSegmentId: 0,
-    modalStatus: STATUS_AVAILABLE,
-    modalStartTime: DEFAULT_START_TIME,
-    modalEndTime: DEFAULT_END_TIME,
-    modalTitle: '',
-    modalTime: 0,
   };
 
   onDay = () => {
@@ -63,98 +55,9 @@ class ViewSchedule extends React.Component {
     history.push(`/schedules/${this.props.match.params.id}/${this.state.startTimeRange}`);
   };
 
-  onModalStartTimeChange = (e) => {
-    this.setState({ modalStartTime: e.target.value });
-  };
-
-  onModalEndTimeChange = (e) => {
-    this.setState({ modalEndTime: e.target.value });
-  };
-
-  onModalStatusChange = (e) => {
-    this.setState({ modalStatus: e.target.value });
-  };
-
-  onModalOpen = (e, user, timeSegment, time, status) => {
-    if (timeSegment !== undefined) {
-      this.setState({
-        modalOpen: true,
-        modalTimeSegmentId: timeSegment.id,
-        modalTitle: moment.unix(timeSegment.startTime).format('ddd, MMM D YYYY'),
-        modalUser: user,
-        modalStatus: timeSegment.status,
-        modalStartTime: moment.unix(timeSegment.startTime).format('HH:mm'),
-        modalEndTime: moment.unix(timeSegment.endTime).format('HH:mm'),
-        modalTime: time,
-      });
-    } else {
-      this.setState({
-        modalOpen: true,
-        modalTimeSegmentId: 0,
-        modalStatus: status,
-        modalTitle: moment.unix(parseInt(time, 10)).format('ddd, MMM D YYYY'),
-        modalUser: user,
-        modalStartTime: DEFAULT_START_TIME,
-        modalEndTime: DEFAULT_END_TIME,
-        modalTime: time,
-      });
-    }
-  };
-
-  onModalClose = () => {
-    this.setState({ modalOpen: false });
-  };
-
-  onModalSave = () => {
-    const { createTimeSegment, updateTimeSegment } = this.props;
-    const {
-      modalTimeSegmentId,
-      modalStatus,
-      modalStartTime,
-      modalEndTime,
-      modalUser,
-      modalTime,
-    } = this.state;
-
-    // get start of day
-    const currentDay = moment.unix(parseInt(modalTime, 10));
-
-    // get adjusted start & end times
-    const startTime = moment(currentDay.format('MM-DD-YYYY ') + modalStartTime, 'MM-DD-YYYY HH:mm');
-    const endTime = moment(currentDay.format('MM-DD-YYYY ') + modalEndTime, 'MM-DD-YYYY HH:mm');
-
-    if (modalTimeSegmentId > 0) {
-      updateTimeSegment({
-        scheduleId: parseInt(this.props.match.params.id, 10),
-        segmentId: modalTimeSegmentId,
-        status: modalStatus,
-        startTime: moment(startTime).unix(),
-        endTime: moment(endTime).unix(),
-      });
-    } else {
-      createTimeSegment({
-        userId: modalUser.id,
-        scheduleId: parseInt(this.props.match.params.id, 10),
-        status: this.state.modalStatus,
-        startTime: moment(startTime).unix(),
-        endTime: moment(endTime).unix(),
-      });
-    }
-
-    this.setState({ modalOpen: false });
-  };
-
-  onModalDelete = () => {
-    const { modalTimeSegmentId } = this.state;
-
-    if (modalTimeSegmentId > 0) {
-      this.props.removeTimeSegment({
-        scheduleId: parseInt(this.props.match.params.id, 10),
-        segmentId: modalTimeSegmentId,
-      });
-    }
-
-    this.setState({ modalOpen: false });
+  onEdit = (e, user, timeSegment, day, status) => {
+    const { schedule } = this.props;
+    this.props.dispatch(openTimeSegmentModal(schedule.id, day, status, user, timeSegment));
   };
 
   onNextDateRange = () => {
@@ -189,8 +92,16 @@ class ViewSchedule extends React.Component {
     });
   };
 
+  onSelectPerson = (e, user) => {
+    if (e.target.checked) {
+      this.props.dispatch(addDeployPerson(user));
+    } else {
+      this.props.dispatch(removeDeployPerson(user.id));
+    }
+  };
+
   render() {
-    const { classes, loading, schedule } = this.props;
+    const { classes, loading, schedule, peopleSelected } = this.props;
 
     if (loading) {
       return <CircularProgress className={classes.progress} size={50} />;
@@ -224,54 +135,69 @@ class ViewSchedule extends React.Component {
           </SpreadPanel>
         </Paper>
         <Paper className={classes.paperMargin}>
+          {schedule.type === SCHEDULE_TYPE_DEPLOYMENT && <DeployToolbar schedule={schedule} />}
           <Table className={classes.table}>
             <ScheduleWeekHeader schedule={schedule} columnData={columnData} />
             <TableBody>
-              {schedule.group.users.map(user => (
-                <TableRow key={user.id}>
-                  {columnData.map((column) => {
-                    if (column.id === 'name') {
+              {schedule.group.users.map((user) => {
+                const selected = peopleSelected.filter(u => u.id === user.id).length > 0;
+                const userSegments = schedule.timeSegments.filter(
+                  timeSegment => timeSegment.user.id === user.id,
+                );
+                return (
+                  <TableRow key={user.id} hover>
+                    {schedule.type === 'deployment' && (
+                      <TableCell className={classes.tableCellCheckbox}>
+                        <Checkbox
+                          checked={selected}
+                          className={classes.tableCheckbox}
+                          disabled={
+                            schedule.timeSegments.filter(
+                              timeSegment =>
+                                timeSegment.type === 'deployment' &&
+                                timeSegment.user.id === user.id,
+                            ).length > 0
+                          }
+                          onChange={e => this.onSelectPerson(e, user)}
+                        />
+                      </TableCell>
+                    )}
+                    {columnData.map((column) => {
+                      if (column.id === 'name') {
+                        return (
+                          <TableCell key={user.id} className={classes.tableCellFirst}>
+                            <UserLink timeSegments={userSegments} user={user} />
+                          </TableCell>
+                        );
+                      }
+
+                      if (column.startTime >= scheduleStart && column.startTime <= scheduleEnd) {
+                        return (
+                          <ScheduleWeekItem
+                            key={`vsi-${user.id}-${column.startTime}`}
+                            user={user}
+                            schedule={schedule}
+                            startTime={column.startTime}
+                            endTime={column.endTime}
+                            onOpenModal={this.onEdit}
+                            timeSegments={userSegments}
+                          />
+                        );
+                      }
+
                       return (
-                        <TableCell key={user.id} className={classes.tableCellFirst}>
-                          <Link to="/dashboard">{user.displayName}</Link>
-                        </TableCell>
+                        <TableCell
+                          key={`vsi-${user.id}-${column.startTime}`}
+                          className={classes.tableCellDisabled}
+                        />
                       );
-                    }
-                    return column.startTime >= scheduleStart && column.startTime <= scheduleEnd ? (
-                      <ScheduleWeekItem
-                        key={`vsi-${user.id}-${column.startTime}`}
-                        user={user}
-                        startTime={column.startTime}
-                        endTime={column.endTime}
-                        onOpenModal={this.onModalOpen}
-                        timeSegments={schedule.timeSegments}
-                      />
-                    ) : (
-                      <TableCell
-                        key={`vsi-${user.id}-${column.startTime}`}
-                        className={classes.tableCellDisabled}
-                      />
-                    );
-                  })}
-                </TableRow>
-              ))}
+                    })}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
-          <TimeRangeModal
-            open={this.state.modalOpen}
-            status={this.state.modalStatus}
-            startTime={this.state.modalStartTime}
-            endTime={this.state.modalEndTime}
-            timeSegmentId={this.state.modalTimeSegmentId}
-            title={this.state.modalTitle}
-            user={this.state.modalUser}
-            onClose={this.onModalClose}
-            onSave={this.onModalSave}
-            onDelete={this.onModalDelete}
-            onStartTimeChange={this.onModalStartTimeChange}
-            onEndTimeChange={this.onModalEndTimeChange}
-            onStatusChange={this.onModalStatusChange}
-          />
+          <TimeSegmentModal />
         </Paper>
       </div>
     );
@@ -279,6 +205,7 @@ class ViewSchedule extends React.Component {
 }
 
 ViewSchedule.propTypes = {
+  dispatch: PropTypes.func,
   history: PropTypes.shape({}).isRequired,
   classes: PropTypes.shape({}).isRequired,
   loading: PropTypes.bool.isRequired,
@@ -313,9 +240,12 @@ ViewSchedule.propTypes = {
       }),
     ),
   }),
-  createTimeSegment: PropTypes.func.isRequired,
-  removeTimeSegment: PropTypes.func.isRequired,
-  updateTimeSegment: PropTypes.func.isRequired,
+  peopleSelected: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      displayName: PropTypes.string.isRequired,
+    }),
+  ),
 };
 
 const scheduleQuery = graphql(SCHEDULE_QUERY, {
@@ -329,60 +259,13 @@ const scheduleQuery = graphql(SCHEDULE_QUERY, {
   }),
 });
 
-const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
-  props: ({ mutate }) => ({
-    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime }) =>
-      mutate({
-        variables: { timeSegment: { userId, scheduleId, status, startTime, endTime } },
-        refetchQueries: [
-          {
-            query: SCHEDULE_QUERY,
-            variables: { id: scheduleId },
-          },
-        ],
-      }),
-  }),
-});
-
-const removeTimeSegment = graphql(REMOVE_TIME_SEGMENT_MUTATION, {
-  props: ({ mutate }) => ({
-    removeTimeSegment: ({ segmentId, scheduleId }) =>
-      mutate({
-        variables: { timeSegment: { segmentId } },
-        refetchQueries: [
-          {
-            query: SCHEDULE_QUERY,
-            variables: { id: scheduleId },
-          },
-        ],
-      }),
-  }),
-});
-
-const updateTimeSegment = graphql(UPDATE_TIME_SEGMENT_MUTATION, {
-  props: ({ mutate }) => ({
-    updateTimeSegment: ({ segmentId, status, startTime, endTime, scheduleId }) =>
-      mutate({
-        variables: { timeSegment: { segmentId, status, startTime, endTime } },
-        refetchQueries: [
-          {
-            query: SCHEDULE_QUERY,
-            variables: { id: scheduleId },
-          },
-        ],
-      }),
-  }),
-});
-
-const mapStateToProps = ({ auth }) => ({
+const mapStateToProps = ({ auth, schedule }) => ({
   auth,
+  peopleSelected: schedule.deploy.peopleSelected,
 });
 
 export default compose(
   connect(mapStateToProps),
   withStyles(styles),
   scheduleQuery,
-  createTimeSegment,
-  removeTimeSegment,
-  updateTimeSegment,
 )(ViewSchedule);

@@ -21,7 +21,7 @@ const Text = ({ classes, label, name, value, required, onChange }) => (
 
 Text.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   required: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
@@ -33,4 +33,3 @@ Text.defaultProps = {
 };
 
 export default withStyles(styles)(Text);
-

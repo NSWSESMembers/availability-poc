@@ -59,6 +59,7 @@ export const defineModels = () => {
   });
 
   const TimeSegmentModel = db.define('timesegment', {
+    type: 'availability',
     status: 'available',
     startTime: 1514860289,
     endTime: 1514860289 + (60 * 60),
@@ -132,6 +133,10 @@ export const defineModels = () => {
   // groups -> tags
   GroupModel.belongsToMany(TagModel, { through: 'group_tag' });
   TagModel.belongsToMany(GroupModel, { through: 'group_tag' });
+
+  // timeSegments > tags
+  TimeSegmentModel.belongsToMany(TagModel, { through: 'timesegment_tag' });
+  TagModel.belongsToMany(TimeSegmentModel, { through: 'timesegment_tag' });
 
   // schedules -> tags
   ScheduleModel.belongsToMany(TagModel, { through: 'schedule_tag' });

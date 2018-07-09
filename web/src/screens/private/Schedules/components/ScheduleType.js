@@ -6,28 +6,23 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-import { SCHEDULE_TYPE_LOCAL, SCHEDULE_TYPE_REMOTE } from '../../../../config';
+import { SCHEDULE_TYPE_LOCAL, SCHEDULE_TYPE_DEPLOYMENT } from '../../../../config';
 
 import { scheduleLabel } from '../../../../selectors/schedules';
 
 import styles from '../../../../styles/AppStyle';
 
 const ScheduleType = ({ classes, value, onChange }) => (
-  <RadioGroup
-    name="type"
-    value={value}
-    onChange={onChange}
-    className={classes.radioButtonGroup}
-  >
+  <RadioGroup name="type" value={value} onChange={onChange} className={classes.radioButtonGroup}>
     <FormControlLabel
       value={SCHEDULE_TYPE_LOCAL}
       control={<Radio />}
       label={scheduleLabel(SCHEDULE_TYPE_LOCAL)}
     />
     <FormControlLabel
-      value={SCHEDULE_TYPE_REMOTE}
+      value={SCHEDULE_TYPE_DEPLOYMENT}
       control={<Radio />}
-      label={scheduleLabel(SCHEDULE_TYPE_REMOTE)}
+      label={scheduleLabel(SCHEDULE_TYPE_DEPLOYMENT)}
     />
   </RadioGroup>
 );
@@ -39,4 +34,3 @@ ScheduleType.propTypes = {
 };
 
 export default withStyles(styles)(ScheduleType);
-

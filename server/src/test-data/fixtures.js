@@ -4,7 +4,9 @@ import { DEFAULT_USER_ID } from '../config';
 const getMonday = () => {
   const now = new Date();
   const day = now.getDay() || 7;
-  if (day !== 1) { now.setHours(-24 * (day - 1)); }
+  if (day !== 1) {
+    now.setHours(-24 * (day - 1));
+  }
   now.setMinutes(0);
   now.setSeconds(0);
   return Math.floor(now.getTime() / 1000);
@@ -47,20 +49,40 @@ export const TAGS = makeTags({
     'HOL',
     'SSR',
   ],
+  orgStructureRequest: [
+    'NSW',
+    'SWR',
+    'ISR',
+    'SSR',
+    'KMA',
+    'PAR',
+    'HLS',
+    'HOL',
+    'AUB',
+    'HAW',
+    'HOL',
+    'SSR',
+  ],
   capability: [
-    'Storm and Water Damage - Ground',
-    'Storm and Water Damage - Heights',
-    'Flood Rescue Operator Level 1',
-    'Flood Rescue Operator Level 2',
-    'Flood Rescue Boat Operator',
-    'Flood Rescue Operator Level 3',
-    'General Land Rescue Operator',
-    'Road Crash Rescue Operator',
-    'Community First Responder Registration',
-    'Vertical Rescue Operator',
-    'Chainsaw L1 (Cross Cut)',
-    'Chainsaw L2 (Intermediate Felling)',
-    'Land Search',
+    'SWDG',
+    'SWDH',
+    'CL1',
+    'CL2',
+    'BOAT',
+    'SAR1',
+    'SAR2',
+    'SAR3',
+    'ALP',
+    'FRL1',
+    'FRL2',
+    'FRL3',
+    'CFR',
+    'VR',
+    'GLR2',
+    'ASO',
+    'ABO',
+    'ABO',
+    'ABM',
     'SES IM Incident Controller',
     'SES IM Planning Officer',
     'SES IM Public Information Officer',
@@ -76,11 +98,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Paddy Platypus',
     email: 'test@example.com',
-    tags: [
-      'Road Crash Rescue Operator',
-      'Chainsaw L1 (Cross Cut)',
-      'Land Search',
-    ],
+    tags: ['GLR2', 'CL1'],
   },
   {
     id: 11,
@@ -88,10 +106,7 @@ export const USERS = [
     password: 'test',
     displayName: 'Alex Alpha',
     email: 'kiama1@example.com',
-    tags: [
-      'Vertical Rescue Operator',
-      'SES IM Incident Controller',
-    ],
+    tags: ['VR', 'SES IM Incident Controller'],
   },
   {
     id: 12,
@@ -211,82 +226,45 @@ export const GROUPS = [
       'parramatta4',
       'parramatta5',
     ],
-    tags: [
-      'NSW',
-    ],
+    tags: ['NSW'],
   },
   {
     name: 'Kiama',
     icon: 'fa-ship',
-    users: [
-      'test',
-      'kiama1',
-      'kiama2',
-      'kiama3',
-      'kiama4',
-      'kiama5',
-      'kiama6',
-      'kiama7',
-      'kiama8',
-    ],
-    tags: [
-      'ISR',
-      'KMA',
-    ],
+    users: ['test', 'kiama1', 'kiama2', 'kiama3', 'kiama4', 'kiama5', 'kiama6', 'kiama7', 'kiama8'],
+    tags: ['ISR', 'KMA'],
   },
   {
     name: 'Parramatta',
     icon: 'group',
-    users: [
-      'test',
-      'parramatta1',
-      'parramatta2',
-      'parramatta3',
-      'parramatta4',
-      'parramatta5',
-    ],
-    tags: [
-      'SWR',
-      'PAR',
-    ],
+    users: ['test', 'parramatta1', 'parramatta2', 'parramatta3', 'parramatta4', 'parramatta5'],
+    tags: ['SWR', 'PAR'],
   },
   {
     name: 'Metro Zone',
     icon: 'group',
-    users: [
-      'parramatta5',
-    ],
-    tags: [
-      'NSW',
-    ],
+    users: ['parramatta5'],
+    tags: ['NSW'],
   },
   {
     name: 'OCES Working Group',
     icon: 'mci-radio-handheld',
-    users: [
-      'parramatta3',
-    ],
-    tags: [
-      'NSW',
-    ],
+    users: ['parramatta3'],
+    tags: ['NSW'],
   },
 ];
 
 export const SCHEDULES = [
   {
     name: 'Wagga Wagga OOA availability',
-    details: 'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
-    type: 'ooa',
+    details:
+      'Flood Rescue operators required for Wednesday deployment to Wagga Wagga. Leave Monday return Thursday',
+    type: 'deployment',
     priority: 4,
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 3),
     group: 'NSW SES',
-    timeSegmentUsers: [
-      'kiama1',
-      'kiama2',
-      'parramatta1',
-      'parramatta2',
-    ],
+    timeSegmentUsers: ['kiama1', 'kiama2', 'parramatta1', 'parramatta2'],
     tags: [],
   },
   {
@@ -297,14 +275,8 @@ export const SCHEDULES = [
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Kiama',
-    timeSegmentUsers: [
-      'kiama1',
-      'kiama2',
-      'kiama3',
-    ],
-    tags: [
-      'KMA',
-    ],
+    timeSegmentUsers: ['kiama1', 'kiama2', 'kiama3'],
+    tags: ['KMA'],
   },
   {
     name: 'Kiama storm availability',
@@ -314,15 +286,8 @@ export const SCHEDULES = [
     startTime: MONDAY,
     endTime: MONDAY + (60 * 60 * 24 * 6),
     group: 'Kiama',
-    timeSegmentUsers: [
-      'kiama3',
-      'kiama4',
-      'kiama5',
-      'kiama8',
-    ],
-    tags: [
-      'KMA',
-    ],
+    timeSegmentUsers: ['kiama3', 'kiama4', 'kiama5', 'kiama8'],
+    tags: ['KMA'],
   },
   {
     name: 'Parramatta storm availability',
@@ -332,16 +297,8 @@ export const SCHEDULES = [
     startTime: DISTANT_PAST,
     endTime: DISTANT_FUTURE,
     group: 'Parramatta',
-    timeSegmentUsers: [
-      'parramatta1',
-      'parramatta2',
-      'parramatta3',
-      'parramatta4',
-      'parramatta5',
-    ],
-    tags: [
-      'PAR',
-    ],
+    timeSegmentUsers: ['parramatta1', 'parramatta2', 'parramatta3', 'parramatta4', 'parramatta5'],
+    tags: ['PAR'],
   },
   {
     name: 'Metro L3',
@@ -523,7 +480,8 @@ export const EVENTS = [
   },
   {
     name: 'FR - WEBB STREET, NORTH PARRAMATTA NSW 2151',
-    details: 'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
+    details:
+      'APPROX 2 VEH SUBMERGED IN STREET AA WHICH IS CURRENTLY FLOODED JUST OVER WHEEL HEIGHT ON A STANDARD VEH. UNKNOWN IF ANY PERSONS OB. TREE DOWN AND NO WIRES DOWN. NFI',
     sourceIdentifier: '111-222',
     permalink: 'https://jobssytem.com/jobs/111-222',
     priority: 2,

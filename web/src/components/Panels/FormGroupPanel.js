@@ -8,7 +8,11 @@ import styles from './FormGroupPanel.styles';
 
 const FormGroupPanel = ({ classes, label, children }) => (
   <div className={classes.formGroupPanel}>
-    {label && <FormLabel component="legend">{label}</FormLabel>}
+    {label && (
+      <FormLabel component="legend" className={classes.formLabel}>
+        {label}
+      </FormLabel>
+    )}
     {children}
   </div>
 );

@@ -207,7 +207,7 @@ class EditGroup extends React.Component {
             <FormControl className={classes.formControl}>
               <Tag
                 list={regions}
-                label="Regions"
+                label="Headquarters"
                 placeholder="Select..."
                 onChange={this.handleTagChange('regions')}
                 value={this.state.regions}

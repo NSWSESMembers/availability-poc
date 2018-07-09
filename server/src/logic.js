@@ -266,6 +266,45 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             });
           });
       },
+      updateSchedule(_, args, ctx) {
+        const {
+          id, name, details, type, priority,
+          startTime, endTime, groupId, tags,
+        } = args.schedule;
+        return getAuthenticatedUser(ctx).then(() =>
+          Schedule.findById(id).then((schedule) => {
+            if (!schedule) {
+              return Promise.reject(Error('Invalid schedule!'));
+            }
+            return schedule
+              .update({
+                name,
+                details,
+                type,
+                priority,
+                startTime,
+                endTime,
+                groupId,
+              })
+              .then(() =>
+                Promise.all([
+                  tags &&
+                    schedule.getTags().then(ts =>
+                      ts.forEach((t) => {
+                        const tagRemove = tags.find(tag => tag.id === t.id);
+                        if (tagRemove === undefined) {
+                          t.removeSchedule(schedule);
+                        }
+                      }),
+                    ),
+                  tags &&
+                    tags.map(t => Tag.findById(t.id)
+                      .then(foundTag => foundTag.addSchedule(schedule))),
+                ]).then(() => schedule.reload()),
+              );
+          }),
+        );
+      },
       messages(schedule) {
         return schedule.getMessages({
           order: [['createdAt', 'DESC']],
@@ -280,8 +319,13 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       user(timesegment) {
         return timesegment.getUser();
       },
+      tags(timesegment) {
+        return timesegment.getTags();
+      },
       createTimeSegment(_, args, ctx) {
-        const { scheduleId, status, startTime, endTime, userId } = args.timeSegment;
+        const {
+          scheduleId, type, status, startTime, endTime, userId, note, tags,
+        } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(user =>
           Schedule.findById(scheduleId).then((schedule) => {
             if (!schedule) {
@@ -289,10 +333,13 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             }
             return Creators.timeSegment({
               schedule,
+              type,
               status,
               startTime,
               endTime,
               user: userId === undefined ? user : { id: userId },
+              note,
+              tags,
             });
           }),
         );
@@ -314,17 +361,34 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         );
       },
       updateTimeSegment(_, args, ctx) {
-        const { segmentId, status, startTime, endTime } = args.timeSegment;
+        const { segmentId, type, status, startTime, endTime, note, tags } = args.timeSegment;
         return getAuthenticatedUser(ctx).then(() =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
               return Promise.reject(Error('Invalid segment!'));
             }
             return segment.update({
+              type,
               status,
               startTime,
               endTime,
-            });
+              note,
+            }).then(() =>
+              Promise.all([
+                tags &&
+              segment.getTags().then(ts =>
+                ts.forEach((t) => {
+                  const tagRemove = tags.find(tag => tag.id === t.id);
+                  if (tagRemove === undefined) {
+                    t.removeTimesegment(segment);
+                  }
+                }),
+              ),
+                tags &&
+                tags.map(t => Tag.findById(t.id)
+                  .then(foundTag => foundTag.addTimesegment(segment))),
+              ]).then(() => segment.reload()),
+            );
           }),
         );
       },

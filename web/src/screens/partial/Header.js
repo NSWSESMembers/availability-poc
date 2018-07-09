@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -40,6 +42,7 @@ class Header extends React.Component {
     if (pathname.startsWith('/groups')) route = 'Groups';
     if (pathname.startsWith('/schedules')) route = 'Availability';
     if (pathname.startsWith('/events')) route = 'Events';
+    if (pathname.startsWith('/users')) route = 'Users';
     return route;
   };
 
@@ -49,6 +52,7 @@ class Header extends React.Component {
       Groups: '/groups',
       Availability: '/schedules',
       Events: '/events',
+      Users: '/users',
     };
     let path = paths[value];
     if (typeof path === 'undefined') {
@@ -62,6 +66,11 @@ class Header extends React.Component {
     this.props.dispatch(logout());
   };
 
+  handleProfile = () => {
+    const { auth, history } = this.props;
+    history.push(`/users/${auth.id}`);
+  };
+
   render() {
     const { classes, isAuthenticated } = this.props;
     return (
@@ -72,9 +81,19 @@ class Header extends React.Component {
               <img src="/logo.jpg" alt="Callout" />
             </NavLink>
             {isAuthenticated && (
-              <Button color="inherit" onClick={this.handleLogout}>
-                Logout
-              </Button>
+              <div>
+                <IconButton
+                  color="secondary"
+                  className={classes.button}
+                  aria-label="Edit User Profile"
+                  onClick={this.handleProfile}
+                >
+                  <Icon>person</Icon>
+                </IconButton>
+                <Button color="inherit" onClick={this.handleLogout}>
+                  Logout
+                </Button>
+              </div>
             )}
           </Toolbar>
         </AppBar>
@@ -84,6 +103,7 @@ class Header extends React.Component {
             <Tab value="Groups" label="Groups" />
             <Tab value="Availability" label="Availability" />
             <Tab value="Events" label="Events" />
+            <Tab value="Users" label="Users" />
           </Tabs>
         </AppBar>
       </div>
@@ -92,6 +112,9 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
+  auth: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }),
   classes: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({
     listen: PropTypes.func.isRequired,
@@ -105,6 +128,7 @@ Header.propTypes = {
 
 const mapStateToProps = state => ({
   isAuthenticated: !!state.auth.token,
+  auth: state.auth,
 });
 
 export default compose(

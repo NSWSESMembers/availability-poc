@@ -27,4 +27,3 @@ DatePicker.propTypes = {
 };
 
 export default withStyles(styles)(DatePicker);
-

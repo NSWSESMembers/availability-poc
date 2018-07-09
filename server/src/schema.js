@@ -50,6 +50,19 @@ export const Schema = [
   }
 
   input CreateScheduleInput {
+    priority: Int
+    name: String!
+    details: String!
+    type: String
+    startTime: Int!
+    endTime: Int!
+    groupId: Int!
+    tags: [TagInput]
+  }
+
+  input UpdateScheduleInput {
+    id: Int!
+    priority: Int
     name: String!
     details: String!
     type: String
@@ -61,17 +74,23 @@ export const Schema = [
 
   input createTimeSegmentInput {
     scheduleId: Int!
+    type: String!
     status: String!
     startTime: Int!
     endTime: Int!
     userId: Int
+    note: String
+    tags: [TagInput]
   }
 
   input updateTimeSegmentInput {
     segmentId: Int!
+    type: String!
     status: String!
     startTime: Int!
     endTime: Int!
+    note: String
+    tags: [TagInput]
   }
 
   input removeTimeSegmentInput {
@@ -305,11 +324,14 @@ export const Schema = [
 
   type TimeSegment {
     id: Int!
+    type: String!
     schedule: Schedule!
     user: User!
     status: String
     startTime: Int!
     endTime: Int!
+    note: String
+    tags: [Tag] # tags associated with this timeSegment
   }
 
   # query for types
@@ -336,6 +358,7 @@ export const Schema = [
     updateUserProfile(user: updateUserProfileInput!): User
     deleteUser(user: DeleteUserInput!): User
     createSchedule(schedule: CreateScheduleInput!): Schedule
+    updateSchedule(schedule: UpdateScheduleInput!): Schedule
     createMessage(message: CreateMessageInput!): Message
     createSystemMessage(message: CreateSystemMessageInput!): Message
     createTimeSegment(timeSegment: createTimeSegmentInput!): TimeSegment

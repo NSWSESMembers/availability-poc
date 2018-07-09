@@ -55,10 +55,12 @@ export const defineModels = (db) => {
   });
 
   const TimeSegmentModel = db.define('timesegment', {
+    type: { type: Sequelize.STRING },
     status: { type: Sequelize.INTEGER },
     startTime: { type: Sequelize.INTEGER },
     endTime: { type: Sequelize.INTEGER },
     lastUpdate: { type: Sequelize.INTEGER },
+    note: { type: Sequelize.STRING },
   });
 
   const EventResponseModel = db.define('eventresponse', {
@@ -139,6 +141,10 @@ export const defineModels = (db) => {
   // schedules -> tags
   ScheduleModel.belongsToMany(TagModel, { through: 'schedule_tag' });
   TagModel.belongsToMany(ScheduleModel, { through: 'schedule_tag' });
+
+  // timeSegments > tags
+  TimeSegmentModel.belongsToMany(TagModel, { through: 'timesegment_tag' });
+  TagModel.belongsToMany(TimeSegmentModel, { through: 'timesegment_tag' });
 
   // events are created for a single group
   EventModel.belongsTo(GroupModel);

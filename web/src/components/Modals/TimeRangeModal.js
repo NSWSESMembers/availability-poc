@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -15,6 +14,8 @@ import TextField from '@material-ui/core/TextField';
 
 import { statusColor } from '../../selectors/status';
 import { STATUS_AVAILABLE, STATUS_UNAVAILABLE, STATUS_UNLESS_URGENT } from '../../config';
+
+import IconButton from '../Buttons/IconButton';
 
 import styles from './TimeRangeModal.styles';
 
@@ -96,17 +97,9 @@ const TimeRangeModal = ({
       </div>
     </DialogContent>
     <DialogActions>
-      {timeSegmentId > 0 && (
-        <Button onClick={onDelete} color="primary">
-          Delete
-        </Button>
-      )}
-      <Button onClick={onClose} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={onSave} color="primary">
-        Save
-      </Button>
+      {timeSegmentId > 0 && <IconButton label="Delete" onClick={onDelete} />}
+      <IconButton label="Cancel" onClick={onClose} />
+      <IconButton label="Save" onClick={onSave} color="primary" />
     </DialogActions>
   </Dialog>
 );
