@@ -32,7 +32,7 @@ const areEventNotificationsEnableForUser = (event, user) =>
     { where: { id: user.id } },
   ).then(result => !!result.length);
 
-export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
+export const getHandlers = ({ logWriter, models, creators: Creators, push, pubsub }) => {
   const { Group, User, Organisation, Schedule, Event, TimeSegment, EventLocation, Tag } = models;
 
   const handlers = {
@@ -60,7 +60,14 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
         if (token) {
           params.pushToken = token;
         }
-        return getAuthenticatedDevice(ctx).then(device => device.update(params));
+        return getAuthenticatedDevice(ctx).then(device => device.update(params).then((res) => {
+          logWriter({
+            source: device,
+            action: 'updateDevice',
+            payload: args.device,
+          });
+          return res;
+        }));
       },
       updateLocation(_, args, ctx) {
         return getAuthenticatedDevice(ctx).then((device) => {
@@ -80,11 +87,18 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       updateUserProfile(_, args, ctx) {
         // TODO support more basic fields
         const { displayName } = args.user;
-        return getAuthenticatedUser(ctx).then(user =>
+        return getAuthenticatedUser(ctx).then((user) => {
           user.update({
             displayName,
-          }),
-        );
+          }).then((res) => {
+            logWriter({
+              source: user.username,
+              action: 'updateUserProfile',
+              payload: args.user,
+            });
+            return res;
+          });
+        });
       },
       groups(user, args) {
         if (args.id) {
@@ -159,6 +173,13 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                 // so the User resolver knows that it can provide confidential
                 // info back to the newly-authenticated client
                 ctx.user = Promise.resolve(user);
+
+                // redact password
+                logWriter({
+                  source: user.username,
+                  action: 'signup',
+                  payload: { ...args.user, password: '' },
+                });
 
                 // make sure we return the user to the caller of signup()
                 return newUser;
@@ -242,10 +263,9 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       group(schedule) {
         return schedule.getGroup();
       },
-      createSchedule(_, args) {
+      createSchedule(_, args, ctx) {
         const { name, details, type, priority, startTime, endTime, groupId, tags } = args.schedule;
-
-        return Group.findById(groupId)
+        getAuthenticatedUser(ctx).then(user => Group.findById(groupId)
           .then((group) => {
             if (!group) {
               return Promise.reject(Error('Invalid group'));
@@ -261,10 +281,15 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               group,
               tags,
             }).then((schedule) => {
+              logWriter({
+                source: user.username,
+                action: 'createSchedule',
+                payload: schedule,
+              });
               push.pushScheduleToGroup(schedule);
               return schedule;
             });
-          });
+          }));
       },
       updateSchedule(_, args, ctx) {
         const {
@@ -337,22 +362,34 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               status,
               startTime,
               endTime,
-              user: userId === undefined ? user : { id: userId },
               note,
               tags,
+              user: userId === undefined ? user : { id: userId },
+            }).then((res) => {
+              logWriter({
+                source: user.username,
+                action: 'createTimeSegment',
+                payload: res,
+              });
+              return res;
             });
           }),
         );
       },
       removeTimeSegment(_, args, ctx) {
         const { segmentId } = args.timeSegment;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
               return Promise.reject(Error('Invalid segment!'));
             }
             return segment.destroy().then((rows) => {
               if (rows) {
+                logWriter({
+                  source: user.username,
+                  action: 'removeTimeSegment',
+                  payload: rows,
+                });
                 return true;
               }
               return false;
@@ -362,7 +399,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
       },
       updateTimeSegment(_, args, ctx) {
         const { segmentId, type, status, startTime, endTime, note, tags } = args.timeSegment;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           TimeSegment.findById(segmentId).then((segment) => {
             if (!segment) {
               return Promise.reject(Error('Invalid segment!'));
@@ -387,7 +424,14 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                 tags &&
                 tags.map(t => Tag.findById(t.id)
                   .then(foundTag => foundTag.addTimesegment(segment))),
-              ]).then(() => segment.reload()),
+              ]).then(() => {
+                logWriter({
+                  source: user.username,
+                  action: 'updateTimeSegment',
+                  payload: args.timeSegment,
+                });
+                return segment.reload();
+              }),
             );
           }),
         );
@@ -440,7 +484,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
           eventLocations,
           groupId,
         } = args.event;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           Group.findById(groupId).then((group) => {
             if (!group) {
               return Promise.reject(Error('Invalid group!'));
@@ -466,6 +510,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   }),
                 ),
               ).then(() => {
+                logWriter({
+                  source: user.username,
+                  action: 'createEvent',
+                  payload: args.event,
+                });
                 push.pushEventToGroup(event);
                 return event;
               });
@@ -484,7 +533,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
           eventLocations,
           groupId,
         } = args.event;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           Event.findById(id).then((event) => {
             if (!event) {
               return Promise.reject(Error('Invalid event!'));
@@ -532,7 +581,16 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                         event,
                       });
                     }),
-                  );
+                  ).then(() => {
+                    event.reload().then((reloadedEvent) => {
+                      logWriter({
+                        source: user.username,
+                        action: 'updateEvent',
+                        payload: args.event,
+                      });
+                      return reloadedEvent;
+                    });
+                  });
                 });
               });
           }),
@@ -577,6 +635,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   updateArgs,
                   { fields: ['locationLatitude', 'locationLongitude', 'locationTime'] },
                 ).then((eventResponse) => {
+                  logWriter({
+                    source: user.username,
+                    action: 'setResponseLocation',
+                    payload: args.location,
+                  });
                   pubsub.publish(PUBSUBS.EVENTRESPONSE.UPDATED, eventResponse);
                   event.reload().then((reloadedEvent) => {
                     const intirimEventObject = reloadedEvent;
@@ -594,6 +657,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                 user,
                 ...updateArgs,
               }).then((eventResponse) => {
+                logWriter({
+                  source: user.username,
+                  action: 'setResponseLocation',
+                  payload: eventResponse,
+                });
                 areEventNotificationsEnableForUser(event, user).then((subResult) => {
                   if (!subResult) {
                     event.addUsersWithEventNotificationEnabled(user);
@@ -683,6 +751,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                         destination: destination[0],
                         ...updateArgs,
                       }).then((eventResponse) => {
+                        logWriter({
+                          source: user.username,
+                          action: 'setResponse',
+                          payload: eventResponse,
+                        });
                         syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
                           pubSubActions(eventResponse, event, false, user, answer);
                         });
@@ -695,6 +768,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   updateArgs.eventlocationId = null;
                   // update an existing response but no destination
                   return result[0].update(updateArgs).then((eventResponse) => {
+                    logWriter({
+                      source: user.username,
+                      action: 'setResponse',
+                      payload: eventResponse,
+                    });
                     syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
                       pubSubActions(eventResponse, event, true, user, answer);
                     });
@@ -706,6 +784,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   user,
                   ...updateArgs,
                 }).then((eventResponse) => {
+                  logWriter({
+                    source: user.username,
+                    action: 'setResponse',
+                    payload: eventResponse,
+                  });
                   syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
                     pubSubActions(eventResponse, event, false, user, answer);
                   });
@@ -715,6 +798,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               // update a response with undefined destination
               if (result.length) {
                 return result[0].update(updateArgs).then((eventResponse) => {
+                  logWriter({
+                    source: user.username,
+                    action: 'setResponse',
+                    payload: eventResponse,
+                  });
                   syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
                     pubSubActions(eventResponse, event, true, user, answer);
                   });
@@ -727,6 +815,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                 user,
                 ...updateArgs,
               }).then((eventResponse) => {
+                logWriter({
+                  source: user.username,
+                  action: 'setResponse',
+                  payload: eventResponse,
+                });
                 syncNotificationStatus(updateArgs.status !== 'unavailable', event, user).then((answer) => {
                   pubSubActions(eventResponse, event, false, user, answer);
                 });
@@ -746,6 +839,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             if (!event) {
               return Promise.reject(Error('Unknown event passed'));
             }
+            logWriter({
+              source: user.username,
+              action: 'setEventNotifications',
+              payload: args.notifications,
+            });
             if (!enabled) {
               event.reload().then((reloadedEvent) => {
                 const intirimEventObject = reloadedEvent;
@@ -828,13 +926,21 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               tags,
               users: [user],
               organisation,
-            }),
+            }).then((res) => {
+              logWriter({
+                source: user.username,
+                action: 'createTimeSegment',
+                payload: res,
+              });
+              return res;
+            })
+            ,
           ),
         );
       },
       updateGroup(_, args, ctx) {
         const { id, name, tags, icon, users } = args.group;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           Group.findById(id).then((group) => {
             if (!group) {
               return Promise.reject(Error('Invalid group!'));
@@ -860,7 +966,7 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   users &&
                     group.getUsers().then(us =>
                       us.forEach((u) => {
-                        const userRemove = users.find(user => user.id === u.id);
+                        const userRemove = users.find(uu => uu.id === u.id);
                         if (userRemove === undefined) {
                           u.removeGroup(group);
                         }
@@ -869,7 +975,14 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
                   users &&
                     users.map(u => User.findById(u.id)
                       .then(foundUser => foundUser.addGroup(group))),
-                ]).then(() => group.reload()),
+                ]).then(() => {
+                  logWriter({
+                    source: user.username,
+                    action: 'updateGroup',
+                    payload: args.group,
+                  });
+                  return group.reload();
+                }),
               );
           }),
         );
@@ -885,7 +998,14 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
               if (existing.length) {
                 return Promise.reject(Error(`${user.id} is already a member of ${groupId}!`));
               }
-              return group.addUser(user).then(() => group);
+              return group.addUser(user).then(() => {
+                logWriter({
+                  source: user.username,
+                  action: 'addUserToGroup',
+                  payload: args.groupUpdate,
+                });
+                return group;
+              });
             });
           }),
         );
@@ -899,6 +1019,11 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             }
             return group.removeUser(user).then((rows) => {
               if (rows) {
+                logWriter({
+                  source: user.username,
+                  action: 'removeUserFromGroup',
+                  payload: args.groupUpdate,
+                });
                 return group;
               }
               return false;
@@ -929,15 +1054,21 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             scheduleId,
             groupId,
             user,
-          })).then((message) => {
-          pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
-          push.pushMessage({ message, eventId, scheduleId, groupId });
-          return message;
-        });
+          }).then((message) => {
+            logWriter({
+              source: user.username,
+              action: 'createMessage',
+              payload: message,
+            });
+            pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
+            push.pushMessage({ message, eventId, scheduleId, groupId });
+            return message;
+          }),
+        );
       },
       createSystemMessage(_, args, ctx) {
         const { text, image, eventId, scheduleId, groupId } = args.message;
-        return getAuthenticatedUser(ctx).then(() =>
+        return getAuthenticatedUser(ctx).then(user =>
           Creators.message({
             text,
             image,
@@ -945,11 +1076,17 @@ export const getHandlers = ({ models, creators: Creators, push, pubsub }) => {
             scheduleId,
             groupId,
             systemMessage: true,
-          })).then((message) => {
-          pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
-          push.pushMessage({ message, eventId, scheduleId, groupId });
-          return message;
-        });
+          }).then((message) => {
+            logWriter({
+              source: user.username,
+              action: 'createMessage',
+              payload: message,
+            });
+            pubsub.publish(PUBSUBS.MESSAGE.CREATED, message);
+            push.pushMessage({ message, eventId, scheduleId, groupId });
+            return message;
+          }),
+        );
       },
       subscribe() {
         return withFilter(
