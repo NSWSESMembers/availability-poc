@@ -3,11 +3,12 @@ import { authorize } from 'react-native-app-auth';
 
 const clientId = Platform.select({
   ios: 'callout.ios.test',
-  android: '',
+  android: 'callout.android.test',
 });
 
 const clientSecret = Platform.select({
   ios: 'Hy4^&sdERVojk08#4Ee',
+  android: 'Hy4^&sdERVojk08#4Ee',
 });
 
 const config = {
