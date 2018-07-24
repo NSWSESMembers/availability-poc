@@ -13,7 +13,7 @@ import {
   REMOVE_TIME_SEGMENT_MUTATION,
 } from '../../graphql/time-segment.mutation';
 
-import { EMPTY, AVAILABLE, UNAVAILABLE, URGENT } from '../../constants';
+import { EMPTY, AVAILABLE, UNAVAILABLE, URGENT, TIME_SEGMENT_TYPE_AVAILABILITY } from '../../constants';
 
 import { selectSchedules } from '../../selectors/schedules';
 
@@ -86,6 +86,7 @@ class Detail extends Component {
         if (segment.status !== '') {
           this.props.createTimeSegment({
             userId: this.props.user.id,
+            type: TIME_SEGMENT_TYPE_AVAILABILITY,
             scheduleId: schedule.id,
             status: segment.status,
             startTime: day + segment.startTime,
@@ -373,41 +374,41 @@ class Detail extends Component {
               <Message center>Tap multiple days to add/edit</Message>
             </Holder>
           ) : (
-            <View>
-              <Holder marginTop paddingVertical>
-                <Message>Select time blocks below and tap to cycle between status types.</Message>
-              </Holder>
-              <Holder marginTop paddingVertical>
-                <TimeSelect
-                  selectionSegments={this.state.selectionSegments}
-                  onPress={this.onPressSegment}
-                  onPressNewSegment={this.onPressNewSegment}
-                />
-              </Holder>
-              <Holder marginTop paddingVertical>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text style={{ fontSize: 16 }}>
-                    <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
+              <View>
+                <Holder marginTop paddingVertical>
+                  <Message>Select time blocks below and tap to cycle between status types.</Message>
+                </Holder>
+                <Holder marginTop paddingVertical>
+                  <TimeSelect
+                    selectionSegments={this.state.selectionSegments}
+                    onPress={this.onPressSegment}
+                    onPressNewSegment={this.onPressNewSegment}
+                  />
+                </Holder>
+                <Holder marginTop paddingVertical>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Text style={{ fontSize: 16 }}>
+                      <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
                   </Text>
-                  <Text style={{ fontSize: 16 }}>
-                    <Icon size={18} name="times-circle" color={Colors.bgBtnUnavailable} />{' '}
-                    Unavailable
+                    <Text style={{ fontSize: 16 }}>
+                      <Icon size={18} name="times-circle" color={Colors.bgBtnUnavailable} />{' '}
+                      Unavailable
                   </Text>
-                  <Text style={{ fontSize: 16 }}>
-                    <Icon size={18} name="exclamation-circle" color={Colors.bgBtnUrgent} /> Urgent
+                    <Text style={{ fontSize: 16 }}>
+                      <Icon size={18} name="exclamation-circle" color={Colors.bgBtnUrgent} /> Urgent
                   </Text>
-                </View>
-              </Holder>
-              <Holder marginTop transparent>
-                <Button text="Save Availability" onPress={this.onPressEdit} />
-              </Holder>
-            </View>
-          )}
+                  </View>
+                </Holder>
+                <Holder marginTop transparent>
+                  <Button text="Save Availability" onPress={this.onPressEdit} />
+                </Holder>
+              </View>
+            )}
         </ScrollView>
       </Container>
     );
@@ -455,9 +456,9 @@ Detail.propTypes = {
 
 const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
   props: ({ mutate }) => ({
-    createTimeSegment: ({ userId, scheduleId, status, startTime, endTime }) =>
+    createTimeSegment: ({ type, userId, scheduleId, status, startTime, endTime }) =>
       mutate({
-        variables: { timeSegment: { scheduleId, status, startTime, endTime } },
+        variables: { timeSegment: { type, scheduleId, status, startTime, endTime } },
         // eslint-disable-next-line no-shadow
         update: (store, { data: { createTimeSegment } }) => {
           const newTimeSegment = createTimeSegment;
@@ -468,6 +469,7 @@ const createTimeSegment = graphql(CREATE_TIME_SEGMENT_MUTATION, {
           // find this schedule in the store
           const thisSchedule = data.user.schedules.findIndex(x => x.id === scheduleId && x);
           // Add our comment from the mutation to the end.
+          console.log(newTimeSegment);
           data.user.schedules[thisSchedule].timeSegments.push(newTimeSegment);
           // Write our data back to the cache.
           store.writeQuery({ query: CURRENT_USER_QUERY, data });

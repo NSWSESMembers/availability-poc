@@ -12,6 +12,7 @@ const SCHEDULE_FRAGMENT = gql`
         id
       }
       id
+      type
       status
       startTime
       endTime
