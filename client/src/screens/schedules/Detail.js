@@ -374,40 +374,40 @@ class Detail extends Component {
               <Message center>Tap multiple days to add/edit</Message>
             </Holder>
           ) : (
-              <View>
-                <Holder marginTop paddingVertical>
-                  <Message>Select time blocks below and tap to cycle between status types.</Message>
-                </Holder>
-                <Holder marginTop paddingVertical>
-                  <TimeSelect
-                    selectionSegments={this.state.selectionSegments}
-                    onPress={this.onPressSegment}
-                    onPressNewSegment={this.onPressNewSegment}
-                  />
-                </Holder>
-                <Holder marginTop paddingVertical>
-                  <View
-                    style={{
+            <View>
+              <Holder marginTop paddingVertical>
+                <Message>Select time blocks below and tap to cycle between status types.</Message>
+              </Holder>
+              <Holder marginTop paddingVertical>
+                <TimeSelect
+                  selectionSegments={this.state.selectionSegments}
+                  onPress={this.onPressSegment}
+                  onPressNewSegment={this.onPressNewSegment}
+                />
+              </Holder>
+              <Holder marginTop paddingVertical>
+                <View
+                  style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}
-                  >
-                    <Text style={{ fontSize: 16 }}>
-                      <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
+                >
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="check-circle" color={Colors.bgBtnAvailable} /> Available
                   </Text>
-                    <Text style={{ fontSize: 16 }}>
-                      <Icon size={18} name="times-circle" color={Colors.bgBtnUnavailable} />{' '}
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="times-circle" color={Colors.bgBtnUnavailable} />{' '}
                       Unavailable
                   </Text>
-                    <Text style={{ fontSize: 16 }}>
-                      <Icon size={18} name="exclamation-circle" color={Colors.bgBtnUrgent} /> Urgent
+                  <Text style={{ fontSize: 16 }}>
+                    <Icon size={18} name="exclamation-circle" color={Colors.bgBtnUrgent} /> Urgent
                   </Text>
-                  </View>
-                </Holder>
-                <Holder marginTop transparent>
-                  <Button text="Save Availability" onPress={this.onPressEdit} />
-                </Holder>
-              </View>
+                </View>
+              </Holder>
+              <Holder marginTop transparent>
+                <Button text="Save Availability" onPress={this.onPressEdit} />
+              </Holder>
+            </View>
             )}
         </ScrollView>
       </Container>
