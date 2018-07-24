@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import distantFuture from '../constants';
+import distantFuture, { TIME_SEGMENT_TYPE_AVAILABILITY } from '../constants';
 
 import Colors from '../themes/Colors';
 
@@ -36,7 +36,8 @@ export const selectSchedules = (schedules, { userId, startTime, endTime }) => {
       if (
         (timeSegment.startTime === 0 || timeSegment.startTime >= startTime) &&
         (timeSegment.endTime === distantFuture || timeSegment.endTime <= endTime) &&
-        (userId === 0 || timeSegment.user.id === userId)
+        (userId === 0 || timeSegment.user.id === userId) &&
+        (timeSegment.type === TIME_SEGMENT_TYPE_AVAILABILITY)
       ) {
         filteredItems.push({
           scheduleId: schedule.id,

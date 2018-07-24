@@ -14,6 +14,7 @@ export default [
       // current week availability
       {
         id: 1,
+        type: 'availability',
         status: 'Available',
         startTime: today.unix(),
         endTime: today
@@ -36,6 +37,7 @@ export default [
       // next week availability
       {
         id: 2,
+        type: 'availability',
         status: 'Unavailable',
         startTime: nextWeek.unix(),
         endTime: nextWeek
