@@ -1,5 +1,13 @@
 import Sequelize from 'sequelize';
 
+// ---------------------------------------------------------------------------
+// WARNING: If you make changes to this model you will need to figure out
+// what change this ultimately makes in the DB and then apply that manually
+// to the production instance. Ensure your changes here are backwards
+// compatible, else you'll break production until the schema is updated.
+// Pull requests adding a proper DB migration framework are welcome.
+// ---------------------------------------------------------------------------
+
 export const defineModels = (db) => {
   // We can have multiple orgaisations so we can support multi-tenancy but the
   // the reality is we'll probably only have one
