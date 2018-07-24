@@ -189,11 +189,11 @@ applyTagSearchFilter = () => {
         <TagModal
           visible={this.state.tagsModal}
           closeModal={this.handleTagBack}
-          onSearch={text => this.searchTagOnPress(text)}
-          onSelect={option => this.handleTagChange(option)}
+          onSearch={this.searchTagOnPress}
+          onSelect={this.handleTagChange}
           isLoading={loading}
           headerText="Select Group Tags"
-          backModal={tags => this.handleTagBack(tags)}
+          backModal={this.handleTagBack}
           dataIn={user && user.organisation.tags}
           selectedTags={this.state.tags}
         />
