@@ -70,7 +70,7 @@ class TagModal extends Component {
                   round
                   showLoading={this.props.isLoading}
                   containerStyle={styles.searchbar}
-                  onChangeText={text => this.props.onSearch(text)}
+                  onChangeText={this.props.onSearch}
                   onClearText={null}
                   placeholder="Search"
                 />
