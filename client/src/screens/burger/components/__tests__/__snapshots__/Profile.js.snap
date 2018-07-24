@@ -370,5 +370,40 @@ exports[`renders correctly 2`] = `
   >
     email
   </Text>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+    style={
+      Object {
+        "backgroundColor": "#dbdbdb",
+        "color": "#000000",
+        "fontSize": 16,
+        "paddingBottom": 2,
+        "paddingHorizontal": 8,
+        "paddingTop": 5,
+      }
+    }
+  >
+    Tags
+  </Text>
+  <Text
+    accessible={true}
+    allowFontScaling={true}
+    ellipsizeMode="tail"
+    style={
+      Object {
+        "borderBottomWidth": 1,
+        "borderColor": "#777",
+        "borderTopWidth": 1,
+        "fontSize": 14,
+        "paddingBottom": 2,
+        "paddingHorizontal": 8,
+        "paddingTop": 5,
+      }
+    }
+  >
+    tag1, tag2
+  </Text>
 </View>
 `;
