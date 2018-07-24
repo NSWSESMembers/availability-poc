@@ -39,36 +39,54 @@ even remotely interested in running this in production.
 yarn run start
 ```
 
+This will automatically create a local sqlite database for development and
+load the test-data. If you'd like to reset your DB at anytime you can run:
+```sh
+yarn setup-db
+```
 
 ## Deploy
 
-The server is deployed sporadically to Heroku (by @sdunster) by running:
-```sh
-yarn run deploy-heroku
-```
+The server is deployed automatically to Heroku via Travis CI. Check the
+[.travis.yml](../.travis.yml) for more detail.
+
 You can play with the API
-[here](http://ses-availability-api.herokuapp.com/graphiql). The data is wiped
-whenever the Heroku web dyno is shut down or re-deployed.
+[here](http://ses-availability-api.herokuapp.com/graphiql).
 
 If you'd like to deploy yourself you can build a bundle into `dist/` by
 executing:
 ```sh
-yarn run build
+yarn build
 ```
 
-You can then execute the production-ready server bundle using:
+You can then execute the production-ready server bundle on your local
+machine using:
 ```sh
-yarn run serve
+yarn serve
 ```
-Or just execute `main.js`:
+
+If you're deploying to heroku just ship the built `dist` directory - it
+contains a `Procfile` that will start the server:
 ```sh
-node dist/main.js
+node main.js
+```
+
+You'll need to initialize the DB and load the test data the first time by
+running the following from the console of a production dyno:
+```sh
+node scripts/setup_db.js
 ```
 
 Once you have a server running you can access GraphQL at
 [`/graphql`](http://localhost:8080/graphql) or you can
 play with the API explorer at [`/graphiql`](http://localhost:8080/graphiql).
 
+## DB schema changes/Migrations
+
+We don't currently have a DB migration framework. Pull requests are welcome to
+add one. In the meantime if you modify `models.js` make sure you figure out
+what changes and update the DB or wipe the DB and apply the new schema using
+the aforementioned `setup_db.js` script.
 
 ## Contributing
 

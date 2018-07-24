@@ -1,4 +1,4 @@
-import sleep from '../utils';
+import { sleep } from '../utils';
 import { sendPush } from './index';
 
 const getPushEmitters = ({ models }) => {
