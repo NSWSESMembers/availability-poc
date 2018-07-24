@@ -87,18 +87,16 @@ export const getHandlers = ({ logWriter, models, creators: Creators, push, pubsu
       updateUserProfile(_, args, ctx) {
         // TODO support more basic fields
         const { displayName } = args.user;
-        return getAuthenticatedUser(ctx).then((user) => {
-          user.update({
-            displayName,
-          }).then((res) => {
-            logWriter({
-              source: user.username,
-              action: 'updateUserProfile',
-              payload: args.user,
-            });
-            return res;
+        return getAuthenticatedUser(ctx).then(user => user.update({
+          displayName,
+        }).then((res) => {
+          logWriter({
+            source: user.username,
+            action: 'updateUserProfile',
+            payload: args.user,
           });
-        });
+          return res;
+        }));
       },
       groups(user, args) {
         if (args.id) {
