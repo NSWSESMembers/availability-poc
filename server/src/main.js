@@ -9,6 +9,7 @@ import jwt from 'express-jwt';
 import jsonwebtoken from 'jsonwebtoken';
 import url from 'url';
 import { JWT_SECRET, DEFAULT_USER_ID, DEFAULT_DEVICE_UUID } from './config';
+import { setupLogger } from './logger';
 import { getSchema } from './schema';
 import { setupDb } from './db';
 import { getHandlers } from './logic';
@@ -26,13 +27,15 @@ const SUBSCRIPTIONS_PATH = '/subscriptions';
 
 const port = process.env.PORT ? process.env.PORT : GRAPHQL_PORT;
 
+const { logWriter } = setupLogger();
+
 const { models, db } = setupDb();
 const creators = getCreators(models);
 const { User, Device } = models;
 
 const push = getPushEmitters({ models });
 
-const handlers = getHandlers({ models, creators, push, pubsub });
+const handlers = getHandlers({ logWriter, models, creators, push, pubsub });
 const resolvers = getResolvers(handlers);
 const schema = getSchema(resolvers);
 
