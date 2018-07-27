@@ -1,4 +1,4 @@
-# Rect Native client for Availability
+# React web UI for Availability
 
 [![Build Status](https://travis-ci.org/NSWSESMembers/availability-poc.svg?branch=master)](https://travis-ci.org/NSWSESMembers/availability-poc)
 [![codecov](https://codecov.io/gh/NSWSESMembers/availability-poc/branch/master/graph/badge.svg)](https://codecov.io/gh/NSWSESMembers/availability-poc)
