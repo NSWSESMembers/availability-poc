@@ -71,7 +71,7 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
-    if: branch = master
+    if: branch = master AND type != pull_request
     before_install: cd client
     script: skip
     env:
@@ -86,7 +86,7 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
-    if: branch = master
+    if: branch = master AND type != pull_request
     before_install: cd client
     script: skip
     env:
