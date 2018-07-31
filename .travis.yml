@@ -101,7 +101,6 @@ jobs:
     language: node_js
     node_js: 6
     cache: yarn
-    if: branch = master
     before_install: cd web
     script: bash ../scripts/travis-yarn.sh
     env:
