@@ -102,7 +102,7 @@ android {
         applicationId "com.callout"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 7
+        versionCode 8
         versionName "0.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
