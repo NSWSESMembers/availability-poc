@@ -62,7 +62,7 @@ export const getHandlers = ({ logWriter, models, creators: Creators, push, pubsu
         }
         return getAuthenticatedDevice(ctx).then(device => device.update(params).then((res) => {
           logWriter({
-            source: device,
+            source: device.uuid,
             action: 'updateDevice',
             payload: args.device,
           });
