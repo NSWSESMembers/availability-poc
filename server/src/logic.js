@@ -878,7 +878,7 @@ export const getHandlers = ({ logWriter, models, creators: Creators, push, pubsu
       groups(org, args) {
         // TODO: think about who we show the complete organisation group list to
         if (args.id) {
-          return org.getGroups({ where: { Id: args.id } });
+          return org.getGroups({ where: { id: args.id } });
         }
         if (args.filter) {
           return org.getGroups({
