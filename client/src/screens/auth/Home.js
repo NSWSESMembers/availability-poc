@@ -50,7 +50,6 @@ class HomeScreen extends Component {
         version={version}
         codePushHash={codePushHash}
         onPressSignIn={this.goToSignIn}
-        onPressOAuth={this.startOAuth}
         onPressRegister={this.goToRegister}
       />
     );
