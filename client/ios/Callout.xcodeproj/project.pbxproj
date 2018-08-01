@@ -29,6 +29,7 @@
 		2A3E4A0620A09E1F003B9532 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3E4A0320A09DEC003B9532 /* libRNDeviceInfo.a */; };
 		2A653FFB20A0865A007BBF31 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A653FFA20A0865A007BBF31 /* libz.tbd */; };
 		2AD97A9A209AE594004550ED /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD97A7D209AE57A004550ED /* libRCTPushNotification.a */; };
+		2AE58FF521114A4F00C88803 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE58FF421114A4F00C88803 /* icon.png */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -437,6 +438,7 @@
 		2A653FFA20A0865A007BBF31 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		2A914240209AEED200F75ABD /* Callout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Callout.entitlements; path = Callout/Callout.entitlements; sourceTree = "<group>"; };
 		2AD97A67209AE57A004550ED /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
+		2AE58FF421114A4F00C88803 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		2AF693CD94554B019EA9BDC3 /* libBugsnagReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBugsnagReactNative.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Callout-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Callout-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Callout-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Callout-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -630,9 +632,7 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = Callout;
@@ -763,6 +763,9 @@
 				F13C64D567414D9BA6B92C95 /* Octicons.ttf */,
 				C918633888A140BFB6B04561 /* SimpleLineIcons.ttf */,
 				C35E54142615427DA1940355 /* Zocial.ttf */,
+				2AE58FF421114A4F00C88803 /* icon.png */,
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1436,6 +1439,7 @@
 				74615FCF92D1436C85D97B03 /* FontAwesome.ttf in Resources */,
 				BEC372F22CF244D5A5C60A59 /* Foundation.ttf in Resources */,
 				4A7673CC4E704A0281702CD1 /* Ionicons.ttf in Resources */,
+				2AE58FF521114A4F00C88803 /* icon.png in Resources */,
 				A146EEA0A12048DE84EA763E /* MaterialCommunityIcons.ttf in Resources */,
 				C007DB3E41AB40B0AE99ACDB /* MaterialIcons.ttf in Resources */,
 				E4F233AEB2B84CFFBDCD7649 /* Octicons.ttf in Resources */,
