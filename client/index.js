@@ -10,7 +10,7 @@ const codePushOptions = {
     (!__DEV__) ? codePush.CheckFrequency.ON_APP_RESUME
       : codePush.CheckFrequency.MANUAL),
   updateDialog: true,
-  installMode: codePush.InstallMode.ON_NEXT_RESUME,
+  installMode: codePush.InstallMode.IMMEDIATE,
 };
 
 // suppress false-positive isMounted() deprecation warning
