@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { StackNavigator } from 'react-navigation';
 
 import { Root } from '../screens/home';
@@ -35,12 +33,4 @@ const HomeNavigator = StackNavigator(
   },
 );
 
-// this wrapper exists soley so we can pass the modalNavigation prop down to our child screens
-const HomeNavigatorWrapper = ({ screenProps }) => (
-  <HomeNavigator screenProps={screenProps} />
-);
-HomeNavigatorWrapper.propTypes = {
-  screenProps: PropTypes.shape({}),
-};
-
-export default HomeNavigatorWrapper;
+export default HomeNavigator;

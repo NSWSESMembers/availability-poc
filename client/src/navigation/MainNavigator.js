@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Platform, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, NavigationActions } from 'react-navigation';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -43,11 +44,21 @@ const MainTabNavigator = TabNavigator(
   {
     Home: {
       screen: HomeNavigator,
-      navigationOptions: {
+      navigationOptions: ({ navigation }) => ({
         tabBarLabel: 'Home',
         // eslint-disable-next-line react/prop-types
         tabBarIcon: ({ tintColor }) => <Icon size={34} name="home" color={tintColor} />,
-      },
+        tabBarOnPress() {
+          const resetAction = NavigationActions.reset({
+            index: 0,
+            key: 'Home',
+            actions: [
+              NavigationActions.navigate({ routeName: 'Root' }),
+            ],
+          });
+          navigation.dispatch(resetAction);
+        },
+      }),
     },
     Groups: {
       screen: GroupsNavigator,
