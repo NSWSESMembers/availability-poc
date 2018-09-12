@@ -123,42 +123,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
 
-  searchContainer: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    borderTopLeftRadius: BORDER_RADIUS,
-    borderTopRightRadius: BORDER_RADIUS,
-    marginTop: 8,
-    alignSelf: 'stretch',
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    padding: PADDING,
-  },
-
-  searchbar: {
-    backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-  },
-
   optionContainer: {
     borderRadius: BORDER_RADIUS,
     justifyContent: 'center',
     flexShrink: 1,
     marginBottom: 8,
     marginTop: 8,
-    height: '50%',
-    padding: PADDING,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-  },
-
-  optionContainerTags: {
-    borderBottomLeftRadius: BORDER_RADIUS,
-    borderBottomRightRadius: BORDER_RADIUS,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    justifyContent: 'center',
-    flexShrink: 1,
-    marginBottom: 8,
     height: '50%',
     padding: PADDING,
     backgroundColor: 'rgba(255,255,255,0.9)',

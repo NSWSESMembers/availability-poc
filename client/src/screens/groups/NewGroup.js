@@ -13,9 +13,8 @@ import { connect } from 'react-redux';
 import { Container } from '../../components/Container';
 import { Button } from '../../components/Button';
 import { Progress } from '../../components/Progress';
-
+import { TagModal } from '../../components/Modal';
 import IconModal from './IconModal';
-import TagModal from './TagModal';
 import groupIcons from '../../fixtures/icons';
 import CURRENT_USER_QUERY from '../../graphql/current-user.query';
 import { CREATE_GROUP_MUTATION } from '../../graphql/group.mutation';
@@ -70,17 +69,9 @@ class NewGroup extends Component {
     });
   }
 
-handleTagChange = (changedTag) => {
-  const newTags = [...this.state.tags];
-  const index = newTags.findIndex(el => el.label === changedTag.label);
-  newTags[index] = { ...newTags[index], checked: !newTags[index].checked };
-  this.setState({ tags: newTags });
-}
-
-handleTagBack = (tags) => {
+handleTagBack = () => {
   this.setState({
     tagsModal: false,
-    tags,
   });
 }
 
@@ -95,6 +86,17 @@ searchTagOnPress = (text) => {
       this.applyTagSearchFilter();
     }, 500),
   });
+}
+
+handleTagChange = (option) => {
+  const tmpSelectedTags = [...this.state.tags];
+  const index = tmpSelectedTags.indexOf(option.id);
+  if (index !== -1) {
+    tmpSelectedTags.splice(index, 1);
+  } else {
+    tmpSelectedTags.push(option.id);
+  }
+  this.setState({ tags: tmpSelectedTags });
 }
 
 applyTagSearchFilter = () => {
@@ -187,10 +189,13 @@ applyTagSearchFilter = () => {
         <TagModal
           visible={this.state.tagsModal}
           closeModal={this.handleTagBack}
-          onSearch={text => this.searchTagOnPress(text)}
+          onSearch={this.searchTagOnPress}
+          onSelect={this.handleTagChange}
           isLoading={loading}
-          backModal={tags => this.handleTagBack(tags)}
+          headerText="Select Group Tags"
+          backModal={this.handleTagBack}
           dataIn={user && user.organisation.tags}
+          selectedTags={this.state.tags}
         />
       </Container>
     );
